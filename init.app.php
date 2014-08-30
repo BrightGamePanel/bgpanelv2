@@ -47,8 +47,21 @@ define('CONF_DIR', BASE_DIR . '/conf');
 define('GUI_DIR', BASE_DIR . '/gui');
 define('LOGS_DIR', BASE_DIR . '/logs');
 define('PYDIO_DIR', BASE_DIR . '/pydio');
+define('INSTALL_DIR', BASE_DIR . '/install');
 
 // CONFIGURATION FILE CONSTANTS
-define('CONF_DATA_INI', CONF_DIR . '/data.conf.ini');
+define('CONF_DB_INI', CONF_DIR . '/db.conf.ini');
 define('CONF_GENERAL_INI', CONF_DIR . '/general.conf.ini');
 define('CONF_SECRET_INI', CONF_DIR . '/secret.keys.ini');
+
+// DEFINE CONSTANTS
+$CONFIG  = parse_ini_file( CONF_DB_INI, TRUE );
+$CONFIG += parse_ini_file( CONF_GENERAL_INI, TRUE );
+$CONFIG += parse_ini_file( CONF_SECRET_INI, TRUE );
+
+foreach ($CONFIG as $setting => $value) {
+	define( $setting, $value );
+}
+
+// Clean
+unset( $CONFIG );
