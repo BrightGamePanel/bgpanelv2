@@ -40,7 +40,7 @@ require( '../init.app.php' );
 /**
  * BGP VERSION LIST
  */
-require( INSTALL_DIR . './inc/versions.php' );
+require( INSTALL_DIR . './inc/versions.inc.php' );
 
 /**
  * BGP GAME CONFIGURATION DATABASE
@@ -839,7 +839,7 @@ else if ($_GET['step'] == 'two')
 		{
 			if ($table == DB_PREFIX.'config')
 			{
-				$sth = $dbh->query( "SELECT value FROM ".DB_PREFIX."config WHERE setting = 'panelversion'" );
+				$sth = $dbh->query( "SELECT value FROM ".DB_PREFIX."config WHERE setting = 'panel_version'" );
 				$currentVersion = $sth->fetch(PDO::FETCH_ASSOC);
 				break;
 			}
@@ -928,14 +928,14 @@ APP_LOGGED_IN_KEY 	= \"".$APP_LOGGED_IN_KEY."\"
 			else {
 				exit('Critical error while installing ! Unable to write to /conf/secret.keys.ini !');
 			}
-/*
+
 			//---------------------------------------------------------+
 			// AJXP
 
 			if (is_writable( "../ajxp/data/plugins/boot.conf/bootstrap.json" ))
 			{
 				$bootstrap = file_get_contents( "../ajxp/data/plugins/boot.conf/bootstrap.json" );
-				$bootstrap = str_replace( "\"SECRET\":\"void\"", "\"SECRET\":\"".$api_key."\"", $bootstrap );
+				$bootstrap = str_replace( "\"SECRET\":\"void\"", "\"SECRET\":\"".$APP_API_KEY."\"", $bootstrap );
 
 				$handle = fopen( "../ajxp/data/plugins/boot.conf/bootstrap.json" , 'w' );
 				fwrite($handle, $bootstrap);
@@ -945,40 +945,41 @@ APP_LOGGED_IN_KEY 	= \"".$APP_LOGGED_IN_KEY."\"
 			else {
 				exit('Critical error while installing ! Unable to write to /ajxp/data/plugins/boot.conf/bootstrap.json !');
 			}
-*/
+
 			//---------------------------------------------------------+
 
 			require("./sql/full.php");
 
 			break;
 
-/*
+
 		case 'update':
 
-			$mysql_link = mysql_connect(DBHOST,DBUSER,DBPASSWORD);
-			if (!$mysql_link)
-			{
-				exit(mysql_error());
+			try {
+				// Connect to the SQL server
+				if (DB_DRIVER == 'sqlite') {
+					$dbh = new PDO( DB_DRIVER.':'.DB_FILE );
+				}
+				else {
+					$dbh = new PDO( DB_DRIVER.':host='.DB_HOST.';dbname='.DB_NAME, DB_USER, DB_PASSWORD );
+				}
+
+				// Set ERRORMODE to exceptions
+				$dbh->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+				$sth = $dbh->query( "SELECT value FROM ".DB_PREFIX."config WHERE setting = 'panel_version'" );
+				$currentVersion = $sth->fetch(PDO::FETCH_ASSOC);
 			}
-			else
-			{
-				$mysql_database_link = mysql_select_db(DBNAME);
-				if ($mysql_database_link == FALSE)
-				{
-					echo "Could not connect to MySQL database";
-				}
-				else
-				{
-					$currentVersion = mysql_fetch_assoc(mysql_query( "SELECT `value` FROM `".DBPREFIX."config` WHERE `setting` = 'panelversion' LIMIT 1" ));
-					mysql_close($mysql_link);
-				}
+			catch (PDOException $e) {
+				echo $e->getMessage().' in '.$e->getFile().' on line '.$e->getLine();
+				die();
 			}
 
 			//---------------------------------------------------------+
 
 			foreach($bgpVersions as $key => $value)
 			{
-				if ($value == $currentVersion['value']) // Version reference for the update
+				if ($value == $currentVersion['value']) // Base version for the update
 				{
 					if ($key == end($bgpVersions))
 					{
@@ -1004,23 +1005,13 @@ APP_LOGGED_IN_KEY 	= \"".$APP_LOGGED_IN_KEY."\"
 
 			//---------------------------------------------------------+
 
-			$mysql_link = mysql_connect(DBHOST,DBUSER,DBPASSWORD);
-			if (!$mysql_link)
-			{
-				exit(mysql_error());
+			try {
+				$sth = $dbh->query( "SELECT value FROM ".DB_PREFIX."config WHERE setting = 'panel_version'" );
+				$currentVersion = $sth->fetch(PDO::FETCH_ASSOC);
 			}
-			else
-			{
-				$mysql_database_link = mysql_select_db(DBNAME);
-				if ($mysql_database_link == FALSE)
-				{
-					echo "Could not connect to MySQL database";
-				}
-				else
-				{
-					$currentVersion = mysql_fetch_assoc(mysql_query( "SELECT `value` FROM `".DBPREFIX."config` WHERE `setting` = 'panelversion' LIMIT 1" ));
-					mysql_close($mysql_link);
-				}
+			catch (PDOException $e) {
+				echo $e->getMessage().' in '.$e->getFile().' on line '.$e->getLine();
+				die();
 			}
 
 			if ($currentVersion['value'] != LASTBGPVERSION)
@@ -1031,7 +1022,7 @@ APP_LOGGED_IN_KEY 	= \"".$APP_LOGGED_IN_KEY."\"
 			//---------------------------------------------------------+
 
 			break;
-*/
+
 
 		default:
 			exit('<h1><b>Error</b></h1>');
