@@ -1,0 +1,72 @@
+# Kirby Toolkit Changelog
+
+## 0.9.4
+
+- fixed a bug in v::string
+- moved to less tiny version numbers
+
+## 0.9.3.0
+
+- fixed a bug in str::substr
+- fixed a bug in str::short
+- fixed a bug in str::unxml
+- fixed str::contains it's now case insensitive. 
+
+## 0.9.2.9
+
+- added MIT license
+- full documentation
+- removed c::set_all and c::get_all
+- removed c::get_array and c::set_array
+- added content::type('json')
+- repaired dir::size
+- changed chmod definitions
+- removed r::parse()
+- removed s::expired()
+
+## 0.9.2.8
+
+fixed a bug in str::excerpt
+
+## 0.9.2.7
+
+fixed a bug in the split function and replaced the str::trim() function for each token in str::split() with the native trim(). 
+
+## 0.9.2.6
+
+a::sort can now handle method calls in objects.
+
+## 0.9.2.5
+
+made class and title in str::email variable.
+
+## 0.9.2.4
+
+fixed a::sort. multi column sort is no longer working but instead the a::sort function works properly on a single column. you can now use it like this: a::sort($array, 'mycolumn', 'desc', SORT_NUMERIC);
+
+## 0.9.2.3
+
+removed str::trim from the r::sanitize
+
+## 0.9.2.2
+
+added a few suggestions from mthie. more will follow soon
+
+## 0.9.1
+
+- removed the docs from the repository
+- a new optimized a::shuffle() function, which preserves array keys while shuffling it. 
+- removed the core class. moved error, status, msg functions to helper functions
+- added a::getall($array,$keys)
+- updated the browser sniffer
+- declared all static functions
+- new content::load() function
+- put the missing db class back in
+- added a new s::id() function
+- added a new s::restart() function
+- better str::split function
+
+## Before 0.9
+
+Sorry, but I can't really track the changes before 0.9 anymore. I will be more careful about this in the future :)
+
