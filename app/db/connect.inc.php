@@ -31,26 +31,22 @@ if (!defined('LICENSE'))
 	exit('Access Denied');
 }
 
-switch (ENV_RUNTIME)
-{
-	case 'INSTALL_WIZARD':
-		require( LIBS_DIR . '/phpseclib/RSA.php' );
-		break;
+// Creates a PDO instance representing a connection to a database
+// The Database Handle ($DBH) scope is GLOBAL
 
-	default:
-		// Kirby Framework
-		require( APP_DIR . '/fw/kirby.php');
+try {
+	// Connect to the SQL server
+	if (DB_DRIVER == 'sqlite') {
+		$DBH = new PDO( DB_DRIVER.':'.DB_FILE );
+	}
+	else {
+		$DBH = new PDO( DB_DRIVER.':host='.DB_HOST.';dbname='.DB_NAME, DB_USER, DB_PASSWORD );
+	}
 
-		// PHPSeclib
-		require( LIBS_DIR . '/phpseclib/AES.php' );
-		require( LIBS_DIR . '/phpseclib/RSA.php' );
-		require( LIBS_DIR . '/phpseclib/ANSI.php' );
-		require( LIBS_DIR . '/phpseclib/SSH2.php' );
-		require( LIBS_DIR . '/phpseclib/SFTP.php' );
-
-		// Init SQL Server Connection using PDO
-		require( APP_DIR . '/db/connect.inc.php' );
-
-		// Init Session And Authentification Mechanism
-		require( APP_DIR . '/core/auth.inc.php' );
+	// Set ERRORMODE to exceptions
+	$DBH->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+}
+catch (PDOException $e) {
+	echo $e->getMessage().' in '.$e->getFile().' on line '.$e->getLine();
+	die();
 }

@@ -40,19 +40,32 @@ define('LICENSE', 'GNU GENERAL PUBLIC LICENSE - Version 3, 29 June 2007');
  */
 error_reporting(E_ALL);
 
-// DIRECTORY CONSTANTS
+
+// Start new or resume existing session
+session_start();
+
+
+// FILE AND DIRECTORY CONSTANTS
 define('BASE_DIR', realpath(dirname(__FILE__)));
+
 define('APP_DIR', BASE_DIR . '/app');
+	define('CRYPTO_DIR', APP_DIR . '/crypto');
+		define('RSA_KEYS_DIR', CRYPTO_DIR . '/rsa_keys');
+			define('RSA_PRIVATE_KEY_FILE', RSA_KEYS_DIR . '/bgp_rsa');
+			define('RSA_PUBLIC_KEY_FILE', RSA_KEYS_DIR . '/bgp_rsa.pub');
+		define('SSH_KEYS_DIR', CRYPTO_DIR . '/ssh_keys');
+	define('LIBS_DIR', APP_DIR . '/libs');
+
 define('CONF_DIR', BASE_DIR . '/conf');
+	define('CONF_DB_INI', CONF_DIR . '/db.conf.ini');
+	define('CONF_GENERAL_INI', CONF_DIR . '/general.conf.ini');
+	define('CONF_SECRET_INI', CONF_DIR . '/secret.keys.ini');
+
 define('GUI_DIR', BASE_DIR . '/gui');
 define('LOGS_DIR', BASE_DIR . '/logs');
 define('PYDIO_DIR', BASE_DIR . '/pydio');
 define('INSTALL_DIR', BASE_DIR . '/install');
 
-// CONFIGURATION FILE CONSTANTS
-define('CONF_DB_INI', CONF_DIR . '/db.conf.ini');
-define('CONF_GENERAL_INI', CONF_DIR . '/general.conf.ini');
-define('CONF_SECRET_INI', CONF_DIR . '/secret.keys.ini');
 
 // DEFINE CONSTANTS
 $CONFIG  = parse_ini_file( CONF_DB_INI, TRUE );
@@ -63,5 +76,19 @@ foreach ($CONFIG as $setting => $value) {
 	define( $setting, $value );
 }
 
-// Clean
+// DEFINE RSA KEYS
+if ( file_exists(RSA_PRIVATE_KEY_FILE) && file_exists(RSA_PUBLIC_KEY_FILE) ) {
+	define( 'RSA_PRIVATE_KEY', file_get_contents( RSA_PRIVATE_KEY_FILE ) );
+	define( 'RSA_PUBLIC_KEY', file_get_contents( RSA_PUBLIC_KEY_FILE ) );
+}
+
+// Clean Up
 unset( $CONFIG );
+
+// DEFINE ENVIRONMENT RUNTIME IF NOT SET
+if ( !defined('ENV_RUNTIME') ) {
+	define('ENV_RUNTIME', 'DEFAULT');
+}
+
+// CORE FILES
+require( APP_DIR . '/app.core.php' );

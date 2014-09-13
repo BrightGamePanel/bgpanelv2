@@ -30,27 +30,3 @@ if (!defined('LICENSE'))
 {
 	exit('Access Denied');
 }
-
-switch (ENV_RUNTIME)
-{
-	case 'INSTALL_WIZARD':
-		require( LIBS_DIR . '/phpseclib/RSA.php' );
-		break;
-
-	default:
-		// Kirby Framework
-		require( APP_DIR . '/fw/kirby.php');
-
-		// PHPSeclib
-		require( LIBS_DIR . '/phpseclib/AES.php' );
-		require( LIBS_DIR . '/phpseclib/RSA.php' );
-		require( LIBS_DIR . '/phpseclib/ANSI.php' );
-		require( LIBS_DIR . '/phpseclib/SSH2.php' );
-		require( LIBS_DIR . '/phpseclib/SFTP.php' );
-
-		// Init SQL Server Connection using PDO
-		require( APP_DIR . '/db/connect.inc.php' );
-
-		// Init Session And Authentification Mechanism
-		require( APP_DIR . '/core/auth.inc.php' );
-}

@@ -29,6 +29,7 @@
  * Install Wizard Version
  */
 define('WIZARDVERSION', 'v2.0.0');
+define('ENV_RUNTIME', 'INSTALL_WIZARD');
 
 //---------------------------------------------------------+
 
@@ -642,6 +643,31 @@ else if ($_GET['step'] == 'one')
 		}
 	}
 
+	if (empty(RSA_PRIVATE_KEY) || empty(RSA_PUBLIC_KEY))
+	{
+		if (is_writable( RSA_KEYS_DIR ) && is_writable( SSH_KEYS_DIR ))
+		{
+?>
+						<tr class="success">
+							<td>Checking for SSH and RSA keys directory write permission</td>
+							<td><span class="label label-success">OK</span></td>
+							<td></td>
+						</tr>
+<?php
+		}
+		else
+		{
+?>
+						<tr class="error">
+							<td>Checking for SSH and RSA keys directory write permission</td>
+							<td><span class="label label-important">FAILED</span></td>
+							<td></td>
+						</tr>
+<?php
+			$error = TRUE;
+		}
+	}
+
 	//--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 	// AJXP
 
@@ -927,6 +953,31 @@ APP_LOGGED_IN_KEY 	= \"".$APP_LOGGED_IN_KEY."\"
 			}
 			else {
 				exit('Critical error while installing ! Unable to write to /conf/secret.keys.ini !');
+			}
+
+			//---------------------------------------------------------+
+			// Generating RSA Keys
+
+			if (is_writable( RSA_KEYS_DIR ))
+			{
+				$rsa = new Crypt_RSA();
+
+				$keypair = $rsa->createKey(2048);
+
+				$handle = fopen( RSA_PRIVATE_KEY_FILE, 'w');
+				$data = $keypair['privatekey'];
+				fwrite($handle, $data);
+				fclose($handle);
+				unset($handle);
+
+				$handle = fopen( RSA_PUBLIC_KEY_FILE, 'w');
+				$data = $keypair['publickey'];
+				fwrite($handle, $data);
+				fclose($handle);
+				unset($handle);
+			}
+			else {
+				exit('Critical error while installing ! Unable to write to /app/crypto/ !');
 			}
 
 			//---------------------------------------------------------+
