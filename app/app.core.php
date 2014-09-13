@@ -51,6 +51,6 @@ switch (ENV_RUNTIME)
 		// Init SQL Server Connection using PDO
 		require( APP_DIR . '/db/connect.inc.php' );
 
-		// Init Session And Authentification Mechanism
-		require( APP_DIR . '/core/auth.inc.php' );
+		// Authentification Service
+		require( APP_DIR . '/core/auth.class.php' );
 }
