@@ -47,9 +47,6 @@ class Core_AuthService
 	private $rsa_private_key;
 	private $rsa_public_key;
 
-
-
-	 
 	/**
 	 * Default Constructor
 	 *
@@ -57,7 +54,7 @@ class Core_AuthService
 	 * @param String $auth_key
 	 * @param String $rsa_private_key
 	 * @param String $rsa_public_key
-	 * @return bool
+	 * @return void
 	 * @access public
 	 */
 	function __construct( $username = '', $auth_key = APP_LOGGED_IN_KEY, $rsa_private_key = RSA_PRIVATE_KEY, $rsa_public_key = RSA_PUBLIC_KEY )
@@ -127,6 +124,21 @@ class Core_AuthService
 
 		$rsa->setEncryptionMode(CRYPT_RSA_ENCRYPTION_PKCS1);
 		$this->session['CREDENTIALS'] = $rsa->encrypt( $credentials );
+
+		$_SESSION = $this->session;
+	}
+
+	/**
+	 * Remove White Card Of A Session
+	 *
+	 * @param none
+	 * @return void
+	 * @access public
+	 */
+	public function rmSessionWhitecard() {
+		if ( array_key_exists('CREDENTIALS', $this->session) ) {
+			unset( $this->session['CREDENTIALS'] );
+		}
 
 		$_SESSION = $this->session;
 	}
