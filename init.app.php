@@ -55,6 +55,7 @@ define('APP_DIR', BASE_DIR . '/app');
 			define('RSA_PUBLIC_KEY_FILE', RSA_KEYS_DIR . '/bgp_rsa.pub');
 		define('SSH_KEYS_DIR', CRYPTO_DIR . '/ssh_keys');
 	define('LIBS_DIR', APP_DIR . '/libs');
+	define('MODS_DIR', APP_DIR . '/modules');
 
 define('CONF_DIR', BASE_DIR . '/conf');
 	define('CONF_DB_INI', CONF_DIR . '/db.conf.ini');

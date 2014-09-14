@@ -44,7 +44,7 @@ Flight::route('/', function(){
 });
 
 Flight::route('/login', function(){
-    Core_GUI::getHeader();
+	include( MODS_DIR . '/login/login.php' );
 });
 
 /**
