@@ -25,11 +25,6 @@
  * @link		http://www.bgpanel.net/
  */
 
-// Prevent direct access
-if (!defined('LICENSE'))
-{
-	exit('Access Denied');
-}
 
 
 class Core_AuthService

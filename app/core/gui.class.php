@@ -25,35 +25,8 @@
  * @link		http://www.bgpanel.net/
  */
 
-// Prevent direct access
-if (!defined('LICENSE'))
+
+class Core_GUI
 {
-	exit('Access Denied');
-}
 
-switch (ENV_RUNTIME)
-{
-	case 'INSTALL_WIZARD':
-		require( LIBS_DIR . '/phpseclib/RSA.php' );
-		break;
-
-	default:
-		// Kirby Framework
-		require( LIBS_DIR . '/kirby/kirby.php');
-
-		// Flight Framework
-		require( LIBS_DIR . '/flight/Flight.php');
-
-		// PHPSeclib
-		require( LIBS_DIR . '/phpseclib/AES.php' );
-		require( LIBS_DIR . '/phpseclib/RSA.php' );
-		require( LIBS_DIR . '/phpseclib/ANSI.php' );
-		require( LIBS_DIR . '/phpseclib/SSH2.php' );
-		require( LIBS_DIR . '/phpseclib/SFTP.php' );
-
-		// Init SQL Server Connection using PDO
-		require( APP_DIR . '/db/connect.inc.php' );
-
-		// Authentification Service
-		require( APP_DIR . '/core/auth.class.php' );
 }
