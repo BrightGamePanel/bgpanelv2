@@ -29,7 +29,7 @@
 class Core_GUI
 {
 
-	public static function getHeader( $lang = 'en') {
+	public static function getHeader( $lang = 'en' ) {
 ?>
 <!DOCTYPE html>
 <html lang="<?php echo $lang; ?>">
@@ -40,7 +40,7 @@ class Core_GUI
 
 		<!--Powered By Bright Game Panel-->
 
-		<title>Dashboard Template for Bootstrap</title>
+		<title><?php echo BGP_PANEL_NAME; ?></title>
 
 		<!-- Javascript -->
 			<script src="./gui/jquery/js/jquery-2.1.1.min.js"></script>

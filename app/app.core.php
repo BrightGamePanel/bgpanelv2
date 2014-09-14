@@ -38,6 +38,9 @@ switch (ENV_RUNTIME)
 		break;
 
 	default:
+		// Init SQL Server Connection using PDO
+		require( APP_DIR . '/db/connect.inc.php' );
+
 		// Kirby Framework
 		require( LIBS_DIR . '/kirby/kirby.php');
 
@@ -50,9 +53,6 @@ switch (ENV_RUNTIME)
 		require( LIBS_DIR . '/phpseclib/ANSI.php' );
 		require( LIBS_DIR . '/phpseclib/SSH2.php' );
 		require( LIBS_DIR . '/phpseclib/SFTP.php' );
-
-		// Init SQL Server Connection using PDO
-		require( APP_DIR . '/db/connect.inc.php' );
 
 		// Authentification Service
 		require( APP_DIR . '/core/auth.class.php' );

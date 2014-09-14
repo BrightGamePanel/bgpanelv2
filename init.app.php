@@ -68,7 +68,7 @@ define('PYDIO_DIR', BASE_DIR . '/pydio');
 define('INSTALL_DIR', BASE_DIR . '/install');
 
 
-// DEFINE CONSTANTS
+// DEFINE INI CONSTANTS
 $CONFIG  = parse_ini_file( CONF_DB_INI, TRUE );
 $CONFIG += parse_ini_file( CONF_GENERAL_INI, TRUE );
 $CONFIG += parse_ini_file( CONF_SECRET_INI, TRUE );
@@ -83,13 +83,34 @@ if ( file_exists(RSA_PRIVATE_KEY_FILE) && file_exists(RSA_PUBLIC_KEY_FILE) ) {
 	define( 'RSA_PUBLIC_KEY', file_get_contents( RSA_PUBLIC_KEY_FILE ) );
 }
 
-// Clean Up
-unset( $CONFIG );
-
 // DEFINE ENVIRONMENT RUNTIME IF NOT SET
 if ( !defined('ENV_RUNTIME') ) {
 	define('ENV_RUNTIME', 'DEFAULT');
 }
 
-// CORE FILES
+// CORE SYSTEM
 require( APP_DIR . '/app.core.php' );
+
+// DEFINE BGP CONSTANTS FROM THE DATABASE
+// Syntax: BGP_CONFIG
+if ( !empty($DBH) && is_object($DBH) && get_class($DBH) === 'PDO' ) {
+	try {
+		$sth = $DBH->prepare("
+			SELECT setting, value
+			FROM " . DB_PREFIX . "config
+			;");
+
+		$sth->execute();
+
+		while ($CONFIG = $sth->fetch(PDO::FETCH_ASSOC)) {
+			define( strtoupper( 'BGP_' . $CONFIG['setting'] ), $CONFIG['value'] );
+		}
+	}
+	catch (PDOException $e) {
+		echo $e->getMessage().' in '.$e->getFile().' on line '.$e->getLine();
+		die();
+	}
+}
+
+// Clean Up
+unset( $CONFIG );
