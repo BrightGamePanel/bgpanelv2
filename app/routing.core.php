@@ -44,7 +44,7 @@ Flight::route('/', function(){
 });
 
 Flight::route('/login', function(){
-    echo 'Login!';
+    Core_GUI::getHeader();
 });
 
 /**

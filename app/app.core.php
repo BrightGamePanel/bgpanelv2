@@ -56,4 +56,7 @@ switch (ENV_RUNTIME)
 
 		// Authentification Service
 		require( APP_DIR . '/core/auth.class.php' );
+
+		// Graphical User Interface Builder
+		require( APP_DIR . '/core/gui.class.php' );
 }
