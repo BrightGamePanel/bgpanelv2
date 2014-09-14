@@ -54,11 +54,12 @@ class Core_AuthService
 	 */
 	function __construct( $username = '', $auth_key = APP_LOGGED_IN_KEY, $rsa_private_key = RSA_PRIVATE_KEY, $rsa_public_key = RSA_PUBLIC_KEY )
 	{
-		if ( !empty($username) ) {
-			$this->username = $username;
+
+		if ( !empty($_SESSION['USERNAME']) ) {
+			$this->username = $_SESSION['USERNAME'];
 		}
 		else {
-			trigger_error("Core_AuthService -> Username is missing !", E_USER_ERROR);
+			$this->username = $username;
 		}
 
 		$this->session = $_SESSION;
@@ -82,15 +83,17 @@ class Core_AuthService
 	 * @access public
 	 */
 	public function getSessionValidity() {
-		if ( !empty($this->session) && array_key_exists('CREDENTIALS', $this->session) ) {
-			$rsa = new Crypt_RSA();
-			$rsa->loadKey( $this->rsa_private_key ); // private key
+		if ( !empty($this->username) ) {
+			if ( !empty($this->session) && array_key_exists('CREDENTIALS', $this->session) ) {
+				$rsa = new Crypt_RSA();
+				$rsa->loadKey( $this->rsa_private_key ); // private key
 
-			$rsa->setEncryptionMode(CRYPT_RSA_ENCRYPTION_PKCS1);
-			$credentials = unserialize( $rsa->decrypt( $this->session['CREDENTIALS'] ) );
+				$rsa->setEncryptionMode(CRYPT_RSA_ENCRYPTION_PKCS1);
+				$credentials = unserialize( $rsa->decrypt( $this->session['CREDENTIALS'] ) );
 
-			if ( $credentials['username'] == $this->username && $credentials['key'] == $this->auth_key ) {
-				return TRUE;
+				if ( $credentials['username'] == $this->username && $credentials['key'] == $this->auth_key && $credentials['token'] == session_id() ) {
+					return TRUE;
+				}
 			}
 		}
 		return FALSE;
@@ -104,23 +107,25 @@ class Core_AuthService
 	 * @access public
 	 */
 	public function setSessionWhitecard() {
-		$credentials = serialize (
-			array (
-			'username' => $this->username,
-			'role'	=> NULL,
-			'token' => session_id(),
-			'key' => $this->auth_key,
-			'salt' => md5(time())
-			)
-		);
+		if ( !empty($this->username) ) {
+			$credentials = serialize (
+				array (
+				'username' => $this->username,
+				'role'	=> NULL,
+				'token' => session_id(),
+				'key' => $this->auth_key,
+				'salt' => md5(time())
+				)
+			);
 
-		$rsa = new Crypt_RSA();
-		$rsa->loadKey( $this->rsa_public_key ); // public key
+			$rsa = new Crypt_RSA();
+			$rsa->loadKey( $this->rsa_public_key ); // public key
 
-		$rsa->setEncryptionMode(CRYPT_RSA_ENCRYPTION_PKCS1);
-		$this->session['CREDENTIALS'] = $rsa->encrypt( $credentials );
+			$rsa->setEncryptionMode(CRYPT_RSA_ENCRYPTION_PKCS1);
+			$this->session['CREDENTIALS'] = $rsa->encrypt( $credentials );
 
-		$_SESSION = $this->session;
+			$_SESSION = $this->session;
+		}
 	}
 
 	/**

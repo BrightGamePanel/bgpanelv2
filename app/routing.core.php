@@ -25,35 +25,30 @@
  * @link		http://www.bgpanel.net/
  */
 
-/**
- * Bright Game Panel Init
- */
-require( 'init.app.php' );
-
-/**
- * Load System Routing Definitions
- */
-require( APP_DIR . '/routing.core.php' );
-
-/**
- * User Auth
- */
-$authService = new Core_AuthService();
-
-// Test if the user has a whitecard to access the system
-
-if ($authService->getSessionValidity() == FALSE) {
-
-	// The user is not logged in
-	// Redirect him to the login system
-
-	header('/login');
-	die();
+// Prevent direct access
+if (!defined('LICENSE'))
+{
+	exit('Access Denied');
 }
 
-// Dashboard Access
-// Or redirect to the previous ressource
-header('/');
-die();
+if ( !class_exists('Flight')) {
+	trigger_error('Core -> Flight FW is missing !');
+}
 
-?>
+/**
+ * Flight FW Routing Definitions
+ */
+
+Flight::route('/', function(){
+    echo 'Dashboard!';
+});
+
+Flight::route('/login', function(){
+    echo 'Login!';
+});
+
+/**
+ * Start the FW
+ */
+
+Flight::start();
