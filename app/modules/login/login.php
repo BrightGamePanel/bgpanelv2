@@ -25,14 +25,42 @@
  * @link		http://www.bgpanel.net/
  */
 
-Core_GUI::getHeader();
+/**
+ * Load Plugin
+ */
 
+require( MODS_DIR . '/login/login.class.php' );
+
+$loginModule = new BGP_Module_Login();
+
+/**
+ * Call GUI Builder
+ */
+$gui = new Core_GUI( $loginModule );
+
+/**
+ * Build Page Header
+ */
+$gui->getHeader();
+
+/**
+ * PAGE BODY
+ */
+//------------------------------------------------------------------------------------------------------------+
 ?>
 
-Login !
-
 <?php
+//------------------------------------------------------------------------------------------------------------+
+/**
+ * END: PAGE BODY
+ */
 
-Core_GUI::getFooter();
+/**
+ * Build Page Footer
+ */
+$gui->getFooter();
+
+// Clean Up
+unset( $loginModule );
 
 ?>

@@ -74,6 +74,41 @@ class Core_AuthService
 		}
 	}
 
+	/**
+	 * Decrypt Session Credentials
+	 *
+	 * @param Array $session
+	 * @return array
+	 * @access public
+	 */
+	public static function decryptSessionCredentials( $session ) {
+		if ( !empty($session) && array_key_exists('CREDENTIALS', $session) ) {
+			$rsa = new Crypt_RSA();
+			$rsa->loadKey( $this->rsa_private_key ); // private key
+
+			$rsa->setEncryptionMode(CRYPT_RSA_ENCRYPTION_PKCS1);
+			$credentials = unserialize( $rsa->decrypt( $session['CREDENTIALS'] ) );
+
+			return $credentials;
+		}
+		return array();
+	}
+
+	/**
+	 * Retrieves From The Session Credentials The Role
+	 *
+	 * @param none
+	 * @return String
+	 * @access public
+	 */
+	public static function getSessionPrivilege() {
+		$credentials = Core_AuthService::decryptSessionCredentials( $_SESSION );
+
+		if ( !empty($credentials['role']) ) {
+			return $credentials['role'];
+		}
+		return 'None';
+	}
 
 	/**
 	 * Check If The Current Session Is Legit
@@ -84,16 +119,10 @@ class Core_AuthService
 	 */
 	public function getSessionValidity() {
 		if ( !empty($this->username) ) {
-			if ( !empty($this->session) && array_key_exists('CREDENTIALS', $this->session) ) {
-				$rsa = new Crypt_RSA();
-				$rsa->loadKey( $this->rsa_private_key ); // private key
+			$credentials = Core_AuthService::decryptSessionCredentials( $this->session );
 
-				$rsa->setEncryptionMode(CRYPT_RSA_ENCRYPTION_PKCS1);
-				$credentials = unserialize( $rsa->decrypt( $this->session['CREDENTIALS'] ) );
-
-				if ( $credentials['username'] == $this->username && $credentials['key'] == $this->auth_key && $credentials['token'] == session_id() ) {
-					return TRUE;
-				}
+			if ( $credentials['username'] == $this->username && $credentials['key'] == $this->auth_key && $credentials['token'] == session_id() ) {
+				return TRUE;
 			}
 		}
 		return FALSE;

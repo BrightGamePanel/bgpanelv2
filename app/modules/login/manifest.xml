@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Module Manifest -->
+<bgp_module>
+	<module_info>
+		<author>Rousseau Nikita</author>
+		<version>1.0</version>
+	</module_info>
+
+	<module_settings>
+		<title>Login</title>
+	</module_settings>
+
+	<class_definition filename="app/modules/login/login.class.php" classname="BGP_Module_Login"/>
+</bgp_module>

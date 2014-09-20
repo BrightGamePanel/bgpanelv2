@@ -66,7 +66,7 @@ try {
 	/*
 	-- BrightGamePanel V2 Database
 	-- Version 1.0.0
-	-- 30/08/2014
+	-- 20/09/2014
 	*/
 
 	//---------------------------------------------------------+
@@ -218,8 +218,8 @@ try {
 	  ('panel_version',		'".LASTBGPVERSION."'),
 	  ('maintenance_mode',	'0'),
 	  ('last_cron_run',		'Never'),
-	  ('admin_template',	'bootstrap.css'),
-	  ('user_template',		'bootstrap.css')  ; " );
+	  ('admin_template',	'bootstrap.min.css'),
+	  ('user_template',		'bootstrap.min.css')  ; " );
 
 	//---------------------------------------------------------+
 

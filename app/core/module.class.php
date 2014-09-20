@@ -25,30 +25,23 @@
  * @link		http://www.bgpanel.net/
  */
 
-// Prevent direct access
-if (!defined('LICENSE'))
+
+
+/**
+ * Base CLASS for each BGP modules
+ */
+
+class BGP_Module
 {
-	exit('Access Denied');
+	// Information about the module
+	public $info_author		= '';
+	public $info_version		= '';
+
+	// Module settings
+	public $setting_title		= '';
+
+	function __construct( )	{
+
+	}
+
 }
-
-if ( !class_exists('Flight')) {
-	trigger_error('Core -> Flight FW is missing !');
-}
-
-/**
- * Flight FW Routing Definitions
- */
-
-Flight::route('/', function(){
-	echo 'Dashboard!';
-});
-
-Flight::route('/login', function(){
-	require( MODS_DIR . '/login/login.php' );
-});
-
-/**
- * Start the FW
- */
-
-Flight::start();

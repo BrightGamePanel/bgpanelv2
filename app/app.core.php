@@ -59,4 +59,7 @@ switch (ENV_RUNTIME)
 
 		// Graphical User Interface Builder
 		require( APP_DIR . '/core/gui.class.php' );
+
+		// Module Class Definition
+		require( APP_DIR . '/core/module.class.php' );
 }

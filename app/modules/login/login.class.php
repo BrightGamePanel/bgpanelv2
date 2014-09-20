@@ -25,30 +25,25 @@
  * @link		http://www.bgpanel.net/
  */
 
-// Prevent direct access
-if (!defined('LICENSE'))
+if ( !class_exists('BGP_Module')) {
+	trigger_error('Module_Login -> BGP_Module is missing !');
+}
+
+/**
+ * Login Module
+ * by Nikita Rousseau
+ */
+
+class BGP_Module_Login extends BGP_Module
 {
-	exit('Access Denied');
+	// Module Definition
+	public $module_definition = array();
+
+	function __construct( )	{
+		// Load Plugin Manifest
+		$xml = simplexml_load_string( file_get_contents( __DIR__ . '\manifest.xml' ) );
+		$json = json_encode($xml);
+		$this->module_definition = json_decode($json, TRUE);
+	}
+
 }
-
-if ( !class_exists('Flight')) {
-	trigger_error('Core -> Flight FW is missing !');
-}
-
-/**
- * Flight FW Routing Definitions
- */
-
-Flight::route('/', function(){
-	echo 'Dashboard!';
-});
-
-Flight::route('/login', function(){
-	require( MODS_DIR . '/login/login.php' );
-});
-
-/**
- * Start the FW
- */
-
-Flight::start();
