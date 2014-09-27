@@ -32,6 +32,9 @@ class Core_GUI
 	// Module Title
 	private $module_title = '';
 
+	// Module Options
+	private $empty_navbar;
+	private $no_sidebar;
 
 
 	/**
@@ -45,6 +48,11 @@ class Core_GUI
 	{
 		if ( !empty($bgp_module) && is_object($bgp_module) && is_subclass_of($bgp_module, 'BGP_Module') ) {
 			$this->module_title = $bgp_module->module_definition['module_settings']['title'];
+
+			if ( !empty($bgp_module->module_definition['module_options']) ) {
+				$this->empty_navbar = (!empty($bgp_module->module_definition['module_options']['empty_navbar'])) ? boolval($bgp_module->module_definition['module_options']['empty_navbar']) : FALSE;
+				$this->no_sidebar = (!empty($bgp_module->module_definition['module_options']['no_sidebar'])) ? boolval($bgp_module->module_definition['module_options']['no_sidebar']) : FALSE;
+			}
 		}
 		else {
 			trigger_error("Core_GUI -> Missing module !", E_USER_ERROR);
@@ -119,6 +127,7 @@ class Core_GUI
 
 		<!-- Javascript -->
 			<script src="./gui/jquery/js/jquery-2.1.1.min.js"></script>
+			<script src="./gui/angularjs/js/angular.min.js"></script>
 			<script src="./gui/bootstrap3/js/bootstrap.min.js"></script>
 		<!-- Style -->
 			<!-- Bootstrap 3 -->
@@ -150,12 +159,32 @@ class Core_GUI
 //------------------------------------------------------------------------------------------------------------+
 
 		// Display Sidebar
-		echo $this->getSideBar();
+		if (!$this->no_sidebar) {
+			echo $this->getSideBar();
+		}
 
 //------------------------------------------------------------------------------------------------------------+
 ?>
 				<!-- MAIN -->
+<?php
+//------------------------------------------------------------------------------------------------------------+
+
+		// Fix Body Position
+		if (!$this->no_sidebar) {
+			// With Sidebar
+?>
 				<div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+<?php
+		}
+		else {
+			// No Sidebar
+?>
+				<div class="col-sm-8 col-sm-offset-2 col-md-8 col-md-offset-2 main">
+<?php
+		}
+
+//------------------------------------------------------------------------------------------------------------+
+?>
 					<h1 class="page-header"><?php echo htmlspecialchars( $this->module_title, ENT_QUOTES ); ?></h1>
 
 <?php
@@ -185,14 +214,25 @@ class Core_GUI
 						<span class="icon-bar"></span>
 						<span class="icon-bar"></span>
 					</button>
-					<a class="navbar-brand" href="#">Project name</a>
+					<a class="navbar-brand" href="#">BrightGamePanel V2</a>
 				</div>
 				<div class="navbar-collapse collapse">
 					<ul class="nav navbar-nav navbar-right">
+<?php
+
+		if (!$this->empty_navbar)
+		{
+//------------------------------------------------------------------------------------------------------------+
+?>
 						<li><a href="#">Dashboard</a></li>
 						<li><a href="#">Settings</a></li>
 						<li><a href="#">Profile</a></li>
 						<li><a href="#">Help</a></li>
+<?php
+//------------------------------------------------------------------------------------------------------------+
+		}
+
+?>
 					</ul>
 				</div>
 			</div>
@@ -255,6 +295,20 @@ class Core_GUI
 	{
 //------------------------------------------------------------------------------------------------------------+
 ?>
+					<hr>
+
+					<!-- FOOTER -->
+					<footer>
+						<div class="pull-left">
+							Copyleft - 2014. Released Under <a href="http://www.gnu.org/licenses/gpl.html" target="_blank">GPLv3</a>.<br />
+							All images are copyrighted by their respective owners.
+						</div>
+						<div class="pull-right" style="text-align: right;">
+							<a href="http://www.bgpanel.net/" target="_blank">Bright Game Panel</a> V2<br />
+							Built with <a href="http://getbootstrap.com/" target="_blank">Bootstrap 3</a>.
+						</div>
+					</footer>
+					<!-- END: FOOTER -->
 				</div>
 				<!-- END: MAIN -->
 			</div>

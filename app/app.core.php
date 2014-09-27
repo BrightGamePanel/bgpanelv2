@@ -34,32 +34,36 @@ if (!defined('LICENSE'))
 switch (ENV_RUNTIME)
 {
 	case 'INSTALL_WIZARD':
-		require( LIBS_DIR . '/phpseclib/RSA.php' );
+		require( LIBS_DIR	. '/phpseclib/RSA.php' );
 		break;
 
 	default:
-		// Init SQL Server Connection using PDO
-		require( APP_DIR . '/db/connect.inc.php' );
+		// Database Handle Manager
+		require( APP_DIR	. '/core/dbh.class.php' );
 
 		// Kirby Framework
-		require( LIBS_DIR . '/kirby/kirby.php');
+		require( LIBS_DIR	. '/kirby/kirby.php');
 
 		// Flight Framework
-		require( LIBS_DIR . '/flight/Flight.php');
+		require( LIBS_DIR	. '/flight/Flight.php');
+
+		// PHP-GetText Framework
+		require( LIBS_DIR	. '/php-gettext/gettext.inc.php' );
+		require( APP_DIR 	. '/core/lang.class.php' );
 
 		// PHPSeclib
-		require( LIBS_DIR . '/phpseclib/AES.php' );
-		require( LIBS_DIR . '/phpseclib/RSA.php' );
-		require( LIBS_DIR . '/phpseclib/ANSI.php' );
-		require( LIBS_DIR . '/phpseclib/SSH2.php' );
-		require( LIBS_DIR . '/phpseclib/SFTP.php' );
+		require( LIBS_DIR	. '/phpseclib/AES.php' );
+		require( LIBS_DIR	. '/phpseclib/RSA.php' );
+		require( LIBS_DIR	. '/phpseclib/ANSI.php' );
+		require( LIBS_DIR	. '/phpseclib/SSH2.php' );
+		require( LIBS_DIR	. '/phpseclib/SFTP.php' );
 
 		// Authentification Service
-		require( APP_DIR . '/core/auth.class.php' );
+		require( APP_DIR	. '/core/auth.class.php' );
 
 		// Graphical User Interface Builder
-		require( APP_DIR . '/core/gui.class.php' );
+		require( APP_DIR	. '/core/gui.class.php' );
 
 		// Module Class Definition
-		require( APP_DIR . '/core/module.class.php' );
+		require( APP_DIR	. '/core/module.class.php' );
 }

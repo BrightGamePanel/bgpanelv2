@@ -48,6 +48,52 @@ $gui->getHeader();
  */
 //------------------------------------------------------------------------------------------------------------+
 ?>
+					<!-- CONTENTS -->
+					<div class="row">
+						<div class="col-md-4 col-md-offset-4">
+							<div class="well well-lg">
+								<div>
+									<img src="./gui/img/logo.png" alt="Bright Game Panel Logo" class="img-rounded">
+								</div>
+								<br>
+
+								<legend><?php echo T_('Sign In'); ?></legend>
+
+								<form action="" method="post">
+									<div class="form-group">
+										<label for="username"><?php echo T_('Username'); ?></label>
+										<div class="input-group">
+											<div class="input-group-addon"><span class="glyphicon glyphicon-user"></span></div>
+											<input class="form-control" type="text" id="username" name="username" placeholder="<?php echo T_('Login'); ?>">
+										</div>
+									</div>
+
+									<div class="form-group">
+										<label for="password"><?php echo T_('Password'); ?></label>
+										<div class="input-group">
+											<div class="input-group-addon"><span class="glyphicon glyphicon-lock"></span></div>
+											<input class="form-control" type="password" id="password" name="password" placeholder="<?php echo T_('Password'); ?>">
+										</div>
+									</div>
+
+									<div class="checkbox">
+										<label>
+											<input type="checkbox" name="rememberMe" checked="checked"><?php echo T_('Remember Me'); ?>
+										</label>
+									</div>
+
+									<button class="btn btn-default btn-lg btn-block" type="submit"><?php echo T_('Login'); ?></button>
+								</form>
+
+								<ul class="pager">
+									<li>
+										<a href="#password"><?php echo T_('Forgot Password?'); ?></a>
+									</li>
+								</ul>
+							</div>
+						</div>
+					</div>
+					<!-- END: CONTENTS -->
 
 <?php
 //------------------------------------------------------------------------------------------------------------+

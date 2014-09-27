@@ -33,12 +33,20 @@
 
 class BGP_Module
 {
+	/*
+
 	// Information about the module
-	public $info_author		= '';
-	public $info_version		= '';
+	public $author			= '';
+	public $version			= '';
 
 	// Module settings
-	public $setting_title		= '';
+	public $title			= '';
+
+	// Module options
+	public $empty_navbar	= FALSE;
+	public $no_sidebar		= FALSE;
+
+	*/
 
 	function __construct( )	{
 

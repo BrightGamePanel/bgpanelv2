@@ -25,28 +25,34 @@
  * @link		http://www.bgpanel.net/
  */
 
-// Prevent direct access
-if (!defined('LICENSE'))
-{
-	exit('Access Denied');
-}
 
-// Creates a PDO instance representing a connection to a database
-// The Database Handle ($DBH) scope is GLOBAL
 
-try {
-	// Connect to the SQL server
-	if (DB_DRIVER == 'sqlite') {
-		$DBH = new PDO( DB_DRIVER.':'.DB_FILE );
+class Core_Lang {
+
+	/**
+	 * Define language for get-text translator
+	 *
+	 * Directory structure for the translation must be:
+	 *		./app/locale/Lang/LC_MESSAGES/messages.mo
+	 * Example (French):
+	 *		./app/locale/fr_FR/LC_MESSAGES/messages.mo
+	 */
+	public static function setLanguage( $lang = 'en_EN') {
+		$encoding = 'UTF-8';
+		$languages = parse_ini_file( CONF_LANG_INI );
+
+		if ( isset($lang) && in_array($lang, $languages) ) {
+			$locale = $lang;
+		} else {
+			$locale = CONF_DEFAULT_LOCALE;
+		}
+
+		// gettext setup
+		T_setlocale(LC_MESSAGES, $locale);
+		// Set the text domain as 'messages'
+		$domain = 'messages';
+		T_bindtextdomain($domain, LOCALE_DIR);
+		T_bind_textdomain_codeset($domain, $encoding);
+		T_textdomain($domain);
 	}
-	else {
-		$DBH = new PDO( DB_DRIVER.':host='.DB_HOST.';dbname='.DB_NAME, DB_USER, DB_PASSWORD );
-	}
-
-	// Set ERRORMODE to exceptions
-	$DBH->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-}
-catch (PDOException $e) {
-	echo $e->getMessage().' in '.$e->getFile().' on line '.$e->getLine();
-	die();
 }

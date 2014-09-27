@@ -10,5 +10,10 @@
 		<title>Login</title>
 	</module_settings>
 
+	<module_options>
+		<empty_navbar>1</empty_navbar>
+		<no_sidebar>1</no_sidebar>
+	</module_options>
+
 	<class_definition filename="app/modules/login/login.class.php" classname="BGP_Module_Login"/>
 </bgp_module>

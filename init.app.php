@@ -55,12 +55,16 @@ define('APP_DIR', BASE_DIR . '/app');
 			define('RSA_PUBLIC_KEY_FILE', RSA_KEYS_DIR . '/bgp_rsa.pub');
 		define('SSH_KEYS_DIR', CRYPTO_DIR . '/ssh_keys');
 	define('LIBS_DIR', APP_DIR . '/libs');
+	define('LOCALE_DIR', APP_DIR . '/locale');
 	define('MODS_DIR', APP_DIR . '/modules');
 
 define('CONF_DIR', BASE_DIR . '/conf');
 	define('CONF_DB_INI', CONF_DIR . '/db.conf.ini');
+	define('CONF_G_BIN_INI', CONF_DIR . '/game-binaries.ini');
 	define('CONF_GENERAL_INI', CONF_DIR . '/general.conf.ini');
+	define('CONF_LANG_INI', CONF_DIR . '/languages.ini');
 	define('CONF_SECRET_INI', CONF_DIR . '/secret.keys.ini');
+	define('CONF_TEMPLATES_INI', CONF_DIR . '/templates.ini');
 
 define('GUI_DIR', BASE_DIR . '/gui');
 define('LOGS_DIR', BASE_DIR . '/logs');
@@ -93,23 +97,25 @@ require( APP_DIR . '/app.core.php' );
 
 // DEFINE BGP CONSTANTS FROM THE DATABASE
 // Syntax: BGP_CONFIG
-if ( !empty($DBH) && is_object($DBH) && get_class($DBH) === 'PDO' ) {
-	try {
-		$sth = $DBH->prepare("
-			SELECT setting, value
-			FROM " . DB_PREFIX . "config
-			;");
+try {
+	$dbh = Core_DBH::getDBH();
 
-		$sth->execute();
+	$sth = $dbh->prepare("
+		SELECT setting, value
+		FROM " . DB_PREFIX . "config
+		;");
 
-		while ($CONFIG = $sth->fetch(PDO::FETCH_ASSOC)) {
-			define( strtoupper( 'BGP_' . $CONFIG['setting'] ), $CONFIG['value'] );
-		}
+	$sth->execute();
+
+	while ($CONFIG = $sth->fetch(PDO::FETCH_ASSOC)) {
+		define( strtoupper( 'BGP_' . $CONFIG['setting'] ), $CONFIG['value'] );
 	}
-	catch (PDOException $e) {
-		echo $e->getMessage().' in '.$e->getFile().' on line '.$e->getLine();
-		die();
-	}
+
+	unset($dbh, $sth);
+}
+catch (PDOException $e) {
+	echo $e->getMessage().' in '.$e->getFile().' on line '.$e->getLine();
+	die();
 }
 
 // Clean Up

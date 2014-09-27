@@ -39,11 +39,14 @@ if ( !class_exists('Flight')) {
  * Flight FW Routing Definitions
  */
 
-Flight::route('/', function(){
-	echo 'Dashboard!';
+// By default we redirect to the login page
+// Login alias
+Flight::route('/', function() {
+	require( MODS_DIR . '/login/login.php' );
 });
 
-Flight::route('/login', function(){
+// Login page
+Flight::route('/login', function() {
 	require( MODS_DIR . '/login/login.php' );
 });
 

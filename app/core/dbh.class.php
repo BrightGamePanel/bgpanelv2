@@ -25,44 +25,33 @@
  * @link		http://www.bgpanel.net/
  */
 
-/**
- * Bright Game Panel Init
- */
-require( 'init.app.php' );
 
-/**
- * Define Display Language
- */
-if ( isset($_SESSION['LANG']) ) {
-	Core_Lang::setLanguage( $_SESSION['LANG'] );
-} else {
-	Core_Lang::setLanguage( CONF_DEFAULT_LOCALE );
+
+class Core_DBH {
+	// The Database Handle ($dbh)
+	public static $dbh;
+
+	// Creates a PDO instance representing a connection to a database
+	public static function getDBH() {
+		if ( empty(self::$dbh) || !is_object(self::$dbh) || (get_class(self::$dbh) != 'PDO') ) {
+			try {
+				// Connect to the SQL server
+				if (DB_DRIVER == 'sqlite') {
+					self::$dbh = new PDO( DB_DRIVER.':'.DB_FILE );
+				}
+				else {
+					self::$dbh = new PDO( DB_DRIVER.':host='.DB_HOST.';dbname='.DB_NAME, DB_USER, DB_PASSWORD );
+				}
+
+				// Set ERRORMODE to exceptions
+				self::$dbh->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+				return self::$dbh;
+			}
+			catch (PDOException $e) {
+				echo $e->getMessage().' in '.$e->getFile().' on line '.$e->getLine();
+				die();
+			}
+		}
+	}
 }
-
-/**
- * Load System Routing Definitions
- */
-require( APP_DIR . '/routing.core.php' );
-
-/**
- * User Auth
- */
-$authService = new Core_AuthService();
-
-// Test if the user has a whitecard to access the system
-
-if ($authService->getSessionValidity() == FALSE) {
-
-	// The user is not logged in
-	// Redirect him to the login system
-
-	header('/login');
-	die();
-}
-
-// Dashboard Access
-// Or redirect to the previous ressource
-header('/dashboard');
-die();
-
-?>
