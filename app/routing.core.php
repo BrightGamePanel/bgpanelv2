@@ -39,15 +39,37 @@ if ( !class_exists('Flight')) {
  * Flight FW Routing Definitions
  */
 
-// By default we redirect to the login page
-// Login alias
-Flight::route('/', function() {
-	require( MODS_DIR . '/login/login.php' );
+// By default, we redirect the user to the login page
+Flight::route('GET|POST /', function() {
+	Flight::redirect('/login');
 });
 
-// Login page
-Flight::route('/login', function() {
-	require( MODS_DIR . '/login/login.php' );
+// HTTP status codes
+Flight::route('GET|POST /@http:[0-9]{3}', function( $http ) {
+	header( 'HTTP/1.0 ' . $http );
+	die();
+});
+
+// Dynamically load the module VIEW
+Flight::route('GET /@module', function( $module ) {
+	$mod_path = MODS_DIR . '/' . $module . '/' . $module . '.php';
+	if ( file_exists($mod_path) ) {
+		require( $mod_path );
+	}
+	else {
+		Flight::notFound();
+	}
+});
+
+// Dynamically load the module CONTROLLER
+Flight::route('POST /@module/process', function( $module ) {
+	$mod_path = MODS_DIR . '/' . $module . '/' . $module . '.process.php';
+	if ( file_exists($mod_path) ) {
+		require( $mod_path );
+	}
+	else {
+		Flight::notFound();
+	}
 });
 
 /**

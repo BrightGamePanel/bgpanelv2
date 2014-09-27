@@ -66,4 +66,7 @@ switch (ENV_RUNTIME)
 
 		// Module Class Definition
 		require( APP_DIR	. '/core/module.class.php' );
+
+		// Controller Class Definition
+		require( APP_DIR	. '/core/controller.class.php' );
 }

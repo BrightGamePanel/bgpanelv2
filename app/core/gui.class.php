@@ -101,7 +101,7 @@ class Core_GUI
 //------------------------------------------------------------------------------------------------------------+
 ?>
 <!DOCTYPE html>
-<html lang="<?php
+<html ng-app="" lang="<?php
 
 	// Language
 	if ( isset($_SESSION['LANG']) ) {
@@ -126,8 +126,8 @@ class Core_GUI
 		?></title>
 
 		<!-- Javascript -->
-			<script src="./gui/jquery/js/jquery-2.1.1.min.js"></script>
 			<script src="./gui/angularjs/js/angular.min.js"></script>
+			<script src="./gui/jquery/js/jquery-2.1.1.min.js"></script>
 			<script src="./gui/bootstrap3/js/bootstrap.min.js"></script>
 		<!-- Style -->
 			<!-- Bootstrap 3 -->
@@ -142,7 +142,7 @@ class Core_GUI
 		<![endif]-->
 	</head>
 
-	<body>
+	<body ng-controller="bgpController">
 <?php
 //------------------------------------------------------------------------------------------------------------+
 
@@ -186,6 +186,10 @@ class Core_GUI
 //------------------------------------------------------------------------------------------------------------+
 ?>
 					<h1 class="page-header"><?php echo htmlspecialchars( $this->module_title, ENT_QUOTES ); ?></h1>
+
+					<!-- ALERTS -->
+					<div id="messages" ng-show="messages" ng-bind="messages"></div>
+					<!-- END: ALERTS -->
 
 <?php
 //------------------------------------------------------------------------------------------------------------+

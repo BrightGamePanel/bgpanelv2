@@ -59,12 +59,12 @@ $gui->getHeader();
 
 								<legend><?php echo T_('Sign In'); ?></legend>
 
-								<form action="" method="post">
+								<form name="loginForm" novalidate>
 									<div class="form-group">
 										<label for="username"><?php echo T_('Username'); ?></label>
 										<div class="input-group">
 											<div class="input-group-addon"><span class="glyphicon glyphicon-user"></span></div>
-											<input class="form-control" type="text" id="username" name="username" placeholder="<?php echo T_('Login'); ?>">
+											<input class="form-control" type="text" ng-model="username" id="username" name="username" placeholder="<?php echo T_('Login'); ?>" required>
 										</div>
 									</div>
 
@@ -72,13 +72,13 @@ $gui->getHeader();
 										<label for="password"><?php echo T_('Password'); ?></label>
 										<div class="input-group">
 											<div class="input-group-addon"><span class="glyphicon glyphicon-lock"></span></div>
-											<input class="form-control" type="password" id="password" name="password" placeholder="<?php echo T_('Password'); ?>">
+											<input class="form-control" type="password" ng-model="password" id="password" name="password" placeholder="<?php echo T_('Password'); ?>" required>
 										</div>
 									</div>
 
 									<div class="checkbox">
 										<label>
-											<input type="checkbox" name="rememberMe" checked="checked"><?php echo T_('Remember Me'); ?>
+											<input type="checkbox" ng-model="rememberMe" name="rememberMe" checked="checked"><?php echo T_('Remember Me'); ?>
 										</label>
 									</div>
 
@@ -94,6 +94,16 @@ $gui->getHeader();
 						</div>
 					</div>
 					<!-- END: CONTENTS -->
+
+					<!-- SCRIPT -->
+					<script>
+					function bgpController($scope) {
+						$scope.username = '';
+						$scope.password = '';
+						$scope.rememberMe = '';
+					}
+					</script>
+					<!-- END: SCRIPT -->
 
 <?php
 //------------------------------------------------------------------------------------------------------------+
