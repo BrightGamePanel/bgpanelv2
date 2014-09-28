@@ -25,10 +25,15 @@
  * @link		http://www.bgpanel.net/
  */
 
+/**
+ * Load Plugin Controller
+ */
 
+require( MODS_DIR . '/login/login.controller.class.php' );
 
-$errors         = array();  	// array to hold validation errors
-$data 			= array(); 		// array to pass back data
+// Init Controller
+$loginController = new BGP_Controller_Login();
+
 
 // Get context
 if ( isset($_POST['task']) ) {
@@ -38,11 +43,13 @@ else {
 	$task = 'None';
 }
 
+
 // Call the method
 switch ($task)
 {
 	case 'authenticateUser':
-		break;
+		echo $loginController->authenticateUser( $_POST );
+		exit( 0 );
 
 	default:
 		Flight::redirect('/400');

@@ -33,23 +33,15 @@
 
 class BGP_Module
 {
-	/*
+	// Module Definition
+	public $module_definition = array();
 
-	// Information about the module
-	public $author			= '';
-	public $version			= '';
+	function __construct( $module_name ) {
 
-	// Module settings
-	public $title			= '';
-
-	// Module options
-	public $empty_navbar	= FALSE;
-	public $no_sidebar		= FALSE;
-
-	*/
-
-	function __construct( )	{
-
+		// Load Plugin Manifest
+		$xml = simplexml_load_string( file_get_contents( MODS_DIR . '/' . $module_name . '/manifest.xml' ) );
+		$json = json_encode($xml);
+		$this->module_definition = json_decode($json, TRUE);
 	}
 
 }

@@ -31,19 +31,14 @@ if ( !class_exists('BGP_Module')) {
 
 /**
  * Login Module
- * by Nikita Rousseau
  */
 
-class BGP_Module_Login extends BGP_Module
-{
-	// Module Definition
-	public $module_definition = array();
+class BGP_Module_Login extends BGP_Module {
 
 	function __construct( )	{
-		// Load Plugin Manifest
-		$xml = simplexml_load_string( file_get_contents( __DIR__ . '\manifest.xml' ) );
-		$json = json_encode($xml);
-		$this->module_definition = json_decode($json, TRUE);
+
+		// Call parent constructor
+		parent::__construct( 'login' );
 	}
 
 }

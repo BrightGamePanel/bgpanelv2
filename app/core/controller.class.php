@@ -36,5 +36,4 @@ class BGP_Controller
 	function __construct( )	{
 
 	}
-
 }

@@ -36,34 +36,56 @@ if ( !class_exists('BGP_Controller')) {
 
 class BGP_Controller_Login extends BGP_Controller
 {
-	public function authenticateUser( $_POST ) {
+	public function authenticateUser( $form ) {
+		$errors         = array();  	// array to hold validation errors
+		$data 			= array(); 		// array to pass back data
 
+		// validate the variables ======================================================
 
+		if (!v::string($form['username'], array(
+			'format' => 'a-z0-9'
+		))) {
+			$errors['username'] = 'Username is required.';
+		}
 
-	// validate the variables ======================================================
-	if (empty($_POST['name']))
-		$errors['name'] = 'Name is required.';
+		if (!v::string($form['password'], array(
+			'format' => 'a-z0-9'
+		))) {
+			$errors['password'] = 'Password is required.';
+		}
 
-	if (empty($_POST['superheroAlias']))
-		$errors['superheroAlias'] = 'Superhero alias is required.';
+		// Verify the form =============================================================
 
-	// return a response ===========================================================
+		if ($form['username'] != 'admin') {
+			$errors['username'] = 'Unknown username.';
+		}
+		if ($form['password'] != 'password') {
+			$errors['password'] = 'Wrong password.';
+		}
 
-	// response if there are errors
-	if ( ! empty($errors)) {
+		// return a response ===========================================================
 
-		// if there are items in our errors array, return those errors
-		$data['success'] = false;
-		$data['errors']  = $errors;
-	} else {
+		// response if there are errors
+		if (!empty($errors)) {
 
-		// if there are no errors, return a message
-		$data['success'] = true;
-		$data['message'] = 'Success!';
-	}
+			// if there are items in our errors array, return those errors
+			$data['success'] = false;
+			$data['errors']  = $errors;
 
-	// return all our data to an AJAX call
-	return json_encode($data);
+			// notification
+			$data['msgType'] = 'warning';
+			$data['msg'] = 'Login Failure!';
+		} else {
 
+			// if there are no errors, return a message
+			$data['success'] = true;
+
+			// notification
+			$data['msgType'] = 'success';
+			$data['msg'] = 'Welcome on BrightGamePanel V2!';
+		}
+
+		// return all our data to an AJAX call
+		return json_encode($data);
 	}
 }

@@ -29,6 +29,7 @@
 
 class Core_GUI
 {
+
 	// Module Title
 	private $module_title = '';
 
@@ -101,7 +102,7 @@ class Core_GUI
 //------------------------------------------------------------------------------------------------------------+
 ?>
 <!DOCTYPE html>
-<html ng-app="" lang="<?php
+<html ng-app="bgpApp" lang="<?php
 
 	// Language
 	if ( isset($_SESSION['LANG']) ) {
@@ -188,7 +189,10 @@ class Core_GUI
 					<h1 class="page-header"><?php echo htmlspecialchars( $this->module_title, ENT_QUOTES ); ?></h1>
 
 					<!-- ALERTS -->
-					<div id="messages" ng-show="messages" ng-bind="messages"></div>
+					<div id="message" class="alert alert-dismissible" role="alert" ng-show="msg" ng-class="'alert-' + msgType">
+						<button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+						<strong>{{ msg }}</strong>
+					</div>
 					<!-- END: ALERTS -->
 
 <?php

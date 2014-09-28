@@ -59,26 +59,28 @@ $gui->getHeader();
 
 								<legend><?php echo T_('Sign In'); ?></legend>
 
-								<form name="loginForm" novalidate>
-									<div class="form-group">
+								<form ng-submit="processForm()">
+									<div class="form-group" ng-class="{ 'has-error' : errorUsername }">
 										<label for="username"><?php echo T_('Username'); ?></label>
 										<div class="input-group">
 											<div class="input-group-addon"><span class="glyphicon glyphicon-user"></span></div>
-											<input class="form-control" type="text" ng-model="username" id="username" name="username" placeholder="<?php echo T_('Login'); ?>" required>
+											<input class="form-control" type="text" ng-model="formData.username" id="username" name="username" placeholder="<?php echo T_('Login'); ?>" required>
 										</div>
+										<span class="help-block" ng-show="errorUsername">{{ errorUsername }}</span>
 									</div>
 
-									<div class="form-group">
+									<div class="form-group" ng-class="{ 'has-error' : errorPassword }">
 										<label for="password"><?php echo T_('Password'); ?></label>
 										<div class="input-group">
 											<div class="input-group-addon"><span class="glyphicon glyphicon-lock"></span></div>
-											<input class="form-control" type="password" ng-model="password" id="password" name="password" placeholder="<?php echo T_('Password'); ?>" required>
+											<input class="form-control" type="password" ng-model="formData.password" id="password" name="password" placeholder="<?php echo T_('Password'); ?>" required>
 										</div>
+										<span class="help-block" ng-show="errorPassword">{{ errorPassword }}</span>
 									</div>
 
 									<div class="checkbox">
 										<label>
-											<input type="checkbox" ng-model="rememberMe" name="rememberMe" checked="checked"><?php echo T_('Remember Me'); ?>
+											<input type="checkbox" ng-model="formData.rememberMe" name="rememberMe" checked="checked"><?php echo T_('Remember Me'); ?>&nbsp;
 										</label>
 									</div>
 
@@ -97,11 +99,44 @@ $gui->getHeader();
 
 					<!-- SCRIPT -->
 					<script>
-					function bgpController($scope) {
-						$scope.username = '';
-						$scope.password = '';
-						$scope.rememberMe = '';
-					}
+						// define angular module/app
+						var bgpApp = angular.module('bgpApp', []);
+
+						// create angular controller and pass in $scope and $http
+						function bgpController($scope, $http) {
+							// create a JSON object to hold our form information
+							// $scope will allow this to pass between controller and view
+							// we specify the controller method
+							$scope.formData = {"task":"authenticateUser"};
+
+							// Process the form
+							$scope.processForm = function() {
+								$http({
+								method  : 'POST',
+								url     : './login/process',
+								data    : $.param($scope.formData),
+								headers : { 'Content-Type': 'application/x-www-form-urlencoded' }
+								})
+									.success(function(data) {
+										// console.log(data); // Debug
+
+										if (!data.success) {
+											// If not successful, bind errors to error variables
+											$scope.errorUsername = data.errors.username;
+											$scope.errorPassword = data.errors.password;
+										}
+
+										// Bind notification message to message
+										$scope.msgType = data.msgType;
+										$scope.msg = data.msg;
+
+										if (data.success) {
+											// If successful, we redirect the user to the dashboard
+											// MISSING CODE
+										}
+									});
+							};
+						}
 					</script>
 					<!-- END: SCRIPT -->
 
