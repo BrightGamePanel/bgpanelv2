@@ -1097,7 +1097,7 @@ APP_LOGGED_IN_KEY 	= \"".$APP_LOGGED_IN_KEY."\"
 				Admin Username: <b>admin</b><br />
 				Admin Password: <b>password</b><br />
 				<hr>
-				<i class="icon-share-alt"></i>&nbsp;<a href="../admin">@Admin Login</a>
+				<i class="icon-share-alt"></i>&nbsp;<a href="../dashboard">@Admin Login</a>
 				<hr>
 				<div class="alert alert-error">
 					<strong>Wait!</strong>
