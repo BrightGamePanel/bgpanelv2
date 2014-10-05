@@ -39,14 +39,29 @@ if ( !class_exists('Flight')) {
  * Flight FW Routing Definitions
  */
 
-// By default, we redirect the user to the login page
+// DEFAULT
 Flight::route('GET|POST /', function() {
-	Flight::redirect('/login');
+	// User Authentication
+
+	$authService = new Core_AuthService();
+
+	// Test if the user has a whitecard to access the system
+
+	if ($authService->getSessionValidity() == FALSE) {
+
+		// The user is not logged in
+		// Redirect him to the login system
+
+		Flight::redirect('/login');
+	}
+
+	Flight::redirect('/dashboard');
 });
 
-// HTTP status codes
+// HTTP status codes VIEW
 Flight::route('GET|POST /@http:[0-9]{3}', function( $http ) {
-	header( 'HTTP/1.0 ' . $http );
+	echo Core_Http_Status_Codes::httpHeaderFor( $http );
+	echo Core_Http_Status_Codes::getMessageForCode( $http );
 	die();
 });
 

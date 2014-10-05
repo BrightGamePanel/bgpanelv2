@@ -44,25 +44,4 @@ if ( isset($_SESSION['LANG']) ) {
  */
 require( APP_DIR . '/routing.core.php' );
 
-/**
- * User Auth
- */
-$authService = new Core_AuthService();
-
-// Test if the user has a whitecard to access the system
-
-if ($authService->getSessionValidity() == FALSE) {
-
-	// The user is not logged in
-	// Redirect him to the login system
-
-	header('/login');
-	die();
-}
-
-// Dashboard Access
-// Or redirect to the previous ressource
-header('/dashboard');
-die();
-
 ?>

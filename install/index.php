@@ -618,7 +618,7 @@ else if ($_GET['step'] == 'one')
 ?>
 <?php
 
-	if (empty(APP_API_KEY))
+	if (!defined('APP_API_KEY'))
 	{
 		if (is_writable( CONF_SECRET_INI ))
 		{
@@ -643,7 +643,7 @@ else if ($_GET['step'] == 'one')
 		}
 	}
 
-	if (empty(RSA_PRIVATE_KEY) || empty(RSA_PUBLIC_KEY))
+	if (!defined('RSA_PRIVATE_KEY') || !defined('RSA_PUBLIC_KEY'))
 	{
 		if (is_writable( RSA_KEYS_DIR ) && is_writable( SSH_KEYS_DIR ))
 		{

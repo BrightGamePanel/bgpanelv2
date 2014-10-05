@@ -58,11 +58,14 @@ switch (ENV_RUNTIME)
 		require( LIBS_DIR	. '/phpseclib/SSH2.php' );
 		require( LIBS_DIR	. '/phpseclib/SFTP.php' );
 
-		// Authentification Service
+		// Authentication Service
 		require( APP_DIR	. '/core/auth.class.php' );
 
 		// Graphical User Interface Builder
 		require( APP_DIR	. '/core/gui.class.php' );
+
+		// HTTP Status Codes Class
+		require( APP_DIR	. '/core/http.status.class.php' );
 
 		// Module Class Definition
 		require( APP_DIR	. '/core/module.class.php' );

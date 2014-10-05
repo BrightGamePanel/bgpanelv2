@@ -92,26 +92,48 @@ if ( !defined('ENV_RUNTIME') ) {
 	define('ENV_RUNTIME', 'DEFAULT');
 }
 
+// INSTALL WIZARD CHECK
+if ( is_dir( INSTALL_DIR ) ) {
+	if ( ENV_RUNTIME != 'INSTALL_WIZARD' ) {
+?>
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+	</head>
+	<body>
+		<h1>Install Directory Detected</h1><br />
+		<h3>REMOVE THE INSTALLATION DIRECTORY.</h3>
+		<p>You will not be able to proceed beyond this point until the installation directory has been removed. This is a security feature of BrightGamePanel V2.</p>
+	</body>
+</html>
+<?php
+		die();
+	}
+}
+
 // CORE SYSTEM
 require( APP_DIR . '/app.core.php' );
 
 // DEFINE BGP CONSTANTS FROM THE DATABASE
 // Syntax: BGP_CONFIG
 try {
-	$dbh = Core_DBH::getDBH();
+	if ( ENV_RUNTIME == 'DEFAULT' ) {
+		$dbh = Core_DBH::getDBH();
 
-	$sth = $dbh->prepare("
-		SELECT setting, value
-		FROM " . DB_PREFIX . "config
-		;");
+		$sth = $dbh->prepare("
+			SELECT setting, value
+			FROM " . DB_PREFIX . "config
+			;");
 
-	$sth->execute();
+		$sth->execute();
 
-	while ($CONFIG = $sth->fetch(PDO::FETCH_ASSOC)) {
-		define( strtoupper( 'BGP_' . $CONFIG['setting'] ), $CONFIG['value'] );
+		while ($CONFIG = $sth->fetch(PDO::FETCH_ASSOC)) {
+			define( strtoupper( 'BGP_' . $CONFIG['setting'] ), $CONFIG['value'] );
+		}
+
+		unset($dbh, $sth);
 	}
-
-	unset($dbh, $sth);
 }
 catch (PDOException $e) {
 	echo $e->getMessage().' in '.$e->getFile().' on line '.$e->getLine();
