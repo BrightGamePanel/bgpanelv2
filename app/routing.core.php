@@ -60,7 +60,7 @@ Flight::route('GET|POST /', function() {
 
 // HTTP status codes VIEW
 Flight::route('GET|POST /@http:[0-9]{3}', function( $http ) {
-	echo Core_Http_Status_Codes::httpHeaderFor( $http );
+	header( Core_Http_Status_Codes::httpHeaderFor( $http ) );
 	echo Core_Http_Status_Codes::getMessageForCode( $http );
 	die();
 });
