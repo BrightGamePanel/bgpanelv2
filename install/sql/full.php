@@ -66,7 +66,7 @@ try {
 	/*
 	-- BrightGamePanel V2 Database
 	-- Version 1.0.0
-	-- 20/09/2014
+	-- 05/10/2014
 	*/
 
 	//---------------------------------------------------------+
@@ -482,7 +482,6 @@ try {
 	  last_ip		TEXT,
 	  last_host		TEXT,
 	  token			TEXT,
-	  created		TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
 	  PRIMARY KEY  (user_id)
 	)
 	ENGINE=MyISAM CHARSET=utf8 COLLATE=utf8_unicode_ci  ; " );
