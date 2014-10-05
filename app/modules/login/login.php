@@ -50,10 +50,10 @@ $gui->getHeader();
 ?>
 					<!-- CONTENTS -->
 					<div class="row">
-						<div class="col-md-4 col-md-offset-4">
+						<div class="col-md-6 col-md-offset-3">
 							<div class="well well-lg">
 								<div>
-									<img src="./gui/img/logo.png" alt="Bright Game Panel Logo" class="img-rounded">
+									<img src="./gui/img/logo.png" alt="Bright Game Panel Logo" class="img-responsive center-block">
 								</div>
 								<br>
 
