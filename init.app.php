@@ -81,6 +81,13 @@ foreach ($CONFIG as $setting => $value) {
 	define( $setting, $value );
 }
 
+/**
+ * DATE Configuration
+ * Sets the default timezone used by all date/time functions
+ * @link: http://php.net/manual/en/timezones.php
+ */
+date_default_timezone_set( CONF_TIMEZONE ); // Default: "Europe/London"
+
 // DEFINE RSA KEYS
 if ( file_exists(RSA_PRIVATE_KEY_FILE) && file_exists(RSA_PUBLIC_KEY_FILE) ) {
 	define( 'RSA_PRIVATE_KEY', file_get_contents( RSA_PRIVATE_KEY_FILE ) );
