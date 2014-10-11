@@ -158,26 +158,27 @@ catch (PDOException $e) {
  */
 $bgpCoreInfo = simplexml_load_file( CORE_VERSION_FILE );
 
-
-/**
- * VERSION CONTROL
- * Check that core files are compatible with the current BrightGamePanel Database
- */
-if ( BGP_PANEL_VERSION != $bgpCoreInfo->{'version'} ) {
-?>
-<!DOCTYPE html>
-<html lang="en">
-	<head>
-		<meta charset="utf-8">
-	</head>
-	<body>
-		<h1>Wrong Database Version Detected</h1><br />
-		<h3>&nbsp;</h3>
-		<p>Make sure you have followed the instructions to install/update the database.</p>
-	</body>
-</html>
-<?php
-	die();
+if ( ENV_RUNTIME == 'DEFAULT' ) {
+	/**
+	 * VERSION CONTROL
+	 * Check that core files are compatible with the current BrightGamePanel Database
+	 */
+	if ( BGP_PANEL_VERSION != $bgpCoreInfo->{'version'} ) {
+	?>
+	<!DOCTYPE html>
+	<html lang="en">
+		<head>
+			<meta charset="utf-8">
+		</head>
+		<body>
+			<h1>Wrong Database Version Detected</h1><br />
+			<h3>&nbsp;</h3>
+			<p>Make sure you have followed the instructions to install/update the database.</p>
+		</body>
+	</html>
+	<?php
+		die();
+	}
 }
 
 // Clean Up

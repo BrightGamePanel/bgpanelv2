@@ -45,13 +45,13 @@ class Core_DBH {
 
 				// Set ERRORMODE to exceptions
 				self::$dbh->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-
-				return self::$dbh;
 			}
 			catch (PDOException $e) {
 				echo $e->getMessage().' in '.$e->getFile().' on line '.$e->getLine();
 				die();
 			}
 		}
+
+		return self::$dbh;
 	}
 }

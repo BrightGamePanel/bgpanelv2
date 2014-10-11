@@ -40,6 +40,8 @@ class BGP_Controller_Login extends BGP_Controller
 		$errors         = array();  	// array to hold validation errors
 		$data 			= array(); 		// array to pass back data
 
+		$dbh = Core_DBH::getDBH();		// Get Database Handle
+
 		// validate the variables ======================================================
 
 		if (!v::alphanum($form['username'])) {
@@ -51,6 +53,81 @@ class BGP_Controller_Login extends BGP_Controller
 		}
 
 		// Verify the form =============================================================
+
+		$username = $form['username'];
+		$password = Core_AuthService::getHash($form['password']);
+
+		$isAdmin = false;
+		$isUser  = false;
+
+		try {
+			// Parse admin table first
+			$sth = $dbh->prepare("
+				SELECT admin_id, username, firstname, lastname, lang
+				FROM " . DB_PREFIX . "admin
+				WHERE
+					username = :username AND
+					password = :password AND
+					status = 'active'
+				;");
+
+			$sth->bindParam(':username', $username);
+			$sth->bindParam(':password', $password);
+
+			$sth->execute();
+
+			$result = $sth->fetchAll();
+
+
+
+
+
+
+
+			exit(var_dump($password));
+			exit(var_dump($result));
+
+
+
+
+
+
+
+
+			if (!empty($result)) {
+				$isAdmin = true;
+			}
+
+			// Parse regular user table
+			$sth = $dbh->prepare("
+				SELECT user_id, username, firstname, lastname, lang
+				FROM " . DB_PREFIX . "user
+				WHERE
+					username = :username AND
+					password = :password AND
+					status = 'active'
+				;");
+
+			$sth->bindParam(':username', $username);
+			$sth->bindParam(':password', $password);
+
+			$sth->execute();
+
+			$result = $sth->fetchAll();
+
+			if (!empty($result)) {
+				$isUser = true;
+			}
+		}
+		catch (PDOException $e) {
+			echo $e->getMessage().' in '.$e->getFile().' on line '.$e->getLine();
+			die();
+		}
+
+
+
+
+
 
 		if ($form['username'] != 'admin') {
 			$errors['username'] = 'Unknown username.';

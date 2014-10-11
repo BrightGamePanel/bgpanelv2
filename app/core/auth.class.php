@@ -115,6 +115,19 @@ class Core_AuthService
 	}
 
 	/**
+	 * SHA512 With Salt Function
+	 * Generate a hash value (message digest)
+	 *
+	 * @param String $data
+	 * @param String $salt
+	 * @return String
+	 * @access public
+	 */
+	public static function getHash( $data, $salt = APP_AUTH_SALT ) {
+		return hash( 'sha512', $salt . $data );
+	}
+
+	/**
 	 * Check If The Current Session Is Legit
 	 *
 	 * @param none
