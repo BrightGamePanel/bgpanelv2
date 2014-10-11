@@ -35,7 +35,7 @@ require( MODS_DIR . '/login/login.controller.class.php' );
 $loginController = new BGP_Controller_Login();
 
 
-// Get context
+// Get the method
 if ( isset($_POST['task']) ) {
 	$task = $_POST['task'];
 }

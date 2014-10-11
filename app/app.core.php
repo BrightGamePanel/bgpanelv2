@@ -44,8 +44,8 @@ switch (ENV_RUNTIME)
 		// Database Handle Manager
 		require( APP_DIR	. '/core/dbh.class.php' );
 
-		// Kirby Framework
-		require( LIBS_DIR	. '/kirby/kirby.php');
+		// Kirby 2 Framework
+		require( LIBS_DIR	. '/kirby/bootstrap.php');
 
 		// Flight Framework
 		require( LIBS_DIR	. '/flight/Flight.php');

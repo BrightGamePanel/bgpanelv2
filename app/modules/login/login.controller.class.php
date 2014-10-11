@@ -42,15 +42,11 @@ class BGP_Controller_Login extends BGP_Controller
 
 		// validate the variables ======================================================
 
-		if (!v::string($form['username'], array(
-			'format' => 'a-z0-9'
-		))) {
+		if (!v::alphanum($form['username'])) {
 			$errors['username'] = 'Username is required.';
 		}
 
-		if (!v::string($form['password'], array(
-			'format' => 'a-z0-9'
-		))) {
+		if (empty($form['password'])) {
 			$errors['password'] = 'Password is required.';
 		}
 
