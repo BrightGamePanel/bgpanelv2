@@ -126,6 +126,8 @@ class Core_GUI
 
 		?></title>
 
+		<base href="<?php echo $_SERVER['PHP_SELF']; ?>">
+
 		<!-- Javascript -->
 			<script src="./gui/angularjs/js/angular.min.js"></script>
 			<script src="./gui/jquery/js/jquery-2.1.1.min.js"></script>

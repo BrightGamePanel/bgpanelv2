@@ -39,6 +39,11 @@ $loginModule = new BGP_Module_Login();
 $gui = new Core_GUI( $loginModule );
 
 /**
+ * Javascript Generator
+ */
+$js = new Core_JS_GUI();
+
+/**
  * Build Page Header
  */
 $gui->getHeader();
@@ -98,46 +103,20 @@ $gui->getHeader();
 					<!-- END: CONTENTS -->
 
 					<!-- SCRIPT -->
-					<script>
-						// define angular module/app
-						var bgpApp = angular.module('bgpApp', []);
+<?php
 
-						// create angular controller and pass in $scope and $http
-						function bgpController($scope, $http) {
-							// create a JSON object to hold our form information
-							// $scope will allow this to pass between controller and view
-							// we specify the controller method
-							$scope.formData = {"task":"authenticateUser"};
+/**
+ * Generate AngularJS Code
+ */
 
-							// Process the form
-							$scope.processForm = function() {
-								$http({
-								method  : 'POST',
-								url     : './login/process',
-								data    : $.param($scope.formData),
-								headers : { 'Content-Type': 'application/x-www-form-urlencoded' }
-								})
-									.success(function(data) {
-										// console.log(data); // Debug
+$fields = array(
+		'Username',
+		'Password'
+	);
 
-										if (!data.success) {
-											// If not successful, bind errors to error variables
-											$scope.errorUsername = data.errors.username;
-											$scope.errorPassword = data.errors.password;
-										}
+$js->getAngularController( 'authenticateUser', 'login', $fields, './dashboard' );
 
-										// Bind notification message to message
-										$scope.msgType = data.msgType;
-										$scope.msg = data.msg;
-
-										if (data.success) {
-											// If successful, we redirect the user to the dashboard
-											// MISSING CODE
-										}
-									});
-							};
-						}
-					</script>
+?>
 					<!-- END: SCRIPT -->
 
 <?php
@@ -152,6 +131,6 @@ $gui->getHeader();
 $gui->getFooter();
 
 // Clean Up
-unset( $loginModule );
+unset( $loginModule, $gui, $js );
 
 ?>

@@ -66,6 +66,7 @@ switch (ENV_RUNTIME)
 
 		// Graphical User Interface Builder
 		require( APP_DIR	. '/core/gui.class.php' );
+		require( APP_DIR	. '/core/js.gui.class.php' );
 
 		// HTTP Status Codes Class
 		require( APP_DIR	. '/core/http.status.class.php' );
