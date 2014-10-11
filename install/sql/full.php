@@ -116,7 +116,7 @@ try {
 	VALUES (
 	  1,
 	  'admin',
-	  'b4ea66d0e3c992d2ede0070ebe521ced1d91867be182fb0a2ab620f8f66abef5dca8c785b4e4503bcae5bd42a823d5389acf639c76b62ad4959afe17cebe73ef',
+	  '".getHash('password')."',
 	  'Super',
 	  'User',
 	  'anon@nimus.com',

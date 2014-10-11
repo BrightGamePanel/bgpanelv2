@@ -25,6 +25,8 @@
  * @link		http://www.bgpanel.net/
  */
 
+define('LICENSE', 'GNU GENERAL PUBLIC LICENSE - Version 3, 29 June 2007');
+
 /**
  * Install Wizard Version
  */
@@ -37,6 +39,11 @@ define('ENV_RUNTIME', 'INSTALL_WIZARD');
  * BGP INIT
  */
 require( '../init.app.php' );
+
+/**
+ * INSTALL WIZARD FUNCTIONS
+ */
+require( INSTALL_DIR . './inc/func.inc.php' );
 
 /**
  * BGP VERSION LIST
