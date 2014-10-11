@@ -61,6 +61,7 @@ define('APP_DIR', BASE_DIR . '/app');
 	define('LIBS_DIR', APP_DIR . '/libs');
 	define('LOCALE_DIR', APP_DIR . '/locale');
 	define('MODS_DIR', APP_DIR . '/modules');
+	define('CORE_VERSION_FILE', APP_DIR . '/version/version.xml');
 
 define('CONF_DIR', BASE_DIR . '/conf');
 	define('CONF_DB_INI', CONF_DIR . '/db.conf.ini');
@@ -151,5 +152,33 @@ catch (PDOException $e) {
 	die();
 }
 
+/**
+ * GET BGP CORE FILES INFORMATION
+ * Load version.xml (app/version/version.xml)
+ */
+$bgpCoreInfo = simplexml_load_file( CORE_VERSION_FILE );
+
+
+/**
+ * VERSION CONTROL
+ * Check that core files are compatible with the current BrightGamePanel Database
+ */
+if ( BGP_PANEL_VERSION != $bgpCoreInfo->{'version'} ) {
+?>
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+	</head>
+	<body>
+		<h1>Wrong Database Version Detected</h1><br />
+		<h3>&nbsp;</h3>
+		<p>Make sure you have followed the instructions to install/update the database.</p>
+	</body>
+</html>
+<?php
+	die();
+}
+
 // Clean Up
-unset( $CONFIG );
+unset( $CONFIG, $bgpCoreInfo );
