@@ -78,22 +78,6 @@ class BGP_Controller_Login extends BGP_Controller
 
 			$result = $sth->fetchAll();
 
-
-
-
-
-
-
-			exit(var_dump($password));
-			exit(var_dump($result));
-
-
-
-
-
-
-
-
 			if (!empty($result)) {
 				$isAdmin = true;
 			}
