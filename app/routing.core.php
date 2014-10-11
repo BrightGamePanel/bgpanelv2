@@ -43,7 +43,7 @@ if ( !class_exists('Flight')) {
 Flight::route('GET|POST /', function() {
 	// User Authentication
 
-	$authService = new Core_AuthService();
+	$authService = Core_AuthService::getAuthService();
 
 	// Test if the user has a whitecard to access the system
 

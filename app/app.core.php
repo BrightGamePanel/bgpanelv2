@@ -38,7 +38,7 @@ switch (ENV_RUNTIME)
 		break;
 
 	default:
-		// PHP 5.5 Function Implementation
+		// PHP 5.5 Functions Implementation
 		require( LIBS_DIR	. '/php5.5/func.inc.php');
 
 		// Database Handle Manager

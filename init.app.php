@@ -25,7 +25,11 @@
  * @link		http://www.bgpanel.net/
  */
 
-define('LICENSE', 'GNU GENERAL PUBLIC LICENSE - Version 3, 29 June 2007');
+// Prevent direct access
+if (!defined('LICENSE'))
+{
+	exit('Access Denied');
+}
 
 /**
  * ERROR Handling
