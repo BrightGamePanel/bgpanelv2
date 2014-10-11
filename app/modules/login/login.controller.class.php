@@ -45,11 +45,11 @@ class BGP_Controller_Login extends BGP_Controller
 		// validate the variables ======================================================
 
 		if (!v::alphanum($form['username'])) {
-			$errors['username'] = 'Username is required.';
+			$errors['username'] = T_('Username is required.');
 		}
 
 		if (empty($form['password'])) {
-			$errors['password'] = 'Password is required.';
+			$errors['password'] = T_('Password is required.');
 		}
 
 		// Verify the form =============================================================
@@ -76,11 +76,12 @@ class BGP_Controller_Login extends BGP_Controller
 
 			$sth->execute();
 
-			$result = $sth->fetchAll();
+			$adminResult = $sth->fetchAll();
 
-			if (!empty($result)) {
+			if (!empty($adminResult)) {
 				$isAdmin = true;
 			}
+
 
 			// Parse regular user table
 			$sth = $dbh->prepare("
@@ -97,9 +98,9 @@ class BGP_Controller_Login extends BGP_Controller
 
 			$sth->execute();
 
-			$result = $sth->fetchAll();
+			$userResult = $sth->fetchAll();
 
-			if (!empty($result)) {
+			if (!empty($userResult)) {
 				$isUser = true;
 			}
 		}
@@ -108,16 +109,15 @@ class BGP_Controller_Login extends BGP_Controller
 			die();
 		}
 
-
-
-
-
-
-		if ($form['username'] != 'admin') {
-			$errors['username'] = 'Unknown username.';
+		if ($isAdmin) {
+			// setSessionWhitecard
 		}
-		if ($form['password'] != 'password') {
-			$errors['password'] = 'Wrong password.';
+		else if ($isUser) {
+			// setSessionWhitecard
+		}
+		else {
+			$errors['username'] = T_('Invalid Credentials.');
+			$errors['password'] = T_('Invalid Credentials.');
 		}
 
 		// return a response ===========================================================
@@ -131,7 +131,7 @@ class BGP_Controller_Login extends BGP_Controller
 
 			// notification
 			$data['msgType'] = 'warning';
-			$data['msg'] = 'Login Failure!';
+			$data['msg'] = T_('Login Failure!');
 		} else {
 
 			// if there are no errors, return a message
@@ -139,7 +139,7 @@ class BGP_Controller_Login extends BGP_Controller
 
 			// notification
 			$data['msgType'] = 'success';
-			$data['msg'] = 'Welcome on BrightGamePanel V2!';
+			$data['msg'] = T_('Welcome on BrightGamePanel V2!');
 		}
 
 		// return all our data to an AJAX call
