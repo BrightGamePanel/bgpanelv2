@@ -30,7 +30,7 @@ define('LICENSE', 'GNU GENERAL PUBLIC LICENSE - Version 3, 29 June 2007');
 /**
  * Install Wizard Version
  */
-define('WIZARDVERSION', 'v2.0.0');
+define('WIZARDVERSION', 'v2.0.1');
 define('ENV_RUNTIME', 'INSTALL_WIZARD');
 
 //---------------------------------------------------------+

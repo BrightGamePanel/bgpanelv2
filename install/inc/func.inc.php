@@ -42,6 +42,6 @@ if (!defined('LICENSE'))
  * @return String
  * @access public
  */
-function getHash( $data, $salt = APP_AUTH_SALT ) {
+function getHash( $data, $salt ) {
 	return hash( 'sha512', $salt . $data );
 }

@@ -116,7 +116,7 @@ try {
 	VALUES (
 	  1,
 	  'admin',
-	  '".getHash('password')."',
+	  '".getHash('password', $APP_AUTH_SALT)."',
 	  'Super',
 	  'User',
 	  'anon@nimus.com',
