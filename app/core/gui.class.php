@@ -126,15 +126,15 @@ class Core_GUI
 
 		?></title>
 
-		<base href="<?php echo $_SERVER['PHP_SELF']; ?>">
+		<base href="<?php echo BASE_URL; ?>">
 
 		<!-- Javascript -->
 			<script src="./gui/angularjs/js/angular.min.js"></script>
 			<script src="./gui/jquery/js/jquery-2.1.1.min.js"></script>
 			<script src="./gui/bootstrap3/js/bootstrap.min.js"></script>
-			<!-- Metis Menu Plugin JavaScript -->
+			<!-- Metis Menu Plugin -->
     		<script src="./gui/metisMenu/js/metisMenu.min.js"></script>
-			<!-- SB Admin 2 JavaScript -->
+			<!-- SB Admin 2 -->
 			<script src="./gui/bootstrap3/js/sb-admin-2.js"></script>
 		<!-- Style -->
 			<!-- Bootstrap 3 -->
@@ -155,6 +155,10 @@ class Core_GUI
 	</head>
 
 	<body ng-controller="bgpController">
+	<div id="wrapper">
+
+		<!-- NAVIGATION -->
+		<nav class="navbar navbar-default navbar-static-top" role="navigation">
 <?php
 //------------------------------------------------------------------------------------------------------------+
 
@@ -163,10 +167,6 @@ class Core_GUI
 
 //------------------------------------------------------------------------------------------------------------+
 ?>
-
-		<!-- BODY -->
-		<div class="container-fluid">
-			<div class="row">
 <?php
 //------------------------------------------------------------------------------------------------------------+
 
@@ -177,32 +177,20 @@ class Core_GUI
 
 //------------------------------------------------------------------------------------------------------------+
 ?>
+		</nav>
+		<!-- END: NAVIGATION -->
+
+		<!-- Page Content -->
+		<div id="page-wrapper">
+			<div class="row">
 				<!-- MAIN -->
-<?php
-//------------------------------------------------------------------------------------------------------------+
-
-		// Fix Body Position
-		if (!$this->no_sidebar) {
-			// With Sidebar
-?>
-				<div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
-<?php
-		}
-		else {
-			// No Sidebar
-?>
-				<div class="col-sm-8 col-sm-offset-2 col-md-8 col-md-offset-2 main">
-<?php
-		}
-
-//------------------------------------------------------------------------------------------------------------+
-?>
+				<div class="col-lg-12">
 					<h1 class="page-header"><?php echo htmlspecialchars( $this->module_title, ENT_QUOTES ); ?></h1>
 
 					<!-- ALERTS -->
 					<div id="message" class="alert alert-dismissible" role="alert" ng-show="msg" ng-class="'alert-' + msgType">
 						<button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-						<strong>{{ msg }}</strong>
+						<strong ng-bind="msg"></strong>
 					</div>
 					<!-- END: ALERTS -->
 
@@ -223,9 +211,7 @@ class Core_GUI
 	{
 //------------------------------------------------------------------------------------------------------------+
 ?>
-		<!-- TOP NAVBAR -->
-		<div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
-
+				<!-- TOP NAVBAR -->
 				<div class="navbar-header">
 					<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target=".navbar-collapse">
 						<span class="sr-only">Toggle navigation</span>
@@ -237,7 +223,7 @@ class Core_GUI
 				</div>
 				<!-- /.navbar-header -->
 
-					<ul class="nav navbar-nav navbar-right">
+				<ul class="nav navbar-top-links navbar-right">
 <?php
 
 		if (!$this->empty_navbar)
@@ -245,28 +231,33 @@ class Core_GUI
 //------------------------------------------------------------------------------------------------------------+
 ?>
 
-						<li class="dropdown">
-							<a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-user"></span>&nbsp;<span class="caret"></span></a>
-							<ul class="dropdown-menu" role="menu">
-								<li><a href="#">Action</a></li>
-								<li><a href="#">Another action</a></li>
-								<li><a href="#">Something else here</a></li>
-								<li class="divider"></li>
-								<li><a href="#">Separated link</a></li>
-							</ul>
-						</li>
-						<!-- /.dropdown -->
+
+                <li class="dropdown">
+                    <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                        <i class="fa fa-user fa-fw"></i>  <i class="fa fa-caret-down"></i>
+                    </a>
+                    <ul class="dropdown-menu dropdown-user">
+                        <li>
+                        	<a href="#"><i class="fa fa-user fa-fw"></i>&nbsp;User Profile</a>
+                        </li>
+                        <li>
+                        	<a href="#"><i class="fa fa-gear fa-fw"></i>&nbsp;Settings</a>
+                        </li>
+                        <li class="divider"></li>
+                        <li>
+                        	<a href="./logout"><i class="fa fa-sign-out fa-fw"></i>&nbsp;Logout</a>
+                        </li>
+                    </ul>
+                    <!-- /.dropdown-user -->
+                </li>
+                <!-- /.dropdown -->
 
 <?php
 //------------------------------------------------------------------------------------------------------------+
 		}
 
 ?>
-					</ul>
-
-
-		</div>
-		<!-- END: TOP NAVBAR -->
+				</ul>
 <?php
 //------------------------------------------------------------------------------------------------------------+
 	}
@@ -285,25 +276,15 @@ class Core_GUI
 //------------------------------------------------------------------------------------------------------------+
 ?>
 				<!-- SIDEBAR -->
-				<div class="col-sm-3 col-md-2 sidebar">
-					<ul class="nav nav-sidebar">
-						<li class="active"><a href="#">Overview</a></li>
-						<li><a href="#">Reports</a></li>
-						<li><a href="#">Analytics</a></li>
-						<li><a href="#">Export</a></li>
-					</ul>
-					<ul class="nav nav-sidebar">
-						<li><a href="">Nav item</a></li>
-						<li><a href="">Nav item again</a></li>
-						<li><a href="">One more nav</a></li>
-						<li><a href="">Another nav item</a></li>
-						<li><a href="">More navigation</a></li>
-					</ul>
-					<ul class="nav nav-sidebar">
-						<li><a href="">Nav item again</a></li>
-						<li><a href="">One more nav</a></li>
-						<li><a href="">Another nav item</a></li>
-					</ul>
+				<div class="navbar-default sidebar" role="navigation">
+					<div class="sidebar-nav navbar-collapse">
+						<ul class="nav" id="side-menu">
+							<li>
+								<a href="./"><i class="fa fa-dashboard fa-fw"></i>&nbsp;Dashboard</a>
+							</li>
+						</ul>
+					</div>
+					<!-- /.sidebar-collapse -->
 				</div>
 				<!-- END: SIDEBAR -->
 
@@ -343,9 +324,11 @@ class Core_GUI
 			</div>
 			<!-- END: ROW -->
 		</div>
-		<!-- END: BODY -->
+		<!-- /#page-wrapper -->
+	</div>
+	<!-- /#wrapper -->
 
-		<!-- Powered By Bright Game Panel -->
+	<!-- Powered By Bright Game Panel -->
 
 	</body>
 </html>

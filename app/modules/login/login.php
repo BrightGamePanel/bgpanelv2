@@ -56,57 +56,48 @@ $gui->getHeader();
 					<!-- CONTENTS -->
 					<div class="row">
 						<div class="col-md-6 col-md-offset-3">
-							<div class="well well-lg">
-								<div>
+							<div class="panel panel-default">
+								<div class="panel-heading">
 									<img src="./gui/img/logo.png" alt="Bright Game Panel Logo" class="img-responsive center-block">
 								</div>
-								<br>
 
-								<legend><?php echo T_('Sign In'); ?></legend>
+								<div class="panel-body">
+									<legend><?php echo T_('Sign In'); ?></legend>
 
-								<form ng-submit="processForm()">
-									<div class="form-group" ng-class="{ 'has-error' : errorUsername }">
-										<label for="username"><?php echo T_('Username'); ?></label>
-										<div class="input-group">
-											<div class="input-group-addon"><span class="glyphicon glyphicon-user"></span></div>
-											<input class="form-control" type="text" ng-model="formData.username" id="username" name="username"
-											<?php
-
-											if (isset($_COOKIE['USERNAME'])) {
-												echo 'value="' . htmlspecialchars($_COOKIE['USERNAME'], ENT_QUOTES) . '"';
-											}
-											else { echo 'placeholder="' . T_('Login') . '"';
-											}
-
-											?>
-											required>
+									<form ng-submit="processForm()">
+										<div class="form-group" ng-class="{ 'has-error' : errorUsername }">
+											<label for="username"><?php echo T_('Username'); ?></label>
+											<div class="input-group">
+												<div class="input-group-addon"><span class="glyphicon glyphicon-user"></span></div>
+												<input class="form-control" type="text" ng-model="formData.username" id="username" name="username" placeholder="<?php echo T_('Login'); ?>" required>
+											</div>
+											<span class="help-block" ng-show="errorUsername">{{ errorUsername }}</span>
 										</div>
-										<span class="help-block" ng-show="errorUsername">{{ errorUsername }}</span>
-									</div>
 
-									<div class="form-group" ng-class="{ 'has-error' : errorPassword }">
-										<label for="password"><?php echo T_('Password'); ?></label>
-										<div class="input-group">
-											<div class="input-group-addon"><span class="glyphicon glyphicon-lock"></span></div>
-											<input class="form-control" type="password" ng-model="formData.password" id="password" name="password" placeholder="<?php echo T_('Password'); ?>" required>
+										<div class="form-group" ng-class="{ 'has-error' : errorPassword }">
+											<label for="password"><?php echo T_('Password'); ?></label>
+											<div class="input-group">
+												<div class="input-group-addon"><span class="glyphicon glyphicon-lock"></span></div>
+												<input class="form-control" type="password" ng-model="formData.password" id="password" name="password" placeholder="<?php echo T_('Password'); ?>" required>
+											</div>
+											<span class="help-block" ng-show="errorPassword">{{ errorPassword }}</span>
 										</div>
-										<span class="help-block" ng-show="errorPassword">{{ errorPassword }}</span>
-									</div>
 
-									<div class="checkbox">
-										<label>
-											<input type="checkbox" ng-model="formData.rememberMe" name="rememberMe" checked="checked"><?php echo T_('Remember Me'); ?>&nbsp;
-										</label>
-									</div>
+										<div class="checkbox">
+											<label>
+												<input type="checkbox" ng-model="formData.rememberMe" ng-checked="true" name="rememberMe"><?php echo T_('Remember Me'); ?>&nbsp;
+											</label>
+										</div>
 
-									<button class="btn btn-default btn-lg btn-block" type="submit"><?php echo T_('Login'); ?></button>
-								</form>
+										<button class="btn btn-primary btn-lg btn-block" type="submit"><?php echo T_('Login'); ?></button>
+									</form>
 
-								<ul class="pager">
-									<li>
-										<a href="#password"><?php echo T_('Forgot Password?'); ?></a>
-									</li>
-								</ul>
+									<ul class="pager">
+										<li>
+											<a href="#password"><?php echo T_('Forgot Password?'); ?></a>
+										</li>
+									</ul>
+								</div>
 							</div>
 						</div>
 					</div>
@@ -119,10 +110,18 @@ $gui->getHeader();
  * Generate AngularJS Code
  */
 
-$fields = array(
-		'Username',
-		'Password'
-	);
+if ( isset($_COOKIE['USERNAME']) ) {
+	$fields = array(
+			'Username' => htmlspecialchars($_COOKIE['USERNAME'], ENT_QUOTES),
+			'Password'
+		);
+}
+else {
+	$fields = array(
+			'Username',
+			'Password'
+		);
+}
 
 $js->getAngularController( 'authenticateUser', 'login', $fields, './' );
 

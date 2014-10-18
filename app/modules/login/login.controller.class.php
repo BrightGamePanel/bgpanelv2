@@ -122,6 +122,9 @@ class BGP_Controller_Login extends BGP_Controller
 			if ( isset($form['rememberMe']) ) {
 				$this->setRememberMeCookie( $adminResult[0]['username'] );
 			}
+			else if ( isset($_COOKIE['USERNAME']) ) {
+				$this->rmCookie( 'USERNAME' );
+			}
 
 			// Language
 			$this->setLangCookie( $adminResult[0]['lang'] );
@@ -148,11 +151,19 @@ class BGP_Controller_Login extends BGP_Controller
 			if ( isset($form['rememberMe']) ) {
 				$this->setRememberMeCookie( $userResult[0]['username'] );
 			}
+			else if ( isset($_COOKIE['USERNAME']) ) {
+				$this->rmCookie( 'USERNAME' );
+			}
 
 			// Language
 			$this->setLangCookie( $userResult[0]['lang'] );
 		}
 		else {
+			// Cookie
+			if ( isset($_COOKIE['USERNAME']) ) {
+				$this->rmCookie( 'USERNAME' );
+			}
+
 			$errors['username'] = T_('Invalid Credentials.');
 			$errors['password'] = T_('Invalid Credentials.');
 		}
@@ -185,10 +196,14 @@ class BGP_Controller_Login extends BGP_Controller
 	}
 
 	private function setRememberMeCookie( $username ) {
-		setcookie('USERNAME', htmlentities($username, ENT_QUOTES), time() + (86400 * 7 * 2)); // 86400 = 1 day
+		setcookie('USERNAME', htmlentities($username, ENT_QUOTES), time() + (86400 * 7 * 2), BASE_URL); // 86400 = 1 day
 	}
 
 	private function setLangCookie( $lang ) {
-		setcookie('LANG', htmlentities($lang, ENT_QUOTES), time() + (86400 * 7 * 2));
+		setcookie('LANG', htmlentities($lang, ENT_QUOTES), time() + (86400 * 7 * 2), BASE_URL);
+	}
+
+	private function rmCookie( $cookie ) {
+		setcookie($cookie, '', time() - 3600, BASE_URL);
 	}
 }

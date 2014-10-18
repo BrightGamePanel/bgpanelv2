@@ -40,7 +40,7 @@ class Core_JS_GUI
 	 * @return String
 	 * @access public
 	 */
-	public function getAngularController( $task, $module, $variables, $redirect, $debug = FALSE )
+	public function getAngularController( $task, $module = '', $variables = array(), $redirect = './', $debug = FALSE )
 	{
 //------------------------------------------------------------------------------------------------------------+
 ?>
@@ -52,19 +52,36 @@ class Core_JS_GUI
 
 ?>
 
-<?php
-
-		// Define angular routes
-		// $this->defAngularRoutes();
-
-?>
-
 						// create angular controller and pass in $scope and $http
 						function bgpController($scope, $http) {
-							// create a JSON object to hold our form information
+
+<?php
+
+		// Do not define controller if no task has been given
+		if (!empty($task))
+		{
+?>
 							// $scope will allow this to pass between controller and view
+
+							// create a JSON object to hold our form information
 							// we specify the controller method
-							$scope.formData = {'task':<?php echo "'$task'"; ?>};
+							$scope.formData = {
+<?php
+
+			// Complete Form Fields
+			foreach ($variables as $var => $value)
+			{
+				if (!empty($var)) {
+?>
+								<?php echo strtolower("'$var'"); ?>:<?php echo "'$value'"; ?>,
+<?php
+				}
+			}
+
+?>
+								'task':<?php echo "'$task'"; ?>
+
+							};
 
 							// Process the form
 							$scope.processForm = function() {
@@ -77,12 +94,13 @@ class Core_JS_GUI
 									.success(function(data) {
 <?php
 
-		if ($debug)
-		{
+			// Debug param
+			if ($debug)
+			{
 ?>
 										console.log(data); // Debug
 <?php
-		}
+			}
 
 ?>
 
@@ -91,33 +109,33 @@ class Core_JS_GUI
 											// If not successful, bind errors to error variables
 <?php
 
-		// Form Fields
-		foreach ($variables as $var)
-		{
-			// bind field errors to error variables
+			// Form Fields
+			foreach ($variables as $var)
+			{
+				// bind field errors to error variables
 ?>
 											$scope.error<?php echo ucfirst(strtolower($var)); ?> = data.errors.<?php echo strtolower($var); ?>;
 <?php
-		}
+			}
 
-		// Display notification only on.error when a redirection has been specified
-		if (!empty($redirect))
-		{
+			// Display notification only on.error when a redirection has been specified
+			if (!empty($redirect))
+			{
 ?>
 
 											// Bind notification message to message
 											$scope.msgType = data.msgType;
 											$scope.msg = data.msg;
 <?php
-		}
+			}
 
 ?>
 										}
 <?php
 
-		// Redirect on.form.success if required
-		if (!empty($redirect))
-		{
+			// Redirect on.form.success if required
+			if (!empty($redirect))
+			{
 ?>
 
 										if (data.success)
@@ -126,21 +144,25 @@ class Core_JS_GUI
 											window.location = ( <?php echo "'$redirect'"; ?> );
 										}
 <?php
-		}
-		// Display notification when no redirection has been specified
-		else
-		{
+			}
+			// Display notification when no redirection has been specified
+			else
+			{
 ?>
 
 										// Bind notification message to message
 										$scope.msgType = data.msgType;
 										$scope.msg = data.msg;
 <?php
-		}
+			}
 
 ?>
 									});
 							};
+<?php
+		}
+
+?>
 						}
 					</script>
 <?php

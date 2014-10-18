@@ -84,6 +84,20 @@ Flight::route('GET|POST /@http:[0-9]{3}', function( $http ) {
 
 
 
+// [COMMON] LOGOUT METHOD
+Flight::route('GET /logout', function() {
+	$authService = Core_AuthService::getAuthService();
+
+	if ($authService->getSessionValidity() == TRUE) {
+		Core_AuthService::logout();
+		Flight::redirect('/login');
+	}
+
+	die();
+});
+
+
+
 // [LOGIN] VIEW
 Flight::route('GET /login', function() {
 	$mod_path = MODS_DIR . '/login/login.php';
