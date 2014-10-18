@@ -39,8 +39,11 @@ if ( !class_exists('Flight')) {
  * Flight FW Routing Definitions
  */
 
+
+
 // DEFAULT
 Flight::route('GET|POST /', function() {
+
 	// User Authentication
 
 	$authService = Core_AuthService::getAuthService();
@@ -55,8 +58,22 @@ Flight::route('GET|POST /', function() {
 		Flight::redirect('/login');
 	}
 
-	Flight::redirect('/dashboard');
+	// Redirect to the Dashboard
+	switch (Core_AuthService::getSessionPrivilege()) {
+		case 'Admin':
+			Flight::redirect('/admin/dashboard');
+
+		case 'User':
+			Flight::redirect('/user/dashboard');
+		
+		default:
+			// Invalid Privilege
+			Core_AuthService::logout();
+			Flight::redirect('/login');
+	}
 });
+
+
 
 // HTTP status codes VIEW
 Flight::route('GET|POST /@http:[0-9]{3}', function( $http ) {
@@ -65,27 +82,105 @@ Flight::route('GET|POST /@http:[0-9]{3}', function( $http ) {
 	die();
 });
 
-// Dynamically load the module VIEW
-Flight::route('GET /@module', function( $module ) {
-	$mod_path = MODS_DIR . '/' . $module . '/' . $module . '.php';
-	if ( file_exists($mod_path) ) {
-		require( $mod_path );
+
+
+// [LOGIN] VIEW
+Flight::route('GET /login', function() {
+	$mod_path = MODS_DIR . '/login/login.php';
+	bgp_routing_require_mod( $mod_path );
+});
+
+// [LOGIN] CONTROLLER
+Flight::route('POST /login/process', function() {
+	$mod_path = MODS_DIR . '/login/login.process.php';
+	bgp_routing_require_mod( $mod_path );
+});
+
+
+
+// [ADMIN] Dynamically load the module VIEW
+Flight::route('GET /admin/@module', function( $module ) {
+
+	// Test Access Perms
+	if ( Core_AuthService::isAdmin() ) {
+		$mod_path = MODS_DIR . '/' . 'admin.' . $module . '/' . 'admin.' . $module . '.php';
+		bgp_routing_require_mod( $mod_path );
 	}
-	else {
-		Flight::notFound();
+	else{
+		Flight::redirect('/403');
 	}
 });
 
-// Dynamically load the module CONTROLLER
-Flight::route('POST /@module/process', function( $module ) {
-	$mod_path = MODS_DIR . '/' . $module . '/' . $module . '.process.php';
-	if ( file_exists($mod_path) ) {
-		require( $mod_path );
+// [ADMIN] CONTROLLER
+Flight::route('POST /admin/@module/process', function( $module ) {
+
+	// Test Access Perms
+	if ( Core_AuthService::isAdmin() ) {
+		$mod_path = MODS_DIR . '/' . 'admin.' . $module . '/' . 'admin.' . $module . '.process.php';
+		bgp_routing_require_mod( $mod_path );
 	}
-	else {
-		Flight::notFound();
+	else{
+		Flight::redirect('/403');
 	}
 });
+
+
+
+// [USER] VIEW
+Flight::route('GET /user/@module', function( $module ) {
+
+	// Test Access Perms
+	if ( Core_AuthService::isUser() ) {
+		$mod_path = MODS_DIR . '/' . 'user.' . $module . '/' . 'user.' . $module . '.php';
+		bgp_routing_require_mod( $mod_path );
+	}
+	else{
+		Flight::redirect('/403');
+	}
+});
+
+// [USER] CONTROLLER
+Flight::route('POST /user/@module/process', function( $module ) {
+
+	// Test Access Perms
+	if ( Core_AuthService::isUser() ) {
+		$mod_path = MODS_DIR . '/' . 'user.' . $module . '/' . 'user.' . $module . '.process.php';
+		bgp_routing_require_mod( $mod_path );
+	}
+	else{
+		Flight::redirect('/403');
+	}
+});
+
+
+
+// [COMMON] VIEW (with authentication)
+Flight::route('GET /@module', function( $module ) {
+
+	// Test Access Perms
+	if ($authService->getSessionValidity() == TRUE) {
+		$mod_path = MODS_DIR . '/' . $module . '/' . $module . '.php';
+		bgp_routing_require_mod( $mod_path );
+	}
+	else{
+		Flight::redirect('/403');
+	}
+});
+
+// [COMMON] CONTROLLER (with authentication)
+Flight::route('POST /@module/process', function( $module ) {
+
+	// Test Access Perms
+	if ($authService->getSessionValidity() == TRUE) {
+		$mod_path = MODS_DIR . '/' . $module . '/' . $module . '.process.php';
+		bgp_routing_require_mod( $mod_path );
+	}
+	else{
+		Flight::redirect('/403');
+	}
+});
+
+
 
 /**
  * Start the FW

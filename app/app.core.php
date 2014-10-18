@@ -41,6 +41,9 @@ switch (ENV_RUNTIME)
 		// PHP 5.5 Functions Implementation
 		require( LIBS_DIR	. '/php5.5/func.inc.php');
 
+		// BrightGamePanel Functions
+		require( APP_DIR	. '/core/inc/func.inc.php');
+
 		// Database Handle Manager
 		require( APP_DIR	. '/core/dbh.class.php' );
 

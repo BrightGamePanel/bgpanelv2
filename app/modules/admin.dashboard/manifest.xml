@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Module Manifest -->
+<bgp_module>
+	<module_info>
+		<author>Rousseau Nikita</author>
+		<version>1.0</version>
+	</module_info>
+
+	<module_settings>
+		<title>Admin Dashboard</title>
+	</module_settings>
+
+	<module_options>
+		<empty_navbar>0</empty_navbar>
+		<no_sidebar>0</no_sidebar>
+	</module_options>
+
+	<class_definition filename="app/modules/admin.dashboard/admin.dashboard.class.php" classname="BGP_Module_Admin_Dashboard"/>
+</bgp_module>

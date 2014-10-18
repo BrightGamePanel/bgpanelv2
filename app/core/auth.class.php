@@ -77,6 +77,23 @@ class Core_AuthService
 	}
 
 	/**
+	 * Logout
+	 *
+	 * Destroy session variables
+	 *
+	 * @param none
+	 * @return void
+	 * @access public
+	 */
+	public static function logout() {
+
+		$_SESSION = array(); // Destroy session variables
+		session_destroy();
+
+		self::$authService = NULL;
+	}
+
+	/**
 	 * Service Handler
 	 *
 	 * @param String $auth_key
@@ -110,6 +127,48 @@ class Core_AuthService
 			return $credentials['role'];
 		}
 		return 'Guest';
+	}
+
+	/**
+	 * Test If The Session Has Full Admin Privilege
+	 *
+	 * @param none
+	 * @return bool
+	 * @access public
+	 */
+	public static function isAdmin() {
+		if (self::getSessionPrivilege() == 'Admin') {
+
+			$authService = Core_AuthService::getAuthService();
+
+			if ($authService->getSessionValidity() == TRUE) {
+
+				return TRUE;
+			}
+		}
+
+		return FALSE;
+	}
+
+	/**
+	 * Test If The Session Has Full User Privilege
+	 *
+	 * @param none
+	 * @return bool
+	 * @access public
+	 */
+	public static function isUser() {
+		if (self::getSessionPrivilege() == 'User') {
+
+			$authService = Core_AuthService::getAuthService();
+
+			if ($authService->getSessionValidity() == TRUE) {
+
+				return TRUE;
+			}
+		}
+
+		return FALSE;
 	}
 
 	/**
