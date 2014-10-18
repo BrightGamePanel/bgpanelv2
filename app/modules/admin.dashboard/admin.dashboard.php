@@ -66,6 +66,10 @@ $gui->getHeader();
  * Generate AngularJS Code
  */
 
+$fields = array();
+
+$js->getAngularController( '', 'admin/dashboard', $fields, '' );
+
 ?>
 					<!-- END: SCRIPT -->
 

@@ -132,10 +132,19 @@ class Core_GUI
 			<script src="./gui/angularjs/js/angular.min.js"></script>
 			<script src="./gui/jquery/js/jquery-2.1.1.min.js"></script>
 			<script src="./gui/bootstrap3/js/bootstrap.min.js"></script>
+			<!-- Metis Menu Plugin JavaScript -->
+    		<script src="./gui/metisMenu/js/metisMenu.min.js"></script>
+			<!-- SB Admin 2 JavaScript -->
+			<script src="./gui/bootstrap3/js/sb-admin-2.js"></script>
 		<!-- Style -->
 			<!-- Bootstrap 3 -->
 			<link href="./gui/bootstrap3/css/<?php echo htmlspecialchars( Core_GUI::getBS3Template(), ENT_QUOTES ); ?>" rel="stylesheet">
+			<!-- MetisMenu -->
+			<link href="./gui/metisMenu/css/metisMenu.min.css" rel="stylesheet">
+			<!-- SB Admin 2 -->
 			<link href="./gui/bootstrap3/css/dashboard.css" rel="stylesheet">
+			<!-- Font Awesome 4 -->
+			<link href="./gui/font-awesome/css/font-awesome.min.css" rel="stylesheet">
 		<!-- Favicon -->
 			<link rel="icon" href="./gui/img/favicon.ico">
 		<!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
@@ -216,7 +225,7 @@ class Core_GUI
 ?>
 		<!-- TOP NAVBAR -->
 		<div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
-			<div class="container-fluid">
+
 				<div class="navbar-header">
 					<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target=".navbar-collapse">
 						<span class="sr-only">Toggle navigation</span>
@@ -226,7 +235,8 @@ class Core_GUI
 					</button>
 					<a class="navbar-brand" href="#">BrightGamePanel V2</a>
 				</div>
-				<div class="navbar-collapse collapse">
+				<!-- /.navbar-header -->
+
 					<ul class="nav navbar-nav navbar-right">
 <?php
 
@@ -234,18 +244,27 @@ class Core_GUI
 		{
 //------------------------------------------------------------------------------------------------------------+
 ?>
-						<li><a href="#">Dashboard</a></li>
-						<li><a href="#">Settings</a></li>
-						<li><a href="#">Profile</a></li>
-						<li><a href="#">Help</a></li>
+
+						<li class="dropdown">
+							<a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-user"></span>&nbsp;<span class="caret"></span></a>
+							<ul class="dropdown-menu" role="menu">
+								<li><a href="#">Action</a></li>
+								<li><a href="#">Another action</a></li>
+								<li><a href="#">Something else here</a></li>
+								<li class="divider"></li>
+								<li><a href="#">Separated link</a></li>
+							</ul>
+						</li>
+						<!-- /.dropdown -->
+
 <?php
 //------------------------------------------------------------------------------------------------------------+
 		}
 
 ?>
 					</ul>
-				</div>
-			</div>
+
+
 		</div>
 		<!-- END: TOP NAVBAR -->
 <?php
