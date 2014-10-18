@@ -48,21 +48,20 @@ class Core_AuthService
 	/**
 	 * Default Constructor
 	 *
-	 * @param String $username
 	 * @param String $auth_key
 	 * @param String $rsa_private_key
 	 * @param String $rsa_public_key
 	 * @return void
 	 * @access public
 	 */
-	function __construct( $username = '', $auth_key = APP_LOGGED_IN_KEY, $rsa_private_key = RSA_PRIVATE_KEY, $rsa_public_key = RSA_PUBLIC_KEY )
+	function __construct( $auth_key = APP_LOGGED_IN_KEY, $rsa_private_key = RSA_PRIVATE_KEY, $rsa_public_key = RSA_PUBLIC_KEY )
 	{
 
 		if ( !empty($_SESSION['USERNAME']) ) {
 			$this->username = $_SESSION['USERNAME'];
 		}
 		else {
-			$this->username = $username;
+			$this->username = NULL;
 		}
 
 		$this->session = $_SESSION;
@@ -80,17 +79,16 @@ class Core_AuthService
 	/**
 	 * Service Handler
 	 *
-	 * @param String $username
 	 * @param String $auth_key
 	 * @param String $rsa_private_key
 	 * @param String $rsa_public_key
 	 * @return Core_AuthService
 	 * @access public
 	 */
-	public static function getAuthService( $username = '', $auth_key = APP_LOGGED_IN_KEY, $rsa_private_key = RSA_PRIVATE_KEY, $rsa_public_key = RSA_PUBLIC_KEY ) {
+	public static function getAuthService( $auth_key = APP_LOGGED_IN_KEY, $rsa_private_key = RSA_PRIVATE_KEY, $rsa_public_key = RSA_PUBLIC_KEY ) {
 		if ( empty(self::$authService) || !is_object(self::$authService) || (get_class(self::$authService) != 'Core_AuthService') ) {
 
-			self::$authService = new Core_AuthService( $username, $auth_key, $rsa_private_key, $rsa_public_key );
+			self::$authService = new Core_AuthService( $auth_key, $rsa_private_key, $rsa_public_key );
 		}
 
 		return self::$authService;
@@ -111,7 +109,7 @@ class Core_AuthService
 		if ( !empty($credentials['role']) ) {
 			return $credentials['role'];
 		}
-		return 'None';
+		return 'Guest';
 	}
 
 	/**
@@ -136,6 +134,7 @@ class Core_AuthService
 	 */
 	public function getSessionValidity() {
 		if ( !empty($this->username) ) {
+
 			$credentials = $this->decryptSessionCredentials();
 
 			if ( $credentials['username'] == $this->username && $credentials['key'] == $this->auth_key && $credentials['token'] == session_id() ) {
@@ -143,6 +142,106 @@ class Core_AuthService
 			}
 		}
 		return FALSE;
+	}
+
+	/**
+	 * Appends Information To The Session
+	 *
+	 * Note: should be called before Core_AuthService->setSessionPerms()
+	 *
+	 * @param String $id
+	 * @param String $username
+	 * @param String $firstname
+	 * @param String $lastname
+	 * @param String $lang
+	 * @param String $template
+	 * @return void
+	 * @access public
+	 */
+	public function setSessionInfo( $id, $username, $firstname, $lastname, $lang, $template ) {
+		$info = array (
+				'id' => $id,
+				'firstname' => $firstname,
+				'lastname' => $lastname,
+				);
+
+		$this->session['INFORMATION'] = $info;
+		$this->session['USERNAME'] = $username;
+		$this->session['LANG'] = $lang;
+		$this->session['TEMPLATE'] = $template;
+
+		$this->username = $username; // Update username var as well
+		$_SESSION = $this->session;
+	}
+
+	/**
+	 * Remove Information From The Session
+	 *
+	 * @param none
+	 * @return void
+	 * @access public
+	 */
+	public function rmSessionInfo() {
+		if ( array_key_exists('INFORMATION', $this->session) ) {
+			unset (
+			$this->session['INFORMATION'],
+			$this->session['USERNAME'],
+			$this->session['LANG'],
+			$this->session['TEMPLATE']
+			);
+		}
+
+		$this->username = NULL;
+		$_SESSION = $this->session;
+	}
+
+	/**
+	 * Create A New Legit Session
+	 *
+	 * Note: should be called after Core_AuthService->setSessionInfo()
+	 *
+	 * @param String $role = 'Admin' | 'User' | 'Guest'
+	 * @return void
+	 * @access public
+	 */
+	public function setSessionPerms( $role = 'Guest' ) {
+		if ( !empty($this->username) ) {
+			if ( $role === 'Admin' || $role === 'User' || $role === 'Guest' ) {
+
+				$credentials = serialize (
+					array (
+					'username' => $this->username,
+					'role'	=> $role,
+					'token' => session_id(),
+					'key' => $this->auth_key,
+					'salt' => md5(time())
+					)
+				);
+
+				$rsa = new Crypt_RSA();
+				$rsa->loadKey( $this->rsa_public_key ); // public key
+
+				$rsa->setEncryptionMode(CRYPT_RSA_ENCRYPTION_PKCS1);
+				$this->session['CREDENTIALS'] = $rsa->encrypt( $credentials );
+
+				$_SESSION = $this->session;
+			}
+		}
+	}
+
+	/**
+	 * Remove Permissions Of A Session
+	 *
+	 * @param none
+	 * @return void
+	 * @access public
+	 */
+	public function rmSessionPerms() {
+		if ( array_key_exists('CREDENTIALS', $this->session) ) {
+			unset ( $this->session['CREDENTIALS'] );
+		}
+
+		$_SESSION = $this->session;
 	}
 
 	/**
@@ -163,49 +262,5 @@ class Core_AuthService
 			return $credentials;
 		}
 		return array();
-	}
-
-	/**
-	 * Create A New Legit Session
-	 *
-	 * @param none
-	 * @return void
-	 * @access public
-	 */
-	public function setSessionWhitecard() {
-		if ( !empty($this->username) ) {
-			$credentials = serialize (
-				array (
-				'username' => $this->username,
-				'role'	=> NULL,
-				'token' => session_id(),
-				'key' => $this->auth_key,
-				'salt' => md5(time())
-				)
-			);
-
-			$rsa = new Crypt_RSA();
-			$rsa->loadKey( $this->rsa_public_key ); // public key
-
-			$rsa->setEncryptionMode(CRYPT_RSA_ENCRYPTION_PKCS1);
-			$this->session['CREDENTIALS'] = $rsa->encrypt( $credentials );
-
-			$_SESSION = $this->session;
-		}
-	}
-
-	/**
-	 * Remove White Card Of A Session
-	 *
-	 * @param none
-	 * @return void
-	 * @access public
-	 */
-	public function rmSessionWhitecard() {
-		if ( array_key_exists('CREDENTIALS', $this->session) ) {
-			unset( $this->session['CREDENTIALS'] );
-		}
-
-		$_SESSION = $this->session;
 	}
 }

@@ -57,9 +57,6 @@ class BGP_Controller_Login extends BGP_Controller
 		$username = $form['username'];
 		$password = Core_AuthService::getHash($form['password']);
 
-		$isAdmin = false;
-		$isUser  = false;
-
 		try {
 			// Parse admin table first
 			$sth = $dbh->prepare("
@@ -78,30 +75,24 @@ class BGP_Controller_Login extends BGP_Controller
 
 			$adminResult = $sth->fetchAll();
 
-			if (!empty($adminResult)) {
-				$isAdmin = true;
-			}
+			if (empty($adminResult))
+			{
+				// Parse regular user table
+				$sth = $dbh->prepare("
+					SELECT user_id, username, firstname, lastname, lang
+					FROM " . DB_PREFIX . "user
+					WHERE
+						username = :username AND
+						password = :password AND
+						status = 'active'
+					;");
 
+				$sth->bindParam(':username', $username);
+				$sth->bindParam(':password', $password);
 
-			// Parse regular user table
-			$sth = $dbh->prepare("
-				SELECT user_id, username, firstname, lastname, lang
-				FROM " . DB_PREFIX . "user
-				WHERE
-					username = :username AND
-					password = :password AND
-					status = 'active'
-				;");
+				$sth->execute();
 
-			$sth->bindParam(':username', $username);
-			$sth->bindParam(':password', $password);
-
-			$sth->execute();
-
-			$userResult = $sth->fetchAll();
-
-			if (!empty($userResult)) {
-				$isUser = true;
+				$userResult = $sth->fetchAll();
 			}
 		}
 		catch (PDOException $e) {
@@ -109,11 +100,57 @@ class BGP_Controller_Login extends BGP_Controller
 			die();
 		}
 
-		if ($isAdmin) {
-			// setSessionWhitecard
+		if (!empty($adminResult)) {
+			// Give Admin Privilege
+
+			$authService = Core_AuthService::getAuthService();
+
+			$authService->setSessionInfo(
+				$adminResult[0]['admin_id'],
+				$adminResult[0]['username'],
+				$adminResult[0]['firstname'],
+				$adminResult[0]['lastname'],
+				$adminResult[0]['lang'],
+				BGP_ADMIN_TEMPLATE
+				);
+
+			$authService->setSessionPerms( $role = 'Admin' );
+
+			// Cookies
+
+			// Remember Me
+			if ( isset($form['rememberMe']) ) {
+				$this->setRememberMeCookie( $adminResult[0]['username'] );
+			}
+
+			// Language
+			$this->setLangCookie( $adminResult[0]['lang'] );
 		}
-		else if ($isUser) {
-			// setSessionWhitecard
+		else if (!empty($userResult)) {
+			// Give User Privilege
+
+			$authService = Core_AuthService::getAuthService();
+
+			$authService->setSessionInfo(
+				$userResult[0]['user_id'],
+				$userResult[0]['username'],
+				$userResult[0]['firstname'],
+				$userResult[0]['lastname'],
+				$userResult[0]['lang'],
+				BGP_USER_TEMPLATE
+				);
+
+			$authService->setSessionPerms( $role = 'User' );
+
+			// Cookies
+
+			// Remember Me
+			if ( isset($form['rememberMe']) ) {
+				$this->setRememberMeCookie( $userResult[0]['username'] );
+			}
+
+			// Language
+			$this->setLangCookie( $userResult[0]['lang'] );
 		}
 		else {
 			$errors['username'] = T_('Invalid Credentials.');
@@ -132,7 +169,8 @@ class BGP_Controller_Login extends BGP_Controller
 			// notification
 			$data['msgType'] = 'warning';
 			$data['msg'] = T_('Login Failure!');
-		} else {
+		}
+		else {
 
 			// if there are no errors, return a message
 			$data['success'] = true;
@@ -144,5 +182,13 @@ class BGP_Controller_Login extends BGP_Controller
 
 		// return all our data to an AJAX call
 		return json_encode($data);
+	}
+
+	private function setRememberMeCookie( $username ) {
+		setcookie('USERNAME', htmlentities($username, ENT_QUOTES), time() + (86400 * 7 * 2)); // 86400 = 1 day
+	}
+
+	private function setLangCookie( $lang ) {
+		setcookie('LANG', htmlentities($lang, ENT_QUOTES), time() + (86400 * 7 * 2));
 	}
 }

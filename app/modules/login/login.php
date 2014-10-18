@@ -69,7 +69,17 @@ $gui->getHeader();
 										<label for="username"><?php echo T_('Username'); ?></label>
 										<div class="input-group">
 											<div class="input-group-addon"><span class="glyphicon glyphicon-user"></span></div>
-											<input class="form-control" type="text" ng-model="formData.username" id="username" name="username" placeholder="<?php echo T_('Login'); ?>" required>
+											<input class="form-control" type="text" ng-model="formData.username" id="username" name="username"
+											<?php
+
+											if (isset($_COOKIE['USERNAME'])) {
+												echo 'value="' . htmlspecialchars($_COOKIE['USERNAME'], ENT_QUOTES) . '"';
+											}
+											else { echo 'placeholder="' . T_('Login') . '"';
+											}
+
+											?>
+											required>
 										</div>
 										<span class="help-block" ng-show="errorUsername">{{ errorUsername }}</span>
 									</div>

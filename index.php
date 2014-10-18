@@ -37,7 +37,11 @@ require( 'init.app.php' );
  */
 if ( isset($_SESSION['LANG']) ) {
 	Core_Lang::setLanguage( $_SESSION['LANG'] );
-} else {
+}
+else if ( isset($_COOKIE['LANG']) ) {
+	Core_Lang::setLanguage( $_COOKIE['LANG'] );
+}
+else {
 	Core_Lang::setLanguage( CONF_DEFAULT_LOCALE );
 }
 
