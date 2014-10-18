@@ -77,6 +77,25 @@ define('PYDIO_DIR', BASE_DIR . '/pydio');
 define('INSTALL_DIR', BASE_DIR . '/install');
 
 
+// VERIFY CONFIGURATION DIRECTORY
+if ( !is_dir( CONF_DIR ) ) {
+?>
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+	</head>
+	<body>
+		<h1>Unable to locate BrightGamePanel V2 configuration directory (conf).</h1><br />
+		<h3>&nbsp;</h3>
+		<p>Make sure you have renamed the configuration directory from "conf-dist" to "conf".</p>
+	</body>
+</html>
+<?php
+	die();
+}
+
+
 // DEFINE INI CONSTANTS
 $CONFIG  = parse_ini_file( CONF_DB_INI, TRUE );
 $CONFIG += parse_ini_file( CONF_GENERAL_INI, TRUE );
