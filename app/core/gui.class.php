@@ -167,6 +167,7 @@ class Core_GUI
 
 //------------------------------------------------------------------------------------------------------------+
 ?>
+
 <?php
 //------------------------------------------------------------------------------------------------------------+
 
@@ -221,7 +222,6 @@ class Core_GUI
 					</button>
 					<a class="navbar-brand" href="#">BrightGamePanel V2</a>
 				</div>
-				<!-- /.navbar-header -->
 
 				<ul class="nav navbar-top-links navbar-right">
 <?php
@@ -230,34 +230,32 @@ class Core_GUI
 		{
 //------------------------------------------------------------------------------------------------------------+
 ?>
-
-
-                <li class="dropdown">
-                    <a class="dropdown-toggle" data-toggle="dropdown" href="#">
-                        <i class="fa fa-user fa-fw"></i>  <i class="fa fa-caret-down"></i>
-                    </a>
-                    <ul class="dropdown-menu dropdown-user">
-                        <li>
-                        	<a href="#"><i class="fa fa-user fa-fw"></i>&nbsp;User Profile</a>
-                        </li>
-                        <li>
-                        	<a href="#"><i class="fa fa-gear fa-fw"></i>&nbsp;Settings</a>
-                        </li>
-                        <li class="divider"></li>
-                        <li>
-                        	<a href="./logout"><i class="fa fa-sign-out fa-fw"></i>&nbsp;Logout</a>
-                        </li>
-                    </ul>
-                    <!-- /.dropdown-user -->
-                </li>
-                <!-- /.dropdown -->
-
+	                <li class="dropdown">
+	                    <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+	                        <i class="fa fa-user fa-fw"></i>  <i class="fa fa-caret-down"></i>
+	                    </a>
+	                    <ul class="dropdown-menu dropdown-user">
+	                        <li>
+	                        	<a href="#"><i class="fa fa-user fa-fw"></i>&nbsp;User Profile</a>
+	                        </li>
+	                        <li>
+	                        	<a href="#"><i class="fa fa-gear fa-fw"></i>&nbsp;Settings</a>
+	                        </li>
+	                        <li class="divider"></li>
+	                        <li>
+	                        	<a href="./logout"><i class="fa fa-sign-out fa-fw"></i>&nbsp;Logout</a>
+	                        </li>
+	                    </ul>
+	                    <!-- /.dropdown-user -->
+	                </li>
+	                <!-- /.dropdown -->
 <?php
 //------------------------------------------------------------------------------------------------------------+
 		}
 
 ?>
 				</ul>
+				<!-- END: TOP NAVBAR -->
 <?php
 //------------------------------------------------------------------------------------------------------------+
 	}

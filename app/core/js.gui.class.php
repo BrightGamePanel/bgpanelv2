@@ -71,7 +71,7 @@ class Core_JS_GUI
 			// Complete Form Fields
 			foreach ($variables as $var => $value)
 			{
-				if (!empty($var)) {
+				if (!empty($var) && !is_numeric($var)) {
 ?>
 								<?php echo strtolower("'$var'"); ?>:<?php echo "'$value'"; ?>,
 <?php
