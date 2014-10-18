@@ -156,6 +156,7 @@ Flight::route('POST /user/@module/process', function( $module ) {
 
 // [COMMON] VIEW (with authentication)
 Flight::route('GET /@module', function( $module ) {
+	$authService = Core_AuthService::getAuthService();
 
 	// Test Access Perms
 	if ($authService->getSessionValidity() == TRUE) {
@@ -169,6 +170,7 @@ Flight::route('GET /@module', function( $module ) {
 
 // [COMMON] CONTROLLER (with authentication)
 Flight::route('POST /@module/process', function( $module ) {
+	$authService = Core_AuthService::getAuthService();
 
 	// Test Access Perms
 	if ($authService->getSessionValidity() == TRUE) {

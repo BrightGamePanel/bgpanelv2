@@ -124,7 +124,7 @@ $fields = array(
 		'Password'
 	);
 
-$js->getAngularController( 'authenticateUser', 'login', $fields, './dashboard' );
+$js->getAngularController( 'authenticateUser', 'login', $fields, './' );
 
 ?>
 					<!-- END: SCRIPT -->
