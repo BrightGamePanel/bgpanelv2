@@ -71,7 +71,7 @@ class Core_JS_GUI
 			// Complete Form Fields
 			foreach ($variables as $var => $value)
 			{
-				if (!empty($var) && !is_numeric($var)) {
+				if (!is_numeric($var) && !empty($value)) {
 ?>
 								<?php echo strtolower("'$var'"); ?>:<?php echo "'$value'"; ?>,
 <?php
@@ -183,13 +183,6 @@ class Core_JS_GUI
 						var bgpApp = angular.module('bgpApp', []);
 <?php
 //------------------------------------------------------------------------------------------------------------+
-	}
-
-	// Deprecated
-	private function defAngularRoutes() {
-?>
-						// configure our routes
-<?php
 	}
 
 }
