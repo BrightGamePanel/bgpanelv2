@@ -147,6 +147,14 @@ Flight::route('GET|POST /@role(/@module(/@page))', function( $role, $module, $pa
 
 			if ( Core_AuthService::isUser() && !empty($module) )
 			{
+
+				// MAINTENANCE CHECKER
+				// Logout the user
+				if ( BGP_MAINTENANCE_MODE == 1 ) {
+					Core_AuthService::logout();
+					Flight::redirect('/503'); // If the maintenance mode is ON, we drop the user.
+				}
+
 				if ( !empty($page) ) {
 					$mod_path = MODS_DIR . '/' . 'user.' . $module . '/' . 'user.' . $module . '.' . $page . '.php';
 				}
@@ -170,6 +178,14 @@ Flight::route('GET|POST /@role(/@module(/@page))', function( $role, $module, $pa
 			}
 			$module = $role;
 			unset($role);
+
+			// MAINTENANCE CHECKER
+			if ( Core_AuthService::getSessionPrivilege() != 'Admin' ) {
+				if ( BGP_MAINTENANCE_MODE == 1 ) {
+					Core_AuthService::logout();
+					Flight::redirect('/503');
+				}	
+			}
 
 			$authService = Core_AuthService::getAuthService();
 
