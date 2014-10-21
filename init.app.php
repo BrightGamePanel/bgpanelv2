@@ -160,8 +160,10 @@ try {
 
 		$sth->execute();
 
-		while ($CONFIG = $sth->fetch(PDO::FETCH_ASSOC)) {
-			define( strtoupper( 'BGP_' . $CONFIG['setting'] ), $CONFIG['value'] );
+		$CONFIG = $sth->fetchAll(PDO::FETCH_ASSOC);
+
+		foreach ($CONFIG as $row) {
+			define( strtoupper( 'BGP_' . $row['setting'] ), $row['value'] );
 		}
 
 		unset($dbh, $sth);
