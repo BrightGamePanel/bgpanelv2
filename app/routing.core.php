@@ -112,6 +112,88 @@ Flight::route('POST /login/process', function() {
 
 
 
+// Dynamically load the module VIEW | CONTROLLER
+// Note that the page "process" is the module controller
+Flight::route('GET /@role/@module/@page', function( $role, $module, $page ) {
+
+	switch ($role)
+	{
+		// [ADMIN]
+		case 'admin':
+
+			// Test Access Perms
+			if ( Core_AuthService::isAdmin() )
+			{
+				// Switch the view depending the task
+				if ( !empty($page) ) {
+					// Admin Controller Invoked
+					$mod_path = MODS_DIR . '/' . 'admin.' . $module . '/' . 'admin.' . $module . '.' . $page . '.php';
+				}
+				else {
+					// Admin View Invoked
+					$mod_path = MODS_DIR . '/' . 'admin.' . $module . '/' . 'admin.' . $module . '.php';
+				}
+
+				bgp_routing_require_mod( $mod_path );
+			}
+			else{
+				Flight::redirect('/403');
+			}
+			break;
+
+		// [USER]
+		case 'user':
+
+			if ( Core_AuthService::isUser() )
+			{
+				if ( !empty($page) ) {
+					$mod_path = MODS_DIR . '/' . 'user.' . $module . '/' . 'user.' . $module . '.' . $page . '.php';
+				}
+				else {
+					$mod_path = MODS_DIR . '/' . 'user.' . $module . '/' . 'user.' . $module . '.php';
+				}
+
+				bgp_routing_require_mod( $mod_path );
+			}
+			else{
+				Flight::redirect('/403');
+			}
+			break;
+
+		// [COMMON]
+		default:
+			// Switch the vars
+			$page = $module;
+			$module = $role;
+			unset($role);
+
+			$authService = Core_AuthService::getAuthService();
+
+			if ($authService->getSessionValidity() == TRUE)
+			{
+				if ( !empty($page) ) {
+					$mod_path = MODS_DIR . '/' . $module . '/' . $module . '.' . $page . '.php';
+				}
+				else {
+					$mod_path = MODS_DIR . '/' . $module . '/' . $module . '.php';
+				}
+
+				bgp_routing_require_mod( $mod_path );
+			}
+			else{
+				Flight::redirect('/403');
+			}
+			break;
+	}
+});
+
+
+
+
+
+
+/*
+
 // [ADMIN] Dynamically load the module VIEW
 Flight::route('GET /admin/@module', function( $module ) {
 
@@ -196,7 +278,7 @@ Flight::route('POST /@module/process', function( $module ) {
 	}
 });
 
-
+*/
 
 /**
  * Start the FW
