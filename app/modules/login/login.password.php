@@ -34,6 +34,11 @@ require( MODS_DIR . '/login/login.class.php' );
 $loginModule = new BGP_Module_Login();
 
 /**
+ * Plug-in Dependencies
+ */
+require( LIBS_DIR . '/securimage/securimage.php' );
+
+/**
  * Call GUI Builder
  */
 $gui = new Core_GUI( $loginModule );
@@ -62,7 +67,7 @@ $gui->getHeader();
 								</div>
 
 								<div class="panel-body">
-									<legend><?php echo T_('Sign In'); ?></legend>
+									<legend><?php echo T_('Lost Password'); ?></legend>
 
 									<form ng-submit="processForm()">
 										<div class="form-group" ng-class="{ 'has-error' : errorUsername }">
@@ -74,27 +79,40 @@ $gui->getHeader();
 											<span class="help-block" ng-show="errorUsername">{{ errorUsername }}</span>
 										</div>
 
-										<div class="form-group" ng-class="{ 'has-error' : errorPassword }">
-											<label for="password"><?php echo T_('Password'); ?></label>
+										<div class="form-group" ng-class="{ 'has-error' : errorEmail }">
+											<label for="email"><?php echo T_('Email'); ?></label>
 											<div class="input-group">
-												<div class="input-group-addon"><span class="glyphicon glyphicon-lock"></span></div>
-												<input class="form-control" type="password" ng-model="formData.password" id="password" name="password" placeholder="<?php echo T_('Password'); ?>" required>
+												<div class="input-group-addon"><span class="glyphicon glyphicon-envelope"></span></div>
+												<input class="form-control" type="email" ng-model="formData.email" id="email" name="email" placeholder="<?php echo T_('Email'); ?>" required>
 											</div>
-											<span class="help-block" ng-show="errorPassword">{{ errorPassword }}</span>
+											<span class="help-block" ng-show="errorEmail">{{ errorEmail }}</span>
 										</div>
 
-										<div class="checkbox">
-											<label>
-												<input type="checkbox" ng-model="formData.rememberMe" ng-checked="true" name="rememberMe"><?php echo T_('Remember Me'); ?>&nbsp;
-											</label>
+										<!-- CAPTCHA -->
+										<img class="img-thumbnail" id="captcha" src="./login/process?task=getCaptcha" alt="CAPTCHA Image" />
+										<button
+											class="btn"
+											type="button"
+											onclick="document.getElementById('captcha').src = './login/process?task=getCaptcha&amp;' + Math.random(); return false">
+											<span class="glyphicon glyphicon-retweet"></span>
+										</button>
+										<!-- END: CAPTCHA -->
+
+										<div class="form-group" ng-class="{ 'has-error' : errorCaptcha }">
+											<label for="captcha">Captcha</label>
+											<div class="input-group">
+												<div class="input-group-addon"><span class="glyphicon glyphicon-picture"></span></div>
+												<input class="form-control" type="text" ng-model="formData.captcha" id="captcha" name="captcha" placeholder="Captcha Code" required>
+											</div>
+											<span class="help-block" ng-show="errorCaptcha">{{ errorCaptcha }}</span>
 										</div>
 
-										<button class="btn btn-primary btn-lg btn-block" type="submit"><?php echo T_('Login'); ?></button>
+										<button class="btn btn-primary btn-lg btn-block" type="submit"><?php echo T_('Send Password'); ?></button>
 									</form>
 
 									<ul class="pager">
 										<li>
-											<a href="./login/password"><?php echo T_('Forgot Password?'); ?></a>
+											<a href="./login">&larr;&nbsp;<?php echo T_('Back'); ?></a>
 										</li>
 									</ul>
 								</div>
@@ -110,28 +128,13 @@ $gui->getHeader();
  * Generate AngularJS Code
  */
 
-if ( isset($_COOKIE['USERNAME']) ) {
-	$fields = array(
-			'Username' => htmlspecialchars($_COOKIE['USERNAME'], ENT_QUOTES),
-			'Password'
-		);
-}
-else {
-	$fields = array(
-			'Username',
-			'Password'
-		);
-}
+$fields = array(
+		'Username',
+		'Email',
+		'Captcha'
+	);
 
-// Redirect
-if (!empty($_GET['page'])) {
-	$return = '.' . $_GET['page'];
-}
-else {
-	$return = './';
-}
-
-$js->getAngularController( 'authenticateUser', 'login', $fields, $return );
+$js->getAngularController( 'sendNewPassword', 'login', $fields, './login' );
 
 ?>
 					<!-- END: SCRIPT -->

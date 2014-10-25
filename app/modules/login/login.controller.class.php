@@ -206,4 +206,8 @@ class BGP_Controller_Login extends BGP_Controller
 	private function rmCookie( $cookie ) {
 		setcookie($cookie, '', time() - 3600, BASE_URL);
 	}
+
+	public function sendNewPassword( $form, $captcha_validation ) {
+
+	}
 }

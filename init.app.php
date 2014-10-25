@@ -38,11 +38,14 @@ if (!defined('LICENSE'))
  *
  * Turn off all error reporting:
  * error_reporting(0);
+ * ini_set('display_errors', 0);
  *
  * Report all PHP errors:
  * error_reporting(E_ALL);
+ * ini_set('display_errors', 1);
  */
 error_reporting(E_ALL);
+ini_set('display_errors', 1);
 
 
 // Start new or resume existing session

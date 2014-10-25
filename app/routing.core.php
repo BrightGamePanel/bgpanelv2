@@ -99,8 +99,8 @@ Flight::route('GET /logout', function() {
 
 
 
-// [LOGIN] VIEW
-Flight::route('GET /login', function() {
+// [LOGIN] MODULE
+Flight::route('GET|POST /login(/@page)', function( $page ) {
 
 	$authService = Core_AuthService::getAuthService();
 
@@ -110,21 +110,22 @@ Flight::route('GET /login', function() {
 		Flight::redirect('/');
 	}
 	else {
-		$mod_path = MODS_DIR . '/login/login.php';
-		bgp_routing_require_mod( $mod_path );
-	}
-});
 
-// [LOGIN] CONTROLLER
-Flight::route('POST /login/process', function() {
+		// Forgot passwd? Page
+		if ( !empty($page) && $page == 'password' ) {
+			$mod_path = MODS_DIR . '/login/login.password.php';
+		}
 
-	$authService = Core_AuthService::getAuthService();
+		// Login Controller
+		else if ( !empty($page) && $page == 'process' ) {
+			$mod_path = MODS_DIR . '/login/login.process.php';
+		}
 
-	if ($authService->getSessionValidity() == TRUE) {
-		Flight::redirect('/400');
-	}
-	else {
-		$mod_path = MODS_DIR . '/login/login.process.php';
+		// Login View
+		else {
+			$mod_path = MODS_DIR . '/login/login.php';
+		}
+
 		bgp_routing_require_mod( $mod_path );
 	}
 });

@@ -34,6 +34,11 @@ require( MODS_DIR . '/login/login.controller.class.php' );
 // Init Controller
 $loginController = new BGP_Controller_Login();
 
+/**
+ * Plug-in Dependencies
+ */
+require( LIBS_DIR . '/securimage/securimage.php' );
+
 
 // Get the method
 if ( isset($_POST['task']) ) {
@@ -52,6 +57,28 @@ switch ($task)
 {
 	case 'authenticateUser':
 		echo $loginController->authenticateUser( $_POST );
+		exit( 0 );
+
+	case 'getCaptcha':
+		$img = new Securimage();
+
+		if (!empty($_GET['namespace'])) $img->setNamespace($_GET['namespace']);
+
+		$img->show();  // outputs the image and content headers to the browser
+
+		exit( 0 );
+
+	case 'sendNewPassword':
+		$image = new Securimage();
+
+		if ( $image->check( $_POST['captcha'] ) == TRUE ) {
+			// Good captcha
+			echo $loginController->sendNewPassword( $_POST, TRUE );
+		}
+		else {
+			// Bad captcha
+			echo $loginController->sendNewPassword( $_POST, FALSE );
+		}
 		exit( 0 );
 
 	default:
