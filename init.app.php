@@ -49,9 +49,11 @@ error_reporting(E_ALL);
 session_start();
 
 
+define('BASE_URL', dirname($_SERVER['PHP_SELF']).'/');
+define('REQUEST_URI', $_SERVER["REQUEST_URI"]);
+
 // FILE AND DIRECTORY CONSTANTS
 define('BASE_DIR', realpath(dirname(__FILE__)));
-define('BASE_URL', dirname($_SERVER['PHP_SELF']).'/');
 
 define('APP_DIR', BASE_DIR . '/app');
 	define('CRYPTO_DIR', APP_DIR . '/crypto');

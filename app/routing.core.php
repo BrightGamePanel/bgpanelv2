@@ -58,6 +58,7 @@ Flight::route('GET|POST /', function() {
 		Flight::redirect('/login');
 	}
 
+	// The user is already logged in
 	// Redirect to the Dashboard
 	switch (Core_AuthService::getSessionPrivilege()) {
 		case 'Admin':
@@ -100,14 +101,32 @@ Flight::route('GET /logout', function() {
 
 // [LOGIN] VIEW
 Flight::route('GET /login', function() {
-	$mod_path = MODS_DIR . '/login/login.php';
-	bgp_routing_require_mod( $mod_path );
+
+	$authService = Core_AuthService::getAuthService();
+
+	if ($authService->getSessionValidity() == TRUE) {
+		// The user is already logged in
+
+		Flight::redirect('/');
+	}
+	else {
+		$mod_path = MODS_DIR . '/login/login.php';
+		bgp_routing_require_mod( $mod_path );
+	}
 });
 
 // [LOGIN] CONTROLLER
 Flight::route('POST /login/process', function() {
-	$mod_path = MODS_DIR . '/login/login.process.php';
-	bgp_routing_require_mod( $mod_path );
+
+	$authService = Core_AuthService::getAuthService();
+
+	if ($authService->getSessionValidity() == TRUE) {
+		Flight::redirect('/400');
+	}
+	else {
+		$mod_path = MODS_DIR . '/login/login.process.php';
+		bgp_routing_require_mod( $mod_path );
+	}
 });
 
 
@@ -126,7 +145,7 @@ Flight::route('GET|POST /@role(/@module(/@page))', function( $role, $module, $pa
 			{
 				// Switch the view depending the task
 				if ( !empty($page) ) {
-					// Admin Controller Invoked
+					// Admin Controller OR subPage Invoked
 					$mod_path = MODS_DIR . '/' . 'admin.' . $module . '/' . 'admin.' . $module . '.' . $page . '.php';
 				}
 				else {
@@ -137,8 +156,14 @@ Flight::route('GET|POST /@role(/@module(/@page))', function( $role, $module, $pa
 				// Call the module
 				bgp_routing_require_mod( $mod_path );
 			}
+			else if ( Core_AuthService::isUser() ) {
+				// A regular user has tried to access admin components
+				// Forbidden
+				Flight::redirect('/403');
+			}
 			else {
-				Flight::redirect('/login');
+				$return = '/' . str_replace( BASE_URL, '', REQUEST_URI );
+				Flight::redirect( '/login?page=' . $return );
 			}
 			break;
 
@@ -164,8 +189,13 @@ Flight::route('GET|POST /@role(/@module(/@page))', function( $role, $module, $pa
 
 				bgp_routing_require_mod( $mod_path );
 			}
+			else if ( Core_AuthService::isAdmin() ) {
+				// Forbidden
+				Flight::redirect('/403');
+			}
 			else {
-				Flight::redirect('/login');
+				$return = '/' . str_replace( BASE_URL, '', REQUEST_URI );
+				Flight::redirect( '/login?page=' . $return );
 			}
 			break;
 
@@ -201,7 +231,8 @@ Flight::route('GET|POST /@role(/@module(/@page))', function( $role, $module, $pa
 				bgp_routing_require_mod( $mod_path );
 			}
 			else {
-				Flight::redirect('/login');
+				$return = '/' . str_replace( BASE_URL, '', REQUEST_URI );
+				Flight::redirect( '/login?page=' . $return );
 			}
 			break;
 	}

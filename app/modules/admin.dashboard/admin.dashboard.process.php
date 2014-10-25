@@ -39,6 +39,9 @@ $controller = new BGP_Controller_Admin_Dashboard();
 if ( isset($_POST['task']) ) {
 	$task = $_POST['task'];
 }
+else if ( isset($_GET['task']) ) {
+	$task = $_GET['task'];
+}
 else {
 	$task = 'None';
 }

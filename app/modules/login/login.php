@@ -123,7 +123,15 @@ else {
 		);
 }
 
-$js->getAngularController( 'authenticateUser', 'login', $fields, './' );
+// Redirect
+if (!empty($_GET['page'])) {
+	$return = '.' . $_GET['page'];
+}
+else {
+	$return = './';
+}
+
+$js->getAngularController( 'authenticateUser', 'login', $fields, $return );
 
 ?>
 					<!-- END: SCRIPT -->
