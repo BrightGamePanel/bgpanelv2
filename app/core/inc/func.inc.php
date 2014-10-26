@@ -26,7 +26,9 @@
  */
 
 
-
+/**
+ * Secure require alias for the routing component of the system
+ */
 function bgp_routing_require_mod( $mod_path ) {
 	if ( file_exists($mod_path) ) {
 		require( $mod_path );
@@ -34,4 +36,18 @@ function bgp_routing_require_mod( $mod_path ) {
 	else {
 		Flight::notFound();
 	}
+}
+
+
+/**
+ * Little function that will generate a random password
+ *
+ * Some letters and digits have been removed, as they can be mistaken
+ */
+function bgp_create_random_password( $length )
+{
+	$chars = "abcdefghijkmnpqrstuvwxyz23456789-#@*!_?ABCDEFGHJKLMNPQRSTUVWXYZ"; // Available chars for the password
+	$string = str_shuffle($chars);
+	$pass = substr($string, 0, $length); // Truncate the password to the specified length
+	return $pass;
 }

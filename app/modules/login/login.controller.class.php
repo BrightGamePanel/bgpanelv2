@@ -37,7 +37,7 @@ if ( !class_exists('BGP_Controller')) {
 class BGP_Controller_Login extends BGP_Controller
 {
 	public function authenticateUser( $form ) {
-		$errors         = array();  	// array to hold validation errors
+		$errors			= array();  	// array to hold validation errors
 		$data 			= array(); 		// array to pass back data
 
 		$dbh = Core_DBH::getDBH();		// Get Database Handle
@@ -208,6 +208,186 @@ class BGP_Controller_Login extends BGP_Controller
 	}
 
 	public function sendNewPassword( $form, $captcha_validation ) {
+		$errors			= array();  	// array to hold validation errors
+		$data 			= array(); 		// array to pass back data
 
+		$dbh = Core_DBH::getDBH();		// Get Database Handle
+
+		// validate the variables ======================================================
+
+		if (!v::alphanum($form['username'])) {
+			$errors['username'] = T_('Username is required.');
+		}
+
+		if (!v::email($form['email'])) {
+			$errors['email'] = T_('Email address is required.');
+		}
+
+		// Verify the form =============================================================
+
+		$username 	= $form['username'];
+		$email 		= $form['email'];
+
+		try {
+			// Parse admin table first
+			$sth = $dbh->prepare("
+				SELECT admin_id, email
+				FROM " . DB_PREFIX . "admin
+				WHERE
+					username 	= :username AND
+					email 		= :email AND
+					status 		= 'active'
+				;");
+
+			$sth->bindParam(':username', $username);
+			$sth->bindParam(':email', $email);
+
+			$sth->execute();
+
+			$adminResult = $sth->fetchAll();
+
+			if (empty($adminResult))
+			{
+				// Parse regular user table
+				$sth = $dbh->prepare("
+					SELECT user_id, email
+					FROM " . DB_PREFIX . "user
+					WHERE
+						username = :username AND
+						email 	 = :email AND
+						status   = 'active'
+					;");
+
+				$sth->bindParam(':username', $username);
+				$sth->bindParam(':email', $email);
+
+				$sth->execute();
+
+				$userResult = $sth->fetchAll();
+			}
+		}
+		catch (PDOException $e) {
+			echo $e->getMessage().' in '.$e->getFile().' on line '.$e->getLine();
+			die();
+		}
+
+		if ( !empty($adminResult) && ($captcha_validation == TRUE) ) {
+			// Reset Admin Passwd
+			$plainTextPasswd = bgp_create_random_password( 13 );
+			$digestPasswd = Core_AuthService::getHash($plainTextPasswd);
+
+			// Update Admin Passwd
+			$sth = $dbh->prepare("
+				UPDATE " . DB_PREFIX . "admin
+				SET
+					password 	= :password
+				WHERE
+					admin_id	= :admin_id
+				;");
+
+			$sth->bindParam(':password', $digestPasswd);
+			$sth->bindParam(':admin_id', $adminResult[0]['admin_id']);
+
+			$sth->execute();
+
+			// Send Email
+			$to = htmlentities($adminResult[0]['email'], ENT_QUOTES);
+
+			$subject = T_('Reset Password');
+
+			$message = T_('Your password has been reset to:');
+			$message .= "<br /><br />" . $plainTextPasswd . "<br /><br />";
+			$message .= T_('With IP').': ';
+			$message .= $_SERVER['REMOTE_ADDR'];
+
+			$headers  = 'MIME-Version: 1.0' . "\r\n";
+			$headers .= 'Content-type: text/html; charset=iso-8859-1' . "\r\n";
+			$headers .= 'From: Bright Game Panel System <localhost@'.$_SERVER['SERVER_NAME'].'>' . "\r\n";
+			$headers .= 'X-Mailer: PHP/' . phpversion();
+
+			$mail = mail($to, $subject, $message, $headers);
+		}
+		else if ( !empty($userResult) && ($captcha_validation == TRUE) ) {
+			// Reset User Passwd
+			$plainTextPasswd = bgp_create_random_password( 13 );
+			$digestPasswd = Core_AuthService::getHash($plainTextPasswd);
+
+
+			// Update User Passwd
+			$sth = $dbh->prepare("
+				UPDATE " . DB_PREFIX . "user
+				SET
+					password 	= :password
+				WHERE
+					user_id		= :user_id
+				;");
+
+			$sth->bindParam(':password', $digestPasswd);
+			$sth->bindParam(':user_id', $userResult[0]['user_id']);
+
+			$sth->execute();
+
+			// Send Email
+			$to = htmlentities($userResult[0]['email'], ENT_QUOTES);
+
+			$subject = T_('Reset Password');
+
+			$message = T_('Your password has been reset to:');
+			$message .= "<br /><br />" . $plainTextPasswd . "<br /><br />";
+			$message .= T_('With IP').': ';
+			$message .= $_SERVER['REMOTE_ADDR'];
+
+			$headers  = 'MIME-Version: 1.0' . "\r\n";
+			$headers .= 'Content-type: text/html; charset=iso-8859-1' . "\r\n";
+			$headers .= 'From: Bright Game Panel System <localhost@'.$_SERVER['SERVER_NAME'].'>' . "\r\n";
+			$headers .= 'X-Mailer: PHP/' . phpversion();
+
+			$mail = mail($to, $subject, $message, $headers);
+		}
+		else {
+			if ( empty($userResult) && empty($adminResult) ) {
+				$errors['username'] = T_('Wrong information.');
+				$errors['email'] = T_('Wrong information.');
+			}
+
+			if ($captcha_validation == FALSE) {
+				$errors['captcha'] = T_('Wrong CAPTCHA Code.');
+			}
+		}
+
+		// return a response ===========================================================
+
+		// response if there are errors
+		if (!empty($errors)) {
+
+			// if there are items in our errors array, return those errors
+			$data['success'] = false;
+			$data['errors']  = $errors;
+
+			// notification
+			$data['msgType'] = 'warning';
+			$data['msg'] = T_('Invalid information provided!');
+		}
+		else if (!$mail) {
+
+			// mail delivery error
+			$data['success'] = false;
+
+			// notification
+			$data['msgType'] = 'danger';
+			$data['msg'] = T_('An error has occured while sending the email. Contact your system administrator.');
+		}
+		else {
+
+			// if there are no errors, return a message
+			$data['success'] = true;
+
+			// notification
+			$data['msgType'] = 'success';
+			$data['msg'] = T_('An email has been sent with a new password to your mailbox.');
+		}
+
+		// return all our data to an AJAX call
+		return json_encode($data);
 	}
 }

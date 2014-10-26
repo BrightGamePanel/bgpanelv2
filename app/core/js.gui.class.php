@@ -157,6 +157,12 @@ class Core_JS_GUI
 			}
 
 ?>
+									})
+									.error(function(data) {
+										// An error has been triggered while submitting the form.
+
+										$scope.msgType = 'danger';
+										$scope.msg = data;
 									});
 							};
 <?php
