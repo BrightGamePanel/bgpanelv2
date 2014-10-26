@@ -172,6 +172,92 @@ class Core_AuthService
 	}
 
 	/**
+	 * Security Counter
+	 *
+	 * May ban a user from being authenticated after unsuccessful attempts
+	 *
+	 * @param none
+	 * @return none
+	 * @access public
+	 */
+	public function incrementSecCount() {
+
+		// Increment security counter
+		if ( empty($this->session['SEC_COUNT']) ) {
+			$this->session['SEC_COUNT'] = 1;
+		}
+		else {
+			$this->session['SEC_COUNT'] += 1;
+		}
+
+		// Ban the user if too many attempts have been done
+		// or the user is already banned but keeps trying
+		if ( ($this->session['SEC_COUNT'] > CONF_SEC_LOGIN_ATTEMPTS) || !empty($this->session['SEC_BAN']) ) {
+			// Time to ban this session
+
+			// Reset counter
+			unset($this->session['SEC_COUNT']);
+
+			// Set ban
+			$this->session['SEC_BAN'] = time() + CONF_SEC_BAN_DURATION; // Mark the end of the ban
+		}
+
+		// Push to global $_SESSION
+		$_SESSION = $this->session;
+	}
+
+	/**
+	 * Security Counter - Reset Mechanism
+	 *
+	 * Reset the internal security counter
+	 *
+	 * @param none
+	 * @return none
+	 * @access public
+	 */
+	public function rsSecCount() {
+
+		if ( !empty($this->session['SEC_COUNT']) ) {
+			// Reset counter
+			unset($this->session['SEC_COUNT']);
+		}
+
+		// Push to global $_SESSION
+		$_SESSION = $this->session;
+	}
+
+	/**
+	 * Check If the Current Session Is Banned
+	 *
+	 * Automatically remove a ban if this one has expired
+	 *
+	 * @param none
+	 * @return bool
+	 * @access public
+	 */
+	public function isBanned() {
+
+		// No ban registred for this session
+		if ( empty($this->session['SEC_BAN'] ) ) {
+			return FALSE;
+		}
+		// Reset the ban if this one has expired
+		else if ( $this->session['SEC_BAN'] < time() ) {
+
+			unset( $this->session['SEC_BAN'] );
+
+			// Push to global $_SESSION
+			$_SESSION = $this->session;
+
+			return FALSE;
+		}
+		// Ban in effect
+		else {
+			return TRUE;
+		}
+	}
+
+	/**
 	 * SHA512 With Salt Function
 	 * Generate a hash value (message digest)
 	 *

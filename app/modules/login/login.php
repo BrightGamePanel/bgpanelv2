@@ -52,6 +52,21 @@ $gui->getHeader();
  * PAGE BODY
  */
 //------------------------------------------------------------------------------------------------------------+
+
+// Call security component
+$authService = Core_AuthService::getAuthService();
+
+if ( $authService->isBanned() ) {
+?>
+					<!-- BAN MSG -->
+					<div id="banmsg" class="alert alert-warning" role="alert">
+						<strong><?php echo T_('Too many incorrect login attempts'); ?></strong>
+						<?php echo T_('Please wait'); echo ' ' . CONF_SEC_BAN_DURATION . ' '; echo T_('seconds before trying again.'); ?>
+					</div>
+					<!-- END: BAN MSG -->
+<?php
+}
+
 ?>
 					<!-- CONTENTS -->
 					<div class="row">

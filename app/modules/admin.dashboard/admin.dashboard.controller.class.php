@@ -31,7 +31,6 @@ if ( !class_exists('BGP_Controller')) {
 
 /**
  * Admin Dashboard Controller
- * by Nikita Rousseau
  */
 
 class BGP_Controller_Admin_Dashboard extends BGP_Controller {

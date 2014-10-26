@@ -56,7 +56,19 @@ else {
 switch ($task)
 {
 	case 'authenticateUser':
-		echo $loginController->authenticateUser( $_POST );
+		// Verify that the user is not banned
+		$authService = Core_AuthService::getAuthService();
+
+		if ( $authService->isBanned() == FALSE ) {
+
+			echo $loginController->authenticateUser( $_POST );
+		}
+		else {
+			$authService->incrementSecCount(); // Extend ban duration
+
+			header( Core_Http_Status_Codes::httpHeaderFor( 403 ) );
+			echo Core_Http_Status_Codes::getMessageForCode( 403 );
+		}
 		exit( 0 );
 
 	case 'getCaptcha':
@@ -69,15 +81,26 @@ switch ($task)
 		exit( 0 );
 
 	case 'sendNewPassword':
-		$image = new Securimage();
+		$authService = Core_AuthService::getAuthService();
 
-		if ( $image->check( $_POST['captcha'] ) == TRUE ) {
-			// Good captcha
-			echo $loginController->sendNewPassword( $_POST, TRUE );
+		if ( $authService->isBanned() == FALSE ) {
+
+			$image = new Securimage();
+
+			if ( $image->check( $_POST['captcha'] ) == TRUE ) {
+				// Good captcha
+				echo $loginController->sendNewPassword( $_POST, TRUE );
+			}
+			else {
+				// Bad captcha
+				echo $loginController->sendNewPassword( $_POST, FALSE );
+			}
 		}
 		else {
-			// Bad captcha
-			echo $loginController->sendNewPassword( $_POST, FALSE );
+			$authService->incrementSecCount(); // Extend ban duration
+
+			header( Core_Http_Status_Codes::httpHeaderFor( 403 ) );
+			echo Core_Http_Status_Codes::getMessageForCode( 403 );
 		}
 		exit( 0 );
 

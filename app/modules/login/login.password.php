@@ -57,6 +57,21 @@ $gui->getHeader();
  * PAGE BODY
  */
 //------------------------------------------------------------------------------------------------------------+
+
+// Call security component
+$authService = Core_AuthService::getAuthService();
+
+if ( $authService->isBanned() ) {
+?>
+					<!-- BAN MSG -->
+					<div id="banmsg" class="alert alert-warning" role="alert">
+						<strong><?php echo T_('Too many incorrect login attempts'); ?></strong>
+						<?php echo T_('Please wait'); echo ' ' . CONF_SEC_BAN_DURATION . ' '; echo T_('seconds before trying again.'); ?>
+					</div>
+					<!-- END: BAN MSG -->
+<?php
+}
+
 ?>
 					<!-- CONTENTS -->
 					<div class="row">
@@ -105,6 +120,7 @@ $gui->getHeader();
 												<input class="form-control" type="text" ng-model="formData.captcha" id="captcha" name="captcha" placeholder="Captcha Code" required>
 											</div>
 											<span class="help-block" ng-show="errorCaptcha">{{ errorCaptcha }}</span>
+											<p class="help-block"><?php echo T_('Refresh the CAPTCHA image each time you submit the form above.'); ?></p>
 										</div>
 
 										<button class="btn btn-primary btn-lg btn-block" type="submit"><?php echo T_('Send Password'); ?></button>

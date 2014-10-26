@@ -31,7 +31,6 @@ if ( !class_exists('BGP_Controller')) {
 
 /**
  * Login Controller
- * by Nikita Rousseau
  */
 
 class BGP_Controller_Login extends BGP_Controller
@@ -105,6 +104,9 @@ class BGP_Controller_Login extends BGP_Controller
 
 			$authService = Core_AuthService::getAuthService();
 
+			// Reset Login Attempts
+			$authService->rsSecCount();
+
 			$authService->setSessionInfo(
 				$adminResult[0]['admin_id'],
 				$adminResult[0]['username'],
@@ -133,6 +135,9 @@ class BGP_Controller_Login extends BGP_Controller
 			// Give User Privilege
 
 			$authService = Core_AuthService::getAuthService();
+
+			// Reset Login Attempts
+			$authService->rsSecCount();
 
 			$authService->setSessionInfo(
 				$userResult[0]['user_id'],
@@ -164,6 +169,11 @@ class BGP_Controller_Login extends BGP_Controller
 				$this->rmCookie( 'USERNAME' );
 			}
 
+			// Call security component
+			$authService = Core_AuthService::getAuthService();
+			$authService->incrementSecCount();
+
+			// Messages
 			$errors['username'] = T_('Invalid Credentials.');
 			$errors['password'] = T_('Invalid Credentials.');
 		}
@@ -178,8 +188,16 @@ class BGP_Controller_Login extends BGP_Controller
 			$data['errors']  = $errors;
 
 			// notification
-			$data['msgType'] = 'warning';
-			$data['msg'] = T_('Login Failure!');
+			$authService = Core_AuthService::getAuthService();
+
+			if ( $authService->isBanned() ) {
+				$data['msgType'] = 'warning';
+				$data['msg'] = T_('You have been banned') . ' ' . CONF_SEC_BAN_DURATION . ' ' . T_('seconds!');
+			}
+			else {
+				$data['msgType'] = 'warning';
+				$data['msg'] = T_('Login Failure!');
+			}
 		}
 		else {
 
@@ -272,6 +290,11 @@ class BGP_Controller_Login extends BGP_Controller
 		}
 
 		if ( !empty($adminResult) && ($captcha_validation == TRUE) ) {
+			$authService = Core_AuthService::getAuthService();
+
+			// Reset Login Attempts
+			$authService->rsSecCount();
+
 			// Reset Admin Passwd
 			$plainTextPasswd = bgp_create_random_password( 13 );
 			$digestPasswd = Core_AuthService::getHash($plainTextPasswd);
@@ -308,6 +331,11 @@ class BGP_Controller_Login extends BGP_Controller
 			$mail = mail($to, $subject, $message, $headers);
 		}
 		else if ( !empty($userResult) && ($captcha_validation == TRUE) ) {
+			$authService = Core_AuthService::getAuthService();
+
+			// Reset Login Attempts
+			$authService->rsSecCount();
+
 			// Reset User Passwd
 			$plainTextPasswd = bgp_create_random_password( 13 );
 			$digestPasswd = Core_AuthService::getHash($plainTextPasswd);
@@ -345,6 +373,11 @@ class BGP_Controller_Login extends BGP_Controller
 			$mail = mail($to, $subject, $message, $headers);
 		}
 		else {
+			// Call security component
+			$authService = Core_AuthService::getAuthService();
+			$authService->incrementSecCount();
+
+			// Messages
 			if ( empty($userResult) && empty($adminResult) ) {
 				$errors['username'] = T_('Wrong information.');
 				$errors['email'] = T_('Wrong information.');
@@ -365,8 +398,16 @@ class BGP_Controller_Login extends BGP_Controller
 			$data['errors']  = $errors;
 
 			// notification
-			$data['msgType'] = 'warning';
-			$data['msg'] = T_('Invalid information provided!');
+			$authService = Core_AuthService::getAuthService();
+
+			if ( $authService->isBanned() ) {
+				$data['msgType'] = 'warning';
+				$data['msg'] = T_('You have been banned') . ' ' . CONF_SEC_BAN_DURATION . ' ' . T_('seconds!');
+			}
+			else {
+				$data['msgType'] = 'warning';
+				$data['msg'] = T_('Invalid information provided!');
+			}
 		}
 		else if (!$mail) {
 
@@ -384,7 +425,7 @@ class BGP_Controller_Login extends BGP_Controller
 
 			// notification
 			$data['msgType'] = 'success';
-			$data['msg'] = T_('An email has been sent with a new password to your mailbox.');
+			$data['msg'] = T_('Your password has been reset and emailed to you.');
 		}
 
 		// return all our data to an AJAX call
