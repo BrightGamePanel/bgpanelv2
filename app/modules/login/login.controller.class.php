@@ -64,7 +64,7 @@ class BGP_Controller_Login extends BGP_Controller
 				WHERE
 					username = :username AND
 					password = :password AND
-					status = 'active'
+					status = 'Active'
 				;");
 
 			$sth->bindParam(':username', $username);
@@ -83,7 +83,7 @@ class BGP_Controller_Login extends BGP_Controller
 					WHERE
 						username = :username AND
 						password = :password AND
-						status = 'active'
+						status = 'Active'
 					;");
 
 				$sth->bindParam(':username', $username);
