@@ -65,8 +65,8 @@ switch (ENV_RUNTIME)
 		require( LIBS_DIR	. '/phpseclib/RSA.php' );
 		require( LIBS_DIR	. '/phpseclib/ANSI.php' );
 
-		require( LIBS_DIR	. '/phpseclib/SSH2.php' );
-		require( LIBS_DIR	. '/phpseclib/SFTP.php' );
+		//require( LIBS_DIR	. '/phpseclib/SSH2.php' );
+		//require( LIBS_DIR	. '/phpseclib/SFTP.php' );
 
 		// Authentication Service
 		require( APP_DIR	. '/core/auth.class.php' );

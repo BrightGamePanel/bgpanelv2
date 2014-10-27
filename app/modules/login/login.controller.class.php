@@ -113,10 +113,11 @@ class BGP_Controller_Login extends BGP_Controller
 				$adminResult[0]['firstname'],
 				$adminResult[0]['lastname'],
 				$adminResult[0]['lang'],
-				BGP_ADMIN_TEMPLATE
+				BGP_ADMIN_TEMPLATE,
+				'Admin'
 				);
 
-			$authService->setSessionPerms( $role = 'Admin' );
+			$authService->setSessionPerms( 'Admin' );
 
 			// Database update
 
@@ -158,6 +159,10 @@ class BGP_Controller_Login extends BGP_Controller
 
 			// Language
 			$this->setLangCookie( $adminResult[0]['lang'] );
+
+			// Log Event
+			$logger = Logger::getLogger('core');
+			$logger->info('Log in.');
 		}
 		else if (!empty($userResult)) {
 			// Give User Privilege
@@ -173,10 +178,11 @@ class BGP_Controller_Login extends BGP_Controller
 				$userResult[0]['firstname'],
 				$userResult[0]['lastname'],
 				$userResult[0]['lang'],
-				BGP_USER_TEMPLATE
+				BGP_USER_TEMPLATE,
+				'User'
 				);
 
-			$authService->setSessionPerms( $role = 'User' );
+			$authService->setSessionPerms( 'User' );
 
 			// Database update
 

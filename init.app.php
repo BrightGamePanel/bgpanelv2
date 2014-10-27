@@ -208,5 +208,34 @@ if ( ENV_RUNTIME == 'DEFAULT' ) {
 	}
 }
 
+/**
+ * LOGGING Configuration
+ * Apache Log4php configuration
+ *
+ * @link: http://logging.apache.org/log4php/docs/configuration.html
+ */
+Logger::configure(
+	array(
+		'appenders' => array(
+			'default' => array(
+				'class' => 'LoggerAppenderFile',
+				'layout' => array(
+					'class' => 'LoggerLayoutPattern',
+					'params' => array(
+						'conversionPattern' => '%date{Y-m-d H:i:s,u} %logger %-5level %session{COM} %session{USERNAME} %session{ID} %server{REMOTE_ADDR} %server{REQUEST_URI} %class %method %msg%n'
+					)
+				),
+				'params' => array(
+					'file' => LOGS_DIR . '/' . 'log_' . date('Y-m-d') . '.txt',
+					'append' => true
+				)
+			)
+		),
+		'rootLogger' => array(
+			'appenders' => array('default')
+		)
+	)
+);
+
 // Clean Up
 unset( $CONFIG, $bgpCoreInfo );

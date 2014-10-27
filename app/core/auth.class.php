@@ -361,10 +361,11 @@ class Core_AuthService
 	 * @param String $lastname
 	 * @param String $lang
 	 * @param String $template
+	 * @param String $COM
 	 * @return void
 	 * @access public
 	 */
-	public function setSessionInfo( $id, $username, $firstname, $lastname, $lang, $template ) {
+	public function setSessionInfo( $id, $username, $firstname, $lastname, $lang, $template, $COM ) {
 		$info = array (
 				'id' => $id,
 				'firstname' => $firstname,
@@ -372,9 +373,13 @@ class Core_AuthService
 				);
 
 		$this->session['INFORMATION'] = $info;
-		$this->session['USERNAME'] = $username;
 		$this->session['LANG'] = $lang;
 		$this->session['TEMPLATE'] = $template;
+
+		$this->session['ID'] = $id; // Logging (user-id)
+		$this->session['COM'] = $COM; // Logging (Component Object Model)
+		$this->session['USERNAME'] = $username;	// Multi-purpose
+												// Logging (user-identifier)
 
 		$this->username = $username; // Update username var as well
 		$_SESSION = $this->session;
@@ -391,9 +396,12 @@ class Core_AuthService
 		if ( array_key_exists('INFORMATION', $this->session) ) {
 			unset (
 			$this->session['INFORMATION'],
-			$this->session['USERNAME'],
 			$this->session['LANG'],
-			$this->session['TEMPLATE']
+			$this->session['TEMPLATE'],
+
+			$this->session['ID'],
+			$this->session['COM'],
+			$this->session['USERNAME']
 			);
 		}
 
@@ -406,11 +414,11 @@ class Core_AuthService
 	 *
 	 * Note: should be called after Core_AuthService->setSessionInfo()
 	 *
-	 * @param String $role = 'Admin' | 'User' | 'Guest'
+	 * @param String $role
 	 * @return void
 	 * @access public
 	 */
-	public function setSessionPerms( $role = 'Guest' ) {
+	public function setSessionPerms( $role ) {
 		if ( !empty($this->username) ) {
 			if ( $role === 'Admin' || $role === 'User' || $role === 'Guest' ) {
 
