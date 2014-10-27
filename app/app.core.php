@@ -50,6 +50,9 @@ switch (ENV_RUNTIME)
 		// Kirby 2 Framework
 		require( LIBS_DIR	. '/kirby/bootstrap.php');
 
+		// Apache log4php
+		require( LIBS_DIR	. '/log4php/Logger.php');
+
 		// Flight Framework
 		require( LIBS_DIR	. '/flight/Flight.php');
 
