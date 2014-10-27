@@ -161,8 +161,8 @@ class BGP_Controller_Login extends BGP_Controller
 			$this->setLangCookie( $adminResult[0]['lang'] );
 
 			// Log Event
-			$logger = Logger::getLogger('main');
-			exit(var_dump($logger->getAllAppenders()));
+			Logger::configure( bgp_get_log4php_conf_array() );
+			$logger = Logger::getLogger('loginLogger');
 			$logger->info('Log in.');
 		}
 		else if (!empty($userResult)) {
