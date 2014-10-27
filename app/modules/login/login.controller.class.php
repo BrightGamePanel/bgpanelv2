@@ -35,6 +35,7 @@ if ( !class_exists('BGP_Controller')) {
 
 class BGP_Controller_Login extends BGP_Controller
 {
+
 	public function authenticateUser( $form ) {
 		$errors			= array();  	// array to hold validation errors
 		$data 			= array(); 		// array to pass back data
@@ -162,7 +163,7 @@ class BGP_Controller_Login extends BGP_Controller
 
 			// Log Event
 			Logger::configure( bgp_get_log4php_conf_array() );
-			$logger = Logger::getLogger('loginLogger');
+			$logger = Logger::getLogger( self::getLoggerName( __CLASS__ ) );
 			$logger->info('Log in.');
 		}
 		else if (!empty($userResult)) {
@@ -225,6 +226,11 @@ class BGP_Controller_Login extends BGP_Controller
 
 			// Language
 			$this->setLangCookie( $userResult[0]['lang'] );
+
+			// Log Event
+			Logger::configure( bgp_get_log4php_conf_array() );
+			$logger = Logger::getLogger( self::getLoggerName( __CLASS__ ) );
+			$logger->info('Log in.');
 		}
 		else {
 			// Cookie
@@ -235,6 +241,11 @@ class BGP_Controller_Login extends BGP_Controller
 			// Call security component
 			$authService = Core_AuthService::getAuthService();
 			$authService->incrementSecCount();
+
+			// Log Event
+			Logger::configure( bgp_get_log4php_conf_array() );
+			$logger = Logger::getLogger( self::getLoggerName( __CLASS__ ) );
+			$logger->info('Login failure.');
 
 			// Messages
 			$errors['username'] = T_('Invalid Credentials.');
@@ -392,6 +403,11 @@ class BGP_Controller_Login extends BGP_Controller
 			$headers .= 'X-Mailer: PHP/' . phpversion();
 
 			$mail = mail($to, $subject, $message, $headers);
+
+			// Log Event
+			Logger::configure( bgp_get_log4php_conf_array() );
+			$logger = Logger::getLogger( self::getLoggerName( __CLASS__ ) );
+			$logger->info('Password reset.');
 		}
 		else if ( !empty($userResult) && ($captcha_validation == TRUE) ) {
 			$authService = Core_AuthService::getAuthService();
@@ -434,11 +450,21 @@ class BGP_Controller_Login extends BGP_Controller
 			$headers .= 'X-Mailer: PHP/' . phpversion();
 
 			$mail = mail($to, $subject, $message, $headers);
+
+			// Log Event
+			Logger::configure( bgp_get_log4php_conf_array() );
+			$logger = Logger::getLogger( self::getLoggerName( __CLASS__ ) );
+			$logger->info('Password reset.');
 		}
 		else {
 			// Call security component
 			$authService = Core_AuthService::getAuthService();
 			$authService->incrementSecCount();
+
+			// Log Event
+			Logger::configure( bgp_get_log4php_conf_array() );
+			$logger = Logger::getLogger( self::getLoggerName( __CLASS__ ) );
+			$logger->info('Bad password reset.');
 
 			// Messages
 			if ( empty($userResult) && empty($adminResult) ) {

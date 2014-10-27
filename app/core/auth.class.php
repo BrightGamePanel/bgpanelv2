@@ -87,6 +87,11 @@ class Core_AuthService
 	 */
 	public static function logout() {
 
+		// Log Event
+		Logger::configure( bgp_get_log4php_conf_array() );
+		$logger = Logger::getLogger( 'authLogger' );
+		$logger->info('Log out.');
+
 		$_SESSION = array(); // Destroy session variables
 		session_destroy();
 
@@ -200,6 +205,11 @@ class Core_AuthService
 
 			// Set ban
 			$this->session['SEC_BAN'] = time() + CONF_SEC_BAN_DURATION; // Mark the end of the ban
+
+			// Log Event
+			Logger::configure( bgp_get_log4php_conf_array() );
+			$logger = Logger::getLogger( 'authLogger' );
+			$logger->info('Session banned.');
 		}
 
 		// Push to global $_SESSION

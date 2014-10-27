@@ -36,4 +36,8 @@ class BGP_Controller
 	function __construct( )	{
 
 	}
+
+	public static function getLoggerName( $class_name ) {
+		return strtolower(str_replace( 'BGP_Controller_', '', $class_name )) . 'Logger';
+	}
 }

@@ -242,11 +242,11 @@ function bgp_get_log4php_conf_array( ) {
 				'layout' => array(
 					'class' => 'LoggerLayoutPattern',
 					'params' => array(
-						'conversionPattern' => '%date{Y-m-d H:i:s,u} %-12.16logger %-5level %-5.5session{COM} %-12session{USERNAME} %-3session{ID} %-15.15server{REMOTE_ADDR} %-35server{REQUEST_URI} %-35class %-20method "%msg"%n'
+						'conversionPattern' => '[%date{Y-m-d H:i:s,u}] %-5level %-5.5session{COM} %-12session{USERNAME} %-3session{ID} %-15.15server{REMOTE_ADDR} %-35server{REQUEST_URI} %-35class %-20method "%msg"%n'
 					)
 				),
 				'params' => array(
-					'file' => REAL_LOGGING_DIR . '/' . 'log_' . date('Y-m-d') . '.txt',
+					'file' => REAL_LOGGING_DIR . '/' . date('Y-m-d') . '.txt',
 					'append' => true
 				)
 			),
@@ -255,11 +255,11 @@ function bgp_get_log4php_conf_array( ) {
 				'layout' => array(
 					'class' => 'LoggerLayoutPattern',
 					'params' => array(
-						'conversionPattern' => '%date{Y-m-d H:i:s,u} %-12.16logger %-5level Core System V2 localhost %class %method %msg%n'
+						'conversionPattern' => '[%date{Y-m-d H:i:s,u}] %-5level Core System V2 localhost %-35class %-20method "%msg"%n'
 					)
 				),
 				'params' => array(
-					'file' => REAL_LOGGING_DIR . '/' . 'log_' . date('Y-m-d') . '.txt',
+					'file' => REAL_LOGGING_DIR . '/' . date('Y-m-d') . '.core.txt',
 					'append' => true
 				)
 			)
