@@ -351,39 +351,6 @@ try {
 
 	//---------------------------------------------------------+
 
-	// Table structure for table "log"
-
-		$dbh->exec( "DROP TABLE IF EXISTS ".DB_PREFIX."log  ; " );
-		$dbh->exec( "
-	CREATE TABLE ".DB_PREFIX."log (
-	  log_id		INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
-	  log_who_id	INTEGER UNSIGNED NOT NULL,
-	  timestamp		TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-	  target		TEXT NOT NULL,
-	  module		TEXT NOT NULL,
-	  message		TEXT NOT NULL,
-	  severity		TEXT NOT NULL,
-	  PRIMARY KEY  (log_id)
-	)
-	ENGINE=MyISAM CHARSET=utf8 COLLATE=utf8_unicode_ci  ; " );
-
-	//---------------------------------------------------------+
-
-	// Table structure for table "log_who"
-
-		$dbh->exec( "DROP TABLE IF EXISTS ".DB_PREFIX."log_who  ; " );
-		$dbh->exec( "
-	CREATE TABLE ".DB_PREFIX."log_who (
-	  log_who_id		INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
-	  obj_id			INTEGER UNSIGNED NOT NULL,
-	  obj_type			TEXT NOT NULL,
-	  ip				TEXT NOT NULL,
-	  PRIMARY KEY  (log_who_id)
-	)
-	ENGINE=MyISAM CHARSET=utf8 COLLATE=utf8_unicode_ci  ; " );
-
-	//---------------------------------------------------------+
-
 	// Table structure for table "os"
 
 		$dbh->exec( "DROP TABLE IF EXISTS ".DB_PREFIX."os  ; " );
