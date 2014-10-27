@@ -118,6 +118,34 @@ class BGP_Controller_Login extends BGP_Controller
 
 			$authService->setSessionPerms( $role = 'Admin' );
 
+			// Database update
+
+			$sth = $dbh->prepare("
+				UPDATE " . DB_PREFIX . "admin
+				SET
+					last_login		= :last_login,
+					last_activity	= :last_activity,
+					last_ip 		= :last_ip,
+					last_host		= :last_host,
+					token 			= :token
+				WHERE
+					admin_id		= :admin_id
+				;");
+
+			$last_login = date('Y-m-d H:i:s');
+			$last_activity = date('Y-m-d H:i:s');
+			$last_host = gethostbyaddr($_SERVER['REMOTE_ADDR']);
+			$token = session_id();
+
+			$sth->bindParam(':last_login', $last_login);
+			$sth->bindParam(':last_activity', $last_activity);
+			$sth->bindParam(':last_ip', $_SERVER['REMOTE_ADDR']);
+			$sth->bindParam(':last_host', $last_host);
+			$sth->bindParam(':token', $token);
+			$sth->bindParam(':admin_id', $adminResult[0]['admin_id']);
+
+			$sth->execute();
+
 			// Cookies
 
 			// Remember Me
@@ -149,6 +177,34 @@ class BGP_Controller_Login extends BGP_Controller
 				);
 
 			$authService->setSessionPerms( $role = 'User' );
+
+			// Database update
+
+			$sth = $dbh->prepare("
+				UPDATE " . DB_PREFIX . "user
+				SET
+					last_login		= :last_login,
+					last_activity	= :last_activity,
+					last_ip 		= :last_ip,
+					last_host		= :last_host,
+					token 			= :token
+				WHERE
+					user_id			= :user_id
+				;");
+
+			$last_login = date('Y-m-d H:i:s');
+			$last_activity = date('Y-m-d H:i:s');
+			$last_host = gethostbyaddr($_SERVER['REMOTE_ADDR']);
+			$token = session_id();
+
+			$sth->bindParam(':last_login', $last_login);
+			$sth->bindParam(':last_activity', $last_activity);
+			$sth->bindParam(':last_ip', $_SERVER['REMOTE_ADDR']);
+			$sth->bindParam(':last_host', $last_host);
+			$sth->bindParam(':token', $token);
+			$sth->bindParam(':user_id', $userResult[0]['user_id']);
+
+			$sth->execute();
 
 			// Cookies
 

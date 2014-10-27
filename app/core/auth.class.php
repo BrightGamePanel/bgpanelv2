@@ -281,9 +281,70 @@ class Core_AuthService
 		if ( !empty($this->username) ) {
 
 			$credentials = $this->decryptSessionCredentials();
+			if ( empty($credentials['role']) ) {
+				$credentials['role'] = 'Guest';
+			}
 
+			// Level 1
 			if ( $credentials['username'] == $this->username && $credentials['key'] == $this->auth_key && $credentials['token'] == session_id() ) {
-				return TRUE;
+
+				// Level 2
+				$dbh = Core_DBH::getDBH();
+
+				switch ( $credentials['role'] )
+				{
+					case 'Admin':
+
+						// Fetch information from the database
+						$sth = $dbh->prepare("
+							SELECT username, last_ip, token
+							FROM " . DB_PREFIX . "admin
+							WHERE
+								admin_id = :admin_id
+							;");
+
+						$sth->bindParam( ':admin_id', $this->session['INFORMATION']['id'] );
+
+						$sth->execute();
+
+						$adminResult = $sth->fetchAll(PDO::FETCH_ASSOC);
+
+						// Verify
+						if ( $adminResult[0]['username'] == $this->username && $adminResult[0]['last_ip'] == $_SERVER['REMOTE_ADDR'] && $adminResult[0]['token'] == session_id() ) {
+							return TRUE;
+						}
+						else {
+							return FALSE;
+						}
+
+					case 'User':
+
+						// Fetch information from the database
+						$sth = $dbh->prepare("
+							SELECT username, last_ip, token
+							FROM " . DB_PREFIX . "user
+							WHERE
+								user_id = :user_id
+							;");
+
+						$sth->bindParam( ':user_id', $this->session['INFORMATION']['id'] );
+
+						$sth->execute();
+
+						$userResult = $sth->fetchAll(PDO::FETCH_ASSOC);
+
+						// Verify
+						if ( $userResult[0]['username'] == $this->username && $userResult[0]['last_ip'] == $_SERVER['REMOTE_ADDR'] && $userResult[0]['token'] == session_id() ) {
+							return TRUE;
+						}
+						else {
+							return FALSE;
+						}
+
+					default:
+						// Guest case
+						return FALSE;
+				}
 			}
 		}
 		return FALSE;
