@@ -237,5 +237,57 @@ Logger::configure(
 	)
 );
 
+
+
+
+
+/*
+class Core_LogConfigurator implements LoggerConfigurator {
+
+	public function configure(LoggerHierarchy $hierarchy, $input = null) {
+
+		// GENERAL LOG APPENDER ===========================================================
+
+		// General log layout
+		$layout = new LoggerLayoutPattern();
+		$layout->setConversionPattern("%date{Y-m-d H:i:s,u} %logger %-5level %session{COM} %session{USERNAME} %session{ID} %server{REMOTE_ADDR} %server{REQUEST_URI} %class %method %msg%n");
+		$layout->activateOptions();
+
+		// Create an appender which logs to file
+		$moduleAppender = new LoggerAppenderFile( 'moduleAppender' );
+
+		$moduleAppender->setLayout( $layout );
+		$moduleAppender->setFile( LOGS_DIR . '/' . 'log_' . date('Y-m-d') . '.txt' );
+		$moduleAppender->setAppend( true );
+		$moduleAppender->setThreshold( 'all' );
+		$moduleAppender->activateOptions();
+
+		// CORE SYSTEM LOG APPENDER =======================================================
+
+		// Core system log layout
+		$layout = new LoggerLayoutPattern();
+		$layout->setConversionPattern("%date{Y-m-d H:i:s,u} %logger %-5level Core System V2 localhost %class %method %msg%n");
+		$layout->activateOptions();
+
+
+		$coreAppender = new LoggerAppenderFile( 'coreAppender' );
+
+		$coreAppender->setLayout( $layout );
+		$coreAppender->setFile( LOGS_DIR . '/' . 'log_' . date('Y-m-d') . '.txt' );
+		$coreAppender->setAppend( true );
+		$coreAppender->setThreshold( 'all' );
+		$coreAppender->activateOptions();
+
+		// Add both appenders to the root logger ==========================================
+
+		$root = $hierarchy->getRootLogger();
+		$root->addAppender($moduleAppender);
+		$root->addAppender($coreAppender);
+
+	}
+}
+
+*/
+
 // Clean Up
 unset( $CONFIG, $bgpCoreInfo );
