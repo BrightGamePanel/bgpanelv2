@@ -335,7 +335,7 @@ class Core_GUI
 
 
 <?php
-	exit(var_dump( $this->getSideBarItems() ));
+	exit( print_r( $this->getSideBarItems() ));
 ?>
 
 
@@ -392,8 +392,6 @@ class Core_GUI
 						if (is_file( $manifest )) {
 							$manifestFiles[] = simplexml_load_file( $manifest ); // Store the object
 						}
-
-						unset($manifest);
 					}
 
 					// Case: "module"
@@ -401,20 +399,89 @@ class Core_GUI
 
 						// Get the manifest
 						$manifest = MODS_DIR . '/' . $module . '/sidebar.gui.xml';
+
 						if (is_file( $manifest )) {
-							$manifestFiles[] = simplexml_load_file( $manifest ); // Store the object
+							$manifestFiles[] = simplexml_load_file( $manifest );
 						}
-
-						unset($manifest);
 					}
-
-					unset($role, $module);
 				}
 			}
 
 			closedir($handle);
+		}
 
-			return $manifestFiles;
+		if (!empty($manifestFiles)) {
+
+			$items = array();
+
+			// XML Object to Array
+
+			foreach( $manifestFiles as $manifest ) {
+
+				$txt  = (string)$manifest->{'module_sidebar'}->txt;
+				$rank = (int)$manifest->{'module_sidebar'}->rank;
+
+				$item[$txt]['rank'] = $rank;
+				$item[$txt]['href'] = (string)$manifest->{'module_sidebar'}->href;
+				$item[$txt]['icon'] = (string)$manifest->{'module_sidebar'}->icon;
+
+				// Processing sub-menu if any
+
+				if ( !empty($manifest->{'module_sidebar'}->{'sub_menu'}) ) {
+					
+					$sub_menu = (array)$manifest->{'module_sidebar'}->{'sub_menu'};
+
+					foreach ($sub_menu as $sub_menu_key => $sub_menu_item) {
+
+						$sub_menu_item = (array)$sub_menu_item;
+
+						foreach ($sub_menu_item as $sub_menu_item_href => $sub_menu_item_link) {
+
+							$sub_menu_item_href = (string)$sub_menu_item_href;
+
+							// Push to array
+
+							$item[$txt]['sub_menu'][$sub_menu_key][$sub_menu_item_href]['href'] = (string)$sub_menu_item_link->{'href'};
+						}
+					}
+				}
+				else {
+
+					$item[$txt]['sub_menu'] = array();
+				}
+
+				$items = array_merge($items, $item); // Push
+			}
+
+			$sideBarItems = array();
+
+			// Sort Array
+
+			foreach ($items as $key => $item) {
+
+				$rank = $item['rank'];
+				unset($item['rank']);
+
+				// Free key
+				if (!isset($sideBarItems[$rank])) {
+
+					$sideBarItems[$rank][$key] = $item; // Push
+				}
+				// Key not available
+				else {
+
+					$i = 1;
+					while ( isset($sideBarItems[ $rank + $i ]) ) {
+						$i++;
+					}
+
+					$sideBarItems[ $rank + $i ][$key] = $item; // Push
+				}
+			}
+
+			// Return Array
+
+			return $sideBarItems;
 		}
 
 		return array();

@@ -2,9 +2,10 @@
 <!-- GUI Sidebar Manifest -->
 <bgp_module>
 	<module_sidebar>
+		<rank>1</rank>
+		<txt>Configuration</txt>
 		<href>#</href>
 		<icon>fa fa-wrench-o fa-fw</icon>
-		<txt>Configuration</txt>
 
 		<sub_menu>
 			<general>
