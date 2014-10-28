@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Module Manifest -->
+<bgp_module>
+	<module_info>
+		<author>Rousseau Nikita</author>
+		<version>1.0</version>
+	</module_info>
+
+	<module_settings>
+		<title>My Account</title>
+	</module_settings>
+
+	<module_options>
+	</module_options>
+
+	<class_definition filename="app/modules/myaccount/myaccount.class.php" classname="BGP_Module_Myaccount"/>
+	<controller_class_definition filename="app/modules/myaccount/myaccount.controller.class.php" classname="BGP_Controller_Myaccount"/>
+</bgp_module>

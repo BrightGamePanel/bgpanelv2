@@ -16,4 +16,5 @@
 	</module_options>
 
 	<class_definition filename="app/modules/login/login.class.php" classname="BGP_Module_Login"/>
+	<controller_class_definition filename="app/modules/login/login.controller.class.php" classname="BGP_Controller_Login"/>
 </bgp_module>

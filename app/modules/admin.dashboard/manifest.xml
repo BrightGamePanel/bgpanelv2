@@ -11,9 +11,8 @@
 	</module_settings>
 
 	<module_options>
-		<empty_navbar>0</empty_navbar>
-		<no_sidebar>0</no_sidebar>
 	</module_options>
 
 	<class_definition filename="app/modules/admin.dashboard/admin.dashboard.class.php" classname="BGP_Module_Admin_Dashboard"/>
+	<controller_class_definition filename="app/modules/admin.dashboard/admin.dashboard.controller.class.php" classname="BGP_Controller_Admin_Dashboard"/>
 </bgp_module>

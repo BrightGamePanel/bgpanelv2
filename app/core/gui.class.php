@@ -230,25 +230,62 @@ class Core_GUI
 		{
 //------------------------------------------------------------------------------------------------------------+
 ?>
-	                <li class="dropdown">
-	                    <a class="dropdown-toggle" data-toggle="dropdown" href="#">
-	                        <i class="fa fa-user fa-fw"></i>  <i class="fa fa-caret-down"></i>
-	                    </a>
-	                    <ul class="dropdown-menu dropdown-user">
-	                        <li>
-	                        	<a href="#"><i class="fa fa-user fa-fw"></i>&nbsp;User Profile</a>
-	                        </li>
-	                        <li>
-	                        	<a href="#"><i class="fa fa-gear fa-fw"></i>&nbsp;Settings</a>
-	                        </li>
-	                        <li class="divider"></li>
-	                        <li>
-	                        	<a href="./logout"><i class="fa fa-sign-out fa-fw"></i>&nbsp;Logout</a>
-	                        </li>
-	                    </ul>
-	                    <!-- /.dropdown-user -->
-	                </li>
+					<li class="dropdown">
+						<a class="dropdown-toggle" data-toggle="dropdown" href="#">
+							<i class="fa fa-bell fa-fw"></i>  <i class="fa fa-caret-down"></i>
+						</a>
+						<ul class="dropdown-menu dropdown-alerts" role="menu">
+							<li>
+								<a href="#">
+									<div>
+										<i class="fa fa-comment fa-fw"></i> New Comment
+										<span class="pull-right text-muted small">4 minutes ago</span>
+									</div>
+								</a>
+							</li>
+							<li class="divider"></li>
+							<li>
+								<a href="#">
+									<div>
+										<i class="fa fa-twitter fa-fw"></i> 3 New Followers
+										<span class="pull-right text-muted small">12 minutes ago</span>
+									</div>
+								</a>
+							</li>
+							<li class="divider"></li>
+							<li>
+								<a class="text-center" href="#">
+									<strong>See All Alerts</strong>
+									<i class="fa fa-angle-right"></i>
+								</a>
+							</li>
+						</ul>
+						<!-- /.dropdown-alerts -->
+					</li>
+					<li class="dropdown">
+						<a class="dropdown-toggle" data-toggle="dropdown" href="#">
+							<i class="fa fa-user fa-fw"></i>  <i class="fa fa-caret-down"></i>
+						</a>
+						<ul class="dropdown-menu dropdown-user" role="menu">
+							<li role="presentation" class="dropdown-header"><?php
+								echo htmlspecialchars(
+									$_SESSION['INFORMATION']['firstname'] .
+									' ' .
+									$_SESSION['INFORMATION']['lastname'] .
+									' @' .
+									$_SESSION['USERNAME']
+									, ENT_QUOTES );
+							?></li>
+							<li>
+								<a href="./myaccount"><i class="fa fa-gear fa-fw"></i>&nbsp;<?php echo T_('Settings'); ?></a>
+							</li>
+						</ul>
+						<!-- /.dropdown-user -->
+					</li>
 	                <!-- /.dropdown -->
+	                <li>
+	                	<a href="./logout"><i class="fa fa-sign-out fa-fw"></i></a>
+	                </li>
 <?php
 //------------------------------------------------------------------------------------------------------------+
 		}
