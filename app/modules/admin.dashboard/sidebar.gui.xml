@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- GUI Sidebar Manifest -->
+<bgp_module>
+	<module_sidebar>
+		<href>./</href>
+		<icon>fa fa-dashboard fa-fw</icon>
+		<txt>Dashboard</txt>
+
+		<sub_menu></sub_menu>
+	</module_sidebar>
+</bgp_module>

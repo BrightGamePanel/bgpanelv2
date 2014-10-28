@@ -315,16 +315,109 @@ class Core_GUI
 					<div class="sidebar-nav navbar-collapse">
 						<ul class="nav" id="side-menu">
 							<li>
-								<a href="./"><i class="fa fa-dashboard fa-fw"></i>&nbsp;Dashboard</a>
+								<a href="./"><i class="fa fa-dashboard fa-fw"></i>&nbsp;<?php echo T_('Dashboard'); ?></a>
+							</li>
+							<li>
+								<a href="#"><i class="fa fa-hdd-o fa-fw"></i>&nbsp;Test<span class="fa arrow"></span></a>
+								<ul class="nav nav-second-level">
+									<li>
+										<a href="#">Test</a>
+									</li>
+									<li>
+										<a href="#">SubTest</a>
+									</li>
+								</ul>
+								<!-- /.nav-second-level -->
 							</li>
 						</ul>
 					</div>
 					<!-- /.sidebar-collapse -->
+
+
+<?php
+	exit(var_dump( $this->getSideBarItems() ));
+?>
+
+
 				</div>
 				<!-- END: SIDEBAR -->
 
 <?php
 //------------------------------------------------------------------------------------------------------------+
+	}
+
+
+
+	/**
+	 * Get Sidebar Items
+	 *
+	 * @param none
+	 * @return array
+	 * @access public
+	 */
+	private function getSideBarItems()
+	{
+		$privilege = Core_AuthService::getSessionPrivilege();
+		$manifestFiles = array();
+
+		// Read all "sidebar.gui.xml" files under the "app/modules" directory
+		$handle = opendir( MODS_DIR );
+
+		if ($handle) {
+
+			// Foreach modules
+			while (false !== ($entry = readdir($handle))) {
+
+				// Dump specific directories
+				if ($entry != "." && $entry != "..") {
+
+					// Analyze module name
+					$parts = explode('.', $entry);
+
+					if (!empty( $parts[1] )) {
+						$role = $parts[0];
+						$module = $parts[1];
+					}
+					else {
+						$role = NULL;
+						$module = $parts[0];
+					}
+
+					// Case: "admin.module" OR "user.module"
+					if (!empty($role) && $privilege == ucfirst($role)) {
+
+						// Get the manifest
+						$manifest = MODS_DIR . '/' . $role . '.' . $module . '/sidebar.gui.xml';
+
+						if (is_file( $manifest )) {
+							$manifestFiles[] = simplexml_load_file( $manifest ); // Store the object
+						}
+
+						unset($manifest);
+					}
+
+					// Case: "module"
+					else {
+
+						// Get the manifest
+						$manifest = MODS_DIR . '/' . $module . '/sidebar.gui.xml';
+						if (is_file( $manifest )) {
+							$manifestFiles[] = simplexml_load_file( $manifest ); // Store the object
+						}
+
+						unset($manifest);
+					}
+
+					unset($role, $module);
+				}
+			}
+
+			closedir($handle);
+
+			return $manifestFiles;
+		}
+
+		return array();
 	}
 
 
