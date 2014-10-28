@@ -43,17 +43,17 @@ require( '../init.app.php' );
 /**
  * INSTALL WIZARD FUNCTIONS
  */
-require( INSTALL_DIR . './inc/func.inc.php' );
+require( INSTALL_DIR . '/inc/func.inc.php' );
 
 /**
  * BGP VERSION LIST
  */
-require( INSTALL_DIR . './inc/versions.inc.php' );
+require( INSTALL_DIR . '/inc/versions.inc.php' );
 
 /**
  * BGP GAME CONFIGURATION DATABASE
  */
-require( INSTALL_DIR . './inc/game.conf.inc.php' );
+require( INSTALL_DIR . '/inc/game.conf.inc.php' );
 
 //---------------------------------------------------------+
 
