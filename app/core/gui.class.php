@@ -32,6 +32,7 @@ class Core_GUI
 
 	// This Module Settings
 	private $module_title = '';
+	private $module_icon = '';
 
 	// Parent Module Settings
 	private $parent_module_title = '';
@@ -53,12 +54,14 @@ class Core_GUI
 	{
 		if ( !empty($bgp_module) && is_object($bgp_module) && is_subclass_of($bgp_module, 'BGP_Module') ) {
 			$this->module_title = $bgp_module::getModuleSetting( 'title' );
+			$this->module_icon = $bgp_module::getModuleSetting( 'icon' );
 
 			// Get parent module properties if this module is a subpage of a module
 			if ( is_subclass_of($bgp_module, $bgp_module::$module_definition['class_definition']['@attributes']['classname'] ) ) {
 
 				// Hack
 				$parentModule = new $bgp_module::$module_definition['class_definition']['@attributes']['classname'](); // Ugly, but it works ;-)
+
 				$this->parent_module_title = $parentModule::getModuleSetting( 'title' );
 				$this->parent_module_href = $parentModule::getModuleSetting( 'href' );
 
@@ -210,7 +213,7 @@ class Core_GUI
 			<div class="row">
 				<!-- MAIN -->
 				<div class="col-lg-12">
-					<h1 class="page-header"><?php echo htmlspecialchars( $this->module_title, ENT_QUOTES ); ?></h1>
+					<h1 class="page-header"><i class="<?php echo htmlspecialchars( $this->module_icon, ENT_QUOTES ); ?>"></i>&nbsp;<?php echo htmlspecialchars( $this->module_title, ENT_QUOTES ); ?></h1>
 
 					<!-- ALERTS -->
 					<div id="message" class="alert alert-dismissible" role="alert" ng-show="msg" ng-class="'alert-' + msgType">
@@ -249,30 +252,41 @@ class Core_GUI
 
 				<!-- Breadcrumbs -->
 				<div class="nav navbar-left">
+<?php
+
+		if (!$this->empty_navbar)
+		{
+//------------------------------------------------------------------------------------------------------------+
+?>
 					<ol class="navbar-breadcrumbs">
 						<li class="active"><span class="glyphicon glyphicon-home"></span>&nbsp;Home</li>
 <?php
 //------------------------------------------------------------------------------------------------------------+
 
-		if (!empty($this->parent_module_title)) {
+			if (!empty($this->parent_module_title)) {
 //------------------------------------------------------------------------------------------------------------+
 ?>
 						<li><a href="<?php echo $this->parent_module_href; ?>"><?php echo $this->parent_module_title; ?></a></li>
 						<li class="active"><?php echo $this->module_title; ?></li>
 <?php
 //------------------------------------------------------------------------------------------------------------+
-		}
-		else {
+			}
+			else {
 //------------------------------------------------------------------------------------------------------------+
 ?>
 						<li class="active"><?php echo $this->module_title; ?></li>
 <?php
 //------------------------------------------------------------------------------------------------------------+
-		}
+			}
 
 //------------------------------------------------------------------------------------------------------------+
 ?>
 					</ol>
+<?php
+//------------------------------------------------------------------------------------------------------------+
+		}
+
+?>
 				</div>
 				<!-- END: Breadcrumbs -->
 

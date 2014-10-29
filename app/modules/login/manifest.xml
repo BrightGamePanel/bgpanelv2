@@ -9,6 +9,7 @@
 	<module_settings>
 		<title>Login</title>
 		<href>./login</href>
+		<icon>fa fa-sign-in fa-fw</icon>
 	</module_settings>
 
 	<module_options>

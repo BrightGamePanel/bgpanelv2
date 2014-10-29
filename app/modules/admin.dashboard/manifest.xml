@@ -9,6 +9,7 @@
 	<module_settings>
 		<title>Admin Dashboard</title>
 		<href>./admin/dashboard</href>
+		<icon>fa fa-dashboard fa-fw</icon>
 	</module_settings>
 
 	<module_options>

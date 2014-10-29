@@ -9,6 +9,7 @@
 	<module_settings>
 		<title>My Account</title>
 		<href>./myaccount</href>
+		<icon></icon>
 	</module_settings>
 
 	<module_options>
