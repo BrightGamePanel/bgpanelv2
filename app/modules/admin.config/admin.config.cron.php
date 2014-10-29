@@ -25,56 +25,64 @@
  * @link		http://www.bgpanel.net/
  */
 
-if ( !class_exists('BGP_Module')) {
-	trigger_error('Module_Admin_Config -> BGP_Module is missing !');
-}
-
 /**
- * Admin Configuration Module
+ * Load Plugin
  */
 
-class BGP_Module_Admin_Config extends BGP_Module {
+require( MODS_DIR . '/admin.config/admin.config.class.php' );
 
-	function __construct( )	{
-
-		// Call parent constructor
-		parent::__construct( 'admin.config' );
-	}
-
-}
+$module = new BGP_Module_Admin_Config_Cron();
 
 /**
- * Admin Configuration Module
- * Page: Apikey
- * Title: Api Key
+ * Call GUI Builder
  */
-
-class BGP_Module_Admin_Config_Apikey extends BGP_Module_Admin_Config {
-
-	function __construct( )	{
-
-		// Call parent constructor
-		parent::__construct( );
-
-		// Override module title
-		self::$module_definition['module_settings']['title'] = 'Api Key';
-	}
-}
+$gui = new Core_GUI( $module );
 
 /**
- * Admin Configuration Module
- * Page: Cron
- * Title: Cron Settings
+ * Javascript Generator
+ */
+$js = new Core_JS_GUI();
+
+/**
+ * Build Page Header
+ */
+$gui->getHeader();
+
+/**
+ * PAGE BODY
+ */
+//------------------------------------------------------------------------------------------------------------+
+?>
+					<!-- CONTENTS -->
+					<div class="row">
+
+					</div>
+					<!-- END: CONTENTS -->
+
+					<!-- SCRIPT -->
+<?php
+
+/**
+ * Generate AngularJS Code
  */
 
-class BGP_Module_Admin_Config_Cron extends BGP_Module_Admin_Config {
+$js->getAngularController( '', 'admin/config', array());
 
-	function __construct( )	{
+?>
+					<!-- END: SCRIPT -->
 
-		// Call parent constructor
-		parent::__construct( );
+<?php
+//------------------------------------------------------------------------------------------------------------+
+/**
+ * END: PAGE BODY
+ */
 
-		// Override module title
-		self::$module_definition['module_settings']['title'] = 'Cron Settings';
-	}
-}
+/**
+ * Build Page Footer
+ */
+$gui->getFooter();
+
+// Clean Up
+unset( $module, $gui, $js );
+
+?>

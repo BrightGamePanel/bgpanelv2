@@ -31,6 +31,29 @@ body {
     margin-bottom: 0px;
 }
 
+.navbar-brand {
+    width: 250px;
+}
+
+.navbar-breadcrumbs {
+    list-style: outside none none;
+    padding: 15px 15px 0px 15px;
+}
+
+.navbar-breadcrumbs > .active {
+    color: #777;
+}
+
+.navbar-breadcrumbs > li + li:before {
+    color: #ccc;
+    content: "/ ";
+    padding: 0 5px;
+}
+
+.navbar-breadcrumbs > li {
+    display: inline-block;
+}
+
 .navbar-top-links li {
     display: inline-block;
 }

@@ -8,6 +8,7 @@
 
 	<module_settings>
 		<title>Admin Dashboard</title>
+		<href>./admin/dashboard</href>
 	</module_settings>
 
 	<module_options>

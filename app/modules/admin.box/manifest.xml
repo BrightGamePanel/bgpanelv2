@@ -8,6 +8,7 @@
 
 	<module_settings>
 		<title>Boxes</title>
+		<href>./admin/box</href>
 	</module_settings>
 
 	<module_options>
