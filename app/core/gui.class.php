@@ -223,9 +223,9 @@ class Core_GUI
 //------------------------------------------------------------------------------------------------------------+
 ?>
 					<h1 class="page-header">
-						<i class="<?php echo htmlspecialchars( $this->module_icon, ENT_QUOTES ); ?>"></i>&nbsp;
-						<?php echo htmlspecialchars( $this->parent_module_title, ENT_QUOTES ); ?>&nbsp;
-						<i class="fa fa-angle-right"></i>&nbsp;
+						<i class="<?php echo htmlspecialchars( $this->module_icon, ENT_QUOTES ); ?>"></i>
+						<?php echo htmlspecialchars( $this->parent_module_title, ENT_QUOTES ); ?>
+						<i class="fa fa-angle-right"></i>
 						<small><?php echo htmlspecialchars( $this->module_title, ENT_QUOTES ); ?></small>
 					</h1>
 <?php
