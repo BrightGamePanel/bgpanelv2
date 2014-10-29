@@ -8,6 +8,8 @@
 
 	<module_settings>
 		<title>System Settings</title>
+		<href>./admin/config</href>
+		<icon>fa fa-cogs fa-fw</icon>
 	</module_settings>
 
 	<module_options>

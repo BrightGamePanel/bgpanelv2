@@ -31,7 +31,6 @@ if ( !class_exists('BGP_Module')) {
 
 /**
  * Admin Configuration Module
- * by Nikita Rousseau
  */
 
 class BGP_Module_Admin_Config extends BGP_Module {
@@ -42,4 +41,40 @@ class BGP_Module_Admin_Config extends BGP_Module {
 		parent::__construct( 'admin.config' );
 	}
 
+}
+
+/**
+ * Admin Configuration Module
+ * Page: Apikey
+ * Title: Api Key
+ */
+
+class BGP_Module_Admin_Config_Apikey extends BGP_Module_Admin_Config {
+
+	function __construct( )	{
+
+		// Call parent constructor
+		parent::__construct( );
+
+		// Override module title
+		self::$module_definition['module_settings']['title'] = 'Api Key';
+	}
+}
+
+/**
+ * Admin Configuration Module
+ * Page: Cron
+ * Title: Cron Settings
+ */
+
+class BGP_Module_Admin_Config_Cron extends BGP_Module_Admin_Config {
+
+	function __construct( )	{
+
+		// Call parent constructor
+		parent::__construct( );
+
+		// Override module title
+		self::$module_definition['module_settings']['title'] = 'Cron Settings';
+	}
 }

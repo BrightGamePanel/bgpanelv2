@@ -146,7 +146,7 @@ else {
 	$return = './';
 }
 
-$js->getAngularController( 'authenticateUser', 'login', $fields, $return );
+$js->getAngularController( 'authenticateUser', $loginModule::getModuleName( '/' ), $fields, $return );
 
 ?>
 					<!-- END: SCRIPT -->

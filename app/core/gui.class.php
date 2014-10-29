@@ -30,12 +30,17 @@
 class Core_GUI
 {
 
-	// Module Title
+	// This Module Settings
 	private $module_title = '';
+	private $module_icon = '';
+
+	// Parent Module Settings
+	private $parent_module_title = '';
+	private $parent_module_href = '';
 
 	// Module Options
-	private $empty_navbar;
-	private $no_sidebar;
+	private $empty_navbar 	= FALSE;
+	private $no_sidebar		= FALSE;
 
 
 	/**
@@ -48,11 +53,33 @@ class Core_GUI
 	function __construct( $bgp_module )
 	{
 		if ( !empty($bgp_module) && is_object($bgp_module) && is_subclass_of($bgp_module, 'BGP_Module') ) {
-			$this->module_title = $bgp_module->module_definition['module_settings']['title'];
+			$this->module_title = $bgp_module::getModuleSetting( 'title' );
+			$this->module_icon = $bgp_module::getModuleSetting( 'icon' );
 
-			if ( !empty($bgp_module->module_definition['module_options']) ) {
-				$this->empty_navbar = (!empty($bgp_module->module_definition['module_options']['empty_navbar'])) ? boolval($bgp_module->module_definition['module_options']['empty_navbar']) : FALSE;
-				$this->no_sidebar = (!empty($bgp_module->module_definition['module_options']['no_sidebar'])) ? boolval($bgp_module->module_definition['module_options']['no_sidebar']) : FALSE;
+			// Get parent module properties if this module is a subpage of a module
+			if ( is_subclass_of($bgp_module, $bgp_module::$module_definition['class_definition']['@attributes']['classname'] ) ) {
+
+				// Hack
+				$parentModule = new $bgp_module::$module_definition['class_definition']['@attributes']['classname'](); // Ugly, but it works ;-)
+
+				$this->parent_module_title = $parentModule::getModuleSetting( 'title' );
+				$this->parent_module_href = $parentModule::getModuleSetting( 'href' );
+
+				unset($parentModule);
+			}
+
+			// Sets the module options
+			if ( !empty($bgp_module::$module_definition['module_options']) ) {
+
+				if ( !empty($bgp_module::getModuleOption( 'empty_navbar' )) ) {
+
+					$this->empty_navbar = boolval( $bgp_module::getModuleOption( 'empty_navbar' ) );
+				}
+
+				if ( !empty($bgp_module::getModuleOption( 'no_sidebar' )) ) {
+
+					$this->no_sidebar = boolval( $bgp_module::getModuleOption( 'no_sidebar' ) );
+				}
 			}
 		}
 		else {
@@ -186,8 +213,34 @@ class Core_GUI
 			<div class="row">
 				<!-- MAIN -->
 				<div class="col-lg-12">
-					<h1 class="page-header"><?php echo htmlspecialchars( $this->module_title, ENT_QUOTES ); ?></h1>
+<?php
+//------------------------------------------------------------------------------------------------------------+
 
+		// Page Header
+		// Title
+
+		if (!empty($this->parent_module_title)) {
+//------------------------------------------------------------------------------------------------------------+
+?>
+					<h1 class="page-header">
+						<i class="<?php echo htmlspecialchars( $this->module_icon, ENT_QUOTES ); ?>"></i>
+						<?php echo htmlspecialchars( $this->parent_module_title, ENT_QUOTES ); ?>
+						<i class="fa fa-angle-right"></i>
+						<small><?php echo htmlspecialchars( $this->module_title, ENT_QUOTES ); ?></small>
+					</h1>
+<?php
+//------------------------------------------------------------------------------------------------------------+
+		}
+		else {
+//------------------------------------------------------------------------------------------------------------+
+?>
+					<h1 class="page-header"><i class="<?php echo htmlspecialchars( $this->module_icon, ENT_QUOTES ); ?>"></i>&nbsp;<?php echo htmlspecialchars( $this->module_title, ENT_QUOTES ); ?></h1>
+<?php
+//------------------------------------------------------------------------------------------------------------+
+		}
+
+//------------------------------------------------------------------------------------------------------------+
+?>
 					<!-- ALERTS -->
 					<div id="message" class="alert alert-dismissible" role="alert" ng-show="msg" ng-class="'alert-' + msgType">
 						<button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
@@ -222,6 +275,46 @@ class Core_GUI
 					</button>
 					<a class="navbar-brand" href="#">BrightGamePanel V2</a>
 				</div>
+
+				<!-- Breadcrumbs -->
+				<div class="nav navbar-left">
+<?php
+
+		if (!$this->empty_navbar)
+		{
+//------------------------------------------------------------------------------------------------------------+
+?>
+					<ol class="navbar-breadcrumbs">
+						<li class="active"><span class="glyphicon glyphicon-home"></span>&nbsp;Home</li>
+<?php
+//------------------------------------------------------------------------------------------------------------+
+
+			if (!empty($this->parent_module_title)) {
+//------------------------------------------------------------------------------------------------------------+
+?>
+						<li><a href="<?php echo $this->parent_module_href; ?>"><?php echo $this->parent_module_title; ?></a></li>
+						<li class="active"><?php echo $this->module_title; ?></li>
+<?php
+//------------------------------------------------------------------------------------------------------------+
+			}
+			else {
+//------------------------------------------------------------------------------------------------------------+
+?>
+						<li class="active"><?php echo $this->module_title; ?></li>
+<?php
+//------------------------------------------------------------------------------------------------------------+
+			}
+
+//------------------------------------------------------------------------------------------------------------+
+?>
+					</ol>
+<?php
+//------------------------------------------------------------------------------------------------------------+
+		}
+
+?>
+				</div>
+				<!-- END: Breadcrumbs -->
 
 				<ul class="nav navbar-top-links navbar-right">
 <?php
