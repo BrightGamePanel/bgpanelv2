@@ -5,20 +5,23 @@
 		<rank>1</rank>
 		<txt>Configuration</txt>
 		<href>#</href>
-		<icon>fa fa-wrench-o fa-fw</icon>
+		<icon>fa fa-cogs fa-fw</icon>
 
 		<sub_menu>
 			<general>
 				<system-settings>
 					<href>./admin/config</href>
+					<icon>fa fa-wrench fa-fw</icon>
 				</system-settings>
 			</general>
 			<misc>
 				<cron-settings>
 					<href>./admin/config/cron</href>
+					<icon>fa fa-info-circle fa-fw</icon>
 				</cron-settings>
 				<api-key>
-					<href>./admin/config/cron</href>
+					<href>./admin/config/apikey</href>
+					<icon>fa fa-info-circle fa-fw</icon>
 				</api-key>
 			</misc>
 		</sub_menu>

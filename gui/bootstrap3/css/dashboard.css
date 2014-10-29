@@ -90,8 +90,19 @@ body {
     padding-left: 0;
 }
 
-.sidebar .sidebar-search {
-    padding: 15px;
+.sidebar .divider {
+    background-color: #e5e5e5;
+    height: 1px;
+    overflow: hidden;
+}
+
+.sidebar-header {
+    color: #777;
+    display: block;
+    font-size: 12px;
+    line-height: 1.42857;
+    padding: 3px 27px;
+    white-space: nowrap;
 }
 
 .sidebar ul li {

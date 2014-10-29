@@ -308,37 +308,134 @@ class Core_GUI
 	 */
 	public function getSideBar()
 	{
+		$items = $this->getSideBarItems();
+
 //------------------------------------------------------------------------------------------------------------+
 ?>
 				<!-- SIDEBAR -->
 				<div class="navbar-default sidebar" role="navigation">
 					<div class="sidebar-nav navbar-collapse">
 						<ul class="nav" id="side-menu">
+<?php
+//------------------------------------------------------------------------------------------------------------+
+
+		$i = 0; // First index
+		$last_index = 99; // Last key
+
+		while ( $i <= $last_index )
+		{
+			if (!array_key_exists($i, $items)) {
+				$i++;
+				continue;
+			}
+
+			$txt 		= key($items[$i]);
+
+			$href 		= $items[$i][$txt]['href'];
+			$icon 		= $items[$i][$txt]['icon'];
+			$sub_menu 	= $items[$i][$txt]['sub_menu'];
+
+			// Translate
+			$txt_t 		= T_( $txt );
+
+			if (empty($sub_menu))
+			{
+//------------------------------------------------------------------------------------------------------------+
+?>
 							<li>
-								<a href="./"><i class="fa fa-dashboard fa-fw"></i>&nbsp;<?php echo T_('Dashboard'); ?></a>
-							</li>
-							<li>
-								<a href="#"><i class="fa fa-hdd-o fa-fw"></i>&nbsp;Test<span class="fa arrow"></span></a>
+								<a <?php if ($this->module_title == $txt) echo 'class="active"'; ?> href="<?php echo $href; ?>"><i class="<?php echo $icon; ?>"></i>&nbsp;<?php echo $txt_t; ?></a>
+<?php
+//------------------------------------------------------------------------------------------------------------+
+			}
+			else
+			{
+//------------------------------------------------------------------------------------------------------------+
+?>
+							<li id="<?php echo $txt; ?>" class="">
+								<a href="<?php echo $href; ?>"><i class="<?php echo $icon; ?>"></i>&nbsp;<?php echo $txt_t; ?><i class="fa arrow"></i></a>
 								<ul class="nav nav-second-level">
-									<li>
-										<a href="#">Test</a>
-									</li>
-									<li>
-										<a href="#">SubTest</a>
-									</li>
+<?php
+//------------------------------------------------------------------------------------------------------------+
+
+				$j = 0;
+				foreach ($sub_menu as $menu_key => $menu)
+				{
+
+					// Add separator after the first iteration
+					if ($j != 0)
+					{
+//------------------------------------------------------------------------------------------------------------+
+?>
+									<li class="divider"></li>
+<?php
+//------------------------------------------------------------------------------------------------------------+
+					}
+
+					// Format
+					$menu_key = ucfirst($menu_key);
+
+					// Translate
+					$menu_key = T_( $menu_key );
+
+//------------------------------------------------------------------------------------------------------------+
+?>
+									<li class="sidebar-header"><?php echo $menu_key; ?></li>
+<?php
+//------------------------------------------------------------------------------------------------------------+
+
+					foreach ($menu as $menu_sub_key => $menu_sub_menu)
+					{
+
+						// Format
+						$menu_sub_menu['txt'] = ucwords( str_replace( '-', ' ', $menu_sub_key ) );
+
+						// Translate
+						$menu_sub_menu['txt'] = T_( $menu_sub_menu['txt'] );
+
+//------------------------------------------------------------------------------------------------------------+
+?>
+									<li><a <?php if ($this->module_title == $menu_sub_menu['txt']) echo 'class="active"'; ?> href="<?php echo $menu_sub_menu['href']; ?>"><i class="<?php echo $menu_sub_menu['icon']; ?>"></i>&nbsp;<?php echo $menu_sub_menu['txt']; ?></a></li>
+<?php
+//------------------------------------------------------------------------------------------------------------+
+
+						// Toggle the parent menu item in JS
+						if ($this->module_title == $menu_sub_menu['txt'])
+						{
+//------------------------------------------------------------------------------------------------------------+
+?>
+									<script>
+										$('#<?php echo $txt; ?>').addClass('active');
+									</script>
+<?php
+//------------------------------------------------------------------------------------------------------------+
+						}
+					}
+
+					$j++;
+				}
+
+//------------------------------------------------------------------------------------------------------------+
+?>
 								</ul>
 								<!-- /.nav-second-level -->
+<?php
+//------------------------------------------------------------------------------------------------------------+
+			}
+
+//------------------------------------------------------------------------------------------------------------+
+?>
 							</li>
+<?php
+//------------------------------------------------------------------------------------------------------------+
+
+			$i++;
+		}
+
+//------------------------------------------------------------------------------------------------------------+
+?>
 						</ul>
 					</div>
 					<!-- /.sidebar-collapse -->
-
-
-<?php
-	exit( print_r( $this->getSideBarItems() ));
-?>
-
-
 				</div>
 				<!-- END: SIDEBAR -->
 
@@ -442,6 +539,7 @@ class Core_GUI
 							// Push to array
 
 							$item[$txt]['sub_menu'][$sub_menu_key][$sub_menu_item_href]['href'] = (string)$sub_menu_item_link->{'href'};
+							$item[$txt]['sub_menu'][$sub_menu_key][$sub_menu_item_href]['icon'] = (string)$sub_menu_item_link->{'icon'};
 						}
 					}
 				}
@@ -480,7 +578,6 @@ class Core_GUI
 			}
 
 			// Return Array
-
 			return $sideBarItems;
 		}
 
