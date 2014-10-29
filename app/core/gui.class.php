@@ -213,8 +213,34 @@ class Core_GUI
 			<div class="row">
 				<!-- MAIN -->
 				<div class="col-lg-12">
-					<h1 class="page-header"><i class="<?php echo htmlspecialchars( $this->module_icon, ENT_QUOTES ); ?>"></i>&nbsp;<?php echo htmlspecialchars( $this->module_title, ENT_QUOTES ); ?></h1>
+<?php
+//------------------------------------------------------------------------------------------------------------+
 
+		// Page Header
+		// Title
+
+		if (!empty($this->parent_module_title)) {
+//------------------------------------------------------------------------------------------------------------+
+?>
+					<h1 class="page-header">
+						<i class="<?php echo htmlspecialchars( $this->module_icon, ENT_QUOTES ); ?>"></i>&nbsp;
+						<?php echo htmlspecialchars( $this->parent_module_title, ENT_QUOTES ); ?>&nbsp;
+						<i class="fa fa-angle-right"></i>&nbsp;
+						<small><?php echo htmlspecialchars( $this->module_title, ENT_QUOTES ); ?></small>
+					</h1>
+<?php
+//------------------------------------------------------------------------------------------------------------+
+		}
+		else {
+//------------------------------------------------------------------------------------------------------------+
+?>
+					<h1 class="page-header"><i class="<?php echo htmlspecialchars( $this->module_icon, ENT_QUOTES ); ?>"></i>&nbsp;<?php echo htmlspecialchars( $this->module_title, ENT_QUOTES ); ?></h1>
+<?php
+//------------------------------------------------------------------------------------------------------------+
+		}
+
+//------------------------------------------------------------------------------------------------------------+
+?>
 					<!-- ALERTS -->
 					<div id="message" class="alert alert-dismissible" role="alert" ng-show="msg" ng-class="'alert-' + msgType">
 						<button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
