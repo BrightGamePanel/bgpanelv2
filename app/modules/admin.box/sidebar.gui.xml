@@ -2,9 +2,10 @@
 <!-- GUI Sidebar Manifest -->
 <bgp_module>
 	<module_sidebar>
+		<rank>2</rank>
+		<txt>Boxes</txt>
 		<href>./admin/box</href>
 		<icon>fa fa-hdd-o fa-fw</icon>
-		<txt>Boxes</txt>
 
 		<sub_menu></sub_menu>
 	</module_sidebar>

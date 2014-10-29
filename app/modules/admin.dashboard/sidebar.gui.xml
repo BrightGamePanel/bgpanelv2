@@ -2,9 +2,10 @@
 <!-- GUI Sidebar Manifest -->
 <bgp_module>
 	<module_sidebar>
+		<rank>0</rank>
+		<txt>Dashboard</txt>
 		<href>./</href>
 		<icon>fa fa-dashboard fa-fw</icon>
-		<txt>Dashboard</txt>
 
 		<sub_menu></sub_menu>
 	</module_sidebar>
