@@ -35,6 +35,7 @@ class BGP_Module
 {
 	// Module Definition
 	public static $module_definition = array();
+	public static $module_name = '';
 
 	function __construct( $module_name ) {
 
@@ -42,6 +43,22 @@ class BGP_Module
 		$xml = simplexml_load_string( file_get_contents( MODS_DIR . '/' . $module_name . '/manifest.xml' ) );
 		$json = json_encode($xml);
 		self::$module_definition = json_decode($json, TRUE);
+		self::$module_name = $module_name;
+	}
+
+	public static function getModuleName( $format = '.' ) {
+
+		switch ($format)
+		{
+			case '/':
+				return str_replace('.', '/', self::$module_name);
+
+			case '_':
+				return str_replace('.', '_', self::$module_name);
+
+			default:
+				return self::$module_name;
+		}
 	}
 
 	public static function getModuleInfo( $info = '' ) {

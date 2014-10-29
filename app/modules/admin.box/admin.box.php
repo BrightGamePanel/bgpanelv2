@@ -66,7 +66,7 @@ $gui->getHeader();
  * Generate AngularJS Code
  */
 
-$js->getAngularController( '', 'admin/box', array());
+$js->getAngularController( '', $module::getModuleName( '/' ), array());
 
 ?>
 					<!-- END: SCRIPT -->

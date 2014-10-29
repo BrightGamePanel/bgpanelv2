@@ -150,7 +150,7 @@ $fields = array(
 		'Captcha'
 	);
 
-$js->getAngularController( 'sendNewPassword', 'login', $fields, './login' );
+$js->getAngularController( 'sendNewPassword', $loginModule::getModuleName( '/' ), $fields, './login' );
 
 ?>
 					<!-- END: SCRIPT -->
