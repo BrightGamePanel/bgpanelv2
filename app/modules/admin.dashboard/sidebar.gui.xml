@@ -3,7 +3,7 @@
 <bgp_module>
 	<module_sidebar>
 		<rank>0</rank>
-		<txt>Dashboard</txt>
+		<txt>Admin Dashboard</txt>
 		<href>./</href>
 		<icon>fa fa-dashboard fa-fw</icon>
 

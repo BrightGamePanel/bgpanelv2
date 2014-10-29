@@ -309,6 +309,7 @@ class Core_GUI
 	public function getSideBar()
 	{
 		$items = $this->getSideBarItems();
+
 //------------------------------------------------------------------------------------------------------------+
 ?>
 				<!-- SIDEBAR -->
@@ -342,7 +343,7 @@ class Core_GUI
 //------------------------------------------------------------------------------------------------------------+
 ?>
 							<li>
-								<a href="<?php echo $href; ?>"><i class="<?php echo $icon; ?>"></i>&nbsp;<?php echo $txt_t; ?></a>
+								<a <?php if ($this->module_title == $txt) echo 'class="active"'; ?> href="<?php echo $href; ?>"><i class="<?php echo $icon; ?>"></i>&nbsp;<?php echo $txt_t; ?></a>
 <?php
 //------------------------------------------------------------------------------------------------------------+
 			}
@@ -350,7 +351,7 @@ class Core_GUI
 			{
 //------------------------------------------------------------------------------------------------------------+
 ?>
-							<li>
+							<li id="<?php echo $txt; ?>" class="">
 								<a href="<?php echo $href; ?>"><i class="<?php echo $icon; ?>"></i>&nbsp;<?php echo $txt_t; ?><i class="fa arrow"></i></a>
 								<ul class="nav nav-second-level">
 <?php
@@ -381,6 +382,7 @@ class Core_GUI
 									<li class="sidebar-header"><?php echo $menu_key; ?></li>
 <?php
 //------------------------------------------------------------------------------------------------------------+
+
 					foreach ($menu as $menu_sub_key => $menu_sub_menu)
 					{
 
@@ -392,9 +394,21 @@ class Core_GUI
 
 //------------------------------------------------------------------------------------------------------------+
 ?>
-									<li><a href="<?php echo $menu_sub_menu['href']; ?>"><i class="<?php echo $menu_sub_menu['icon']; ?>"></i>&nbsp;<?php echo $menu_sub_menu['txt']; ?></a></li>
+									<li><a <?php if ($this->module_title == $menu_sub_menu['txt']) echo 'class="active"'; ?> href="<?php echo $menu_sub_menu['href']; ?>"><i class="<?php echo $menu_sub_menu['icon']; ?>"></i>&nbsp;<?php echo $menu_sub_menu['txt']; ?></a></li>
 <?php
 //------------------------------------------------------------------------------------------------------------+
+
+						// Toggle the parent menu item in JS
+						if ($this->module_title == $menu_sub_menu['txt'])
+						{
+//------------------------------------------------------------------------------------------------------------+
+?>
+									<script>
+										$('#<?php echo $txt; ?>').addClass('active');
+									</script>
+<?php
+//------------------------------------------------------------------------------------------------------------+
+						}
 					}
 
 					$j++;
