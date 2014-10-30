@@ -71,12 +71,12 @@ class Core_GUI
 			// Sets the module options
 			if ( !empty($bgp_module::$module_definition['module_options']) ) {
 
-				if ( !empty($bgp_module::getModuleOption( 'empty_navbar' )) ) {
+				if ( $bgp_module::getModuleOption( 'empty_navbar' ) != null ) {
 
 					$this->empty_navbar = boolval( $bgp_module::getModuleOption( 'empty_navbar' ) );
 				}
 
-				if ( !empty($bgp_module::getModuleOption( 'no_sidebar' )) ) {
+				if ( $bgp_module::getModuleOption( 'no_sidebar' ) != null ) {
 
 					$this->no_sidebar = boolval( $bgp_module::getModuleOption( 'no_sidebar' ) );
 				}
