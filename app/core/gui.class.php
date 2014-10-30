@@ -256,6 +256,34 @@ class Core_GUI
 
 
 	/**
+	 * Retrieves from the manifest file
+	 * required CSS stylesheets
+	 *
+	 * @param none
+	 * @return String
+	 * @access private
+	 */
+	private function getCSSDepends() {
+
+	}
+
+
+
+	/**
+	 * Retrieves from the manifest file
+	 * required JS scripts
+	 *
+	 * @param none
+	 * @return String
+	 * @access private
+	 */
+	private function getJSDepends() {
+
+	}
+
+
+
+	/**
 	 * Display Module Navigation Bar
 	 *
 	 * @param none
@@ -415,6 +443,8 @@ class Core_GUI
 //------------------------------------------------------------------------------------------------------------+
 
 	}
+
+
 
 	/**
 	 * Display Module Sidebar

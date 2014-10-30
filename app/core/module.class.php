@@ -82,6 +82,13 @@ class BGP_Module
 		}
 	}
 
+	public static function getModuleDependencies( ) {
+
+		if (isset(self::$module_definition['module_dependencies'])) {
+			return self::$module_definition['module_dependencies'];
+		}
+	}
+
 	public static function getModuleClassName( ) {
 
 		if (isset(self::$module_definition['class_definition']['@attributes']['classname'])) {
