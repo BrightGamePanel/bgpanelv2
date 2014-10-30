@@ -57,10 +57,11 @@ class Core_GUI
 			$this->module_icon = $bgp_module::getModuleSetting( 'icon' );
 
 			// Get parent module properties if this module is a subpage of a module
-			if ( is_subclass_of($bgp_module, $bgp_module::$module_definition['class_definition']['@attributes']['classname'] ) ) {
+			if ( is_subclass_of($bgp_module, $bgp_module::getModuleClassName() ) ) {
 
 				// Hack
-				$parentModule = new $bgp_module::$module_definition['class_definition']['@attributes']['classname'](); // Ugly, but it works ;-)
+				$parentClassName = $bgp_module::getModuleClassName();
+				$parentModule = new $parentClassName(); // Ugly, but it works ;-)
 
 				$this->parent_module_title = $parentModule::getModuleSetting( 'title' );
 				$this->parent_module_href = $parentModule::getModuleSetting( 'href' );

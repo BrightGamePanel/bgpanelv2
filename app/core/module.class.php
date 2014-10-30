@@ -82,5 +82,18 @@ class BGP_Module
 		}
 	}
 
+	public static function getModuleClassName( ) {
+
+		if (isset(self::$module_definition['class_definition']['@attributes']['classname'])) {
+			return self::$module_definition['class_definition']['@attributes']['classname'];
+		}
+	}
+
+	public static function getModuleControllerClassName( ) {
+
+		if (isset(self::$module_definition['controller_class_definition']['@attributes']['classname'])) {
+			return self::$module_definition['controller_class_definition']['@attributes']['classname'];
+		}
+	}
 
 }

@@ -15,6 +15,25 @@
 	<module_options>
 	</module_options>
 
+	<module_dependencies>
+		<stylesheets>
+			<datatables>
+				<comment>DataTables</comment>
+				<href>./gui/datatables/css/dataTables.bootstrap.css</href>
+			</datatables>
+		</stylesheets>
+		<javascripts>
+			<jquery-datatables>
+				<comment>DataTables jQuery Plugin</comment>
+				<src>./gui/datatables/js/jquery.dataTables.js</src>
+			</jquery-datatables>
+			<bootstrap-datatables>
+				<comment>DataTables BS3 Plugin</comment>
+				<src>./gui/datatables/js/dataTables.bootstrap.js</src>
+			</bootstrap-datatables>
+		</javascripts>
+	</module_dependencies>
+
 	<class_definition filename="app/modules/admin.dashboard/admin.dashboard.class.php" classname="BGP_Module_Admin_Dashboard"/>
 	<controller_class_definition filename="app/modules/admin.dashboard/admin.dashboard.controller.class.php" classname="BGP_Controller_Admin_Dashboard"/>
 </bgp_module>
