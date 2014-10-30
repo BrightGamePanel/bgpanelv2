@@ -31,7 +31,6 @@ if ( !class_exists('BGP_Module')) {
 
 /**
  * Admin Box Module
- * by Nikita Rousseau
  */
 
 class BGP_Module_Admin_Box extends BGP_Module {
