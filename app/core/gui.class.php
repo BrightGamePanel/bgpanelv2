@@ -720,6 +720,8 @@ class Core_GUI
 
 			<hr>
 
+			<a href="#" class="go-top"><i class="fa fa-chevron-circle-up fa-fw"></i></a>
+
 			<!-- FOOTER -->
 			<footer>
 				<div class="pull-left">
