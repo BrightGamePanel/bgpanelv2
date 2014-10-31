@@ -66,12 +66,18 @@ class BGP_Module
 		if (isset(self::$module_definition['module_info'][$info])) {
 			return self::$module_definition['module_info'][$info];
 		}
+		else {
+			return '';
+		}
 	}
 
 	public static function getModuleSetting( $setting = '' ) {
 
 		if (isset(self::$module_definition['module_settings'][$setting])) {
 			return self::$module_definition['module_settings'][$setting];
+		}
+		else {
+			return '';
 		}
 	}
 
@@ -80,12 +86,18 @@ class BGP_Module
 		if (isset(self::$module_definition['module_options'][$option])) {
 			return self::$module_definition['module_options'][$option];
 		}
+		else {
+			return '';
+		}
 	}
 
 	public static function getModuleDependencies( ) {
 
 		if (isset(self::$module_definition['module_dependencies'])) {
 			return self::$module_definition['module_dependencies'];
+		}
+		else {
+			return array();
 		}
 	}
 

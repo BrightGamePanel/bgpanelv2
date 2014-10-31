@@ -34,6 +34,9 @@ class Core_GUI
 	private $module_title = '';
 	private $module_icon = '';
 
+	// This Module Dependencies
+	private $module_dependencies = array();
+
 	// Parent Module Settings
 	private $parent_module_title = '';
 	private $parent_module_href = '';
@@ -55,6 +58,7 @@ class Core_GUI
 		if ( !empty($bgp_module) && is_object($bgp_module) && is_subclass_of($bgp_module, 'BGP_Module') ) {
 			$this->module_title = $bgp_module::getModuleSetting( 'title' );
 			$this->module_icon = $bgp_module::getModuleSetting( 'icon' );
+			$this->module_dependencies = $bgp_module::getModuleDependencies( );
 
 			// Get parent module properties if this module is a subpage of a module
 			if ( is_subclass_of($bgp_module, $bgp_module::getModuleClassName() ) ) {
@@ -72,12 +76,14 @@ class Core_GUI
 			// Sets the module options
 			if ( !empty($bgp_module::$module_definition['module_options']) ) {
 
-				if ( !empty($bgp_module::getModuleOption( 'empty_navbar' )) ) {
+				$empty_navbar = $bgp_module::getModuleOption( 'empty_navbar' );
+				if ( !empty($empty_navbar) ) {
 
 					$this->empty_navbar = boolval( $bgp_module::getModuleOption( 'empty_navbar' ) );
 				}
 
-				if ( !empty($bgp_module::getModuleOption( 'no_sidebar' )) ) {
+				$no_sidebar = $bgp_module::getModuleOption( 'no_sidebar' );
+				if ( !empty($no_sidebar) ) {
 
 					$this->no_sidebar = boolval( $bgp_module::getModuleOption( 'no_sidebar' ) );
 				}
@@ -164,6 +170,14 @@ class Core_GUI
     		<script src="./gui/metisMenu/js/metisMenu.min.js"></script>
 			<!-- SB Admin 2 -->
 			<script src="./gui/bootstrap3/js/sb-admin-2.js"></script>
+<?php 
+//------------------------------------------------------------------------------------------------------------+
+
+	// Load JS Dependencies
+	echo $this->getJSDepends();
+
+//------------------------------------------------------------------------------------------------------------+
+?>
 		<!-- Style -->
 			<!-- Bootstrap 3 -->
 			<link href="./gui/bootstrap3/css/<?php echo htmlspecialchars( Core_GUI::getBS3Template(), ENT_QUOTES ); ?>" rel="stylesheet">
@@ -173,6 +187,14 @@ class Core_GUI
 			<link href="./gui/bootstrap3/css/dashboard.css" rel="stylesheet">
 			<!-- Font Awesome 4 -->
 			<link href="./gui/font-awesome/css/font-awesome.min.css" rel="stylesheet">
+<?php
+//------------------------------------------------------------------------------------------------------------+
+
+	// Load CSS Dependencies
+	echo $this->getCSSDepends();
+
+//------------------------------------------------------------------------------------------------------------+
+?>
 		<!-- Favicon -->
 			<link rel="icon" href="./gui/img/favicon.ico">
 		<!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
@@ -265,6 +287,17 @@ class Core_GUI
 	 */
 	private function getCSSDepends() {
 
+		if ( !empty($this->module_dependencies) && !empty($this->module_dependencies['stylesheets']) ) {
+			foreach ($this->module_dependencies['stylesheets'] as $depend)
+			{
+//------------------------------------------------------------------------------------------------------------+
+?>
+			<!-- <?php echo $depend['comment']; ?> -->
+			<link href="<?php echo $depend['href']; ?>" rel="stylesheet">
+<?php
+//------------------------------------------------------------------------------------------------------------+
+			}
+		}
 	}
 
 
@@ -279,6 +312,17 @@ class Core_GUI
 	 */
 	private function getJSDepends() {
 
+		if ( !empty($this->module_dependencies) && !empty($this->module_dependencies['javascripts']) ) {
+			foreach ($this->module_dependencies['javascripts'] as $depend)
+			{
+//------------------------------------------------------------------------------------------------------------+
+?>
+			<!-- <?php echo $depend['comment']; ?> -->
+			<script src="<?php echo $depend['src']; ?>"></script>
+<?php
+//------------------------------------------------------------------------------------------------------------+
+			}
+		}
 	}
 
 
