@@ -38,7 +38,7 @@ class BGP_Module_Admin_Box extends BGP_Module {
 	function __construct( )	{
 
 		// Call parent constructor
-		parent::__construct( 'admin.box' );
+		parent::__construct( basename(__DIR__) );
 	}
 
 }

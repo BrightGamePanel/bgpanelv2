@@ -39,7 +39,7 @@ class BGP_Controller_Login extends BGP_Controller
 	function __construct( )	{
 	
 		// Call parent constructor
-		parent::__construct( 'login' );
+		parent::__construct( basename(__DIR__) );
 	}
 
 	public function authenticateUser( $form ) {

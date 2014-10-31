@@ -38,6 +38,6 @@ class BGP_Controller_Admin_Config extends BGP_Controller {
 	function __construct( )	{
 	
 		// Call parent constructor
-		parent::__construct( 'admin.config' );
+		parent::__construct( basename(__DIR__) );
 	}
 }

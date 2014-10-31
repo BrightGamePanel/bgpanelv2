@@ -38,7 +38,7 @@ class BGP_Module_Admin_Dashboard extends BGP_Module {
 	function __construct( )	{
 
 		// Call parent constructor
-		parent::__construct( 'admin.dashboard' );
+		parent::__construct( basename(__DIR__) );
 	}
 
 }

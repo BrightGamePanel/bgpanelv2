@@ -38,7 +38,7 @@ class BGP_Module_Login extends BGP_Module {
 	function __construct( )	{
 
 		// Call parent constructor
-		parent::__construct( 'login' );
+		parent::__construct( basename(__DIR__) );
 	}
 
 }
