@@ -18,6 +18,11 @@
 	</module_options>
 
 	<module_dependencies>
+		<php_libs>
+			<securimage>
+				<require>securimage/securimage.php</require>
+			</securimage>
+		</php_libs>
 	</module_dependencies>
 
 	<class_definition filename="app/modules/login/login.class.php" classname="BGP_Module_Login"/>

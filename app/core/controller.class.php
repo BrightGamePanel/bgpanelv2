@@ -28,16 +28,22 @@
 
 
 /**
- * Base CLASS for each BGP controller
+ * Base CLASS for each BGP controllers
  */
 
-class BGP_Controller
+class BGP_Controller extends BGP_Module
 {
-	function __construct( )	{
+	// Controller Definition
 
+	// None
+
+	function __construct( $module_name )	{
+
+		// Call module constructor
+		parent::__construct( $module_name );
 	}
 
-	public static function getLoggerName( $class_name ) {
-		return strtolower(str_replace( 'BGP_Controller_', '', $class_name )) . 'Logger';
+	public static function getLoggerName( ) {
+		return self::getModuleName( '.' );
 	}
 }

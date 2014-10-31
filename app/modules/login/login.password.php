@@ -34,11 +34,6 @@ require( MODS_DIR . '/login/login.class.php' );
 $loginModule = new BGP_Module_Login();
 
 /**
- * Plug-in Dependencies
- */
-require( LIBS_DIR . '/securimage/securimage.php' );
-
-/**
  * Call GUI Builder
  */
 $gui = new Core_GUI( $loginModule );

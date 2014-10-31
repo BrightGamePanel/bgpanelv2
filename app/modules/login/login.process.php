@@ -34,11 +34,6 @@ require( MODS_DIR . '/login/login.controller.class.php' );
 // Init Controller
 $loginController = new BGP_Controller_Login();
 
-/**
- * Plug-in Dependencies
- */
-require( LIBS_DIR . '/securimage/securimage.php' );
-
 
 // Get the method
 if ( isset($_POST['task']) ) {

@@ -89,7 +89,7 @@ class Core_AuthService
 
 		// Log Event
 		Logger::configure( bgp_get_log4php_conf_array() );
-		$logger = Logger::getLogger( 'authLogger' );
+		$logger = Logger::getLogger( 'auth.core' );
 		$logger->info('Log out.');
 
 		$_SESSION = array(); // Destroy session variables
@@ -208,7 +208,7 @@ class Core_AuthService
 
 			// Log Event
 			Logger::configure( bgp_get_log4php_conf_array() );
-			$logger = Logger::getLogger( 'authLogger' );
+			$logger = Logger::getLogger( 'auth.core' );
 			$logger->info('Session banned.');
 		}
 

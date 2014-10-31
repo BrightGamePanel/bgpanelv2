@@ -231,7 +231,7 @@ function bgp_get_log4php_conf_array( ) {
 			'appenders' => array('default')
 		),
 		'loggers' => array(
-			'coreLogger' => array(
+			'sys.core' => array(
 				'additivity' => false,
 				'appenders' => array('coreAppender')
 			)
@@ -242,7 +242,7 @@ function bgp_get_log4php_conf_array( ) {
 				'layout' => array(
 					'class' => 'LoggerLayoutPattern',
 					'params' => array(
-						'conversionPattern' => '[%date{Y-m-d H:i:s,u}] %-5level %-5.5session{COM} %-12session{USERNAME} %-3session{ID} %-15.15server{REMOTE_ADDR} %-35server{REQUEST_URI} %-35class %-20method "%msg"%n'
+						'conversionPattern' => '[%date{Y-m-d H:i:s,u}] %-5level %-10.10logger %-5.5session{COM} %-12session{USERNAME} %-3session{ID} %-15.15server{REMOTE_ADDR} %-35server{REQUEST_URI} %-35class %-20method "%msg"%n'
 					)
 				),
 				'params' => array(
@@ -255,7 +255,7 @@ function bgp_get_log4php_conf_array( ) {
 				'layout' => array(
 					'class' => 'LoggerLayoutPattern',
 					'params' => array(
-						'conversionPattern' => '[%date{Y-m-d H:i:s,u}] %-5level Core System V2 localhost %-35class %-20method "%msg"%n'
+						'conversionPattern' => '[%date{Y-m-d H:i:s,u}] %-5level System Core V2 localhost %-35class %-20method "%msg"%n'
 					)
 				),
 				'params' => array(

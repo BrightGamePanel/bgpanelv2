@@ -35,4 +35,9 @@ if ( !class_exists('BGP_Controller')) {
 
 class BGP_Controller_Admin_Box extends BGP_Controller {
 
+	function __construct( )	{
+	
+		// Call parent constructor
+		parent::__construct( 'admin.box' );
+	}
 }

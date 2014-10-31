@@ -44,6 +44,9 @@ class BGP_Module
 		$json = json_encode($xml);
 		self::$module_definition = json_decode($json, TRUE);
 		self::$module_name = $module_name;
+
+		// Load Module Dependencies
+		self::requireDepends( );
 	}
 
 	public static function getModuleName( $format = '.' ) {
@@ -98,6 +101,24 @@ class BGP_Module
 		}
 		else {
 			return array();
+		}
+	}
+
+	public static function requireDepends( ) {
+	
+		$module_dependencies = self::getModuleDependencies( );
+	
+		if ( !empty($module_dependencies) && !empty($module_dependencies['php_libs']) ) {
+	
+			foreach ($module_dependencies['php_libs'] as $depend) {
+	
+				$requirement = LIBS_DIR	. '/' . $depend['require'];
+	
+				if ( file_exists( $requirement ) ) {
+	
+					require_once( $requirement );
+				}
+			}
 		}
 	}
 
