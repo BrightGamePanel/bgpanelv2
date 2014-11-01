@@ -55,7 +55,23 @@ $gui->getHeader();
 ?>
 					<!-- CONTENTS -->
 					<div class="row">
+						<div class="alert alert-info" role="alert">
+							<strong><?php echo T_('Tip'); ?></strong><br />
+							<?php echo T_('To enable server monitoring, set up the cron job to run every'); ?>&nbsp;<?php echo (CONF_CRONDELAY / 60); ?>&nbsp;<?php echo T_('minutes.'); ?><br />
+							<?php echo T_('More information at'); ?>:&nbsp;<a target="_blank" href="http://wiki.bgpanel.net/doku.php?id=wiki:setting_up_cron_job"><b><u><?php echo T_('Setting Up Cron Job'); ?></u></b></a>
+						</div>
+						<legend><?php echo T_('Create the following Cron Job using PHP'); ?>:</legend>
+						<div>
+							<pre class="text-center"><?php
+//------------------------------------------------------------------------------------------------------------+
 
+							echo '*/' . (CONF_CRONDELAY / 60) . ' * * * * php -q ' .
+							BASE_DIR .
+							'/cron.php > /dev/null 2>&1';
+
+//------------------------------------------------------------------------------------------------------------+
+							?></pre>
+						</div>
 					</div>
 					<!-- END: CONTENTS -->
 

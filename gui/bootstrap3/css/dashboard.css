@@ -27,6 +27,11 @@ body {
     }
 }
 
+#footer-copyleft-logo, #footer-bs3-logo {
+    position: relative;
+    top: -2px;
+}
+
 .navbar {
     margin-bottom: 0px;
 }
