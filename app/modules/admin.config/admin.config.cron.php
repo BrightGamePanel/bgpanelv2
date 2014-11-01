@@ -29,7 +29,7 @@
  * Load Plugin
  */
 
-require( MODS_DIR . '/admin.config/admin.config.class.php' );
+require( MODS_DIR . '/' . basename(__DIR__) . '/admin.config.class.php' );
 
 $module = new BGP_Module_Admin_Config_Cron();
 

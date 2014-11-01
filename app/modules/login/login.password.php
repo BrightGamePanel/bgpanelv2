@@ -29,7 +29,7 @@
  * Load Plugin
  */
 
-require( MODS_DIR . '/login/login.class.php' );
+require( MODS_DIR . '/' . basename(__DIR__) . '/login.class.php' );
 
 $loginModule = new BGP_Module_Login();
 

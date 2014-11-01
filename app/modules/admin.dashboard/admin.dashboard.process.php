@@ -29,7 +29,7 @@
  * Load Plugin Controller
  */
 
-require( MODS_DIR . '/admin.dashboard/admin.dashboard.controller.class.php' );
+require( MODS_DIR . '/' . basename(__DIR__) . '/admin.dashboard.controller.class.php' );
 
 // Init Controller
 $controller = new BGP_Controller_Admin_Dashboard();

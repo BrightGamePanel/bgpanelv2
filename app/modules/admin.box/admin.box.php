@@ -29,7 +29,7 @@
  * Load Plugin
  */
 
-require( MODS_DIR . '/admin.box/admin.box.class.php' );
+require( MODS_DIR . '/' . basename(__DIR__) . '/admin.box.class.php' );
 
 $module = new BGP_Module_Admin_Box();
 
