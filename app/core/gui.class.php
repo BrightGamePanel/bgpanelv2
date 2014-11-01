@@ -788,35 +788,34 @@ class Core_GUI
 	{
 //------------------------------------------------------------------------------------------------------------+
 ?>
+					<hr>
+
+					<a href="#" class="go-top"><i class="fa fa-chevron-circle-up fa-fw"></i></a>
+
+					<!-- FOOTER -->
+					<footer>
+						<div class="pull-left">
+							Copyleft <img id="footer-copyleft-logo" height="12" src="./gui/img/copyleft.png"> 2014. Released under the <a href="http://www.gnu.org/licenses/gpl.html" target="_blank">GPLv3</a>.<br />
+							All images are copyrighted by their respective owners.
+						</div>
+
+						<div class="pull-right text-right">
+							<a href="http://www.bgpanel.net/" target="_blank">Bright Game Panel</a>&nbsp;V2
+							<br />
+							<a href="https://github.com/warhawk3407/bgpanelv2/" target="_blank"><i class="fa fa-github fa-fw"></i></a>&nbsp;
+							<a href="https://twitter.com/BrightGamePanel/" target="_blank"><i class="fa fa-twitter fa-fw"></i></a>&nbsp;
+							<a href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&amp;hosted_button_id=7SDPVBR9EMQZS" target="_blank"><i class="fa fa-paypal fa-fw"></i></a>&nbsp;
+							<a href="http://getbootstrap.com/" target="_blank">
+								<img id="footer-bs3-logo" height="14" src="./gui/img/bs3_logo.png">
+							</a>
+						</div>
+					</footer>
+					<!-- END: FOOTER -->
+
 				</div>
 				<!-- END: MAIN -->
 			</div>
 			<!-- END: ROW -->
-
-			<hr>
-
-			<a href="#" class="go-top"><i class="fa fa-chevron-circle-up fa-fw"></i></a>
-
-			<!-- FOOTER -->
-			<footer>
-				<div class="pull-left">
-					Copyleft <img id="footer-copyleft-logo" height="12" src="./gui/img/copyleft.png"> 2014. Released under the <a href="http://www.gnu.org/licenses/gpl.html" target="_blank">GPLv3</a>.<br />
-					All images are copyrighted by their respective owners.
-				</div>
-
-				<div class="pull-right text-right">
-					<a href="http://www.bgpanel.net/" target="_blank">Bright Game Panel</a>&nbsp;V2
-					<br />
-					<a href="https://github.com/warhawk3407/bgpanelv2/" target="_blank"><i class="fa fa-github fa-fw"></i></a>&nbsp;
-					<a href="https://twitter.com/BrightGamePanel/" target="_blank"><i class="fa fa-twitter fa-fw"></i></a>&nbsp;
-					<a href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&amp;hosted_button_id=7SDPVBR9EMQZS" target="_blank"><i class="fa fa-paypal fa-fw"></i></a>&nbsp;
-					<a href="http://getbootstrap.com/" target="_blank">
-						<img id="footer-bs3-logo" height="14" src="./gui/img/bs3_logo.png">
-					</a>
-				</div>
-			</footer>
-			<!-- END: FOOTER -->
-
 		</div>
 		<!-- /#page-wrapper -->
 	</div>

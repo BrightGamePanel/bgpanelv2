@@ -216,7 +216,7 @@ foreach ($templates as $key => $value)
 											</div>
 										</div>
 
-										<br />
+										<hr>
 
 										<div class="row">
 											<div class="text-center">
@@ -239,11 +239,11 @@ foreach ($templates as $key => $value)
  */
 
 $fields = array(
-		'PanelName' => $current_config['panel_name'],
-		'PanelUrl' => $current_config['system_url'],
-		'MaintenanceMode' => $current_config['maintenance_mode'],
-		'AdminTemplate' => $current_config['admin_template'],
-		'UserTemplate' => $current_config['user_template']
+		'PanelName' 		=> htmlspecialchars( $current_config['panel_name'], ENT_QUOTES),
+		'PanelUrl' 			=> htmlspecialchars( $current_config['system_url'], ENT_QUOTES),
+		'MaintenanceMode' 	=> htmlspecialchars( $current_config['maintenance_mode'], ENT_QUOTES),
+		'AdminTemplate' 	=> htmlspecialchars( $current_config['admin_template'], ENT_QUOTES),
+		'UserTemplate' 		=> htmlspecialchars( $current_config['user_template'], ENT_QUOTES)
 	);
 
 $js->getAngularController( 'updateSysConfig', $module::getModuleName( '/' ), $fields, './admin/config' );
