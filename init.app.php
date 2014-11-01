@@ -43,9 +43,13 @@ if (!defined('LICENSE'))
  * Report all PHP errors:
  * error_reporting(E_ALL);
  * ini_set('display_errors', 1);
+ *
+ * !IMPORTANT: More options below
+ * !IMPORTANT: See [FlightPHP configuration]
  */
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
+
 
 
 // Start new or resume existing session
@@ -103,9 +107,9 @@ if ( !is_dir( CONF_DIR ) ) {
 
 
 // DEFINE INI CONSTANTS
-$CONFIG  = parse_ini_file( CONF_DB_INI, TRUE );
-$CONFIG += parse_ini_file( CONF_GENERAL_INI, TRUE );
-$CONFIG += parse_ini_file( CONF_SECRET_INI, TRUE );
+$CONFIG  = parse_ini_file( CONF_DB_INI );
+$CONFIG += parse_ini_file( CONF_GENERAL_INI );
+$CONFIG += parse_ini_file( CONF_SECRET_INI );
 
 foreach ($CONFIG as $setting => $value) {
 	define( $setting, $value );
@@ -266,6 +270,21 @@ function bgp_get_log4php_conf_array( ) {
 		)
 	);
 }
+
+/**
+ * ROUTING Configuration
+ * FlightPHP configuration
+ *
+ * flight.base_url - Override the base url of the request. (default: null)
+ * flight.handle_errors - Allow Flight to handle all errors internally. (default: true)
+ * flight.log_errors - Log errors to the web server's error log file. (default: false)
+ * flight.views.path - Directory containing view template files (default: ./views)
+ *
+ * @link: http://flightphp.com/learn#configuration
+ */
+Flight::set('flight.handle_errors', TRUE);
+Flight::set('flight.log_errors', FALSE);
+
 
 // Clean Up
 unset( $CONFIG, $bgpCoreInfo );

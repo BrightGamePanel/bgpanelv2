@@ -86,7 +86,7 @@ if ( $authService->isBanned() ) {
 												<div class="input-group-addon"><span class="glyphicon glyphicon-user"></span></div>
 												<input class="form-control" type="text" ng-model="formData.username" id="username" name="username" placeholder="<?php echo T_('Login'); ?>" required>
 											</div>
-											<span class="help-block" ng-show="errorUsername">{{ errorUsername }}</span>
+											<span class="help-block" ng-show="errorUsername" ng-bind="errorUsername"></span>
 										</div>
 
 										<div class="form-group" ng-class="{ 'has-error' : errorEmail }">
@@ -95,7 +95,7 @@ if ( $authService->isBanned() ) {
 												<div class="input-group-addon"><span class="glyphicon glyphicon-envelope"></span></div>
 												<input class="form-control" type="email" ng-model="formData.email" id="email" name="email" placeholder="<?php echo T_('Email'); ?>" required>
 											</div>
-											<span class="help-block" ng-show="errorEmail">{{ errorEmail }}</span>
+											<span class="help-block" ng-show="errorEmail" ng-bind="errorEmail"></span>
 										</div>
 
 										<!-- CAPTCHA -->
@@ -114,7 +114,7 @@ if ( $authService->isBanned() ) {
 												<div class="input-group-addon"><span class="glyphicon glyphicon-picture"></span></div>
 												<input class="form-control" type="text" ng-model="formData.captcha" id="captcha" name="captcha" placeholder="Captcha Code" required>
 											</div>
-											<span class="help-block" ng-show="errorCaptcha">{{ errorCaptcha }}</span>
+											<span class="help-block" ng-show="errorCaptcha" ng-bind="errorCaptcha"></span>
 											<p class="help-block"><?php echo T_('Refresh the CAPTCHA image each time you submit the form above.'); ?></p>
 										</div>
 

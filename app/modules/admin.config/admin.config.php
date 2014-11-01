@@ -48,6 +48,25 @@ $js = new Core_JS_GUI();
  */
 $gui->getHeader();
 
+
+// Get templates
+$templates = parse_ini_file( CONF_TEMPLATES_INI );
+
+// Get current config from database
+
+$dbh = Core_DBH::getDBH(); // Get Database Handle
+
+$sth = $dbh->prepare("
+	SELECT setting, value
+	FROM " . DB_PREFIX . "config
+	;");
+
+$sth->execute();
+
+$current_config = $sth->fetchAll( PDO::FETCH_ASSOC );
+$current_config = bgp_get_conf_array( $current_config );
+
+
 /**
  * PAGE BODY
  */
@@ -55,7 +74,160 @@ $gui->getHeader();
 ?>
 					<!-- CONTENTS -->
 					<div class="row">
+						<div class="col-md-8 col-md-offset-2">
+							<div class="panel panel-default">
+								<div class="panel-heading">
+									<h3 class="panel-title"><?php echo T_('General Panel Configuration'); ?></h3>
+								</div>
 
+								<div class="panel-body">
+									<form ng-submit="processForm()">
+										<div class="row">
+											<div class="col-xs-5">
+												<fieldset disabled>
+													<div class="form-group">
+														<label for="version">Current Core Version</label>
+														<input type="text" id="version" class="form-control" placeholder="<?php echo BGP_PANEL_VERSION; ?>">
+													</div>
+												</fieldset>
+											</div>
+										</div>
+
+										<div class="row">
+											<div class="col-xs-5">
+												<div class="form-group" ng-class="{ 'has-error' : errorPanelName }">
+													<label for="panelName"><?php echo T_('Panel Name'); ?></label>
+													<input class="form-control" type="text" ng-model="formData.panelName" id="panelName" name="panelName" required>
+													<span class="help-block" ng-show="errorPanelName" ng-bind="errorPanelName"></span>
+												</div>
+											</div>
+										</div>
+
+										<div class="row">
+											<div class="col-xs-8">
+												<div class="form-group" ng-class="{ 'has-error' : errorPanelUrl }">
+													<label for="panelUrl"><?php echo T_('Panel URL'); ?></label>
+													<input class="form-control" type="text" ng-model="formData.panelUrl" id="panelUrl" name="panelUrl" required>
+													<span class="help-block" ng-show="errorPanelUrl" ng-bind="errorPanelUrl"></span>
+												</div>
+											</div>
+										</div>
+
+										<div class="row">
+											<div class="col-xs-8">
+												<div class="form-group">
+													<label><?php echo T_('Maintenance Mode'); ?></label>
+													<div class="radio">
+														<label>
+															<input type="radio" name="maintenanceMode" id="maintenanceMode1" value="on" checked>
+															On
+														</label>
+													</div>
+													<div class="radio">
+														<label>
+															<input type="radio" name="maintenanceMode" id="maintenanceMode2" value="off">
+															Off
+														</label>
+													</div>
+													<span class="help-block">
+														<?php echo T_('Switch the panel in maintenance mode.') . "\r\n"; ?>
+														<?php echo T_('Only'); ?> <b><?php echo T_('Administrators'); ?></b> <?php echo T_('will be able to log into the panel.'); ?><br />
+														<b><?php echo T_('NOTE: CRON JOB IS DISABLED IN THIS MODE!'); ?></b>
+													</span>
+												</div>
+											</div>
+										</div>
+
+										<div class="row">
+											<div class="col-xs-5">
+												<div class="form-group" ng-class="{ 'has-error' : errorAdminTemplate }">
+													<label for="adminTemplate"><?php echo T_('Admin Template'); ?></label>
+													<select class="form-control" type="text" ng-model="formData.adminTemplate" id="adminTemplate" name="adminTemplate" required>
+<?php
+//---------------------------------------------------------+
+
+foreach ($templates as $key => $value)
+{
+	if ($value == BGP_ADMIN_TEMPLATE) {
+
+//---------------------------------------------------------+
+?>
+														<option value="<?php echo $value; ?>" ng-selected="true"><?php echo $key; ?></option>
+<?php
+//---------------------------------------------------------+
+
+	}
+	else {
+
+//---------------------------------------------------------+
+?>
+														<option value="<?php echo $value; ?>"><?php echo $key; ?></option>
+<?php
+//---------------------------------------------------------+
+
+	}
+}
+
+reset($templates);
+
+//---------------------------------------------------------+
+?>
+													</select>
+													<span class="help-block" ng-show="errorAdminTemplate" ng-bind="errorAdminTemplate"></span>
+												</div>
+											</div>
+										</div>
+
+										<div class="row">
+											<div class="col-xs-5">
+												<div class="form-group" ng-class="{ 'has-error' : errorUserTemplate }">
+													<label for="userTemplate"><?php echo T_('User Template'); ?></label>
+													<select class="form-control" type="text" ng-model="formData.userTemplate" id="userTemplate" name="userTemplate" required>
+<?php
+//---------------------------------------------------------+
+
+foreach ($templates as $key => $value)
+{
+	if ($value == BGP_USER_TEMPLATE) {
+
+//---------------------------------------------------------+
+?>
+														<option value="<?php echo $value; ?>" ng-selected="true"><?php echo $key; ?></option>
+<?php
+//---------------------------------------------------------+
+
+	}
+	else {
+
+//---------------------------------------------------------+
+?>
+														<option value="<?php echo $value; ?>"><?php echo $key; ?></option>
+<?php
+//---------------------------------------------------------+
+
+	}
+}
+
+//---------------------------------------------------------+
+?>
+													</select>
+													<span class="help-block" ng-show="errorUserTemplate" ng-bind="errorUserTemplate"></span>
+												</div>
+											</div>
+										</div>
+
+										<br />
+
+										<div class="row">
+											<div class="text-center">
+												<button class="btn btn-primary" type="submit"><?php echo T_('Apply'); ?></button>
+												<button class="btn btn-default" type="reset"><?php echo T_('Cancel Changes'); ?></button>
+											</div>
+										</div>
+									</form>
+								</div>
+							</div>
+						</div>
 					</div>
 					<!-- END: CONTENTS -->
 
@@ -66,7 +238,15 @@ $gui->getHeader();
  * Generate AngularJS Code
  */
 
-$js->getAngularController( '', $module::getModuleName( '/' ), array());
+$fields = array(
+		'PanelName' => $current_config['panel_name'],
+		'PanelUrl' => $current_config['system_url'],
+		'MaintenanceMode' => $current_config['maintenance_mode'],
+		'AdminTemplate' => $current_config['admin_template'],
+		'UserTemplate' => $current_config['user_template']
+	);
+
+$js->getAngularController( 'updateSysConfig', $module::getModuleName( '/' ), $fields, './admin/config' );
 
 ?>
 					<!-- END: SCRIPT -->

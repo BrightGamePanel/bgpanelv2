@@ -73,7 +73,7 @@ class Core_JS_GUI
 			{
 				if (!is_numeric($var) && !empty($value)) {
 ?>
-								<?php echo strtolower("'$var'"); ?>:<?php echo "'$value'"; ?>,
+								<?php echo "'$var'"; ?>:<?php echo "'$value'"; ?>,
 <?php
 				}
 			}
@@ -110,11 +110,11 @@ class Core_JS_GUI
 <?php
 
 			// Form Fields
-			foreach ($variables as $var)
+			foreach ($variables as $var => $value)
 			{
 				// bind field errors to error variables
 ?>
-											$scope.error<?php echo ucfirst(strtolower($var)); ?> = data.errors.<?php echo strtolower($var); ?>;
+											$scope.error<?php echo ucfirst($var); ?> = data.errors.<?php echo $var; ?>;
 <?php
 			}
 

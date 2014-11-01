@@ -86,7 +86,7 @@ if ( $authService->isBanned() ) {
 												<div class="input-group-addon"><span class="glyphicon glyphicon-user"></span></div>
 												<input class="form-control" type="text" ng-model="formData.username" id="username" name="username" placeholder="<?php echo T_('Login'); ?>" required>
 											</div>
-											<span class="help-block" ng-show="errorUsername">{{ errorUsername }}</span>
+											<span class="help-block" ng-show="errorUsername" ng-bind="errorUsername"></span>
 										</div>
 
 										<div class="form-group" ng-class="{ 'has-error' : errorPassword }">
@@ -95,7 +95,7 @@ if ( $authService->isBanned() ) {
 												<div class="input-group-addon"><span class="glyphicon glyphicon-lock"></span></div>
 												<input class="form-control" type="password" ng-model="formData.password" id="password" name="password" placeholder="<?php echo T_('Password'); ?>" required>
 											</div>
-											<span class="help-block" ng-show="errorPassword">{{ errorPassword }}</span>
+											<span class="help-block" ng-show="errorPassword" ng-bind="errorPassword"></span>
 										</div>
 
 										<div class="checkbox">

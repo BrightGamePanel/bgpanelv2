@@ -49,5 +49,21 @@ function bgp_create_random_password( $length )
 	$chars = "abcdefghijkmnpqrstuvwxyz23456789-#@*!_?ABCDEFGHJKLMNPQRSTUVWXYZ"; // Available chars for the password
 	$string = str_shuffle($chars);
 	$pass = substr($string, 0, $length); // Truncate the password to the specified length
+
 	return $pass;
+}
+
+/**
+ * Little function to re-order and clean the output array
+ * given by the PDO object on a SELECT statement on the CONFIG table
+ */
+function bgp_get_conf_array( $bgp_conf_array = array() )
+{
+	foreach ($bgp_conf_array as $key => $config) {
+		$bgp_conf_array[$config['setting']] = $config['value'];
+
+		unset($bgp_conf_array[$key]);
+	}
+
+	return $bgp_conf_array;
 }
