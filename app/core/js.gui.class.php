@@ -73,7 +73,7 @@ class Core_JS_GUI
 			{
 				if (!is_numeric($var) && !empty($value)) {
 ?>
-								<?php echo "'$var'"; ?>:<?php echo "'$value'"; ?>,
+								<?php echo "'" . lcfirst($var) . "'"; ?>:<?php echo "'$value'"; ?>,
 <?php
 				}
 			}
@@ -112,7 +112,13 @@ class Core_JS_GUI
 			// Form Fields
 			foreach ($variables as $var => $value)
 			{
+
 				// bind field errors to error variables
+				if (is_numeric($var)) {
+
+					// Hack in case the values are not defined in the array
+					$var = lcfirst($value);
+				}
 ?>
 											$scope.error<?php echo ucfirst($var); ?> = data.errors.<?php echo $var; ?>;
 <?php
