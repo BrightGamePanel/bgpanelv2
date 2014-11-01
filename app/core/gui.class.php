@@ -16,12 +16,12 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * @categories	Games/Entertainment, Systems Administration
  * @package		Bright Game Panel V2
- * @author		warhawk3407 <warhawk3407@gmail.com> @NOSPAM
- * @copyleft	2014
- * @license		GNU General Public License version 3.0 (GPLv3)
  * @version		0.1
+ * @category	Systems Administration
+ * @author		warhawk3407 <warhawk3407@gmail.com> @NOSPAM
+ * @copyright	Copyleft 2014, Nikita Rousseau
+ * @license		GNU General Public License version 3.0 (GPLv3)
  * @link		http://www.bgpanel.net/
  */
 
@@ -800,7 +800,7 @@ class Core_GUI
 			<!-- FOOTER -->
 			<footer>
 				<div class="pull-left">
-					Copyleft - 2014. Released Under <a href="http://www.gnu.org/licenses/gpl.html" target="_blank">GPLv3</a>.<br />
+					Copyleft <img height="12" src="./gui/img/copyleft.png"> 2014. Released under the <a href="http://www.gnu.org/licenses/gpl.html" target="_blank">GPLv3</a>.<br />
 					All images are copyrighted by their respective owners.
 				</div>
 
@@ -809,6 +809,7 @@ class Core_GUI
 					<br />
 					<a href="https://github.com/warhawk3407/bgpanelv2/" target="_blank"><i class="fa fa-github fa-fw"></i></a>&nbsp;
 					<a href="https://twitter.com/BrightGamePanel/" target="_blank"><i class="fa fa-twitter fa-fw"></i></a>&nbsp;
+					<a href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&amp;hosted_button_id=7SDPVBR9EMQZS" target="_blank"><i class="fa fa-paypal fa-fw"></i></a>&nbsp;
 					<a href="http://getbootstrap.com/" target="_blank">
 						<img height="14" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAJgAAACYCAYAAAAYwiAhAAAMU0lEQVR4AeyZzU4TARSFhx08ienKiA
 						sSSymliEjpdBBqoUX++gMJupZC/6B0prPUhIRI4qvIwoUhxAU8gBKiS0kkYQW5npsUAZloy4xYp3fxJSxYDMOXc07uKETkGJmI6clo5iLYmtfMbXAwP2IeA2oN
