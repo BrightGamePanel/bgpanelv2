@@ -190,6 +190,7 @@ catch (PDOException $e) {
 $bgpCoreInfo = simplexml_load_file( CORE_VERSION_FILE );
 
 if ( ENV_RUNTIME == 'DEFAULT' ) {
+
 	/**
 	 * VERSION CONTROL
 	 * Check that core files are compatible with the current BrightGamePanel Database
@@ -212,78 +213,81 @@ if ( ENV_RUNTIME == 'DEFAULT' ) {
 	}
 }
 
-/**
- * LOGGING Configuration
- * Apache Log4php configuration
- *
- * @link: http://logging.apache.org/log4php/docs/configuration.html
- */
-if ( CONF_LOGS_DIR != 'default' && is_writable( CONF_LOGS_DIR ) ) {
+if ( ENV_RUNTIME == 'DEFAULT' ) {
 
-	// Override default configuration
-	define( 'REAL_LOGGING_DIR', CONF_LOGS_DIR );
-}
-else {
+	/**
+	 * LOGGING Configuration
+	 * Apache Log4php configuration
+	 *
+	 * @link: http://logging.apache.org/log4php/docs/configuration.html
+	 */
+	if ( CONF_LOGS_DIR != 'default' && is_writable( CONF_LOGS_DIR ) ) {
 
-	// Default configuration
-	define( 'REAL_LOGGING_DIR', LOGS_DIR );
-}
+		// Override default configuration
+		define( 'REAL_LOGGING_DIR', CONF_LOGS_DIR );
+	}
+	else {
 
-function bgp_get_log4php_conf_array( ) {
-	return array(
-		'rootLogger' => array(
-			'appenders' => array('default')
-		),
-		'loggers' => array(
-			'sys.core' => array(
-				'additivity' => false,
-				'appenders' => array('coreAppender')
-			)
-		),
-		'appenders' => array(
-			'default' => array(
-				'class' => 'LoggerAppenderFile',
-				'layout' => array(
-					'class' => 'LoggerLayoutPattern',
-					'params' => array(
-						'conversionPattern' => '[%date{Y-m-d H:i:s,u}] %-5level %-10.10logger %-5.5session{COM} %-12session{USERNAME} %-3session{ID} %-15.15server{REMOTE_ADDR} %-35server{REQUEST_URI} %-35class %-20method "%msg"%n'
-					)
-				),
-				'params' => array(
-					'file' => REAL_LOGGING_DIR . '/' . date('Y-m-d') . '.txt',
-					'append' => true
+		// Default configuration
+		define( 'REAL_LOGGING_DIR', LOGS_DIR );
+	}
+
+	function bgp_get_log4php_conf_array( ) {
+		return array(
+			'rootLogger' => array(
+				'appenders' => array('default')
+			),
+			'loggers' => array(
+				'sys.core' => array(
+					'additivity' => false,
+					'appenders' => array('coreAppender')
 				)
 			),
-			'coreAppender' => array(
-				'class' => 'LoggerAppenderFile',
-				'layout' => array(
-					'class' => 'LoggerLayoutPattern',
+			'appenders' => array(
+				'default' => array(
+					'class' => 'LoggerAppenderFile',
+					'layout' => array(
+						'class' => 'LoggerLayoutPattern',
+						'params' => array(
+							'conversionPattern' => '[%date{Y-m-d H:i:s,u}] %-5level %-10.10logger %-5.5session{COM} %-12session{USERNAME} %-3session{ID} %-15.15server{REMOTE_ADDR} %-35server{REQUEST_URI} %-35class %-20method "%msg"%n'
+						)
+					),
 					'params' => array(
-						'conversionPattern' => '[%date{Y-m-d H:i:s,u}] %-5level System Core V2 localhost %-35class %-20method "%msg"%n'
+						'file' => REAL_LOGGING_DIR . '/' . date('Y-m-d') . '.txt',
+						'append' => true
 					)
 				),
-				'params' => array(
-					'file' => REAL_LOGGING_DIR . '/' . date('Y-m-d') . '.core.txt',
-					'append' => true
+				'coreAppender' => array(
+					'class' => 'LoggerAppenderFile',
+					'layout' => array(
+						'class' => 'LoggerLayoutPattern',
+						'params' => array(
+							'conversionPattern' => '[%date{Y-m-d H:i:s,u}] %-5level System Core V2 localhost %-35class %-20method "%msg"%n'
+						)
+					),
+					'params' => array(
+						'file' => REAL_LOGGING_DIR . '/' . date('Y-m-d') . '.core.txt',
+						'append' => true
+					)
 				)
 			)
-		)
-	);
-}
+		);
+	}
 
-/**
- * ROUTING Configuration
- * FlightPHP configuration
- *
- * flight.base_url - Override the base url of the request. (default: null)
- * flight.handle_errors - Allow Flight to handle all errors internally. (default: true)
- * flight.log_errors - Log errors to the web server's error log file. (default: false)
- * flight.views.path - Directory containing view template files (default: ./views)
- *
- * @link: http://flightphp.com/learn#configuration
- */
-Flight::set('flight.handle_errors', TRUE);
-Flight::set('flight.log_errors', FALSE);
+	/**
+	 * ROUTING Configuration
+	 * FlightPHP configuration
+	 *
+	 * flight.base_url - Override the base url of the request. (default: null)
+	 * flight.handle_errors - Allow Flight to handle all errors internally. (default: true)
+	 * flight.log_errors - Log errors to the web server's error log file. (default: false)
+	 * flight.views.path - Directory containing view template files (default: ./views)
+	 *
+	 * @link: http://flightphp.com/learn#configuration
+	 */
+	Flight::set('flight.handle_errors', TRUE);
+	Flight::set('flight.log_errors', FALSE);
+}
 
 
 // Clean Up
