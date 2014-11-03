@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- GUI Sidebar Manifest -->
+<!-- GUI Manifest -->
 <bgp_module>
+	<module_tabs></module_tabs>
+
 	<module_sidebar>
 		<rank>2</rank>
 		<txt>Boxes</txt>

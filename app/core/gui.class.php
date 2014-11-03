@@ -346,7 +346,7 @@ class Core_GUI
 						<span class="icon-bar"></span>
 						<span class="icon-bar"></span>
 					</button>
-					<a class="navbar-brand" href="#">BrightGamePanel V2</a>
+					<a class="navbar-brand" href="#">Bright Game Panel V2</a>
 				</div>
 
 <?php
@@ -637,31 +637,43 @@ class Core_GUI
 
 
 	/**
-	 * Get Sidebar Items
+	 * Display Module Tabs (Navigation)
 	 *
+	 * @param none
+	 * @return String
+	 * @access public
+	 */
+	public function getTabs() {
+
+	}
+
+
+
+	/**
+	 * Parse GUI Manifest Files As XML Obj
+	 * 
 	 * @param none
 	 * @return array
 	 * @access private
 	 */
-	private function getSideBarItems()
+	private function parseGUIManifestFiles ()
 	{
 		$privilege = Core_AuthService::getSessionPrivilege();
 		$manifestFiles = array();
-
-		// Read all "sidebar.gui.xml" files under the "app/modules" directory
+		
 		$handle = opendir( MODS_DIR );
-
+		
 		if ($handle) {
-
+		
 			// Foreach modules
 			while (false !== ($entry = readdir($handle))) {
-
+		
 				// Dump specific directories
 				if ($entry != "." && $entry != "..") {
-
+		
 					// Analyze module name
 					$parts = explode('.', $entry);
-
+		
 					if (!empty( $parts[1] )) {
 						$role = $parts[0];
 						$module = $parts[1];
@@ -670,33 +682,49 @@ class Core_GUI
 						$role = NULL;
 						$module = $parts[0];
 					}
-
+		
 					// Case: "admin.module" OR "user.module"
 					if (!empty($role) && $privilege == ucfirst($role)) {
-
+		
 						// Get the manifest
-						$manifest = MODS_DIR . '/' . $role . '.' . $module . '/sidebar.gui.xml';
-
+						$manifest = MODS_DIR . '/' . $role . '.' . $module . '/gui.manifest.xml';
+		
 						if (is_file( $manifest )) {
 							$manifestFiles[] = simplexml_load_file( $manifest ); // Store the object
 						}
 					}
-
+		
 					// Case: "module"
 					else {
-
+		
 						// Get the manifest
-						$manifest = MODS_DIR . '/' . $module . '/sidebar.gui.xml';
-
+						$manifest = MODS_DIR . '/' . $module . '/gui.manifest.xml';
+		
 						if (is_file( $manifest )) {
 							$manifestFiles[] = simplexml_load_file( $manifest );
 						}
 					}
 				}
 			}
-
+		
 			closedir($handle);
 		}
+
+		return $manifestFiles;
+	}
+
+
+
+	/**
+	 * Get Sidebar Items
+	 *
+	 * @param none
+	 * @return array
+	 * @access private
+	 */
+	private function getSideBarItems()
+	{
+		$manifestFiles = $this->parseGUIManifestFiles();
 
 		if (!empty($manifestFiles)) {
 
@@ -773,6 +801,19 @@ class Core_GUI
 		}
 
 		return array();
+	}
+
+
+
+	/**
+	 * Get Tabs Items
+	 *
+	 * @param none
+	 * @return array
+	 * @access private
+	 */
+	private function getTabsItems() {
+	
 	}
 
 

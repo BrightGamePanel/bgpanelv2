@@ -1,6 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- GUI Sidebar Manifest -->
+<!-- GUI Manifest -->
 <bgp_module>
+	<module_tabs>
+		<general>
+			<href>./admin/config</href>
+			<icon>fa fa-wrench fa-fw</icon>
+		</general>
+	</module_tabs>
+
 	<module_sidebar>
 		<rank>1</rank>
 		<txt>Configuration</txt>

@@ -37,10 +37,15 @@ class BGP_Module
 	public static $module_definition = array();
 	public static $module_name = '';
 
-	function __construct( $module_name ) {
+	function __construct( $module_name, $manifest_file = 'manifest.xml' ) {
+
+		// Test Manifest File
+		if ( !file_exists(MODS_DIR . '/' . $module_name . '/' . $manifest_file) ) {
+			$manifest_file = 'manifest.xml';
+		}
 
 		// Load Plugin Manifest
-		$xml = simplexml_load_string( file_get_contents( MODS_DIR . '/' . $module_name . '/manifest.xml' ) );
+		$xml = simplexml_load_string( file_get_contents( MODS_DIR . '/' . $module_name . '/' . $manifest_file ) );
 		$json = json_encode($xml);
 		self::$module_definition = json_decode($json, TRUE);
 		self::$module_name = $module_name;
