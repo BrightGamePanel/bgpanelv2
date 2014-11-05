@@ -178,7 +178,7 @@ define('CRYPT_RSA_MODE_OPENSSL', 2);
 /**
  * Default openSSL configuration file.
  */
-define('CRYPT_RSA_OPENSSL_CONFIG', 'openssl.cnf');
+define('CRYPT_RSA_OPENSSL_CONFIG', realpath(dirname(__FILE__)) . '/openssl.cnf');
 
 /**#@+
  * @access public
