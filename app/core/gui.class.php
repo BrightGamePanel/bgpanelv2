@@ -31,6 +31,7 @@ class Core_GUI
 {
 
 	// This Module Settings
+	private $module_name = '';
 	private $module_title = '';
 	private $module_icon = '';
 
@@ -56,6 +57,7 @@ class Core_GUI
 	function __construct( $bgp_module )
 	{
 		if ( !empty($bgp_module) && is_object($bgp_module) && is_subclass_of($bgp_module, 'BGP_Module') ) {
+			$this->module_name = $bgp_module::getModuleName( );
 			$this->module_title = $bgp_module::getModuleSetting( 'title' );
 			$this->module_icon = $bgp_module::getModuleSetting( 'icon' );
 			$this->module_dependencies = $bgp_module::getModuleDependencies( );
@@ -650,7 +652,8 @@ class Core_GUI
 		{
 //------------------------------------------------------------------------------------------------------------+
 ?>
-			<ul class="nav nav-tabs" role="tablist">
+					<!-- TABS -->
+					<ul class="nav nav-tabs" role="tablist">
 <?php
 //------------------------------------------------------------------------------------------------------------+
 
@@ -659,7 +662,22 @@ class Core_GUI
 
 //------------------------------------------------------------------------------------------------------------+
 ?>
-				<li role="presentation" class="active"><a href="#">Home</a></li>
+						<li role="presentation" <?php
+
+				if ($key == $activeTab) {
+					echo "class=\"active\"";
+				}
+
+				?>><a href="<?php
+
+				if ($key == $activeTab) {
+					echo "#";
+				}
+				else {
+					echo $tab['href'];
+				}
+
+				?>"><i class="<?php echo $tab['icon']; ?>"></i>&nbsp;<?php echo ucfirst( T_( $key ) ); ?></a></li>
 <?php
 //------------------------------------------------------------------------------------------------------------+
 
@@ -667,7 +685,9 @@ class Core_GUI
 
 //------------------------------------------------------------------------------------------------------------+
 ?>
-			</ul>
+					</ul>
+					<!-- END: TABS -->
+
 <?php
 //------------------------------------------------------------------------------------------------------------+
 		}
@@ -839,8 +859,29 @@ class Core_GUI
 	 * @return array
 	 * @access private
 	 */
-	private function getTabsItems() {
-	
+	private function getTabsItems()
+	{
+		$items = array();
+
+		// Get the manifest
+		$manifest = MODS_DIR . '/' . $this->module_name . '/gui.manifest.xml';
+		
+		if (is_file( $manifest )) {
+			$manifest = simplexml_load_file( $manifest );
+
+			$tabs = $manifest->{'module_tabs'};
+			
+			foreach ($tabs as $tab) {
+
+				foreach ($tab as $key => $value) {
+
+					$items[ $key ][ 'href' ] = (string)$manifest->{'module_tabs'}->$key->href;
+					$items[ $key ][ 'icon' ] = (string)$manifest->{'module_tabs'}->$key->icon;
+				}
+			}
+		}
+
+		return $items;
 	}
 
 

@@ -4,7 +4,7 @@
 	<module_tabs>
 		<general>
 			<href>./admin/config</href>
-			<icon>fa fa-wrench fa-fw</icon>
+			<icon>fa fa-cog fa-fw</icon>
 		</general>
 	</module_tabs>
 
