@@ -14,7 +14,7 @@
  * Here's a short example of how to use this library:
  * <code>
  * <?php
- *    include('Crypt/Blowfish.php');
+ *    include 'Blowfish.php';
  *
  *    $blowfish = new Crypt_Blowfish();
  *
@@ -50,7 +50,6 @@
  * @author    Hans-Juergen Petrich <petrich@tronic-media.com>
  * @copyright MMVII Jim Wigginton
  * @license   http://www.opensource.org/licenses/mit-license.html  MIT License
- * @version   1.0
  * @link      http://phpseclib.sourceforge.net
  */
 
@@ -71,7 +70,7 @@ if (!class_exists('Crypt_Base')) {
 /**
  * Encrypt / decrypt using the Counter mode.
  *
- * Set to -1 since that's what Crypt/Random.php uses to index the CTR mode.
+ * Set to -1 since that's what Random.php uses to index the CTR mode.
  *
  * @link http://en.wikipedia.org/wiki/Block_cipher_modes_of_operation#Counter_.28CTR.29
  */
@@ -104,7 +103,7 @@ define('CRYPT_BLOWFISH_MODE_OFB', CRYPT_MODE_OFB);
 
 /**#@+
  * @access private
- * @see Crypt_Blowfish::Crypt_Blowfish()
+ * @see Crypt_Base::Crypt_Base()
  */
 /**
  * Toggles the internal implementation
@@ -122,7 +121,6 @@ define('CRYPT_BLOWFISH_MODE_MCRYPT', CRYPT_MODE_MCRYPT);
  * @package Crypt_Blowfish
  * @author  Jim Wigginton <terrafrost@php.net>
  * @author  Hans-Juergen Petrich <petrich@tronic-media.com>
- * @version 1.0
  * @access  public
  */
 class Crypt_Blowfish extends Crypt_Base
@@ -368,34 +366,6 @@ class Crypt_Blowfish extends Crypt_Base
      * @access private
      */
     var $kl;
-
-    /**
-     * Default Constructor.
-     *
-     * Determines whether or not the mcrypt extension should be used.
-     *
-     * $mode could be:
-     *
-     * - CRYPT_BLOWFISH_MODE_ECB
-     *
-     * - CRYPT_BLOWFISH_MODE_CBC
-     *
-     * - CRYPT_BLOWFISH_MODE_CTR
-     *
-     * - CRYPT_BLOWFISH_MODE_CFB
-     *
-     * - CRYPT_BLOWFISH_MODE_OFB
-     *
-     * If not explictly set, CRYPT_BLOWFISH_MODE_CBC will be used.
-     *
-     * @see Crypt_Base::Crypt_Base()
-     * @param optional Integer $mode
-     * @access public
-     */
-    function Crypt_Blowfish($mode = CRYPT_BLOWFISH_MODE_CBC)
-    {
-        parent::Crypt_Base($mode);
-    }
 
     /**
      * Sets the key.
@@ -672,4 +642,3 @@ class Crypt_Blowfish extends Crypt_Base
         $this->inline_crypt = $lambda_functions[$code_hash];
     }
 }
-
