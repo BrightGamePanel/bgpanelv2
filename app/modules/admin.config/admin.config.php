@@ -124,7 +124,7 @@ $current_config = bgp_get_conf_array( $current_config );
 													<label><?php echo T_('Maintenance Mode'); ?></label>
 													<div class="radio">
 														<label>
-															<input type="radio" name="maintenanceMode" id="maintenanceMode1" value="1" <?php 
+															<input type="radio" ng-model="formData.maintenanceMode" name="maintenanceMode" id="maintenanceMode1" ng-value="true" <?php 
 															
 															if ( $current_config['maintenance_mode'] == '1' ) {
 
@@ -137,7 +137,7 @@ $current_config = bgp_get_conf_array( $current_config );
 													</div>
 													<div class="radio">
 														<label>
-															<input type="radio" name="maintenanceMode" id="maintenanceMode2" value="0" <?php 
+															<input type="radio" ng-model="formData.maintenanceMode" name="maintenanceMode" id="maintenanceMode2" ng-value="false" <?php 
 															
 															if ( $current_config['maintenance_mode'] == '0' ) {
 

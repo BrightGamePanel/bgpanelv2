@@ -50,6 +50,10 @@ else {
 // Call the method
 switch ($task)
 {
+	case 'updateSysConfig':
+		echo $controller->updateSysConfig( $_POST );
+		exit( 0 );
+
 	default:
 		Flight::redirect('/400');
 }
