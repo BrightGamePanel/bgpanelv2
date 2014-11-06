@@ -52,7 +52,6 @@ $gui->getHeader();
  * Build Page Tabs
  */
 $gui->getTabs( 'general' );
-echo "\t\t\t\t\t<br /><br />\r\n\r\n"; // Style hack
 
 
 // Get templates
