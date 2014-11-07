@@ -69,21 +69,44 @@ class BGP_Controller_Admin_Config extends BGP_Controller {
 			$errors['userTemplate'] = T_('Bad User Template.');
 		}
 
-		if ( empty($form['maintenanceMode']) || (boolval($form['maintenanceMode']) != TRUE &&
-				boolval($form['maintenanceMode']) != FALSE)	) {
-			$errors['maintenanceMode'] = T_('Bad Maintenance Mode.');
+		if ( !empty($form['maintenanceMode']) ) {
+
+			if ($form['maintenanceMode'] != 'true' && $form['maintenanceMode'] != 'false') {
+
+				$errors['maintenanceMode'] = T_('Bad Maintenance Mode.');
+			}
 		}
 
 		// Apply the form ==============================================================
 
-		$panelName			= $form['panelName'];
-		$panelUrl			= $form['panelUrl'];
-		$adminTemplate 		= $form['adminTemplate'];
-		$userTemplate 		= $form['userTemplate'];
-		$maintenanceMode 	= boolval($form['maintenanceMode']);
+		if (empty($errors))
+		{
+			// Database update
 
-		if (empty($errors)) {
-			
+			$db_data['panel_name']			= $form['panelName'];
+			$db_data['panel_url']			= $form['panelUrl'];
+			$db_data['admin_template'] 		= $form['adminTemplate'];
+			$db_data['user_template'] 		= $form['userTemplate'];
+
+			if ( !empty($form['maintenanceMode']) )
+			{
+				if ($form['maintenanceMode'] === 'true') {
+					$db_data['maintenance_mode'] = '1';
+				}
+				else {
+					$db_data['maintenance_mode'] = '0';
+				}
+			}
+
+			foreach ($db_data as $key => $value) {
+
+				$sth = $dbh->prepare( "UPDATE " . DB_PREFIX . "config SET value = :" . $key . " WHERE setting = '" . $key . "';" );
+				$sth->bindParam( ':' . $key, $value );
+				$sth->execute();
+			}
+
+			// Reload Current Template
+			$_SESSION['TEMPLATE'] = $db_data['admin_template'];
 		}
 
 		// return a response ===========================================================
@@ -96,7 +119,7 @@ class BGP_Controller_Admin_Config extends BGP_Controller {
 			$data['errors']  = $errors;
 
 			$data['msgType'] = 'warning';
-			$data['msg'] = T_('Login Failure!');
+			$data['msg'] = T_('Bad Settings!');
 		}
 		else {
 		
