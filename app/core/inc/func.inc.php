@@ -67,3 +67,28 @@ function bgp_get_conf_array( $bgp_conf_array = array() )
 
 	return $bgp_conf_array;
 }
+
+/**
+ * Set an Alert on the GUI via global $_SESSION
+ */
+function bgp_set_alert( $strong, $body = '', $type = 'warning' )
+{
+	if ( !empty($strong) ) {
+
+		switch ($type) {
+			case 'success':
+			case 'info':
+			case 'warning':
+			case 'danger':
+				$_SESSION['ALERT']['MSG-TYPE'] = $type;
+				break;
+			
+			default:
+				$_SESSION['ALERT']['MSG-TYPE'] = 'warning';
+				break;
+		}
+
+		$_SESSION['ALERT']['MSG-STRONG'] = $strong;
+		$_SESSION['ALERT']['MSG-BODY'] = $body;
+	}
+}

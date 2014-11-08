@@ -267,10 +267,54 @@ class Core_GUI
 //------------------------------------------------------------------------------------------------------------+
 ?>
 					<!-- ALERTS -->
-					<div id="message" class="alert alert-dismissible" role="alert" ng-show="msg" ng-class="'alert-' + msgType">
+					<div id="msg" class="alert alert-dismissible" role="alert" ng-show="msg" ng-class="'alert-' + msgType">
 						<button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
 						<strong ng-bind="msg"></strong>
 					</div>
+<?php
+//------------------------------------------------------------------------------------------------------------+
+
+		/**
+		 * Alerts Handler
+		 */
+
+		if ( !empty($_SESSION['ALERT']) && !empty($_SESSION['ALERT']['MSG-TYPE']) )
+		{
+
+//------------------------------------------------------------------------------------------------------------+
+?>
+					<div id="alert" class="alert alert-dismissible alert-<?php echo htmlspecialchars( $_SESSION['ALERT']['MSG-TYPE'], ENT_QUOTES ); ?>" role="alert">
+						<button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+<?php
+//------------------------------------------------------------------------------------------------------------+
+
+			if (!empty($_SESSION['ALERT']['MSG-STRONG'])) {
+//------------------------------------------------------------------------------------------------------------+
+?>
+						<strong><?php echo htmlspecialchars( $_SESSION['ALERT']['MSG-STRONG'], ENT_QUOTES ); ?></strong>&nbsp;
+<?php
+//------------------------------------------------------------------------------------------------------------+
+			}
+
+			if (!empty($_SESSION['ALERT']['MSG-BODY'])) {
+//------------------------------------------------------------------------------------------------------------+
+?>
+						<?php echo htmlspecialchars( $_SESSION['ALERT']['MSG-BODY'], ENT_QUOTES ); ?>
+<?php
+//------------------------------------------------------------------------------------------------------------+
+			}
+
+//------------------------------------------------------------------------------------------------------------+
+?>	
+					</div>
+<?php
+//------------------------------------------------------------------------------------------------------------+
+
+			unset($_SESSION['ALERT']);
+		}
+
+//------------------------------------------------------------------------------------------------------------+
+?>
 					<!-- END: ALERTS -->
 
 <?php

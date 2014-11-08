@@ -84,7 +84,7 @@ class BGP_Controller_Admin_Config extends BGP_Controller {
 			// Database update
 
 			$db_data['panel_name']			= $form['panelName'];
-			$db_data['panel_url']			= $form['panelUrl'];
+			$db_data['system_url']			= $form['panelUrl'];
 			$db_data['admin_template'] 		= $form['adminTemplate'];
 			$db_data['user_template'] 		= $form['userTemplate'];
 
@@ -122,13 +122,11 @@ class BGP_Controller_Admin_Config extends BGP_Controller {
 			$data['msg'] = T_('Bad Settings!');
 		}
 		else {
-		
-			// if there are no errors, return a message
+
 			$data['success'] = true;
-		
+
 			// notification
-			$data['msgType'] = 'success';
-			$data['msg'] = T_('Settings Updated Successfully!');
+			bgp_set_alert( T_('Settings Updated Successfully!'), NULL, 'success' );
 		}
 		
 		// return all our data to an AJAX call

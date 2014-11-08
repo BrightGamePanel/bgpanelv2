@@ -281,12 +281,7 @@ class BGP_Controller_Login extends BGP_Controller
 		}
 		else {
 
-			// if there are no errors, return a message
 			$data['success'] = true;
-
-			// notification
-			$data['msgType'] = 'success';
-			$data['msg'] = T_('Welcome on BrightGamePanel V2!');
 		}
 
 		// return all our data to an AJAX call
@@ -515,12 +510,10 @@ class BGP_Controller_Login extends BGP_Controller
 		}
 		else {
 
-			// if there are no errors, return a message
 			$data['success'] = true;
 
 			// notification
-			$data['msgType'] = 'success';
-			$data['msg'] = T_('Your password has been reset and emailed to you.');
+			bgp_set_alert( T_('Your password has been reset and emailed to you.'), NULL, 'success' );
 		}
 
 		// return all our data to an AJAX call
