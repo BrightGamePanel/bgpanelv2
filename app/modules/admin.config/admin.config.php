@@ -89,12 +89,8 @@ $current_config = bgp_get_conf_array( $current_config );
 									<form ng-submit="processForm()">
 										<div class="row">
 											<div class="col-xs-5">
-												<fieldset disabled>
-													<div class="form-group">
-														<label for="version">Current Core Version</label>
-														<input type="text" id="version" class="form-control" placeholder="<?php echo BGP_PANEL_VERSION; ?>">
-													</div>
-												</fieldset>
+												<label>Current Core Version</label><br />
+												<span class="label label-info"><?php echo BGP_PANEL_VERSION; ?></span><br /><br />
 											</div>
 										</div>
 

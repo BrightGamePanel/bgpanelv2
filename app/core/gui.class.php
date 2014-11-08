@@ -455,7 +455,7 @@ class Core_GUI
 //------------------------------------------------------------------------------------------------------------+
 ?>
 					<ol class="navbar-breadcrumbs">
-						<li class="active"><span class="glyphicon glyphicon-home"></span>&nbsp;<?php echo T_('Home'); ?></li>
+						<li><a href="#"><span class="fa fa-home fa-fw"></span><?php echo T_('Home'); ?></a></li>
 <?php
 //------------------------------------------------------------------------------------------------------------+
 
@@ -463,14 +463,14 @@ class Core_GUI
 //------------------------------------------------------------------------------------------------------------+
 ?>
 						<li><a href="<?php echo $this->parent_module_href; ?>"><?php echo htmlspecialchars( $this->parent_module_title, ENT_QUOTES ); ?></a></li>
-						<li class="active"><?php echo htmlspecialchars( $this->module_title, ENT_QUOTES ); ?></li>
+						<li class="active"><a><?php echo htmlspecialchars( $this->module_title, ENT_QUOTES ); ?></a></li>
 <?php
 //------------------------------------------------------------------------------------------------------------+
 			}
 			else {
 //------------------------------------------------------------------------------------------------------------+
 ?>
-						<li class="active"><?php echo htmlspecialchars( $this->module_title, ENT_QUOTES ); ?></li>
+						<li class="active"><a><?php echo htmlspecialchars( $this->module_title, ENT_QUOTES ); ?></a></li>
 <?php
 //------------------------------------------------------------------------------------------------------------+
 			}
