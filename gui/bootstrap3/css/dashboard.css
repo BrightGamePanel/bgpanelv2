@@ -115,10 +115,6 @@
     left: auto;
 }
 
-#side-menu {
-    padding-top: 10px;
-}
-
 .sidebar .sidebar-nav.navbar-collapse {
     padding-right: 0;
     padding-left: 0;
@@ -137,6 +133,18 @@
     font-size: 12px;
     line-height: 1.42857;
     padding: 3px 27px;
+    white-space: nowrap;
+}
+
+#side-title {
+    color: #ccc;
+    font-weight: bold;
+    display: block;
+    font-size: 14px;
+    line-height: 1.42857;
+    padding-top: 10px;
+    padding-left: 15px;
+    padding-bottom: 10px;
     white-space: nowrap;
 }
 

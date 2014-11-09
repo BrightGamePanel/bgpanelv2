@@ -553,6 +553,7 @@ class Core_GUI
 				<div class="navbar-default sidebar" role="navigation">
 					<div class="sidebar-nav navbar-collapse">
 						<ul class="nav" id="side-menu">
+							<li id="side-title"><?php echo T_('Menu'); ?></li>
 <?php
 //------------------------------------------------------------------------------------------------------------+
 
