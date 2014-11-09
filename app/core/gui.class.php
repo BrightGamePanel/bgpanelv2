@@ -712,16 +712,13 @@ class Core_GUI
 					echo "class=\"active\"";
 				}
 
-				?>><a href="<?php
+				?>><a <?php
 
-				if ($key == $activeTab) {
-					echo "#";
-				}
-				else {
-					echo $tab['href'];
+				if ($key != $activeTab) {
+					echo "href=\"" . $tab['href'] . "\"";
 				}
 
-				?>"><i class="<?php echo $tab['icon']; ?>"></i>&nbsp;<?php echo ucfirst( T_( $key ) ); ?></a></li>
+				?>><i class="<?php echo $tab['icon']; ?>"></i>&nbsp;<?php echo ucfirst( T_( $key ) ); ?></a></li>
 <?php
 //------------------------------------------------------------------------------------------------------------+
 
@@ -823,42 +820,46 @@ class Core_GUI
 
 			// XML Object to Array
 
-			foreach( $manifestFiles as $manifest ) {
+			foreach( $manifestFiles as $manifest )
+			{
+				if (!empty($manifest->{'module_sidebar'}))
+				{
 
-				$txt  = (string)$manifest->{'module_sidebar'}->txt;
-				$rank = (int)$manifest->{'module_sidebar'}->rank;
+					$txt  = (string)$manifest->{'module_sidebar'}->txt;
+					$rank = (int)$manifest->{'module_sidebar'}->rank;
 
-				$item[$txt]['rank'] = $rank;
-				$item[$txt]['href'] = (string)$manifest->{'module_sidebar'}->href;
-				$item[$txt]['icon'] = (string)$manifest->{'module_sidebar'}->icon;
+					$item[$txt]['rank'] = $rank;
+					$item[$txt]['href'] = (string)$manifest->{'module_sidebar'}->href;
+					$item[$txt]['icon'] = (string)$manifest->{'module_sidebar'}->icon;
 
-				// Processing sub-menu if any
+					// Processing sub-menu if any
 
-				if ( !empty($manifest->{'module_sidebar'}->{'sub_menu'}) ) {
-					
-					$sub_menu = (array)$manifest->{'module_sidebar'}->{'sub_menu'};
+					if ( !empty($manifest->{'module_sidebar'}->{'sub_menu'}) ) {
+						
+						$sub_menu = (array)$manifest->{'module_sidebar'}->{'sub_menu'};
 
-					foreach ($sub_menu as $sub_menu_key => $sub_menu_item) {
+						foreach ($sub_menu as $sub_menu_key => $sub_menu_item) {
 
-						$sub_menu_item = (array)$sub_menu_item;
+							$sub_menu_item = (array)$sub_menu_item;
 
-						foreach ($sub_menu_item as $sub_menu_item_href => $sub_menu_item_link) {
+							foreach ($sub_menu_item as $sub_menu_item_href => $sub_menu_item_link) {
 
-							$sub_menu_item_href = (string)$sub_menu_item_href;
+								$sub_menu_item_href = (string)$sub_menu_item_href;
 
-							// Push to array
+								// Push to array
 
-							$item[$txt]['sub_menu'][$sub_menu_key][$sub_menu_item_href]['href'] = (string)$sub_menu_item_link->{'href'};
-							$item[$txt]['sub_menu'][$sub_menu_key][$sub_menu_item_href]['icon'] = (string)$sub_menu_item_link->{'icon'};
+								$item[$txt]['sub_menu'][$sub_menu_key][$sub_menu_item_href]['href'] = (string)$sub_menu_item_link->{'href'};
+								$item[$txt]['sub_menu'][$sub_menu_key][$sub_menu_item_href]['icon'] = (string)$sub_menu_item_link->{'icon'};
+							}
 						}
 					}
-				}
-				else {
+					else {
 
-					$item[$txt]['sub_menu'] = array();
-				}
+						$item[$txt]['sub_menu'] = array();
+					}
 
-				$items = array_merge($items, $item); // Push
+					$items = array_merge($items, $item); // Push
+				}
 			}
 
 			$sideBarItems = array();
@@ -910,17 +911,21 @@ class Core_GUI
 		// Get the manifest
 		$manifest = MODS_DIR . '/' . $this->module_name . '/gui.manifest.xml';
 		
-		if (is_file( $manifest )) {
+		if (is_file( $manifest ))
+		{
 			$manifest = simplexml_load_file( $manifest );
 
-			$tabs = $manifest->{'module_tabs'};
-			
-			foreach ($tabs as $tab) {
+			if (!empty($manifest->{'module_tabs'}))
+			{
+				$tabs = $manifest->{'module_tabs'};
+				
+				foreach ($tabs as $tab) {
 
-				foreach ($tab as $key => $value) {
+					foreach ($tab as $key => $value) {
 
-					$items[ $key ][ 'href' ] = (string)$manifest->{'module_tabs'}->$key->href;
-					$items[ $key ][ 'icon' ] = (string)$manifest->{'module_tabs'}->$key->icon;
+						$items[ $key ][ 'href' ] = (string)$manifest->{'module_tabs'}->$key->href;
+						$items[ $key ][ 'icon' ] = (string)$manifest->{'module_tabs'}->$key->icon;
+					}
 				}
 			}
 		}

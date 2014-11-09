@@ -9,7 +9,7 @@
 	<module_settings>
 		<title>My Account</title>
 		<href>./myaccount</href>
-		<icon></icon>
+		<icon>fa fa-user fa-fw</icon>
 	</module_settings>
 
 	<module_options>

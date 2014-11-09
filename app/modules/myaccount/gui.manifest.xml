@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- GUI Manifest -->
+<bgp_module>
+	<module_tabs>
+		<profile>
+			<href>./myaccount</href>
+			<icon>fa fa-cog fa-fw</icon>
+		</profile>
+	</module_tabs>
+</bgp_module>
