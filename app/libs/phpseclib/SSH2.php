@@ -77,7 +77,7 @@ define('NET_SSH2_MASK_CONNECTED',     0x00000002);
 define('NET_SSH2_MASK_LOGIN_REQ',     0x00000004);
 define('NET_SSH2_MASK_LOGIN',         0x00000008);
 define('NET_SSH2_MASK_SHELL',         0x00000010);
-define('NET_SSH2_MASK_WINDOW_ADJUST', 0X00000020);
+define('NET_SSH2_MASK_WINDOW_ADJUST', 0x00000020);
 /**#@-*/
 
 /**#@+
@@ -971,7 +971,7 @@ class Net_SSH2
         $timeout-= $elapsed;
 
         if ($timeout <= 0) {
-            user_error(rtrim("Cannot connect to $host. Timeout error"));
+            user_error("Cannot connect to $host. Banner timeout");
             return false;
         }
 
