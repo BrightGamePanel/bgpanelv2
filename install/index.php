@@ -889,7 +889,8 @@ else if ($_GET['step'] == 'three')
 			$APP_SSH_KEY 		= hash('sha512', md5(str_shuffle(time()))); usleep( rand(1, 1000) );
 			$APP_STEAM_KEY		= hash('sha512', md5(str_shuffle(time()))); usleep( rand(1, 1000) );
 			$APP_AUTH_SALT		= hash('sha512', md5(str_shuffle(time()))); usleep( rand(1, 1000) );
-			$APP_LOGGED_IN_KEY 	= hash('sha512', md5(str_shuffle(time())));
+			$APP_LOGGED_IN_KEY 	= hash('sha512', md5(str_shuffle(time()))); usleep( rand(1, 1000) );
+			$APP_SESSION_KEY	= hash('sha512', md5(str_shuffle(time())));
 
 			if (is_writable( CONF_SECRET_INI )) {
 				$handle = fopen( CONF_SECRET_INI, 'w');
@@ -898,6 +899,7 @@ APP_SSH_KEY 		= \"".$APP_SSH_KEY."\"
 APP_STEAM_KEY		= \"".$APP_STEAM_KEY."\"
 APP_AUTH_SALT		= \"".$APP_AUTH_SALT."\"
 APP_LOGGED_IN_KEY 	= \"".$APP_LOGGED_IN_KEY."\"
+APP_SESSION_KEY 	= \"".$APP_SESSION_KEY."\"
 ";
 				fwrite($handle, $data);
 				fclose($handle);

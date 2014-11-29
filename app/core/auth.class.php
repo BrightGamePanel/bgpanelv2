@@ -44,6 +44,9 @@ class Core_AuthService
 	// Authentication Passphrase
 	private $auth_key;
 
+	// Session Passphrase
+	private $session_key;
+
 	// RSA Keys
 	private $rsa_private_key;
 	private $rsa_public_key;
@@ -80,6 +83,12 @@ class Core_AuthService
 		$this->auth_key = $CONFIG['APP_LOGGED_IN_KEY'];
 		if ( empty($this->auth_key) ) {
 			trigger_error("Core_AuthService -> Auth key is missing !", E_USER_ERROR);
+		}
+
+		// SESSION KEY
+		$this->session_key = $CONFIG['APP_SESSION_KEY'];
+		if ( empty($this->session_key) ) {
+			trigger_error("Core_AuthService -> Session key is missing !", E_USER_ERROR);
 		}
 
 		// RSA KEYS
@@ -456,11 +465,25 @@ class Core_AuthService
 					)
 				);
 
-				$rsa = new Crypt_RSA();
-				$rsa->loadKey( $this->rsa_public_key ); // public key
+				switch ( CONF_SEC_SESSION_METHOD )
+				{
+					case 'aes256':
+						$cipher = new Crypt_AES(CRYPT_AES_MODE_ECB);
+						$cipher->setKeyLength(256);
+						$cipher->setKey( $this->session_key );
 
-				$rsa->setEncryptionMode(CRYPT_RSA_ENCRYPTION_PKCS1);
-				$this->session['CREDENTIALS'] = $rsa->encrypt( $credentials );
+						$this->session['CREDENTIALS'] = $cipher->encrypt( $credentials );
+						break;
+
+					case 'rsa':
+					default:
+						$rsa = new Crypt_RSA();
+						$rsa->loadKey( $this->rsa_public_key ); // public key
+
+						$rsa->setEncryptionMode(CRYPT_RSA_ENCRYPTION_PKCS1);
+						$this->session['CREDENTIALS'] = $rsa->encrypt( $credentials );
+						break;
+				}
 
 				$_SESSION = $this->session;
 			}
@@ -491,11 +514,25 @@ class Core_AuthService
 	 */
 	private function decryptSessionCredentials() {
 		if ( !empty($this->session) && array_key_exists('CREDENTIALS', $this->session) ) {
-			$rsa = new Crypt_RSA();
-			$rsa->loadKey( $this->rsa_private_key ); // private key
+			switch ( CONF_SEC_SESSION_METHOD )
+			{
+				case 'aes256':
+					$cipher = new Crypt_AES(CRYPT_AES_MODE_ECB);
+					$cipher->setKeyLength(256);
+					$cipher->setKey( $this->session_key );
 
-			$rsa->setEncryptionMode(CRYPT_RSA_ENCRYPTION_PKCS1);
-			$credentials = unserialize( $rsa->decrypt( $this->session['CREDENTIALS'] ) );
+					$credentials = unserialize( $cipher->decrypt( $this->session['CREDENTIALS'] ) );
+					break;
+
+				case 'rsa':
+				default:
+					$rsa = new Crypt_RSA();
+					$rsa->loadKey( $this->rsa_private_key ); // private key
+
+					$rsa->setEncryptionMode(CRYPT_RSA_ENCRYPTION_PKCS1);
+					$credentials = unserialize( $rsa->decrypt( $this->session['CREDENTIALS'] ) );
+					break;
+			}
 
 			return $credentials;
 		}
