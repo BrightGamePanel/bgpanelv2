@@ -384,16 +384,18 @@ class Core_GUI
 	{
 //------------------------------------------------------------------------------------------------------------+
 ?>
-				<!-- TOP NAVBAR -->
-				<div class="navbar-header">
-					<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target=".navbar-collapse">
-						<span class="sr-only">Toggle navigation</span>
-						<span class="icon-bar"></span>
-						<span class="icon-bar"></span>
-						<span class="icon-bar"></span>
-					</button>
-					<a class="navbar-brand" href="#">Bright Game Panel V2</a>
-				</div>
+
+			<!-- TOP HEADER NAVBAR -->
+			<div class="navbar-header">
+				<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target=".navbar-collapse">
+					<span class="sr-only">Toggle navigation</span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+				</button>
+				<a class="navbar-brand" href="#">Bright Game Panel V2</a>
+			</div>
+			<!-- END: TOP HEADER NAVBAR -->
 
 <?php
 
@@ -402,76 +404,52 @@ class Core_GUI
 
 ?>
 
-				<ul class="nav navbar-top-links navbar-right">
+			<!-- TOP NAVBAR -->
+			<ul class="nav navbar-top-links navbar-right">
 <?php
 
 		if (!$this->empty_navbar)
 		{
 //------------------------------------------------------------------------------------------------------------+
 ?>
-					<li class="dropdown">
-						<a class="dropdown-toggle" data-toggle="dropdown" href="#">
-							<i class="fa fa-bell fa-fw"></i>  <i class="fa fa-caret-down"></i>
-						</a>
-						<ul class="dropdown-menu dropdown-alerts" role="menu">
-							<li>
-								<a href="#">
-									<div>
-										<i class="fa fa-comment fa-fw"></i> New Comment
-										<span class="pull-right text-muted small">4 minutes ago</span>
-									</div>
-								</a>
-							</li>
-							<li class="divider"></li>
-							<li>
-								<a href="#">
-									<div>
-										<i class="fa fa-twitter fa-fw"></i> 3 New Followers
-										<span class="pull-right text-muted small">12 minutes ago</span>
-									</div>
-								</a>
-							</li>
-							<li class="divider"></li>
-							<li>
-								<a class="text-center" href="#">
-									<strong>See All Alerts</strong>
-									<i class="fa fa-angle-right"></i>
-								</a>
-							</li>
-						</ul>
-						<!-- /.dropdown-alerts -->
-					</li>
-					<li class="dropdown">
-						<a class="dropdown-toggle" data-toggle="dropdown" href="#">
-							<i class="fa fa-user fa-fw"></i>  <i class="fa fa-caret-down"></i>
-						</a>
-						<ul class="dropdown-menu dropdown-user" role="menu">
-							<li role="presentation" class="dropdown-header"><?php
-								echo htmlspecialchars(
-									$_SESSION['INFORMATION']['firstname'] .
-									' ' .
-									$_SESSION['INFORMATION']['lastname'] .
-									' @' .
-									$_SESSION['USERNAME']
-									, ENT_QUOTES );
-							?></li>
-							<li>
-								<a href="./myaccount"><i class="fa fa-gear fa-fw"></i>&nbsp;<?php echo T_('Settings'); ?></a>
-							</li>
-						</ul>
-						<!-- /.dropdown-user -->
-					</li>
-	                <!-- /.dropdown -->
-	                <li>
-	                	<a href="./logout"><i class="fa fa-sign-out fa-fw"></i></a>
-	                </li>
+<?php
+
+			// Flags
+			echo $this->getNavBarFlags();
+
+?>
+
+				<li class="dropdown">
+					<a class="dropdown-toggle" data-toggle="dropdown" href="#">
+						<i class="fa fa-user fa-fw"></i>  <i class="fa fa-caret-down"></i>
+					</a>
+					<ul class="dropdown-menu dropdown-user" role="menu">
+						<li role="presentation" class="dropdown-header"><?php
+							echo htmlspecialchars(
+								$_SESSION['INFORMATION']['firstname'] .
+								' ' .
+								$_SESSION['INFORMATION']['lastname'] .
+								' @' .
+								$_SESSION['USERNAME']
+								, ENT_QUOTES );
+						?></li>
+						<li class="divider"></li>
+						<li>
+							<a href="./myaccount"><i class="fa fa-gear fa-fw"></i>&nbsp;<?php echo T_('Settings'); ?></a>
+						</li>
+					</ul>
+				</li>
+
+				<li>
+					<a href="./logout"><i class="fa fa-sign-out fa-fw"></i></a>
+				</li>
 <?php
 //------------------------------------------------------------------------------------------------------------+
 		}
 
 ?>
-				</ul>
-				<!-- END: TOP NAVBAR -->
+			</ul>
+			<!-- END: TOP NAVBAR -->
 <?php
 //------------------------------------------------------------------------------------------------------------+
 	}
@@ -490,45 +468,83 @@ class Core_GUI
 
 //------------------------------------------------------------------------------------------------------------+
 ?>
-				<!-- Breadcrumbs -->
-				<div class="nav navbar-left">
+			<!-- Breadcrumbs -->
+			<div class="nav navbar-left">
 <?php
 
 		if (!$this->empty_navbar)
 		{
 //------------------------------------------------------------------------------------------------------------+
 ?>
-					<ol class="navbar-breadcrumbs">
-						<li><a href="#"><span class="fa fa-home fa-fw"></span><?php echo T_('Home'); ?></a></li>
+				<ol class="navbar-breadcrumbs">
+					<li><a href="#"><span class="fa fa-home fa-fw"></span><?php echo T_('Home'); ?></a></li>
 <?php
 //------------------------------------------------------------------------------------------------------------+
 
 			if (!empty($this->parent_module_title)) {
 //------------------------------------------------------------------------------------------------------------+
 ?>
-						<li><a href="<?php echo $this->parent_module_href; ?>"><?php echo htmlspecialchars( $this->parent_module_title, ENT_QUOTES ); ?></a></li>
-						<li class="active"><a><?php echo htmlspecialchars( $this->module_title, ENT_QUOTES ); ?></a></li>
+					<li><a href="<?php echo $this->parent_module_href; ?>"><?php echo htmlspecialchars( $this->parent_module_title, ENT_QUOTES ); ?></a></li>
+					<li class="active"><a><?php echo htmlspecialchars( $this->module_title, ENT_QUOTES ); ?></a></li>
 <?php
 //------------------------------------------------------------------------------------------------------------+
 			}
 			else {
 //------------------------------------------------------------------------------------------------------------+
 ?>
-						<li class="active"><a><?php echo htmlspecialchars( $this->module_title, ENT_QUOTES ); ?></a></li>
+					<li class="active"><a><?php echo htmlspecialchars( $this->module_title, ENT_QUOTES ); ?></a></li>
 <?php
 //------------------------------------------------------------------------------------------------------------+
 			}
 
 //------------------------------------------------------------------------------------------------------------+
 ?>
-					</ol>
+				</ol>
 <?php
 //------------------------------------------------------------------------------------------------------------+
 		}
 
 ?>
-				</div>
-				<!-- END: Breadcrumbs -->
+			</div>
+			<!-- END: Breadcrumbs -->
+<?php
+//------------------------------------------------------------------------------------------------------------+
+
+	}
+
+
+
+	/**
+	 * Display Flags
+	 *
+	 * @param none
+	 * @return String
+	 * @access private
+	 */
+	private function getNavBarFlags()
+	{
+
+//------------------------------------------------------------------------------------------------------------+
+?>
+				<!-- Flags -->
+				<li class="dropdown">
+					<a class="dropdown-toggle" data-toggle="dropdown" href="#">
+						<i class="fa fa-flag fa-fw"></i>  <i class="fa fa-caret-down"></i>
+					</a>
+					<ul class="dropdown-menu dropdown-alerts" role="menu">
+						<li role="presentation" class="dropdown-header"><?php echo T_('System Alerts'); ?></li>
+						<li class="divider"></li>
+						<li>
+							<a href="#">
+								<div>
+									<i class="fa fa-twitter fa-fw"></i> 3 New Followers
+									<span class="pull-right text-muted small">12 minutes ago</span>
+								</div>
+							</a>
+						</li>
+					</ul>
+				</li>
+				<!-- END: Flags -->
 <?php
 //------------------------------------------------------------------------------------------------------------+
 
@@ -549,11 +565,11 @@ class Core_GUI
 
 //------------------------------------------------------------------------------------------------------------+
 ?>
-				<!-- SIDEBAR -->
-				<div class="navbar-default sidebar" role="navigation">
-					<div class="sidebar-nav navbar-collapse">
-						<ul class="nav" id="side-menu">
-							<li id="side-title"><?php echo T_('Menu'); ?></li>
+			<!-- SIDEBAR -->
+			<div class="navbar-default sidebar" role="navigation">
+				<div class="sidebar-nav navbar-collapse">
+					<ul class="nav" id="side-menu">
+						<li id="side-title"><?php echo T_('Menu'); ?></li>
 <?php
 //------------------------------------------------------------------------------------------------------------+
 
@@ -580,8 +596,8 @@ class Core_GUI
 			{
 //------------------------------------------------------------------------------------------------------------+
 ?>
-							<li>
-								<a <?php if ($this->module_title == $txt) echo 'class="active"'; ?> href="<?php echo $href; ?>"><i class="<?php echo $icon; ?>"></i>&nbsp;<?php echo $txt_t; ?></a>
+						<li>
+							<a <?php if ($this->module_title == $txt) echo 'class="active"'; ?> href="<?php echo $href; ?>"><i class="<?php echo $icon; ?>"></i>&nbsp;<?php echo $txt_t; ?></a>
 <?php
 //------------------------------------------------------------------------------------------------------------+
 			}
@@ -589,9 +605,9 @@ class Core_GUI
 			{
 //------------------------------------------------------------------------------------------------------------+
 ?>
-							<li id="<?php echo $txt; ?>" class="">
-								<a href="<?php echo $href; ?>"><i class="<?php echo $icon; ?>"></i>&nbsp;<?php echo $txt_t; ?><i class="fa arrow"></i></a>
-								<ul class="nav nav-second-level">
+						<li id="<?php echo $txt; ?>" class="">
+							<a href="<?php echo $href; ?>"><i class="<?php echo $icon; ?>"></i>&nbsp;<?php echo $txt_t; ?><i class="fa arrow"></i></a>
+							<ul class="nav nav-second-level">
 <?php
 //------------------------------------------------------------------------------------------------------------+
 
@@ -604,7 +620,7 @@ class Core_GUI
 					{
 //------------------------------------------------------------------------------------------------------------+
 ?>
-									<li class="divider"></li>
+								<li class="divider"></li>
 <?php
 //------------------------------------------------------------------------------------------------------------+
 					}
@@ -617,7 +633,7 @@ class Core_GUI
 
 //------------------------------------------------------------------------------------------------------------+
 ?>
-									<li class="sidebar-header"><?php echo $menu_key; ?></li>
+								<li class="sidebar-header"><?php echo $menu_key; ?></li>
 <?php
 //------------------------------------------------------------------------------------------------------------+
 
@@ -632,7 +648,7 @@ class Core_GUI
 
 //------------------------------------------------------------------------------------------------------------+
 ?>
-									<li><a <?php if ($this->module_title == $menu_sub_menu['txt']) echo 'class="active"'; ?> href="<?php echo $menu_sub_menu['href']; ?>"><i class="<?php echo $menu_sub_menu['icon']; ?>"></i>&nbsp;<?php echo $menu_sub_menu['txt']; ?></a></li>
+								<li><a <?php if ($this->module_title == $menu_sub_menu['txt']) echo 'class="active"'; ?> href="<?php echo $menu_sub_menu['href']; ?>"><i class="<?php echo $menu_sub_menu['icon']; ?>"></i>&nbsp;<?php echo $menu_sub_menu['txt']; ?></a></li>
 <?php
 //------------------------------------------------------------------------------------------------------------+
 
@@ -641,9 +657,9 @@ class Core_GUI
 						{
 //------------------------------------------------------------------------------------------------------------+
 ?>
-									<script>
-										$('#<?php echo $txt; ?>').addClass('active');
-									</script>
+								<script>
+									$('#<?php echo $txt; ?>').addClass('active');
+								</script>
 <?php
 //------------------------------------------------------------------------------------------------------------+
 						}
@@ -654,15 +670,14 @@ class Core_GUI
 
 //------------------------------------------------------------------------------------------------------------+
 ?>
-								</ul>
-								<!-- /.nav-second-level -->
+							</ul>
 <?php
 //------------------------------------------------------------------------------------------------------------+
 			}
 
 //------------------------------------------------------------------------------------------------------------+
 ?>
-							</li>
+						</li>
 <?php
 //------------------------------------------------------------------------------------------------------------+
 
@@ -671,11 +686,10 @@ class Core_GUI
 
 //------------------------------------------------------------------------------------------------------------+
 ?>
-						</ul>
-					</div>
-					<!-- /.sidebar-collapse -->
+					</ul>
 				</div>
-				<!-- END: SIDEBAR -->
+			</div>
+			<!-- END: SIDEBAR -->
 
 <?php
 //------------------------------------------------------------------------------------------------------------+
