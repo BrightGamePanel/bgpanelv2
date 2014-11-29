@@ -254,11 +254,11 @@ foreach ($templates as $key => $value)
  */
 
 $fields = array(
-		'PanelName' 		=> htmlspecialchars( $current_config['panel_name'], ENT_QUOTES),
-		'PanelUrl' 			=> htmlspecialchars( $current_config['system_url'], ENT_QUOTES),
-		'MaintenanceMode' 	=> htmlspecialchars( $current_config['maintenance_mode'], ENT_QUOTES),
-		'AdminTemplate' 	=> htmlspecialchars( $current_config['admin_template'], ENT_QUOTES),
-		'UserTemplate' 		=> htmlspecialchars( $current_config['user_template'], ENT_QUOTES)
+		'panelName' 		=> htmlspecialchars( $current_config['panel_name'], ENT_QUOTES),
+		'panelUrl' 			=> htmlspecialchars( $current_config['system_url'], ENT_QUOTES),
+		'maintenanceMode' 	=> htmlspecialchars( $current_config['maintenance_mode'], ENT_QUOTES),
+		'adminTemplate' 	=> htmlspecialchars( $current_config['admin_template'], ENT_QUOTES),
+		'userTemplate' 		=> htmlspecialchars( $current_config['user_template'], ENT_QUOTES)
 	);
 
 $js->getAngularController( 'updateSysConfig', $module::getModuleName( '/' ), $fields, './admin/config' );

@@ -47,14 +47,14 @@ switch (ENV_RUNTIME)
 		// Database Handle Manager
 		require( APP_DIR	. '/core/dbh.class.php' );
 
-		// Kirby 2 Framework
-		require( LIBS_DIR	. '/kirby/bootstrap.php');
+		// Valitron Framework
+		require( LIBS_DIR	. '/valitron/Validator.php' );
 
 		// Apache log4php
-		require( LIBS_DIR	. '/log4php/Logger.php');
+		require( LIBS_DIR	. '/log4php/Logger.php' );
 
 		// Flight Framework
-		require( LIBS_DIR	. '/flight/Flight.php');
+		require( LIBS_DIR	. '/flight/Flight.php' );
 
 		// PHP-GetText Framework
 		require( LIBS_DIR	. '/php-gettext/gettext.inc.php' );
@@ -64,9 +64,6 @@ switch (ENV_RUNTIME)
 		require( LIBS_DIR	. '/phpseclib/AES.php' );
 		require( LIBS_DIR	. '/phpseclib/RSA.php' );
 		require( LIBS_DIR	. '/phpseclib/ANSI.php' );
-
-		//require( LIBS_DIR	. '/phpseclib/SSH2.php' );
-		//require( LIBS_DIR	. '/phpseclib/SFTP.php' );
 
 		// Authentication Service
 		require( APP_DIR	. '/core/auth.class.php' );

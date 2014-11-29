@@ -50,32 +50,35 @@ class BGP_Controller_Admin_Config extends BGP_Controller {
 
 		// Get templates
 		$templates = parse_ini_file( CONF_TEMPLATES_INI );
+		$templates = array_flip(array_values($templates));
 		
 		// validate the variables ======================================================
 
-		if ( empty($form['panelName']) ) {
-			$errors['panelName'] = T_('Panel Name is required.');
-		}
-		
-		if ( empty($form['panelUrl']) ) {
-			$errors['panelUrl'] = T_('Panel URL is required.');
-		}
+		$v = new Valitron\Validator( $form );
 
-		if ( empty($form['adminTemplate']) || !v::in($form['adminTemplate'], $templates) ) {
-			$errors['adminTemplate'] = T_('Bad Admin Template.');
-		}
+		$rules = [
+				'required' => [
+					['panelName'],
+					['panelUrl'],
+					['adminTemplate'],
+					['userTemplate']
+				],
+				'regex' => [
+					['panelName', "/^([-a-z0-9_ -])+$/i"]
+				],
+				'url' => [
+					['panelUrl']
+				],
+				'in' => [
+					['adminTemplate', $templates],
+					['userTemplate', $templates]
+				]
+			];
 
-		if ( empty($form['userTemplate']) || !v::in($form['userTemplate'], $templates) ) {
-			$errors['userTemplate'] = T_('Bad User Template.');
-		}
+		$v->rules( $rules );
+		$v->validate();
 
-		if ( !empty($form['maintenanceMode']) ) {
-
-			if ($form['maintenanceMode'] != 'true' && $form['maintenanceMode'] != 'false') {
-
-				$errors['maintenanceMode'] = T_('Bad Maintenance Mode.');
-			}
-		}
+		$errors = $v->errors();
 
 		// Apply the form ==============================================================
 
@@ -87,14 +90,14 @@ class BGP_Controller_Admin_Config extends BGP_Controller {
 			$db_data['system_url']			= $form['panelUrl'];
 			$db_data['admin_template'] 		= $form['adminTemplate'];
 			$db_data['user_template'] 		= $form['userTemplate'];
+			$db_data['maintenance_mode']	= '0';
+
+			// Radio buttons check
 
 			if ( !empty($form['maintenanceMode']) )
 			{
 				if ($form['maintenanceMode'] === 'true') {
 					$db_data['maintenance_mode'] = '1';
-				}
-				else {
-					$db_data['maintenance_mode'] = '0';
 				}
 			}
 

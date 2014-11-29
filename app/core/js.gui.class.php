@@ -73,7 +73,7 @@ class Core_JS_GUI
 			{
 				if (!is_numeric($var) && !empty($value)) {
 ?>
-								<?php echo "'" . lcfirst($var) . "'"; ?>:<?php echo "'$value'"; ?>,
+								<?php echo "'" . $var . "'"; ?>:<?php echo "'$value'"; ?>,
 <?php
 				}
 			}

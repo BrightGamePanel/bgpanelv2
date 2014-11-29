@@ -127,14 +127,14 @@ if ( $authService->isBanned() ) {
 
 if ( isset($_COOKIE['USERNAME']) ) {
 	$fields = array(
-			'Username' => htmlspecialchars($_COOKIE['USERNAME'], ENT_QUOTES),
-			'Password'
+			'username' => htmlspecialchars($_COOKIE['USERNAME'], ENT_QUOTES),
+			'password'
 		);
 }
 else {
 	$fields = array(
-			'Username',
-			'Password'
+			'username',
+			'password'
 		);
 }
 
