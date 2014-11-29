@@ -34,7 +34,7 @@ if (!defined('LICENSE'))
 /**
  * ERROR Handling
  * Sets which PHP errors are reported
- * @link: http://php.net/manual/en/function.error-reporting.php
+ * @link http://php.net/manual/en/function.error-reporting.php
  *
  * Turn off all error reporting:
  * error_reporting(0);
@@ -74,6 +74,7 @@ define('APP_DIR', BASE_DIR . '/app');
 	define('CORE_VERSION_FILE', APP_DIR . '/version/version.xml');
 
 define('CONF_DIR', BASE_DIR . '/conf');
+	define('CONF_API_INI', CONF_DIR . '/api.conf.ini');
 	define('CONF_DB_INI', CONF_DIR . '/db.conf.ini');
 	define('CONF_G_BIN_INI', CONF_DIR . '/game-binaries.ini');
 	define('CONF_GENERAL_INI', CONF_DIR . '/general.conf.ini');
@@ -109,24 +110,27 @@ if ( !is_dir( CONF_DIR ) ) {
 // DEFINE INI CONSTANTS
 $CONFIG  = parse_ini_file( CONF_DB_INI );
 $CONFIG += parse_ini_file( CONF_GENERAL_INI );
-$CONFIG += parse_ini_file( CONF_SECRET_INI );
+$CONFIG += parse_ini_file( CONF_API_INI );
 
 foreach ($CONFIG as $setting => $value) {
 	define( $setting, $value );
 }
 
 /**
+ * LANGUAGE Configuration
+ */
+if ( isset($_SESSION['LANG']) ) {
+	$lang = substr($_SESSION['LANG'], 0, 2);
+} else {
+	$lang = substr(CONF_DEFAULT_LOCALE, 0, 2);
+}
+
+/**
  * DATE Configuration
  * Sets the default timezone used by all date/time functions
- * @link: http://php.net/manual/en/timezones.php
+ * @link http://php.net/manual/en/timezones.php
  */
 date_default_timezone_set( CONF_TIMEZONE ); // Default: "Europe/London"
-
-// DEFINE RSA KEYS
-if ( file_exists(RSA_PRIVATE_KEY_FILE) && file_exists(RSA_PUBLIC_KEY_FILE) ) {
-	define( 'RSA_PRIVATE_KEY', file_get_contents( RSA_PRIVATE_KEY_FILE ) );
-	define( 'RSA_PUBLIC_KEY', file_get_contents( RSA_PUBLIC_KEY_FILE ) );
-}
 
 // DEFINE ENVIRONMENT RUNTIME IF NOT SET
 if ( !defined('ENV_RUNTIME') ) {
@@ -216,10 +220,19 @@ if ( ENV_RUNTIME == 'DEFAULT' ) {
 if ( ENV_RUNTIME == 'DEFAULT' ) {
 
 	/**
+	 * VALITRON Configuration
+	 * Valitron is a simple, minimal and elegant stand-alone validation library with NO dependencies
+	 *
+	 * @link https://github.com/vlucas/valitron#usage
+	 */
+	Valitron\Validator::langDir( LIBS_DIR . '/valitron/lang' );
+	Valitron\Validator::lang( $lang );
+
+	/**
 	 * LOGGING Configuration
 	 * Apache Log4php configuration
 	 *
-	 * @link: http://logging.apache.org/log4php/docs/configuration.html
+	 * @link http://logging.apache.org/log4php/docs/configuration.html
 	 */
 	if ( CONF_LOGS_DIR != 'default' && is_writable( CONF_LOGS_DIR ) ) {
 
@@ -283,7 +296,7 @@ if ( ENV_RUNTIME == 'DEFAULT' ) {
 	 * flight.log_errors - Log errors to the web server's error log file. (default: false)
 	 * flight.views.path - Directory containing view template files (default: ./views)
 	 *
-	 * @link: http://flightphp.com/learn#configuration
+	 * @link http://flightphp.com/learn#configuration
 	 */
 	Flight::set('flight.handle_errors', TRUE);
 	Flight::set('flight.log_errors', FALSE);
@@ -291,4 +304,4 @@ if ( ENV_RUNTIME == 'DEFAULT' ) {
 
 
 // Clean Up
-unset( $CONFIG, $bgpCoreInfo );
+unset( $CONFIG, $bgpCoreInfo, $lang );
