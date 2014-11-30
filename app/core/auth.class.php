@@ -419,6 +419,22 @@ class Core_AuthService
 	}
 
 	/**
+	 * Retrieves from the session the specified information by key
+	 *
+	 * @param String $info
+	 * @return String
+	 * @access public
+	 */
+	public static function getSessionInfo( $info ) {
+		if (!empty($_SESSION[ $info ])) {
+			return $_SESSION[ $info ];
+		}
+		else {
+			return '';
+		}
+	}
+
+	/**
 	 * Remove Information From The Session
 	 *
 	 * @param none

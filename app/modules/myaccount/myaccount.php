@@ -53,6 +53,42 @@ $gui->getHeader();
  */
 $gui->getTabs( 'profile' );
 
+
+// Get languages
+$languages = parse_ini_file( CONF_LANG_INI );
+
+// Get profile settings from database
+
+$dbh = Core_DBH::getDBH(); // Get Database Handle
+
+$role = strtolower(Core_AuthService::getSessionPrivilege()); // Get user role
+$uid = Core_AuthService::getSessionInfo('ID'); // Get user id
+
+if ($role == 'admin') {
+
+	$sth = $dbh->prepare("
+	SELECT *
+	FROM " . DB_PREFIX . "admin
+	WHERE admin_id = :uid
+	;");
+}
+else {
+
+	$sth = $dbh->prepare("
+	SELECT *
+	FROM " . DB_PREFIX . "user
+	WHERE user_id = :uid
+	;");
+}
+
+$sth->bindParam( ':uid', $uid );
+
+$sth->execute();
+
+$profile = $sth->fetchAll( PDO::FETCH_ASSOC );
+$profile = $profile[0];
+
+
 /**
  * PAGE BODY
  */
@@ -60,7 +96,134 @@ $gui->getTabs( 'profile' );
 ?>
 					<!-- CONTENTS -->
 					<div class="row">
+						<div class="col-md-8 col-md-offset-2">
+							<div class="panel panel-default">
+								<div class="panel-heading">
+									<h3 class="panel-title"><?php echo T_('My Account Configuration'); ?></h3>
+								</div>
 
+								<div class="panel-body">
+									<form ng-submit="processForm()">
+										<div class="row">
+											<div class="col-xs-5">
+												<div class="form-group" ng-class="{ 'has-error' : errorUsername }">
+													<label for="username"><?php echo T_('Username'); ?></label>
+													<input class="form-control" type="text" ng-model="formData.username" id="username" name="username" required>
+													<span class="help-block" ng-show="errorUsername" ng-bind="errorUsername"></span>
+												</div>
+											</div>
+										</div>
+
+										<div class="row">
+											<div class="col-xs-4">
+												<div class="form-group" ng-class="{ 'has-error' : errorPassword0 }">
+													<label for="password0"><?php echo T_('Password'); ?></label>
+													<input class="form-control" type="password" ng-model="formData.password0" id="password0" name="password0">
+													<span class="help-block" ng-show="errorPassword0" ng-bind="errorPassword0"></span>
+													<span class="help-block"><?php echo T_('Leave blank for no change.'); ?></span>
+												</div>
+											</div>
+										</div>
+
+										<div class="row">
+											<div class="col-xs-4">
+												<div class="form-group" ng-class="{ 'has-error' : errorPassword1 }">
+													<label for="password1"><?php echo T_('Confirm Password'); ?></label>
+													<input class="form-control" type="password" ng-model="formData.password1" id="password1" name="password1">
+													<span class="help-block" ng-show="errorPassword1" ng-bind="errorPassword1"></span>
+												</div>
+											</div>
+										</div>
+
+										<div class="row">
+											<div class="col-xs-5">
+												<div class="form-group" ng-class="{ 'has-error' : errorFirstname }">
+													<label for="firstname"><?php echo T_('First Name'); ?></label>
+													<div class="input-group">
+														<input class="form-control" type="text" ng-model="formData.firstname" id="firstname" name="firstname">
+														<div class="input-group-addon">Optional</div>
+													</div>
+													<span class="help-block" ng-show="errorFirstname" ng-bind="errorFirstname"></span>
+												</div>
+											</div>
+										</div>
+
+										<div class="row">
+											<div class="col-xs-5">
+												<div class="form-group" ng-class="{ 'has-error' : errorLastname }">
+													<label for="lastname"><?php echo T_('Last Name'); ?></label>
+													<div class="input-group">
+														<input class="form-control" type="text" ng-model="formData.lastname" id="lastname" name="lastname">
+														<div class="input-group-addon">Optional</div>
+													</div>
+													<span class="help-block" ng-show="errorLastname" ng-bind="errorLastname"></span>
+												</div>
+											</div>
+										</div>
+
+										<div class="row">
+											<div class="col-xs-5">
+												<div class="form-group" ng-class="{ 'has-error' : errorEmail }">
+													<label for="email"><?php echo T_('Email'); ?></label>
+													<div class="input-group">
+														<div class="input-group-addon"><span class="glyphicon glyphicon-envelope"></span></div>
+														<input class="form-control" type="email" ng-model="formData.email" id="email" name="email" required>
+													</div>
+													<span class="help-block" ng-show="errorEmail" ng-bind="errorEmail"></span>
+												</div>
+											</div>
+										</div>
+
+										<div class="row">
+											<div class="col-xs-2">
+												<div class="form-group" ng-class="{ 'has-error' : errorLanguage }">
+													<label for="language"><?php echo T_('Language'); ?></label>
+													<select class="form-control" type="text" ng-model="formData.language" id="language" name="language" required>
+<?php
+//---------------------------------------------------------+
+
+foreach ($languages as $key => $value)
+{
+	if ($value == Core_AuthService::getSessionInfo('LANG')) {
+
+//---------------------------------------------------------+
+?>
+														<option value="<?php echo $value; ?>" ng-selected="true"><?php echo $key; ?></option>
+<?php
+//---------------------------------------------------------+
+
+	}
+	else {
+
+//---------------------------------------------------------+
+?>
+														<option value="<?php echo $value; ?>"><?php echo $key; ?></option>
+<?php
+//---------------------------------------------------------+
+
+	}
+}
+
+//---------------------------------------------------------+
+?>
+													</select>
+													<span class="help-block" ng-show="errorLanguage" ng-bind="errorLanguage"></span>
+												</div>
+											</div>
+										</div>
+
+										<hr>
+
+										<div class="row">
+											<div class="text-center">
+												<button class="btn btn-primary" type="submit"><?php echo T_('Apply'); ?></button>
+												<button class="btn btn-default" type="reset"><?php echo T_('Cancel Changes'); ?></button>
+											</div>
+										</div>
+									</form>
+								</div>
+							</div>
+						</div>
 					</div>
 					<!-- END: CONTENTS -->
 
@@ -71,7 +234,14 @@ $gui->getTabs( 'profile' );
  * Generate AngularJS Code
  */
 
-$js->getAngularController( '', $module::getModuleName( '/' ), array());
+$fields = array(
+		'username' 		=> htmlspecialchars( $profile['username'], ENT_QUOTES),
+		'firstname' 	=> htmlspecialchars( $profile['firstname'], ENT_QUOTES),
+		'lastname' 		=> htmlspecialchars( $profile['lastname'], ENT_QUOTES),
+		'email' 		=> htmlspecialchars( $profile['email'], ENT_QUOTES)
+	);
+
+$js->getAngularController( 'updateUserConfig', $module::getModuleName( '/' ), $fields, './');
 
 ?>
 					<!-- END: SCRIPT -->

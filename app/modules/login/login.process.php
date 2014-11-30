@@ -38,9 +38,11 @@ $loginController = new BGP_Controller_Login();
 // Get the method
 if ( isset($_POST['task']) ) {
 	$task = $_POST['task'];
+	unset($_POST['task']);
 }
 else if ( isset($_GET['task']) ) {
 	$task = $_GET['task'];
+	unset($_GET['task']);
 }
 else {
 	$task = 'None';

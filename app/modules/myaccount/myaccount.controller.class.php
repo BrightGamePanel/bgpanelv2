@@ -40,4 +40,9 @@ class BGP_Controller_Myaccount extends BGP_Controller {
 		// Call parent constructor
 		parent::__construct( basename(__DIR__) );
 	}
+
+	public function updateUserConfig( $form )
+	{
+		exit(var_dump( $form ));
+	}
 }

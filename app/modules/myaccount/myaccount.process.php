@@ -38,9 +38,11 @@ $controller = new BGP_Controller_Myaccount();
 // Get the method
 if ( isset($_POST['task']) ) {
 	$task = $_POST['task'];
+	unset($_POST['task']);
 }
 else if ( isset($_GET['task']) ) {
 	$task = $_GET['task'];
+	unset($_GET['task']);
 }
 else {
 	$task = 'None';
@@ -50,6 +52,10 @@ else {
 // Call the method
 switch ($task)
 {
+	case 'updateUserConfig':
+		echo $controller->updateUserConfig( $_POST );
+		exit( 0 );
+
 	default:
 		Flight::redirect('/400');
 }
