@@ -534,14 +534,26 @@ class Core_GUI
 					<ul class="dropdown-menu dropdown-alerts" role="menu">
 						<li role="presentation" class="dropdown-header"><?php echo T_('System Alerts'); ?></li>
 						<li class="divider"></li>
+<?php
+//------------------------------------------------------------------------------------------------------------+
+
+		if ( boolval(BGP_MAINTENANCE_MODE) === TRUE ) {
+//------------------------------------------------------------------------------------------------------------+
+?>
 						<li>
-							<a href="#">
+							<a>
 								<div>
-									<i class="fa fa-twitter fa-fw"></i> 3 New Followers
-									<span class="pull-right text-muted small">12 minutes ago</span>
+									<i class="fa fa-exclamation-triangle fa-fw"></i>&nbsp;Maintenance Mode
+									<span class="pull-right text-muted small">In force</span>
 								</div>
 							</a>
 						</li>
+<?php
+//------------------------------------------------------------------------------------------------------------+
+		}
+
+//------------------------------------------------------------------------------------------------------------+
+?>
 					</ul>
 				</li>
 				<!-- END: Flags -->
