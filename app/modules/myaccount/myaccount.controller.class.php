@@ -68,7 +68,7 @@ class BGP_Controller_Myaccount extends BGP_Controller {
 					['username']
 				],
 				'lengthMin' => [
-					['username', 4]
+					['username', 4],
 					['password0', 8]
 				],
 				'equals' => [
