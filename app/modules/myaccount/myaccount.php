@@ -118,9 +118,8 @@ $profile = $profile[0];
 											<div class="col-xs-4">
 												<div class="form-group" ng-class="{ 'has-error' : errorPassword0 }">
 													<label for="password0"><?php echo T_('Password'); ?></label>
-													<input class="form-control" type="password" ng-model="formData.password0" id="password0" name="password0">
+													<input class="form-control" type="password" ng-model="formData.password0" id="password0" name="password0" required>
 													<span class="help-block" ng-show="errorPassword0" ng-bind="errorPassword0"></span>
-													<span class="help-block"><?php echo T_('Leave blank for no change.'); ?></span>
 												</div>
 											</div>
 										</div>
@@ -129,7 +128,7 @@ $profile = $profile[0];
 											<div class="col-xs-4">
 												<div class="form-group" ng-class="{ 'has-error' : errorPassword1 }">
 													<label for="password1"><?php echo T_('Confirm Password'); ?></label>
-													<input class="form-control" type="password" ng-model="formData.password1" id="password1" name="password1">
+													<input class="form-control" type="password" ng-model="formData.password1" id="password1" name="password1" required>
 													<span class="help-block" ng-show="errorPassword1" ng-bind="errorPassword1"></span>
 												</div>
 											</div>
@@ -236,9 +235,12 @@ foreach ($languages as $key => $value)
 
 $fields = array(
 		'username' 		=> htmlspecialchars( $profile['username'], ENT_QUOTES),
+		'password0',
+		'password1',
 		'firstname' 	=> htmlspecialchars( $profile['firstname'], ENT_QUOTES),
 		'lastname' 		=> htmlspecialchars( $profile['lastname'], ENT_QUOTES),
-		'email' 		=> htmlspecialchars( $profile['email'], ENT_QUOTES)
+		'email' 		=> htmlspecialchars( $profile['email'], ENT_QUOTES),
+		'language'		=> htmlspecialchars( Core_AuthService::getSessionInfo('LANG'), ENT_QUOTES)
 	);
 
 $js->getAngularController( 'updateUserConfig', $module::getModuleName( '/' ), $fields, './');

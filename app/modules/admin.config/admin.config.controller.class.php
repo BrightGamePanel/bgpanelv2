@@ -75,7 +75,15 @@ class BGP_Controller_Admin_Config extends BGP_Controller {
 				]
 			];
 
+		$labels = array(
+				'panelName' 	=> 'Panel Name',
+				'panelUrl' 		=> 'Panel URL',
+				'adminTemplate' => 'Admin Template',
+				'userTemplate' 	=> 'User Template'
+			);
+
 		$v->rules( $rules );
+		$v->labels( $labels );
 		$v->validate();
 
 		$errors = $v->errors();

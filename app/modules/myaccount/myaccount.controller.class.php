@@ -43,6 +43,96 @@ class BGP_Controller_Myaccount extends BGP_Controller {
 
 	public function updateUserConfig( $form )
 	{
-		exit(var_dump( $form ));
+		$errors			= array();  	// array to hold validation errors
+		$data 			= array(); 		// array to pass back data
+
+		$dbh = Core_DBH::getDBH();		// Get Database Handle
+
+		// Get languages
+		$languages = parse_ini_file( CONF_LANG_INI );
+		$languages = array_flip(array_values($languages));
+
+		// validate the variables ======================================================
+
+		$v = new Valitron\Validator( $form );
+
+		$rules = [
+				'required' => [
+					['username'],
+					['password0'],
+					['password1'],
+					['email'],
+					['language']
+				],
+				'alphaNum' => [
+					['username']
+				],
+				'lengthMin' => [
+					['username', 4]
+					['password0', 8]
+				],
+				'equals' => [
+					['password0', 'password1']
+				],
+				'email' => [
+					['email']
+				],
+				'in' => [
+					['language', $languages]
+				]
+			];
+
+		$labels = array(
+				'username' 	=> 'Username',
+				'password0' => 'Password',
+				'password1' => 'Confirmation Password',
+				'email'		=> 'Email',
+				'language' 	=> 'Language'
+			);
+
+		$v->rules( $rules );
+		$v->labels( $labels );
+		$v->validate();
+
+		$errors = $v->errors();
+
+		// Apply the form ==============================================================
+
+		if (empty($errors))
+		{
+			// Database update
+
+			$db_data['username']			= $form['username'];
+			$db_data['password']			= Core_AuthService::getHash($form['password0']);
+			$db_data['firstname'] 			= $form['firstname'];
+			$db_data['lastname'] 			= $form['lastname'];
+			$db_data['email']				= $form['email'];
+			$db_data['lang']				= $form['language'];
+
+
+		}
+
+		// return a response ===========================================================
+		
+		// response if there are errors
+		if (!empty($errors)) {
+		
+			// if there are items in our errors array, return those errors
+			$data['success'] = false;
+			$data['errors']  = $errors;
+
+			$data['msgType'] = 'warning';
+			$data['msg'] = T_('Bad Settings!');
+		}
+		else {
+
+			$data['success'] = true;
+
+			// notification
+			bgp_set_alert( T_('Settings Updated Successfully!'), NULL, 'success' );
+		}
+		
+		// return all our data to an AJAX call
+		return json_encode($data);
 	}
 }
