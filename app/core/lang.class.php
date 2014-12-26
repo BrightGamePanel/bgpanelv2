@@ -37,7 +37,7 @@ class Core_Lang {
 	 * Example (French):
 	 *		./app/locale/fr_FR/LC_MESSAGES/messages.mo
 	 */
-	public static function setLanguage( $lang = 'en_EN') {
+	public static function setLanguage( $lang = 'en_EN' ) {
 		$encoding = 'UTF-8';
 		$languages = parse_ini_file( CONF_LANG_INI );
 
