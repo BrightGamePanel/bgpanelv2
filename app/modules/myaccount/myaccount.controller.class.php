@@ -109,7 +109,64 @@ class BGP_Controller_Myaccount extends BGP_Controller {
 			$db_data['email']				= $form['email'];
 			$db_data['lang']				= $form['language'];
 
+			$authService = Core_AuthService::getAuthService();
+			$uid = Core_AuthService::getSessionInfo('ID');
 
+			foreach ($db_data as $key => $value) {
+
+				if (Core_AuthService::getSessionPrivilege() == 'Admin') {
+					$sth = $dbh->prepare( "	UPDATE " . DB_PREFIX . "admin
+											SET " . $key . " = :" . $key . "
+											WHERE admin_id = '" . $uid . "';" );
+				}
+				else if (Core_AuthService::getSessionPrivilege() == 'User') {
+					$sth = $dbh->prepare( "	UPDATE " . DB_PREFIX . "user
+											SET " . $key . " = :" . $key . "
+											WHERE user_id = '" . $uid . "';" );
+				}
+				else {
+					// Invalid Privilege
+					exit(1);
+				}
+
+				$sth->bindParam( ':' . $key, $value );
+				$sth->execute();
+			}
+
+			// Reload Session
+			$authService->rmSessionInfo();
+
+			switch (Core_AuthService::getSessionPrivilege()) {
+				case 'Admin':
+					$authService->setSessionInfo(
+						$uid,
+						$db_data['username'],
+						$db_data['firstname'],
+						$db_data['lastname'],
+						$db_data['lang'],
+						BGP_ADMIN_TEMPLATE,
+						'Admin'
+						);
+					$authService->setSessionPerms( 'Admin' );
+					break;
+
+				case 'User':
+					$authService->setSessionInfo(
+						$uid,
+						$db_data['username'],
+						$db_data['firstname'],
+						$db_data['lastname'],
+						$db_data['lang'],
+						BGP_USER_TEMPLATE,
+						'User'
+						);
+					$authService->setSessionPerms( 'User' );
+					break;
+
+				default:
+					// Invalid Privilege
+					exit(1);
+			}
 		}
 
 		// return a response ===========================================================
