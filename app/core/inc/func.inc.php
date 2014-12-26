@@ -38,6 +38,49 @@ function bgp_routing_require_mod( $mod_path ) {
 	}
 }
 
+/**
+ * Update User Activity on page request
+ */
+function bgp_routing_update_user_activity( $role ) {
+	$dbh = Core_DBH::getDBH();		// Get Database Handle
+	$last_activity = date('Y-m-d H:i:s');
+
+	switch ($role) {
+
+		case 'Admin':
+			$sth = $dbh->prepare("
+				UPDATE " . DB_PREFIX . "admin
+				SET
+					last_activity	= :last_activity
+				WHERE
+					admin_id		= :admin_id
+				;");
+
+			$uid = Core_AuthService::getSessionInfo('ID');
+			$sth->bindParam(':last_activity', $last_activity);
+			$sth->bindParam(':admin_id', $uid);
+
+			$sth->execute();
+			break;
+
+		case 'User':
+			$sth = $dbh->prepare("
+				UPDATE " . DB_PREFIX . "user
+				SET
+					last_activity	= :last_activity
+				WHERE
+					user_id			= :user_id
+				;");
+
+			$uid = Core_AuthService::getSessionInfo('ID');
+			$sth->bindParam(':last_activity', $last_activity);
+			$sth->bindParam(':user_id', $uid);
+
+			$sth->execute();
+			break;
+
+	}
+}
 
 /**
  * Little function that will generate a random password

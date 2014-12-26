@@ -144,6 +144,9 @@ Flight::route('GET|POST /@role(/@module(/@page))', function( $role, $module, $pa
 			// Test Access Perms
 			if ( Core_AuthService::isAdmin() && !empty($module) )
 			{
+				// Update Admin Acivity
+				bgp_routing_update_user_activity( 'Admin' );
+
 				// Switch the view depending the task
 				if ( !empty($page) ) {
 					// Admin Controller OR subPage Invoked
@@ -180,6 +183,9 @@ Flight::route('GET|POST /@role(/@module(/@page))', function( $role, $module, $pa
 					Core_AuthService::logout();
 					Flight::redirect('/503'); // If the maintenance mode is ON, we drop the user.
 				}
+
+				// Update User Acivity
+				bgp_routing_update_user_activity( 'User' );
 
 				if ( !empty($page) ) {
 					$mod_path = MODS_DIR . '/' . 'user.' . $module . '/' . 'user.' . $module . '.' . $page . '.php';
@@ -222,6 +228,10 @@ Flight::route('GET|POST /@role(/@module(/@page))', function( $role, $module, $pa
 
 			if ( $authService->getSessionValidity() == TRUE && !empty($module) )
 			{
+
+				// Update User Acivity
+				bgp_routing_update_user_activity( Core_AuthService::getSessionPrivilege() );
+
 				if ( !empty($page) ) {
 					$mod_path = MODS_DIR . '/' . $module . '/' . $module . '.' . $page . '.php';
 				}
