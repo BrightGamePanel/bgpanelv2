@@ -135,6 +135,8 @@ class BGP_Controller_Login extends BGP_Controller
 					'Admin'
 					);
 
+				session_regenerate_id();
+
 				$authService->setSessionPerms( 'Admin' );
 
 				// Database update
@@ -200,6 +202,8 @@ class BGP_Controller_Login extends BGP_Controller
 					BGP_USER_TEMPLATE,
 					'User'
 					);
+
+				session_regenerate_id();
 
 				$authService->setSessionPerms( 'User' );
 
