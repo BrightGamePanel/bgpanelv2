@@ -135,3 +135,62 @@ function bgp_set_alert( $strong, $body = '', $type = 'warning' )
 		$_SESSION['ALERT']['MSG-BODY'] = $body;
 	}
 }
+
+/**
+ * bgp_get_net_status
+ *
+ * Test if the specified socket is Online or Offline.
+ *
+ * Return string 'Online' || 'Offline'
+ */
+function bgp_get_net_status($ip, $port)
+{
+	if($socket = @fsockopen($ip, $port, $errno, $errstr, 1))
+	{
+		fclose($socket);
+		return 'Online';
+	}
+	else
+	{
+		###
+		//Uncomment the line above for debugging
+		//echo "$errstr ($errno)<br />\n";
+		###
+		return 'Offline';
+	}
+}
+
+/**
+ * Convert bytes to human readable format
+ *
+ * http://codeaid.net/php/convert-size-in-bytes-to-a-human-readable-format-%28php%29
+ *
+ * @param integer bytes Size in bytes to convert
+ * @return string
+ */
+function bytesToSize($bytes, $precision = 2)
+{
+	$kilobyte = 1024;
+	$megabyte = $kilobyte * 1024;
+	$gigabyte = $megabyte * 1024;
+	$terabyte = $gigabyte * 1024;
+
+	if (($bytes >= 0) && ($bytes < $kilobyte)) {
+		return $bytes . ' B';
+
+	} elseif (($bytes >= $kilobyte) && ($bytes < $megabyte)) {
+		return round($bytes / $kilobyte, $precision) . ' KB';
+
+	} elseif (($bytes >= $megabyte) && ($bytes < $gigabyte)) {
+		return round($bytes / $megabyte, $precision) . ' MB';
+
+	} elseif (($bytes >= $gigabyte) && ($bytes < $terabyte)) {
+		return round($bytes / $gigabyte, $precision) . ' GB';
+
+	} elseif ($bytes >= $terabyte) {
+		return round($bytes / $terabyte, $precision) . ' TB';
+
+	} else {
+		return $bytes . ' B';
+	}
+}
