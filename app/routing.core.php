@@ -48,7 +48,7 @@ Flight::route('GET|POST /', function() {
 
 	$authService = Core_AuthService::getAuthService();
 
-	// Test if the user has a whitecard to access the system
+	// Test if the user is allowed to access the system
 
 	if ($authService->getSessionValidity() == FALSE) {
 
@@ -60,7 +60,7 @@ Flight::route('GET|POST /', function() {
 
 	// The user is already logged in
 	// Redirect to the Dashboard
-	switch (Core_AuthService::getSessionPrivilege()) {
+	switch (Core_AuthService::getSessionType()) {
 		case 'Admin':
 			Flight::redirect('/admin/dashboard');
 
@@ -68,7 +68,6 @@ Flight::route('GET|POST /', function() {
 			Flight::redirect('/user/dashboard');
 
 		default:
-			// Invalid Privilege
 			Core_AuthService::logout();
 			Flight::redirect('/login');
 	}
@@ -134,14 +133,13 @@ Flight::route('GET|POST /login(/@page)', function( $page ) {
 
 // Dynamically load the module VIEW | CONTROLLER
 // Note that the page "process" is the module controller
-Flight::route('GET|POST /@role(/@module(/@page))', function( $role, $module, $page ) {
+Flight::route('GET|POST /@type(/@module(/@page))', function( $type, $module, $page ) {
 
-	switch ($role)
+	switch ($type)
 	{
 		// [ADMIN]
 		case 'admin':
 
-			// Test Access Perms
 			if ( Core_AuthService::isAdmin() && !empty($module) )
 			{
 				// Update Admin Acivity
@@ -213,11 +211,11 @@ Flight::route('GET|POST /@role(/@module(/@page))', function( $role, $module, $pa
 			if (!empty($module)) {
 				$page = $module;
 			}
-			$module = $role;
-			unset($role);
+			$module = $type;
+			unset($type);
 
 			// MAINTENANCE CHECKER
-			if ( Core_AuthService::getSessionPrivilege() != 'Admin' ) {
+			if ( Core_AuthService::getSessionType() != 'Admin' ) {
 				if ( BGP_MAINTENANCE_MODE == 1 ) {
 					Core_AuthService::logout();
 					Flight::redirect('/503');
@@ -230,7 +228,7 @@ Flight::route('GET|POST /@role(/@module(/@page))', function( $role, $module, $pa
 			{
 
 				// Update User Acivity
-				bgp_routing_update_user_activity( Core_AuthService::getSessionPrivilege() );
+				bgp_routing_update_user_activity( Core_AuthService::getSessionType() );
 
 				if ( !empty($page) ) {
 					$mod_path = MODS_DIR . '/' . $module . '/' . $module . '.' . $page . '.php';

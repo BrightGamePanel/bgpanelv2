@@ -139,19 +139,19 @@ class Core_AuthService
 	}
 
 	/**
-	 * Retrieves From The Session Credentials The Role
+	 * Retrieves From The Session Credentials The User Type
 	 *
 	 * @param none
 	 * @return String
 	 * @access public
 	 */
-	public static function getSessionPrivilege() {
+	public static function getSessionType() {
 		$authService = Core_AuthService::getAuthService();
 
 		$credentials = $authService->decryptSessionCredentials();
 
-		if ( !empty($credentials['role']) ) {
-			return $credentials['role'];
+		if ( !empty($credentials['type']) ) {
+			return $credentials['type'];
 		}
 		return 'Guest';
 	}
@@ -164,7 +164,7 @@ class Core_AuthService
 	 * @access public
 	 */
 	public static function isAdmin() {
-		if (self::getSessionPrivilege() == 'Admin') {
+		if (self::getSessionType() == 'Admin') {
 
 			$authService = Core_AuthService::getAuthService();
 
@@ -185,7 +185,7 @@ class Core_AuthService
 	 * @access public
 	 */
 	public static function isUser() {
-		if (self::getSessionPrivilege() == 'User') {
+		if (self::getSessionType() == 'User') {
 
 			$authService = Core_AuthService::getAuthService();
 
@@ -201,7 +201,7 @@ class Core_AuthService
 	/**
 	 * Security Counter
 	 *
-	 * May ban a user from being authenticated after unsuccessful attempts
+	 * Ban a user from being authenticated after unsuccessful attempts
 	 *
 	 * @param none
 	 * @return none
@@ -314,8 +314,8 @@ class Core_AuthService
 		if ( !empty($this->username) ) {
 
 			$credentials = $this->decryptSessionCredentials();
-			if ( empty($credentials['role']) ) {
-				$credentials['role'] = 'Guest';
+			if ( empty($credentials['type']) ) {
+				$credentials['type'] = 'Guest';
 			}
 
 			// Level 1
@@ -324,7 +324,7 @@ class Core_AuthService
 				// Level 2
 				$dbh = Core_DBH::getDBH();
 
-				switch ( $credentials['role'] )
+				switch ( $credentials['type'] )
 				{
 					case 'Admin':
 
@@ -463,18 +463,18 @@ class Core_AuthService
 	 *
 	 * Note: should be called after Core_AuthService->setSessionInfo()
 	 *
-	 * @param String $role
+	 * @param String $type
 	 * @return void
 	 * @access public
 	 */
-	public function setSessionPerms( $role ) {
+	public function setSessionPerms( $type ) {
 		if ( !empty($this->username) ) {
-			if ( $role === 'Admin' || $role === 'User' || $role === 'Guest' ) {
+			if ( $type == 'Admin' || $type == 'User' ) {
 
 				$credentials = serialize (
 					array (
 					'username' => $this->username,
-					'role'	=> $role,
+					'type'	=> $type,
 					'token' => session_id(),
 					'key' => $this->auth_key,
 					'salt' => md5(time())

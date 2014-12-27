@@ -73,7 +73,7 @@ switch ($task)
 
 		if (!empty($_GET['namespace'])) $img->setNamespace($_GET['namespace']);
 
-		$img->show();  // outputs the image and content headers to the browser
+		$img->show();  // Outputs the image and content headers to the browser
 
 		exit( 0 );
 

@@ -41,11 +41,11 @@ function bgp_routing_require_mod( $mod_path ) {
 /**
  * Update User Activity on page request
  */
-function bgp_routing_update_user_activity( $role ) {
+function bgp_routing_update_user_activity( $type ) {
 	$dbh = Core_DBH::getDBH();		// Get Database Handle
 	$last_activity = date('Y-m-d H:i:s');
 
-	switch ($role) {
+	switch ($type) {
 
 		case 'Admin':
 			$sth = $dbh->prepare("

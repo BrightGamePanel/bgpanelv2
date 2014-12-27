@@ -111,7 +111,7 @@ class Core_GUI
 			return $_SESSION['TEMPLATE'];
 		}
 		else {
-			switch (Core_AuthService::getSessionPrivilege()) {
+			switch (Core_AuthService::getSessionType()) {
 				case 'Admin':
 					return BGP_ADMIN_TEMPLATE;
 
@@ -773,7 +773,7 @@ class Core_GUI
 	 */
 	private function parseGUIManifestFiles ()
 	{
-		$privilege = Core_AuthService::getSessionPrivilege();
+		$type = Core_AuthService::getSessionType();
 		$manifestFiles = array();
 		
 		$handle = opendir( MODS_DIR );
@@ -790,19 +790,19 @@ class Core_GUI
 					$parts = explode('.', $entry);
 		
 					if (!empty( $parts[1] )) {
-						$role = $parts[0];
+						$type = $parts[0];
 						$module = $parts[1];
 					}
 					else {
-						$role = NULL;
+						$type = NULL;
 						$module = $parts[0];
 					}
 		
 					// Case: "admin.module" OR "user.module"
-					if (!empty($role) && $privilege == ucfirst($role)) {
+					if (!empty($type) && $type == ucfirst($type)) {
 		
 						// Get the manifest
-						$manifest = MODS_DIR . '/' . $role . '.' . $module . '/gui.manifest.xml';
+						$manifest = MODS_DIR . '/' . $type . '.' . $module . '/gui.manifest.xml';
 		
 						if (is_file( $manifest )) {
 							$manifestFiles[] = simplexml_load_file( $manifest ); // Store the object

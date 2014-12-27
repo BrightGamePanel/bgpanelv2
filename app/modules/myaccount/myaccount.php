@@ -61,10 +61,10 @@ $languages = parse_ini_file( CONF_LANG_INI );
 
 $dbh = Core_DBH::getDBH(); // Get Database Handle
 
-$role = strtolower(Core_AuthService::getSessionPrivilege()); // Get user role
+$type = strtolower(Core_AuthService::getSessionType()); // Get user type
 $uid = Core_AuthService::getSessionInfo('ID'); // Get user id
 
-if ($role == 'admin') {
+if ($type == 'admin') {
 
 	$sth = $dbh->prepare("
 	SELECT *

@@ -114,18 +114,17 @@ class BGP_Controller_Myaccount extends BGP_Controller {
 
 			foreach ($db_data as $key => $value) {
 
-				if (Core_AuthService::getSessionPrivilege() == 'Admin') {
+				if (Core_AuthService::getSessionType() == 'Admin') {
 					$sth = $dbh->prepare( "	UPDATE " . DB_PREFIX . "admin
 											SET " . $key . " = :" . $key . "
 											WHERE admin_id = '" . $uid . "';" );
 				}
-				else if (Core_AuthService::getSessionPrivilege() == 'User') {
+				else if (Core_AuthService::getSessionType() == 'User') {
 					$sth = $dbh->prepare( "	UPDATE " . DB_PREFIX . "user
 											SET " . $key . " = :" . $key . "
 											WHERE user_id = '" . $uid . "';" );
 				}
 				else {
-					// Invalid Privilege
 					exit(1);
 				}
 
@@ -136,7 +135,7 @@ class BGP_Controller_Myaccount extends BGP_Controller {
 			// Reload Session
 			$authService->rmSessionInfo();
 
-			switch (Core_AuthService::getSessionPrivilege()) {
+			switch (Core_AuthService::getSessionType()) {
 				case 'Admin':
 					$authService->setSessionInfo(
 						$uid,
@@ -164,7 +163,6 @@ class BGP_Controller_Myaccount extends BGP_Controller {
 					break;
 
 				default:
-					// Invalid Privilege
 					exit(1);
 			}
 		}
