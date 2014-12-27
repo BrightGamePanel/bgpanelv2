@@ -790,19 +790,19 @@ class Core_GUI
 					$parts = explode('.', $entry);
 		
 					if (!empty( $parts[1] )) {
-						$type = $parts[0];
+						$lowerTypeAlias = $parts[0];
 						$module = $parts[1];
 					}
 					else {
-						$type = NULL;
+						$lowerTypeAlias = NULL;
 						$module = $parts[0];
 					}
 		
 					// Case: "admin.module" OR "user.module"
-					if (!empty($type) && $type == ucfirst($type)) {
+					if (!empty($lowerTypeAlias) && $type == ucfirst($lowerTypeAlias)) {
 		
 						// Get the manifest
-						$manifest = MODS_DIR . '/' . $type . '.' . $module . '/gui.manifest.xml';
+						$manifest = MODS_DIR . '/' . $lowerTypeAlias . '.' . $module . '/gui.manifest.xml';
 		
 						if (is_file( $manifest )) {
 							$manifestFiles[] = simplexml_load_file( $manifest ); // Store the object
