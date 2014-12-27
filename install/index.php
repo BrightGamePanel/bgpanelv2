@@ -20,7 +20,7 @@
  * @version		0.1
  * @category	Systems Administration
  * @author		warhawk3407 <warhawk3407@gmail.com> @NOSPAM
- * @copyright	Copyleft 2014, Nikita Rousseau
+ * @copyright	Copyleft 2015, Nikita Rousseau
  * @license		GNU General Public License version 3.0 (GPLv3)
  * @link		http://www.bgpanel.net/
  */
@@ -1095,7 +1095,7 @@ APP_API_KEY 		= \"".$APP_API_KEY."\"
 				<hr>
 				<footer>
 					<div class="pull-left">
-						Copyleft - 2014. Released Under <a href="http://www.gnu.org/licenses/gpl.html" target="_blank">GPLv3</a>.<br />
+						Copyleft - 2015. Released Under <a href="http://www.gnu.org/licenses/gpl.html" target="_blank">GPLv3</a>.<br />
 						All Images Are Copyrighted By Their Respective Owners.
 					</div>
 					<div class="pull-right" style="text-align: right;">

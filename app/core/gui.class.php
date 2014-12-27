@@ -20,7 +20,7 @@
  * @version		0.1
  * @category	Systems Administration
  * @author		warhawk3407 <warhawk3407@gmail.com> @NOSPAM
- * @copyright	Copyleft 2014, Nikita Rousseau
+ * @copyright	Copyleft 2015, Nikita Rousseau
  * @license		GNU General Public License version 3.0 (GPLv3)
  * @link		http://www.bgpanel.net/
  */
@@ -980,7 +980,7 @@ class Core_GUI
 					<!-- FOOTER -->
 					<footer>
 						<div class="pull-left">
-							Copyleft <img id="footer-copyleft-logo" height="12" src="./gui/img/copyleft.png"> 2014. Released under the <a href="http://www.gnu.org/licenses/gpl.html" target="_blank">GPLv3</a>.<br />
+							Copyleft <img id="footer-copyleft-logo" height="12" src="./gui/img/copyleft.png"> 2015. Released under the <a href="http://www.gnu.org/licenses/gpl.html" target="_blank">GPLv3</a>.<br />
 							All images are copyrighted by their respective owners.
 						</div>
 
