@@ -9,7 +9,7 @@
 	</module_tabs>
 
 	<module_sidebar>
-		<rank>1</rank>
+		<rank>98</rank>
 		<txt>Configuration</txt>
 		<href>#</href>
 		<icon>fa fa-cogs fa-fw</icon>
@@ -30,6 +30,10 @@
 					<href>./admin/config/apikey</href>
 					<icon>fa fa-info-circle fa-fw</icon>
 				</api-key>
+				<system-license>
+					<href>./admin/config/license</href>
+					<icon>fa fa-certificate fa-fw</icon>
+				</system-license>
 			</misc>
 		</sub_menu>
 	</module_sidebar>

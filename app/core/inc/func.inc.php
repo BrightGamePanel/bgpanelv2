@@ -31,11 +31,14 @@
  */
 function bgp_routing_require_mod( $mod_path ) {
 	if ( file_exists($mod_path) ) {
-		require( $mod_path );
+		// Protect class files and xml files from being called directly
+		if ((strstr($mod_path, 'class') === FALSE) && (strstr($mod_path, 'xml') === FALSE) ) {
+			require( $mod_path );
+			return 0;
+		}
 	}
-	else {
-		Flight::notFound();
-	}
+
+	Flight::notFound();
 }
 
 /**

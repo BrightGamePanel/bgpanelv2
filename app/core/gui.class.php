@@ -544,7 +544,7 @@ class Core_GUI
 							<a>
 								<div>
 									<i class="fa fa-exclamation-triangle fa-fw"></i>&nbsp;Maintenance Mode
-									<span class="pull-right text-muted small">In force</span>
+									<span class="pull-right text-muted small">Enabled</span>
 								</div>
 							</a>
 						</li>

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- GUI Manifest -->
+<bgp_module>
+	<module_tabs>
+	</module_tabs>
+
+	<module_sidebar>
+		<rank>99</rank>
+		<txt>Toolbox</txt>
+		<href>#</href>
+		<icon>fa fa-briefcase fa-fw</icon>
+
+		<sub_menu>
+			<tools>
+				<php-info>
+					<href>./admin/tools/phpinfo</href>
+					<icon>fa fa-info fa-fw</icon>
+				</php-info>
+				<!--
+				<optimize-database>
+					<href>./admin/tools/opdb</href>
+					<icon>fa fa-flash fa-fw</icon>
+				</optimize-database>
+				-->
+			</tools>
+		</sub_menu>
+	</module_sidebar>
+</bgp_module>

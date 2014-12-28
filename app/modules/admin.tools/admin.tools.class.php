@@ -26,14 +26,14 @@
  */
 
 if ( !class_exists('BGP_Module')) {
-	trigger_error('Module_Admin_Config -> BGP_Module is missing !');
+	trigger_error('Module_Admin_Tools -> BGP_Module is missing !');
 }
 
 /**
- * Admin Configuration Module
+ * Admin Tools Module
  */
 
-class BGP_Module_Admin_Config extends BGP_Module {
+class BGP_Module_Admin_Tools extends BGP_Module {
 
 	function __construct( )	{
 
@@ -44,12 +44,12 @@ class BGP_Module_Admin_Config extends BGP_Module {
 }
 
 /**
- * Admin Configuration Module
- * Page: Apikey
- * Title: Api Key
+ * Admin Tools Module
+ * Page: Phpinfo
+ * Title: Php Info
  */
 
-class BGP_Module_Admin_Config_Apikey extends BGP_Module_Admin_Config {
+class BGP_Module_Admin_Tools_Phpinfo extends BGP_Module_Admin_Tools {
 
 	function __construct( )	{
 
@@ -57,17 +57,17 @@ class BGP_Module_Admin_Config_Apikey extends BGP_Module_Admin_Config {
 		parent::__construct( );
 
 		// Override module title
-		self::$module_definition['module_settings']['title'] = 'Api Key';
+		self::$module_definition['module_settings']['title'] = 'PHP Info';
 	}
 }
 
 /**
- * Admin Configuration Module
- * Page: Cron
- * Title: Cron Settings
+ * Admin Tools Module
+ * Page: Opdb
+ * Title: Optimize Database
  */
 
-class BGP_Module_Admin_Config_Cron extends BGP_Module_Admin_Config {
+class BGP_Module_Admin_Tools_Opdb extends BGP_Module_Admin_Tools {
 
 	function __construct( )	{
 
@@ -75,24 +75,6 @@ class BGP_Module_Admin_Config_Cron extends BGP_Module_Admin_Config {
 		parent::__construct( );
 
 		// Override module title
-		self::$module_definition['module_settings']['title'] = 'Cron Settings';
-	}
-}
-
-/**
- * Admin Configuration Module
- * Page: License
- * Title: System License
- */
-
-class BGP_Module_Admin_Config_License extends BGP_Module_Admin_Config {
-
-	function __construct( )	{
-
-		// Call parent constructor
-		parent::__construct( );
-
-		// Override module title
-		self::$module_definition['module_settings']['title'] = 'System License';
+		self::$module_definition['module_settings']['title'] = 'Optimize Database';
 	}
 }
