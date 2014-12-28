@@ -189,6 +189,7 @@ class Core_GUI
 			<link href="./gui/bootstrap3/css/dashboard.css" rel="stylesheet">
 			<!-- Font Awesome 4 -->
 			<link href="./gui/font-awesome/css/font-awesome.min.css" rel="stylesheet">
+			<link href="./gui/font-awesome/css/font-awesome-animation.min.css" rel="stylesheet">
 <?php
 //------------------------------------------------------------------------------------------------------------+
 
@@ -529,7 +530,26 @@ class Core_GUI
 				<!-- Flags -->
 				<li class="dropdown">
 					<a class="dropdown-toggle" data-toggle="dropdown" href="#">
-						<i class="fa fa-flag fa-fw"></i>  <i class="fa fa-caret-down"></i>
+<?php
+//------------------------------------------------------------------------------------------------------------+
+
+		if ( boolval(BGP_MAINTENANCE_MODE) === TRUE ) {
+//------------------------------------------------------------------------------------------------------------+
+?>
+						<i class="fa fa-flag fa-fw faa-float animated"></i>  <i class="fa fa-caret-down"></i>
+<?php
+//------------------------------------------------------------------------------------------------------------+
+		}
+		else {
+//------------------------------------------------------------------------------------------------------------+
+?>
+						<i class="fa fa-flag-o fa-fw"></i>  <i class="fa fa-caret-down"></i>
+<?php
+//------------------------------------------------------------------------------------------------------------+
+		}
+
+//------------------------------------------------------------------------------------------------------------+
+?>
 					</a>
 					<ul class="dropdown-menu dropdown-alerts" role="menu">
 						<li role="presentation" class="dropdown-header"><?php echo T_('System Alerts'); ?></li>
@@ -545,6 +565,20 @@ class Core_GUI
 								<div>
 									<i class="fa fa-exclamation-triangle fa-fw"></i>&nbsp;Maintenance Mode
 									<span class="pull-right text-muted small">Enabled</span>
+								</div>
+							</a>
+						</li>
+<?php
+//------------------------------------------------------------------------------------------------------------+
+		}
+		else {
+//------------------------------------------------------------------------------------------------------------+
+?>
+						<li>
+							<a>
+								<div>
+									<i class="fa fa-smile-o fa-fw"></i>&nbsp;Nothing to report
+									<span class="pull-right text-muted small"></span>
 								</div>
 							</a>
 						</li>
