@@ -165,6 +165,8 @@ class BGP_Controller_Myaccount extends BGP_Controller {
 				default:
 					exit(1);
 			}
+
+			$this->rmCookie( 'LANG' );
 		}
 
 		// return a response ===========================================================
@@ -189,5 +191,9 @@ class BGP_Controller_Myaccount extends BGP_Controller {
 		
 		// return all our data to an AJAX call
 		return json_encode($data);
+	}
+
+	private function rmCookie( $cookie ) {
+		setcookie($cookie, '', time() - 3600, BASE_URL);
 	}
 }

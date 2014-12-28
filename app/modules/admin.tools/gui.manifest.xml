@@ -12,16 +12,14 @@
 
 		<sub_menu>
 			<tools>
-				<php-info>
-					<href>./admin/tools/phpinfo</href>
-					<icon>fa fa-info fa-fw</icon>
-				</php-info>
-				<!--
 				<optimize-database>
 					<href>./admin/tools/opdb</href>
 					<icon>fa fa-flash fa-fw</icon>
 				</optimize-database>
-				-->
+				<php-info>
+					<href>./admin/tools/phpinfo</href>
+					<icon>fa fa-info fa-fw</icon>
+				</php-info>
 			</tools>
 		</sub_menu>
 	</module_sidebar>

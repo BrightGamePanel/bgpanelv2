@@ -52,6 +52,10 @@ else {
 // Call the method
 switch ($task)
 {
+	case 'optimizeDB':
+		echo $controller->optimizeDB( $_POST );
+		exit( 0 );
+
 	default:
 		Flight::redirect('/400');
 }

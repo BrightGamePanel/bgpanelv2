@@ -55,7 +55,11 @@ $gui->getHeader();
 ?>
 					<!-- CONTENTS -->
 					<div class="row">
-						<div style="width:auto;height:480px;overflow:scroll;overflow-y:scroll;overflow-x:hidden;">
+						<div class="col-md-10 col-md-offset-1">
+							<div class="panel panel-default">
+								<div class="panel-body">
+
+									<div style="width:auto;height:480px;overflow:scroll;overflow-y:scroll;overflow-x:hidden;">
 <?php
 //------------------------------------------------------------------------------------------------------------+
 
@@ -77,6 +81,10 @@ echo "\r\n<!--END : PHP Info-->\r\n";
 
 //------------------------------------------------------------------------------------------------------------+
 ?>
+									</div>
+
+								</div>
+							</div>
 						</div>
 					</div>
 					<!-- END: CONTENTS -->

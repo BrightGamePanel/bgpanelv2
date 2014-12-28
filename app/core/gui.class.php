@@ -164,12 +164,35 @@ class Core_GUI
 
 		<base href="<?php echo BASE_URL; ?>">
 
+		<!-- Style -->
+			<!-- Bootstrap 3 -->
+			<link href="./gui/bootstrap3/css/<?php echo htmlspecialchars( Core_GUI::getBS3Template(), ENT_QUOTES ); ?>" rel="stylesheet">
+			<!-- MetisMenu -->
+			<link href="./gui/metisMenu/css/metisMenu.min.css" rel="stylesheet">
+			<!-- Font Awesome 4 -->
+			<link href="./gui/font-awesome/css/font-awesome.min.css" rel="stylesheet">
+			<link href="./gui/font-awesome/css/font-awesome-animation.min.css" rel="stylesheet">
+			<!-- DataTables -->
+			<link href="./gui/datatables/css/dataTables.bootstrap.css" rel="stylesheet">
+			<!-- SB Admin 2 -->
+			<link href="./gui/bootstrap3/css/dashboard.css" rel="stylesheet">
+<?php
+//------------------------------------------------------------------------------------------------------------+
+
+	// Load CSS Dependencies
+	echo $this->getCSSDepends();
+
+//------------------------------------------------------------------------------------------------------------+
+?>
 		<!-- Javascript -->
 			<script src="./gui/angularjs/js/angular.min.js"></script>
 			<script src="./gui/jquery/js/jquery-2.1.1.min.js"></script>
 			<script src="./gui/bootstrap3/js/bootstrap.min.js"></script>
 			<!-- Metis Menu Plugin -->
-    		<script src="./gui/metisMenu/js/metisMenu.min.js"></script>
+			<script src="./gui/metisMenu/js/metisMenu.min.js"></script>
+			<!-- DataTables -->
+			<script src="./gui/datatables/js/jquery.dataTables.js"></script>
+			<script src="./gui/datatables/js/dataTables.bootstrap.js"></script>
 			<!-- SB Admin 2 -->
 			<script src="./gui/bootstrap3/js/sb-admin-2.js"></script>
 <?php 
@@ -177,24 +200,6 @@ class Core_GUI
 
 	// Load JS Dependencies
 	echo $this->getJSDepends();
-
-//------------------------------------------------------------------------------------------------------------+
-?>
-		<!-- Style -->
-			<!-- Bootstrap 3 -->
-			<link href="./gui/bootstrap3/css/<?php echo htmlspecialchars( Core_GUI::getBS3Template(), ENT_QUOTES ); ?>" rel="stylesheet">
-			<!-- MetisMenu -->
-			<link href="./gui/metisMenu/css/metisMenu.min.css" rel="stylesheet">
-			<!-- SB Admin 2 -->
-			<link href="./gui/bootstrap3/css/dashboard.css" rel="stylesheet">
-			<!-- Font Awesome 4 -->
-			<link href="./gui/font-awesome/css/font-awesome.min.css" rel="stylesheet">
-			<link href="./gui/font-awesome/css/font-awesome-animation.min.css" rel="stylesheet">
-<?php
-//------------------------------------------------------------------------------------------------------------+
-
-	// Load CSS Dependencies
-	echo $this->getCSSDepends();
 
 //------------------------------------------------------------------------------------------------------------+
 ?>

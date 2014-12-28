@@ -57,7 +57,7 @@ class BGP_Module_Admin_Tools_Phpinfo extends BGP_Module_Admin_Tools {
 		parent::__construct( );
 
 		// Override module title
-		self::$module_definition['module_settings']['title'] = 'PHP Info';
+		self::$module_definition['module_settings']['title'] = 'Php Info';
 	}
 }
 
