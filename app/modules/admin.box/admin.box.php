@@ -48,14 +48,122 @@ $js = new Core_JS_GUI();
  */
 $gui->getHeader();
 
+
+// Analyze DB
+
+$dbh = Core_DBH::getDBH(); // Get Database Handle
+
+$rows = array();
+
+$sth = $dbh->prepare("
+	SELECT *
+	FROM " . DB_PREFIX . "box
+	;");
+
+$sth->execute();
+
+$rows = $sth->fetchAll( PDO::FETCH_ASSOC );
+
+
 /**
  * PAGE BODY
  */
 //------------------------------------------------------------------------------------------------------------+
 ?>
 					<!-- CONTENTS -->
-					<div class="row">
 
+					<div style="max-width: 400px; margin: 0 auto 10px; padding-left: 35px; padding-right: 35px;">
+						<div class="row">
+							<div class="text-center">
+								<a class="btn btn-primary btn-lg btn-block" href="./admin/box/add">
+									<i class="fa fa-plus"></i>&nbsp;<?php echo T_('Add New Box'); ?>
+								</a>
+							</div>
+						</div>
+					</div>
+
+					<div class="row">
+						<div class="col-md-12">
+							<div class="panel panel-default">
+
+								<div class="panel-heading">
+									<h3 class="panel-title"><?php echo T_('Overview'); ?></h3>
+								</div>
+
+								<div class="panel-body">
+
+									<div class="table-responsive">
+										<table class="table table-striped table-bordered table-hover" id="overview">
+											<thead>
+												<tr>
+													<th><?php echo T_('Name'); ?></th>
+													<th><?php echo T_('IP Address'); ?></th>
+													<th><?php echo T_('Servers'); ?></th>
+													<th><?php echo T_('Network Status'); ?></th>
+													<th><?php echo T_('Bandwidth Usage'); ?></th>
+													<th><?php echo T_('CPU'); ?></th>
+													<th><?php echo T_('RAM'); ?></th>
+													<th><?php echo T_('Load Average'); ?> (15 min)</th>
+													<th><?php echo T_('HDD'); ?></th>
+													<th></th>
+													<th></th>
+												</tr>
+											</thead>
+											<tbody>
+<?php
+//------------------------------------------------------------------------------------------------------------+
+
+foreach($rows as $key => $value)
+{
+?>
+												<tr>
+													<td><?php echo htmlspecialchars( $value['name'], ENT_QUOTES); ?></td>
+													<td></td>
+													<td></td>
+													<td></td>
+													<td></td>
+													<td></td>
+													<td></td>
+													<td></td>
+													<td></td>
+													<td></td>
+													<td></td>
+												</tr>
+<?php
+}
+unset($rows);
+
+//------------------------------------------------------------------------------------------------------------+
+?>
+											</tbody>
+										</table>
+									</div>
+
+									<script>
+									$(document).ready(function(){
+										$('#overview').DataTable({
+											"columnDefs": [
+												{ "orderable": false, "targets": [4,5,6,7,8,9,10] }
+											]
+										});
+									});
+									</script>
+
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div class="well">
+						<?php echo T_('Last Update'); ?> : <span class="label label-default"><?php echo BGP_LAST_CRON_RUN; ?></span>
+<?php
+						if (BGP_LAST_CRON_RUN == 'Never') {
+?>
+						<br /><?php echo T_('Setup the cron job to enable box monitoring!'); ?>
+<?php
+						}
+
+?>
 					</div>
 					<!-- END: CONTENTS -->
 
