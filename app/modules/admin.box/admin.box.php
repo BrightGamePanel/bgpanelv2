@@ -49,8 +49,7 @@ $js = new Core_JS_GUI();
 $gui->getHeader();
 
 
-// Analyze DB
-
+// DB
 $dbh = Core_DBH::getDBH(); // Get Database Handle
 
 $rows = array();
@@ -106,7 +105,6 @@ $rows = $sth->fetchAll( PDO::FETCH_ASSOC );
 													<th><?php echo T_('Load Average'); ?> (15 min)</th>
 													<th><?php echo T_('HDD'); ?></th>
 													<th></th>
-													<th></th>
 												</tr>
 											</thead>
 											<tbody>
@@ -126,8 +124,19 @@ foreach($rows as $key => $value)
 													<td></td>
 													<td></td>
 													<td></td>
-													<td></td>
-													<td></td>
+													<td>
+														<div class="text-center">
+															<a class="btn btn-default" href="./admin/box/edit/<?php echo htmlspecialchars( $value['box_id'], ENT_QUOTES); ?>">
+																<i class="fa fa-edit"></i>
+															</a>&nbsp;
+															<a class="btn btn-primary" href="./admin/box/view/<?php echo htmlspecialchars( $value['box_id'], ENT_QUOTES); ?>">
+																<i class="fa fa-info-circle"></i>
+															</a>&nbsp;
+															<a class="btn btn-danger" href="./admin/box/del/<?php echo htmlspecialchars( $value['box_id'], ENT_QUOTES); ?>">
+																<i class="fa fa-trash"></i>
+															</a>
+														</div>
+													</td>
 												</tr>
 <?php
 }
@@ -143,7 +152,7 @@ unset($rows);
 									$(document).ready(function(){
 										$('#overview').DataTable({
 											"columnDefs": [
-												{ "orderable": false, "targets": [4,5,6,7,8,9,10] }
+												{ "orderable": false, "targets": [4,5,6,7,8,9] }
 											]
 										});
 									});
@@ -155,16 +164,18 @@ unset($rows);
 					</div>
 
 					<div class="well">
-						<?php echo T_('Last Update'); ?> : <span class="label label-default"><?php echo BGP_LAST_CRON_RUN; ?></span>
+						<?php echo T_('Last Update'); ?> : <span class="label label-default"><?php echo bgp_format_date(BGP_LAST_CRON_RUN); ?></span>
 <?php
-						if (BGP_LAST_CRON_RUN == 'Never') {
+
+if ( bgp_format_date(BGP_LAST_CRON_RUN) == 'Never' ) {
 ?>
 						<br /><?php echo T_('Setup the cron job to enable box monitoring!'); ?>
 <?php
-						}
+}
 
 ?>
 					</div>
+
 					<!-- END: CONTENTS -->
 
 					<!-- SCRIPT -->

@@ -197,3 +197,19 @@ function bytesToSize($bytes, $precision = 2)
 		return $bytes . ' B';
 	}
 }
+
+/**
+ * Format the mysql timestamp.
+ */
+function bgp_format_date( $timestamp )
+{
+	if ($timestamp == '0000-00-00 00:00:00' || $timestamp == 'Never')
+	{
+		return 'Never';
+	}
+	else
+	{
+		$dateTable = date_parse_from_format('Y-m-d H:i:s', $timestamp);
+		return date('l | F j, Y | H:i', mktime($dateTable['hour'], $dateTable['minute'], $dateTable['second'], $dateTable['month'], $dateTable['day'], $dateTable['year']));
+	}
+}
