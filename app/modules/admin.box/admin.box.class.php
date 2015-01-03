@@ -42,3 +42,21 @@ class BGP_Module_Admin_Box extends BGP_Module {
 	}
 
 }
+
+/**
+ * Admin Box Module
+ * Page: Delete Box
+ * Title: Delete Box
+ */
+
+class BGP_Module_Admin_Box_Del extends BGP_Module_Admin_Box {
+
+	function __construct( )	{
+
+		// Call parent constructor
+		parent::__construct( );
+
+		// Override module title
+		self::$module_definition['module_settings']['title'] = 'Delete Box';
+	}
+}

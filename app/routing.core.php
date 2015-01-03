@@ -133,7 +133,7 @@ Flight::route('GET|POST /login(/@page)', function( $page ) {
 
 // Dynamically load the module VIEW | CONTROLLER
 // Note that the page "process" is the module controller
-Flight::route('GET|POST /@type(/@module(/@page))', function( $type, $module, $page ) {
+Flight::route('GET|POST /@type(/@module(/@page(/@id)))', function( $type, $module, $page, $id ) {
 
 	switch ($type)
 	{
@@ -156,7 +156,7 @@ Flight::route('GET|POST /@type(/@module(/@page))', function( $type, $module, $pa
 				}
 
 				// Call the module
-				bgp_routing_require_mod( $mod_path );
+				bgp_routing_require_mod( $mod_path, $id );
 			}
 			else if ( Core_AuthService::isUser() ) {
 				// A regular user has tried to access admin components
@@ -192,7 +192,7 @@ Flight::route('GET|POST /@type(/@module(/@page))', function( $type, $module, $pa
 					$mod_path = MODS_DIR . '/' . 'user.' . $module . '/' . 'user.' . $module . '.php';
 				}
 
-				bgp_routing_require_mod( $mod_path );
+				bgp_routing_require_mod( $mod_path, $id );
 			}
 			else if ( Core_AuthService::isAdmin() ) {
 				// Forbidden
@@ -209,6 +209,7 @@ Flight::route('GET|POST /@type(/@module(/@page))', function( $type, $module, $pa
 
 			// Switch the vars
 			if (!empty($module)) {
+				$id = $page;
 				$page = $module;
 			}
 			$module = $type;
@@ -237,7 +238,7 @@ Flight::route('GET|POST /@type(/@module(/@page))', function( $type, $module, $pa
 					$mod_path = MODS_DIR . '/' . $module . '/' . $module . '.php';
 				}
 
-				bgp_routing_require_mod( $mod_path );
+				bgp_routing_require_mod( $mod_path, $id );
 			}
 			else {
 				$return = '/' . str_replace( BASE_URL, '', REQUEST_URI );

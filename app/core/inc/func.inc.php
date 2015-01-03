@@ -29,7 +29,13 @@
 /**
  * Secure require alias for the routing component of the system
  */
-function bgp_routing_require_mod( $mod_path ) {
+function bgp_routing_require_mod( $mod_path, $id ) {
+
+	// Set Object ID if any
+	if ( !empty($id) ) {
+		$GLOBALS['OBJ_ID'] = $id;
+	}
+
 	if ( file_exists($mod_path) ) {
 		// Protect class files and xml files from being called directly
 		if ((strstr($mod_path, 'class') === FALSE) && (strstr($mod_path, 'xml') === FALSE) ) {
