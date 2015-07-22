@@ -60,7 +60,7 @@ define('BASE_URL', dirname($_SERVER['PHP_SELF']).'/');
 define('REQUEST_URI', $_SERVER["REQUEST_URI"]);
 
 // FILE AND DIRECTORY CONSTANTS
-define('BASE_DIR', realpath(dirname(__FILE__)));
+define('BASE_DIR', str_replace('//', '/', realpath(dirname(__FILE__))));
 
 define('APP_DIR', BASE_DIR . '/app');
 	define('CRYPTO_DIR', APP_DIR . '/crypto');
@@ -131,9 +131,19 @@ if ( isset($_SESSION['LANG']) ) {
  */
 date_default_timezone_set( CONF_TIMEZONE ); // Default: "Europe/London"
 
-// DEFINE ENVIRONMENT RUNTIME IF NOT SET
+// DEFINE ENVIRONMENT RUNTIME CONTEXT IF NOT SET
 if ( !defined('ENV_RUNTIME') ) {
-	define('ENV_RUNTIME', 'DEFAULT');
+	$headers = apache_request_headers();
+
+	foreach ($headers as $key => $value) {
+		if ($key == 'X-API-KEY' && !empty($value)) {
+			define('ENV_RUNTIME', 'M2M');
+		}
+	}
+
+	if ( !defined('ENV_RUNTIME') ) {
+		define('ENV_RUNTIME', 'H2M');
+	}
 }
 
 // INSTALL WIZARD CHECK
@@ -156,13 +166,13 @@ if ( is_dir( INSTALL_DIR ) ) {
 	}
 }
 
-// CORE SYSTEM
-require( APP_DIR . '/app.core.php' );
+// LOAD APPLICATION FILES
+require( APP_DIR . '/loader.core.php' );
 
 // DEFINE BGP CONSTANTS FROM THE DATABASE
 // Syntax: BGP_CONFIG
 try {
-	if ( ENV_RUNTIME == 'DEFAULT' ) {
+	if ( ENV_RUNTIME != 'INSTALL_WIZARD' ) {
 		$dbh = Core_DBH::getDBH();
 
 		$sth = $dbh->prepare("
@@ -192,7 +202,7 @@ catch (PDOException $e) {
  */
 $bgpCoreInfo = simplexml_load_file( CORE_VERSION_FILE );
 
-if ( ENV_RUNTIME == 'DEFAULT' ) {
+if ( ENV_RUNTIME != 'INSTALL_WIZARD' ) {
 
 	/**
 	 * VERSION CONTROL
@@ -216,7 +226,7 @@ if ( ENV_RUNTIME == 'DEFAULT' ) {
 	}
 }
 
-if ( ENV_RUNTIME == 'DEFAULT' ) {
+if ( ENV_RUNTIME != 'INSTALL_WIZARD' ) {
 
 	/**
 	 * VALITRON Configuration
@@ -303,4 +313,4 @@ if ( ENV_RUNTIME == 'DEFAULT' ) {
 
 
 // Clean Up
-unset( $CONFIG, $bgpCoreInfo, $lang );
+unset( $CONFIG, $bgpCoreInfo, $lang, $headers, $key, $value );

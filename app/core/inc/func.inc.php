@@ -29,7 +29,7 @@
 /**
  * Secure require alias for the routing component of the system
  */
-function bgp_routing_require_mod( $mod_path, $id ) {
+function bgp_routing_require_mod( $mod_path, $id = '' ) {
 
 	// Set Object ID if any
 	if ( !empty($id) ) {

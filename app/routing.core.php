@@ -42,7 +42,7 @@ if ( !class_exists('Flight')) {
 
 
 // DEFAULT
-Flight::route('GET|POST /', function() {
+Flight::route('GET|POST|PUT|DELETE /', function() {
 
 	// User Authentication
 
@@ -76,7 +76,7 @@ Flight::route('GET|POST /', function() {
 
 
 // HTTP status codes VIEW
-Flight::route('GET|POST /@http:[0-9]{3}', function( $http ) {
+Flight::route('GET|POST|PUT|DELETE /@http:[0-9]{3}', function( $http ) {
 	header( Core_Http_Status_Codes::httpHeaderFor( $http ) );
 	echo Core_Http_Status_Codes::getMessageForCode( $http );
 	die();
@@ -85,7 +85,7 @@ Flight::route('GET|POST /@http:[0-9]{3}', function( $http ) {
 
 
 // [COMMON] LOGOUT METHOD
-Flight::route('GET /logout', function() {
+Flight::route('/logout', function() {
 	$authService = Core_AuthService::getAuthService();
 
 	if ($authService->getSessionValidity() == TRUE) {
@@ -133,7 +133,7 @@ Flight::route('GET|POST /login(/@page)', function( $page ) {
 
 // Dynamically load the module VIEW | CONTROLLER
 // Note that the page "process" is the module controller
-Flight::route('GET|POST /@type(/@module(/@page(/@id)))', function( $type, $module, $page, $id ) {
+Flight::route('GET|POST|PUT|DELETE /@type(/@module(/@page(/@id)))', function( $type, $module, $page, $id ) {
 
 	switch ($type)
 	{

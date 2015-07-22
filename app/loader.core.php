@@ -35,16 +35,28 @@ switch (ENV_RUNTIME)
 {
 	case 'INSTALL_WIZARD':
 		require( LIBS_DIR	. '/phpseclib/RSA.php' );
+
 		break;
 
-	default:
+	/**
+	 * HUMAN 2 MACHINE / MACHINE 2 HUMAN
+	 */
+	case 'H2M':
+		// Graphical User Interface Builder
+		require( APP_DIR	. '/core/gui.class.php' );
+		require( APP_DIR	. '/core/js.gui.class.php' );
+
+	/**
+	 * MACHINE TO MACHINE
+	 */
+	case 'M2M':
 		// PHP 5.5 Functions Implementation
 		require( LIBS_DIR	. '/php5.5/func.inc.php');
 
 		// BrightGamePanel Functions
 		require( APP_DIR	. '/core/inc/func.inc.php');
 
-		// Database Handle Manager
+		// Database Handler
 		require( APP_DIR	. '/core/dbh.class.php' );
 
 		// Valitron Framework
@@ -68,10 +80,6 @@ switch (ENV_RUNTIME)
 		// Authentication Service
 		require( APP_DIR	. '/core/auth.class.php' );
 
-		// Graphical User Interface Builder
-		require( APP_DIR	. '/core/gui.class.php' );
-		require( APP_DIR	. '/core/js.gui.class.php' );
-
 		// HTTP Status Codes Class
 		require( APP_DIR	. '/core/http.status.class.php' );
 
@@ -80,4 +88,6 @@ switch (ENV_RUNTIME)
 
 		// Controller Class Definition
 		require( APP_DIR	. '/core/controller.module.class.php' );
+
+		break;
 }
