@@ -258,14 +258,14 @@ else if ($_GET['step'] == 'one')
 						</tr>
 <?php
 
-	$versioncompare = version_compare(PHP_VERSION, '5.3.4');
+	$versioncompare = version_compare(PHP_VERSION, '5.4.0');
 	if ($versioncompare == -1)
 	{
 ?>
 						<tr class="error">
 							<td>Checking your version of PHP</td>
 							<td><span class="label label-important">FAILED (<?php echo PHP_VERSION; ?>)</span></td>
-							<td>Upgrade to PHP 5.3.4 or greater</td>
+							<td>Upgrade to PHP 5.4.0 or greater</td>
 						</tr>
 <?php
 		$error = TRUE;
@@ -745,6 +745,8 @@ else if ($_GET['step'] == 'one')
 
 	//--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 	//--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+
+
 
 ?>
 					</tbody>

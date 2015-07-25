@@ -66,69 +66,8 @@ try {
 	/*
 	-- BrightGamePanel V2 Database
 	-- Version 1.0.0
-	-- 05/10/2014
+	-- 25/07/2015
 	*/
-
-	//---------------------------------------------------------+
-
-	// Table structure for table "admin"
-
-		$dbh->exec( "DROP TABLE IF EXISTS ".DB_PREFIX."admin  ; " );
-		$dbh->exec( "
-	CREATE TABLE ".DB_PREFIX."admin (
-	  admin_id		INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
-	  username		TEXT NOT NULL,
-	  password		TEXT NOT NULL,
-	  firstname		TEXT,
-	  lastname		TEXT,
-	  email			TEXT NOT NULL,
-	  notes			TEXT,
-	  status		TEXT NOT NULL,
-	  lang			TEXT NOT NULL,
-	  last_login	TIMESTAMP,
-	  last_activity TIMESTAMP,
-	  last_ip		TEXT,
-	  last_host		TEXT,
-	  token			TEXT,
-	  PRIMARY KEY  (admin_id)
-	)
-	ENGINE=MyISAM CHARSET=utf8 COLLATE=utf8_unicode_ci  ; " );
-
-	// Data for table "admin"
-
-		$dbh->exec( "
-	INSERT INTO ".DB_PREFIX."admin (
-	  admin_id,
-	  username,
-	  password,
-	  firstname,
-	  lastname,
-	  email,
-	  notes,
-	  status,
-	  lang,
-	  last_login,
-	  last_activity,
-	  last_ip,
-	  last_host,
-	  token
-	)
-	VALUES (
-	  1,
-	  'admin',
-	  '".getHash('password', $APP_AUTH_SALT)."',
-	  'Super',
-	  'User',
-	  'anon@nimus.com',
-	  'Welcome on BrightGamePanel V2!',
-	  'Active',
-	  '".CONF_DEFAULT_LOCALE."',
-	  '".date('Y-m-d H:i:s', time())."',
-	  '".date('Y-m-d H:i:s', time())."',
-	  '~',
-	  '~',
-	  NULL
-	)  ; " );
 
 	//---------------------------------------------------------+
 
@@ -365,6 +304,73 @@ try {
 
 	//---------------------------------------------------------+
 
+	// Table structure for table "permissions"
+
+		$dbh->exec( "DROP TABLE IF EXISTS ".DB_PREFIX."permissions  ; " );
+		$dbh->exec( "
+	CREATE TABLE ".DB_PREFIX."permissions (
+	  ID INT(11) NOT NULL auto_increment,
+	  Lft INT(11) NOT NULL,
+	  Rght INT(11) NOT NULL,
+	  Title VARCHAR(64) NOT NULL,
+	  Description TEXT NOT NULL,
+	  PRIMARY KEY  (ID)
+	)
+	ENGINE=MyISAM CHARSET=utf8 COLLATE=utf8_unicode_ci  ; " );
+
+	// Data for table "permissions"
+
+		$dbh->exec( "
+	INSERT INTO ".DB_PREFIX."permissions (ID, Lft, Rght, Title, Description)
+	VALUES (1, 0, 1, 'root', 'root');
+		" );
+
+	//---------------------------------------------------------+
+
+	// Table structure for table "rolepermissions"
+
+		$dbh->exec( "DROP TABLE IF EXISTS ".DB_PREFIX."rolepermissions  ; " );
+		$dbh->exec( "
+	CREATE TABLE ".DB_PREFIX."rolepermissions (
+	  RoleID INT(11) NOT NULL,
+	  PermissionID INT(11) NOT NULL,
+	  AssignmentDate INT(11) NOT NULL,
+	  PRIMARY KEY  (RoleID, PermissionID)
+	)
+	ENGINE=MyISAM CHARSET=utf8 COLLATE=utf8_unicode_ci  ; " );
+
+	// Data for table "rolepermissions"
+
+		$dbh->exec( "
+	INSERT INTO ".DB_PREFIX."rolepermissions (RoleID, PermissionID, AssignmentDate)
+	VALUES (1, 1, UNIX_TIMESTAMP());
+		" );
+
+	//---------------------------------------------------------+
+
+	// Table structure for table "roles"
+
+		$dbh->exec( "DROP TABLE IF EXISTS ".DB_PREFIX."roles  ; " );
+		$dbh->exec( "
+	CREATE TABLE ".DB_PREFIX."roles (
+	  ID INT(11) NOT NULL auto_increment,
+	  Lft INT(11) NOT NULL,
+	  Rght INT(11) NOT NULL,
+	  Title VARCHAR(128) NOT NULL,
+	  Description TEXT NOT NULL,
+	  PRIMARY KEY  (ID)
+	)
+	ENGINE=MyISAM CHARSET=utf8 COLLATE=utf8_unicode_ci  ; " );
+
+	// Data for table "roles"
+
+		$dbh->exec( "
+	INSERT INTO ".DB_PREFIX."roles (ID, Lft, Rght, Title, Description)
+	VALUES (1, 0, 1, 'root', 'root');
+		" );
+
+	//---------------------------------------------------------+
+
 	// Table structure for table "script"
 
 		$dbh->exec( "DROP TABLE IF EXISTS ".DB_PREFIX."script  ; " );
@@ -453,6 +459,63 @@ try {
 	  PRIMARY KEY  (user_id)
 	)
 	ENGINE=MyISAM CHARSET=utf8 COLLATE=utf8_unicode_ci  ; " );
+
+	// Data for table "user"
+
+		$dbh->exec( "
+	INSERT INTO ".DB_PREFIX."user (
+	  user_id,
+	  username,
+	  password,
+	  firstname,
+	  lastname,
+	  email,
+	  notes,
+	  status,
+	  lang,
+	  last_login,
+	  last_activity,
+	  last_ip,
+	  last_host,
+	  token
+	)
+	VALUES (
+	  1,
+	  'admin',
+	  '".getHash('password', $APP_AUTH_SALT)."',
+	  'Super',
+	  'User',
+	  'anon@nimus.com',
+	  '',
+	  'Active',
+	  '".CONF_DEFAULT_LOCALE."',
+	  '".date('Y-m-d H:i:s', time())."',
+	  '".date('Y-m-d H:i:s', time())."',
+	  '~',
+	  '~',
+	  NULL
+	)  ; " );
+
+	//---------------------------------------------------------+
+
+	// Table structure for table "userroles"
+
+		$dbh->exec( "DROP TABLE IF EXISTS ".DB_PREFIX."userroles  ; " );
+		$dbh->exec( "
+	CREATE TABLE ".DB_PREFIX."userroles (
+	  UserID INT(11) NOT NULL,
+	  RoleID INT(11) NOT NULL,
+	  AssignmentDate INT(11) NOT NULL,
+	  PRIMARY KEY  (UserID, RoleID)
+	)
+	ENGINE=MyISAM CHARSET=utf8 COLLATE=utf8_unicode_ci  ; " );
+
+	// Data for table "userroles"
+
+		$dbh->exec( "
+	INSERT INTO ".DB_PREFIX."userroles (UserID, RoleID, AssignmentDate)
+	VALUES (1, 1, UNIX_TIMESTAMP());
+		" );
 
 
 //--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
