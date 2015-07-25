@@ -273,18 +273,18 @@ try {
 		$dbh->exec( "DROP TABLE IF EXISTS ".DB_PREFIX."lgsl  ; " );
 		$dbh->exec( "
 	CREATE TABLE ".DB_PREFIX."lgsl (
-	  id int(11) UNSIGNED         NOT NULL AUTO_INCREMENT,
-	  type       VARCHAR (50)     NOT NULL DEFAULT '',
-	  ip         VARCHAR (255)    NOT NULL DEFAULT '',
-	  c_port     VARCHAR (5)      NOT NULL DEFAULT '0',
-	  q_port     VARCHAR (5)      NOT NULL DEFAULT '0',
-	  s_port     VARCHAR (5)      NOT NULL DEFAULT '0',
-	  zone       VARCHAR (255)    NOT NULL DEFAULT '',
-	  disabled   TINYINT (1)      NOT NULL DEFAULT '0',
-	  comment    VARCHAR (255)    NOT NULL DEFAULT '',
-	  status     TINYINT (1)      NOT NULL DEFAULT '0',
-	  cache      TEXT             NOT NULL,
-	  cache_time TEXT             NOT NULL,
+	  id 		 INTEGER UNSIGNED 	NOT NULL AUTO_INCREMENT,
+	  type       VARCHAR(255)     	NOT NULL DEFAULT '',
+	  ip         VARCHAR(255)    	NOT NULL DEFAULT '',
+	  c_port     VARCHAR(255)      	NOT NULL DEFAULT '0',
+	  q_port     VARCHAR(255)      	NOT NULL DEFAULT '0',
+	  s_port     VARCHAR(255)      	NOT NULL DEFAULT '0',
+	  zone       VARCHAR(255)    	NOT NULL DEFAULT '',
+	  disabled   INTEGER UNSIGNED  	NOT NULL DEFAULT '0',
+	  comment    VARCHAR(255) 		NOT NULL DEFAULT '',
+	  status     INTEGER UNSIGNED  	NOT NULL DEFAULT '0',
+	  cache      TEXT             	NOT NULL,
+	  cache_time TEXT             	NOT NULL,
 	  PRIMARY KEY  (id)
 	)
 	ENGINE=MyISAM CHARSET=utf8 COLLATE=utf8_unicode_ci  ; " );
@@ -309,11 +309,11 @@ try {
 		$dbh->exec( "DROP TABLE IF EXISTS ".DB_PREFIX."permissions  ; " );
 		$dbh->exec( "
 	CREATE TABLE ".DB_PREFIX."permissions (
-	  ID INT(11) NOT NULL auto_increment,
-	  Lft INT(11) NOT NULL,
-	  Rght INT(11) NOT NULL,
-	  Title VARCHAR(64) NOT NULL,
-	  Description TEXT NOT NULL,
+	  ID 			INTEGER UNSIGNED NOT NULL auto_increment,
+	  Lft 			INTEGER UNSIGNED NOT NULL,
+	  Rght 			INTEGER UNSIGNED NOT NULL,
+	  Title 		TEXT NOT NULL,
+	  Description 	TEXT NOT NULL,
 	  PRIMARY KEY  (ID)
 	)
 	ENGINE=MyISAM CHARSET=utf8 COLLATE=utf8_unicode_ci  ; " );
@@ -332,9 +332,9 @@ try {
 		$dbh->exec( "DROP TABLE IF EXISTS ".DB_PREFIX."rolepermissions  ; " );
 		$dbh->exec( "
 	CREATE TABLE ".DB_PREFIX."rolepermissions (
-	  RoleID INT(11) NOT NULL,
-	  PermissionID INT(11) NOT NULL,
-	  AssignmentDate INT(11) NOT NULL,
+	  RoleID 			INTEGER UNSIGNED NOT NULL,
+	  PermissionID 		INTEGER UNSIGNED NOT NULL,
+	  AssignmentDate 	INTEGER UNSIGNED NOT NULL,
 	  PRIMARY KEY  (RoleID, PermissionID)
 	)
 	ENGINE=MyISAM CHARSET=utf8 COLLATE=utf8_unicode_ci  ; " );
@@ -353,11 +353,11 @@ try {
 		$dbh->exec( "DROP TABLE IF EXISTS ".DB_PREFIX."roles  ; " );
 		$dbh->exec( "
 	CREATE TABLE ".DB_PREFIX."roles (
-	  ID INT(11) NOT NULL auto_increment,
-	  Lft INT(11) NOT NULL,
-	  Rght INT(11) NOT NULL,
-	  Title VARCHAR(128) NOT NULL,
-	  Description TEXT NOT NULL,
+	  ID 			INTEGER UNSIGNED NOT NULL auto_increment,
+	  Lft 			INTEGER UNSIGNED NOT NULL,
+	  Rght 			INTEGER UNSIGNED NOT NULL,
+	  Title 		TEXT NOT NULL,
+	  Description 	TEXT NOT NULL,
 	  PRIMARY KEY  (ID)
 	)
 	ENGINE=MyISAM CHARSET=utf8 COLLATE=utf8_unicode_ci  ; " );
@@ -437,6 +437,20 @@ try {
 
 	//---------------------------------------------------------+
 
+	// Table structure for table "session"
+
+		$dbh->exec( "DROP TABLE IF EXISTS ".DB_PREFIX."session  ; " );
+		$dbh->exec( "
+	CREATE TABLE ".DB_PREFIX."session (
+	  session_id		INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
+	  session_data		BLOB NOT NULL,
+	  expires			INTEGER UNSIGNED NOT NULL,
+	  PRIMARY KEY  (session_id)
+	)
+	ENGINE=MyISAM CHARSET=utf8 COLLATE=utf8_unicode_ci  ; " );
+
+	//---------------------------------------------------------+
+
 	// Table structure for table "user"
 
 		$dbh->exec( "DROP TABLE IF EXISTS ".DB_PREFIX."user  ; " );
@@ -503,9 +517,9 @@ try {
 		$dbh->exec( "DROP TABLE IF EXISTS ".DB_PREFIX."userroles  ; " );
 		$dbh->exec( "
 	CREATE TABLE ".DB_PREFIX."userroles (
-	  UserID INT(11) NOT NULL,
-	  RoleID INT(11) NOT NULL,
-	  AssignmentDate INT(11) NOT NULL,
+	  UserID 			INTEGER UNSIGNED NOT NULL,
+	  RoleID 			INTEGER UNSIGNED NOT NULL,
+	  AssignmentDate 	INTEGER UNSIGNED NOT NULL,
 	  PRIMARY KEY  (UserID, RoleID)
 	)
 	ENGINE=MyISAM CHARSET=utf8 COLLATE=utf8_unicode_ci  ; " );

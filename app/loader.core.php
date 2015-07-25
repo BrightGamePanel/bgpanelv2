@@ -77,6 +77,9 @@ switch (ENV_RUNTIME)
 		require( LIBS_DIR	. '/phpseclib/RSA.php' );
 		require( LIBS_DIR	. '/phpseclib/ANSI.php' );
 
+		// PHP-RBAC: Role Based Access Control Library
+		require( LIBS_DIR	. '/phprbac2.0/autoload.php' );
+
 		// Authentication Service
 		require( APP_DIR	. '/core/auth.class.php' );
 
