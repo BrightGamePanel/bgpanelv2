@@ -93,7 +93,7 @@ Flight::route('GET|POST|PUT|DELETE (/@module(/@page(/@element)))', function( $mo
 
 		// Check User Permissions 
 
-		
+		exit('auth');
 
 		// Done
 

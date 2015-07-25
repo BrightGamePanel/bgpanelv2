@@ -111,16 +111,7 @@ class Core_GUI
 			return $_SESSION['TEMPLATE'];
 		}
 		else {
-			switch (Core_AuthService::getSessionType()) {
-				case 'Admin':
-					return BGP_ADMIN_TEMPLATE;
-
-				case 'User':
-					return BGP_USER_TEMPLATE;
-				
-				default:
-					return 'bootstrap.min.css';
-			}
+			return BGP_USER_TEMPLATE;
 		}
 	}
 

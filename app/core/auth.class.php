@@ -35,7 +35,7 @@ class Core_AuthService
 	// Username
 	private $username;
 
-	// Encrypted Session
+	// Session
 	private $session = array();
 
 	// Hash Salt
@@ -102,6 +102,21 @@ class Core_AuthService
 	}
 
 	/**
+	 * Service Handler
+	 *
+	 * @return Core_AuthService
+	 * @access public
+	 */
+	public static function getAuthService() {
+		if ( empty(self::$authService) || !is_object(self::$authService) || (get_class(self::$authService) != 'Core_AuthService') )
+		{
+			self::$authService = new Core_AuthService();
+		}
+
+		return self::$authService;
+	}
+
+	/**
 	 * Logout
 	 *
 	 * Destroy session variables
@@ -121,81 +136,6 @@ class Core_AuthService
 		session_destroy();
 
 		self::$authService = NULL;
-	}
-
-	/**
-	 * Service Handler
-	 *
-	 * @return Core_AuthService
-	 * @access public
-	 */
-	public static function getAuthService() {
-		if ( empty(self::$authService) || !is_object(self::$authService) || (get_class(self::$authService) != 'Core_AuthService') )
-		{
-			self::$authService = new Core_AuthService();
-		}
-
-		return self::$authService;
-	}
-
-	/**
-	 * Retrieves From The Session Credentials The User Type
-	 *
-	 * @param none
-	 * @return String
-	 * @access public
-	 */
-	public static function getSessionType() {
-		$authService = Core_AuthService::getAuthService();
-
-		$credentials = $authService->decryptSessionCredentials();
-
-		if ( !empty($credentials['type']) ) {
-			return $credentials['type'];
-		}
-		return 'Guest';
-	}
-
-	/**
-	 * Test If The Session Has Full Admin Privilege
-	 *
-	 * @param none
-	 * @return bool
-	 * @access public
-	 */
-	public static function isAdmin() {
-		if (self::getSessionType() == 'Admin') {
-
-			$authService = Core_AuthService::getAuthService();
-
-			if ($authService->getSessionValidity() == TRUE) {
-
-				return TRUE;
-			}
-		}
-
-		return FALSE;
-	}
-
-	/**
-	 * Test If The Session Has Full User Privilege
-	 *
-	 * @param none
-	 * @return bool
-	 * @access public
-	 */
-	public static function isUser() {
-		if (self::getSessionType() == 'User') {
-
-			$authService = Core_AuthService::getAuthService();
-
-			if ($authService->getSessionValidity() == TRUE) {
-
-				return TRUE;
-			}
-		}
-
-		return FALSE;
 	}
 
 	/**
@@ -314,9 +254,6 @@ class Core_AuthService
 		if ( !empty($this->username) ) {
 
 			$credentials = $this->decryptSessionCredentials();
-			if ( empty($credentials['type']) ) {
-				$credentials['type'] = 'Guest';
-			}
 
 			// Level 1
 			if ( $credentials['username'] == $this->username && $credentials['key'] == $this->auth_key && $credentials['token'] == session_id() ) {
@@ -324,62 +261,30 @@ class Core_AuthService
 				// Level 2
 				$dbh = Core_DBH::getDBH();
 
-				switch ( $credentials['type'] )
-				{
-					case 'Admin':
+				// Fetch information from the database
+				$sth = $dbh->prepare("
+					SELECT username, last_ip, token
+					FROM " . DB_PREFIX . "user
+					WHERE
+						user_id = :user_id
+					;");
 
-						// Fetch information from the database
-						$sth = $dbh->prepare("
-							SELECT username, last_ip, token
-							FROM " . DB_PREFIX . "admin
-							WHERE
-								admin_id = :admin_id
-							;");
+				$sth->bindParam( ':user_id', $this->session['INFORMATION']['id'] );
 
-						$sth->bindParam( ':admin_id', $this->session['INFORMATION']['id'] );
+				$sth->execute();
 
-						$sth->execute();
+				$userResult = $sth->fetchAll(PDO::FETCH_ASSOC);
 
-						$adminResult = $sth->fetchAll(PDO::FETCH_ASSOC);
-
-						// Verify
-						if ( $adminResult[0]['username'] == $this->username && $adminResult[0]['last_ip'] == $_SERVER['REMOTE_ADDR'] && $adminResult[0]['token'] == session_id() ) {
-							return TRUE;
-						}
-						else {
-							return FALSE;
-						}
-
-					case 'User':
-
-						// Fetch information from the database
-						$sth = $dbh->prepare("
-							SELECT username, last_ip, token
-							FROM " . DB_PREFIX . "user
-							WHERE
-								user_id = :user_id
-							;");
-
-						$sth->bindParam( ':user_id', $this->session['INFORMATION']['id'] );
-
-						$sth->execute();
-
-						$userResult = $sth->fetchAll(PDO::FETCH_ASSOC);
-
-						// Verify
-						if ( $userResult[0]['username'] == $this->username && $userResult[0]['last_ip'] == $_SERVER['REMOTE_ADDR'] && $userResult[0]['token'] == session_id() ) {
-							return TRUE;
-						}
-						else {
-							return FALSE;
-						}
-
-					default:
-						// Guest case
-						return FALSE;
+				// Verify
+				if ( $userResult[0]['username'] == $this->username && $userResult[0]['last_ip'] == $_SERVER['REMOTE_ADDR'] && $userResult[0]['token'] == session_id() ) {
+					return TRUE;
+				}
+				else {
+					return FALSE;
 				}
 			}
 		}
+
 		return FALSE;
 	}
 
@@ -394,11 +299,10 @@ class Core_AuthService
 	 * @param String $lastname
 	 * @param String $lang
 	 * @param String $template
-	 * @param String $COM
 	 * @return void
 	 * @access public
 	 */
-	public function setSessionInfo( $id, $username, $firstname, $lastname, $lang, $template, $COM ) {
+	public function setSessionInfo( $id, $username, $firstname, $lastname, $lang, $template ) {
 		$info = array (
 				'id' => $id,
 				'firstname' => $firstname,
@@ -409,10 +313,8 @@ class Core_AuthService
 		$this->session['LANG'] = $lang;
 		$this->session['TEMPLATE'] = $template;
 
-		$this->session['ID'] = $id; // Logging (user-id)
-		$this->session['COM'] = $COM; // Logging (Component Object Model)
-		$this->session['USERNAME'] = $username;	// Multi-purpose
-												// Logging (user-identifier)
+		$this->session['ID'] = $id;
+		$this->session['USERNAME'] = $username;
 
 		$this->username = $username; // Update username var as well
 		$_SESSION = $this->session;
@@ -463,46 +365,42 @@ class Core_AuthService
 	 *
 	 * Note: should be called after Core_AuthService->setSessionInfo()
 	 *
-	 * @param String $type
 	 * @return void
 	 * @access public
 	 */
-	public function setSessionPerms( $type ) {
+	public function setSessionPerms() {
 		if ( !empty($this->username) ) {
-			if ( $type == 'Admin' || $type == 'User' ) {
 
-				$credentials = serialize (
-					array (
-					'username' => $this->username,
-					'type'	=> $type,
-					'token' => session_id(),
-					'key' => $this->auth_key,
-					'salt' => md5(time())
-					)
-				);
+			$credentials = serialize (
+				array (
+				'username' => $this->username,
+				'token' => session_id(),
+				'key' => $this->auth_key,
+				'salt' => md5(time())
+				)
+			);
 
-				switch ( CONF_SEC_SESSION_METHOD )
-				{
-					case 'aes256':
-						$cipher = new Crypt_AES(CRYPT_AES_MODE_ECB);
-						$cipher->setKeyLength(256);
-						$cipher->setKey( $this->session_key );
+			switch ( CONF_SEC_SESSION_METHOD )
+			{
+				case 'aes256':
+					$cipher = new Crypt_AES(CRYPT_AES_MODE_ECB);
+					$cipher->setKeyLength(256);
+					$cipher->setKey( $this->session_key );
 
-						$this->session['CREDENTIALS'] = $cipher->encrypt( $credentials );
-						break;
+					$this->session['CREDENTIALS'] = $cipher->encrypt( $credentials );
+					break;
 
-					case 'rsa':
-					default:
-						$rsa = new Crypt_RSA();
-						$rsa->loadKey( $this->rsa_public_key ); // public key
+				case 'rsa':
+				default:
+					$rsa = new Crypt_RSA();
+					$rsa->loadKey( $this->rsa_public_key ); // public key
 
-						$rsa->setEncryptionMode(CRYPT_RSA_ENCRYPTION_PKCS1);
-						$this->session['CREDENTIALS'] = $rsa->encrypt( $credentials );
-						break;
-				}
-
-				$_SESSION = $this->session;
+					$rsa->setEncryptionMode(CRYPT_RSA_ENCRYPTION_PKCS1);
+					$this->session['CREDENTIALS'] = $rsa->encrypt( $credentials );
+					break;
 			}
+
+			$_SESSION = $this->session;
 		}
 	}
 

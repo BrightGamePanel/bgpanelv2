@@ -157,7 +157,6 @@ try {
 	  ('panel_version',		'".LASTBGPVERSION."'),
 	  ('maintenance_mode',	'0'),
 	  ('last_cron_run',		'Never'),
-	  ('admin_template',	'bootstrap.min.css'),
 	  ('user_template',		'bootstrap.min.css')  ; " );
 
 	//---------------------------------------------------------+
