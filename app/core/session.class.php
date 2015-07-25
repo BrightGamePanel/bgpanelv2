@@ -30,17 +30,13 @@
  * SessionHandlerInterface is an interface which defines a prototype for creating a custom session handler. In order to pass a custom session handler to session_set_save_handler() using its OOP invocation, 
  * the class must implement this interface.
  * Please note the callback methods of this class are designed to be called internally by PHP and are not meant to be called from user-space code. 
+ *
+ * See: http://www.codedodle.com/2014/04/storing-sessions-in-database-in-php.html
  */
 
 class Core_SessionHandler implements SessionHandlerInterface
 {
 	private $dbh;
-
-    /**
-     * Initialize session
-     *
-     * Re-initialize existing session, or creates a new one. Called when a session starts or when session_start() is invoked. 
-     */
 
 	public function open($save_path = "", $name = "PHPSESSID")
 	{
@@ -55,52 +51,14 @@ class Core_SessionHandler implements SessionHandlerInterface
 		return TRUE;
 	}
 
-    // Write session data
+	// Write session data
 	public function write($session_id = "", $session_data = "")
 	{
 		$sth = $this->dbh->prepare("
-			SELECT session_id
-			FROM " . DB_PREFIX . "session
-			WHERE
-				session_id = :session_id
-			;");
-
-		$sth->bindParam(':session_id', $session_id);
-
-		$sth->execute();
-
-		$result = $sth->fetchAll();
-
-		// UPDATE
-		if (!empty($result)) {
-			return $this->update($session_id = "", $session_data = "");
-		}
-
-		// NEW ENTRY
-		$sth = $this->dbh->prepare("
-			INSERT INTO ".DB_PREFIX."session
+			REPLACE INTO ".DB_PREFIX."session
 				(session_id, session_data, expires)
 			VALUES
 				(:session_id, :session_data, " . (time() + session_cache_expire() * 60) . ")
-			;");
-
-		$sth->bindParam(':session_id', $session_id);
-		$sth->bindParam(':session_data', $session_data);
-
-		$sth->execute();
-
-	    return TRUE;
-	}
-
-	private function update($session_id = "", $session_data = "")
-	{
-		$sth = $this->dbh->prepare("
-			UPDATE " . DB_PREFIX . "session
-			SET
-				session_data	= :session_data,
-				expires			= " . (time() + session_cache_expire() * 60) . "
-			WHERE
-				session_id		= :session_id
 			;");
 
 		$sth->bindParam(':session_id', $session_id);
@@ -112,8 +70,8 @@ class Core_SessionHandler implements SessionHandlerInterface
 	}
 
 	// Read session data
-    public function read($session_id = "")
-    {
+	public function read($session_id = "")
+	{
 		$sth = $this->dbh->prepare("
 			SELECT session_data
 			FROM " . DB_PREFIX . "session
@@ -127,16 +85,20 @@ class Core_SessionHandler implements SessionHandlerInterface
 
 		$data = $sth->fetchAll(PDO::FETCH_ASSOC);
 
+		if (!isset($data[0])) {
+			return (string)'';
+		}
+
 		return (string)$data[0]['session_data'];
-    }
+	}
 
 	// Destroy a session
-    public function destroy($session_id = "")
-    {
+	public function destroy($session_id = "")
+	{
 		$sth = $this->dbh->prepare("
 			DELETE FROM " . DB_PREFIX . "session
 			WHERE
-				session_id		= :session_id
+				session_id = :session_id
 			;");
 
 		$sth->bindParam(':session_id', $session_id);
@@ -144,19 +106,19 @@ class Core_SessionHandler implements SessionHandlerInterface
 		$sth->execute();
 
 		return TRUE;
-    }
+	}
 
-    // Cleanup old sessions
-    public function gc($maxlifetime = "")
-    {
+	// Cleanup old sessions
+	public function gc($maxlifetime = "")
+	{
 		$sth = $this->dbh->prepare("
 			DELETE FROM " . DB_PREFIX . "session
 			WHERE
-				expires		<= " . time() . "
+				expires	<= " . time() . "
 			;");
 
 		$sth->execute();
 
-        return TRUE;
-    }
+		 return TRUE;
+	}
 }
