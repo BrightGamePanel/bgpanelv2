@@ -442,7 +442,7 @@ try {
 		$dbh->exec( "DROP TABLE IF EXISTS ".DB_PREFIX."session  ; " );
 		$dbh->exec( "
 	CREATE TABLE ".DB_PREFIX."session (
-	  session_id		INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
+	  session_id		VARCHAR(255) NOT NULL,
 	  session_data		BLOB NOT NULL,
 	  expires			INTEGER UNSIGNED NOT NULL,
 	  PRIMARY KEY  (session_id)
