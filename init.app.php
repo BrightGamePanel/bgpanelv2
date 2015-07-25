@@ -52,10 +52,6 @@ ini_set('display_errors', 1);
 
 
 
-// Start new or resume existing session
-session_start();
-
-
 define('BASE_URL', dirname($_SERVER['PHP_SELF']).'/');
 define('REQUEST_URI', $_SERVER["REQUEST_URI"]);
 
@@ -168,6 +164,17 @@ if ( is_dir( INSTALL_DIR ) ) {
 
 // LOAD APPLICATION FILES
 require( APP_DIR . '/loader.core.php' );
+
+// LOAD SESSION HANDLER
+require( APP_DIR . '/core/session.class.php' );
+
+
+// Start new or resume existing session
+$coreSessionHandler = new Core_SessionHandler();
+session_set_save_handler($coreSessionHandler, TRUE);
+session_start();
+$_SESSION['timestamp'] = time();
+
 
 // DEFINE BGP CONSTANTS FROM THE DATABASE
 // Syntax: BGP_CONFIG

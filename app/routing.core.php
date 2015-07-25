@@ -93,11 +93,12 @@ Flight::route('GET|POST|PUT|DELETE (/@module(/@page(/@element)))', function( $mo
 
 		// Check User Permissions 
 
+		
 
 		// Done
 
 		// element
-
+/*
 		// MAINTENANCE CHECKER
 		// Logout the user
 		if ( BGP_MAINTENANCE_MODE == 1 ) {
@@ -117,14 +118,16 @@ Flight::route('GET|POST|PUT|DELETE (/@module(/@page(/@element)))', function( $mo
 
 		bgp_routing_require_mod( $mod_path );
 
-			if ( Core_AuthService::isAdmin() ) {
-				// Forbidden
-				Flight::redirect('/403');
-			}
-			else {
-				$return = '/' . str_replace( BASE_URL, '', REQUEST_URI );
-				Flight::redirect( '/login?page=' . $return );
-			}
+		if ( Core_AuthService::isAdmin() ) {
+			// Forbidden
+			Flight::redirect('/403');
+		}
+		else {
+			$return = '/' . str_replace( BASE_URL, '', REQUEST_URI );
+			Flight::redirect( '/login?page=' . $return );
+		}
+*/
+
 	}
 });
 

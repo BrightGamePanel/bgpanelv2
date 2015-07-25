@@ -202,5 +202,5 @@ class Jf
 	}
 }
 
-Jf::setTablePrefix($tablePrefix);
+Jf::setTablePrefix(DB_PREFIX);
 Jf::$Rbac=new RbacManager();
