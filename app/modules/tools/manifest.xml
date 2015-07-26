@@ -22,7 +22,7 @@
 		</page>
 		<page>
 			<name>phpinfo</name>
-			<description>Php Information</description>
+			<description>Php Info</description>
 		</page>
 	</module_pages>
 
