@@ -104,12 +104,18 @@ Flight::route('GET|POST|PUT|DELETE (/@module(/@page(/@element)))', function( $mo
 
 		// Login
 
+		$task = Flight::request()->query['task'];
+
 		switch (Flight::request()->method)
 		{
 			case 'GET':
 				// Forgot passwd? Page
 				if ( !empty($page) && $page == 'password' ) {
 					$mod_path = MODS_DIR . '/login/login.password.php';
+				}
+				// Login Controller
+				else if ( !empty($page) && $page == 'process' && !empty($task) ) {
+					$mod_path = MODS_DIR . '/login/login.process.php';
 				}
 				// Login View
 				else {
