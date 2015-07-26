@@ -51,13 +51,12 @@ class BGP_Module_Tools extends BGP_Module {
 
 class BGP_Module_Tools_Phpinfo extends BGP_Module_Tools {
 
-	function __construct( )	{
+	function __construct( $page = '' )	{
 
 		// Call parent constructor
 		parent::__construct( );
 
-		// Override module title
-		self::$module_definition['module_settings']['title'] = 'Php Info';
+		self::setModulePageTitle( $page );
 	}
 }
 
@@ -69,12 +68,11 @@ class BGP_Module_Tools_Phpinfo extends BGP_Module_Tools {
 
 class BGP_Module_Tools_Opdb extends BGP_Module_Tools {
 
-	function __construct( )	{
+	function __construct( $page = '' )	{
 
 		// Call parent constructor
 		parent::__construct( );
 
-		// Override module title
-		self::$module_definition['module_settings']['title'] = 'Optimize Database';
+		self::setModulePageTitle( $page );
 	}
 }

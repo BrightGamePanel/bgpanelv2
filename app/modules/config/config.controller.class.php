@@ -118,6 +118,9 @@ class BGP_Controller_Config extends BGP_Controller {
 				$sth->bindParam( ':' . $key, $value );
 				$sth->execute();
 			}
+
+			// Reload Current Template
+			$_SESSION['TEMPLATE'] = $db_data['user_template'];
 		}
 
 		// return a response ===========================================================

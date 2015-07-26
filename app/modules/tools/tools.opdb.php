@@ -31,7 +31,7 @@
 
 require( MODS_DIR . '/' . basename(__DIR__) . '/tools.class.php' );
 
-$module = new BGP_Module_Tools_Opdb();
+$module = new BGP_Module_Tools_Opdb( 'opdb' );
 
 /**
  * Call GUI Builder

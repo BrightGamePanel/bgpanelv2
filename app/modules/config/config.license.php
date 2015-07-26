@@ -31,7 +31,7 @@
 
 require( MODS_DIR . '/' . basename(__DIR__) . '/config.class.php' );
 
-$module = new BGP_Module_Config_License();
+$module = new BGP_Module_Config_License( 'license' );
 
 /**
  * Call GUI Builder

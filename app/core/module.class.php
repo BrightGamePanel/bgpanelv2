@@ -151,4 +151,30 @@ class BGP_Module
 		}
 	}
 
+	public static function setModulePageTitle( $page = '' ) {
+
+		$title = self::$module_name;
+
+		if (!empty($page)) {
+			$module_pages = BGP_Module::getModulePages();
+
+			if (!empty($module_pages)) {
+				$module_pages = $module_pages['page'];
+
+				if (isset($module_pages[0])) {
+					foreach ($module_pages as $key => $value) {
+						if ($value['name'] == $page) {
+							$title = $value['description'];
+							break;
+						}
+					}
+				}
+				else {
+					$title = $module_pages['description'];
+				}
+			}
+		}
+
+		self::$module_definition['module_settings']['title'] = $title;
+	}
 }

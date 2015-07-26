@@ -51,13 +51,12 @@ class BGP_Module_Config extends BGP_Module {
 
 class BGP_Module_Config_Apikey extends BGP_Module_Config {
 
-	function __construct( )	{
+	function __construct( $page = '' )	{
 
 		// Call parent constructor
 		parent::__construct( );
 
-		// Override module title
-		self::$module_definition['module_settings']['title'] = 'Api Key';
+		self::setModulePageTitle( $page );
 	}
 }
 
@@ -69,13 +68,12 @@ class BGP_Module_Config_Apikey extends BGP_Module_Config {
 
 class BGP_Module_Config_Cron extends BGP_Module_Config {
 
-	function __construct( )	{
+	function __construct( $page = '' )	{
 
 		// Call parent constructor
 		parent::__construct( );
 
-		// Override module title
-		self::$module_definition['module_settings']['title'] = 'Cron Settings';
+		self::setModulePageTitle( $page );
 	}
 }
 
@@ -87,12 +85,11 @@ class BGP_Module_Config_Cron extends BGP_Module_Config {
 
 class BGP_Module_Config_License extends BGP_Module_Config {
 
-	function __construct( )	{
+	function __construct( $page = '' )	{
 
 		// Call parent constructor
 		parent::__construct( );
 
-		// Override module title
-		self::$module_definition['module_settings']['title'] = 'System License';
+		self::setModulePageTitle( $page );
 	}
 }
