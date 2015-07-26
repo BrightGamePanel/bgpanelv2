@@ -72,12 +72,24 @@ class Jf
 		if (count ( $args ) == 1)
 		{
 			$result = self::$Db->query ( $Query );
-			if ($result===false)
+
+			if ($result === false)
 				return null;
-			$res=$result->fetchAll ( PDO::FETCH_ASSOC );
-			if ($res===array())
-				return null;
-			return $res;
+
+			if  ( (strstr($Query, 'SELECT') !== FALSE) ||
+				  (strstr($Query, 'DELETE') !== FALSE) ||
+				  (strstr($Query, 'UPDATE') !== FALSE) ||
+				  (strstr($Query, 'INSERT') !== FALSE)
+				) {
+				$result = $result->fetchAll ( PDO::FETCH_ASSOC );
+
+				if ($result === array())
+					return null;
+
+				return $result;
+			}
+
+			return null;
 		}
 		else
 		{

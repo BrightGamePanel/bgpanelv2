@@ -18,7 +18,10 @@
 	</module_options>
 
 	<module_pages>
-		<page>password</page>
+		<page>
+			<name>password</name>
+			<description>Lost Password</description>
+		</page>
 	</module_pages>
 
 	<module_dependencies>

@@ -806,7 +806,7 @@ class Core_GUI
 		$manifestFiles = array();
 		
 		$handle = opendir( MODS_DIR );
-		
+
 		if ($handle) {
 		
 			// Foreach modules
@@ -815,17 +815,7 @@ class Core_GUI
 				// Dump specific directories
 				if ($entry != "." && $entry != "..") {
 		
-					// Analyze module name
-					$parts = explode('.', $entry);
-		
-					if (!empty( $parts[1] )) {
-						$lowerTypeAlias = $parts[0];
-						$module = $parts[1];
-					}
-					else {
-						$lowerTypeAlias = NULL;
-						$module = $parts[0];
-					}
+					$module = $entry;
 
 					// Get the manifest
 					$manifest = MODS_DIR . '/' . $module . '/gui.manifest.xml';

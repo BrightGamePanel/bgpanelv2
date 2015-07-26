@@ -49,7 +49,6 @@ Flight::route('GET|POST|PUT|DELETE /@http:[0-9]{3}', function( $http ) {
 });
 
 
-
 // LOGOUT METHOD
 Flight::route('/logout/', function() {
 	$authService = Core_AuthService::getAuthService();
@@ -71,19 +70,20 @@ Flight::route('GET|POST|PUT|DELETE (/@module(/@page(/@element)))', function( $mo
 	if (isset($module) && preg_match("#\w#", $module)) {
 		$module = strtolower($module);
 	} else {
-		$module = NULL;
+		$module = '';
 	}
 	if (isset($page) && preg_match("#\w#", $page)) {
 		$page = strtolower($page);
 	} else {
-		$page = NULL;
+		$page = '';
 	}
 	if (isset($element) && preg_match("#\w#", $element)) {
 		$element = strtolower($element);
 	} else {
-		$element = NULL;
+		$element = '';
 	}
 
+	// Process Task Query Parameter
 	$task = Flight::request()->query['task'];
 
 	// User Authentication
@@ -147,51 +147,70 @@ Flight::route('GET|POST|PUT|DELETE (/@module(/@page(/@element)))', function( $mo
 		else if (!empty($module)) {
 
 			// NIST Level 2 Standard Role Based Access Control Library
+
 			$rbac = new PhpRbac\Rbac();
 
-			// Get Public Methods
-			$methods = Core_Reflection::getControllerPublicMethods( $module );
 
-			// Get Module Pages
-			$pages = Core_Reflection::getModulePublicPages( $module );
+			$collection = str_replace('//', '/', ucfirst($module) . '/');
+			$resource  = NULL;
 
-
-
-
-			exit(var_dump($methods));
-
-
-
-
-
-			// $element
-
-
-/*
-			// MAINTENANCE CHECKER
-			// Logout the user
-			if ( BGP_MAINTENANCE_MODE == 1 ) {
-				Core_AuthService::logout();
-				Flight::redirect('/503'); // If the maintenance mode is ON, we drop the user.
+			if (!empty($page)) {
+				$collection = str_replace('//', '/', ucfirst($module) . '/' . $page . '/');
 			}
 
-			if ( !empty($page) ) {
-				$mod_path = MODS_DIR . '/' . 'user.' . $module . '/' . 'user.' . $module . '.' . $page . '.php';
+			if (!empty($element)) {
+				$resource = str_replace('//', '/', ucfirst($module) . '/resource/' . $element);
+			}
+
+
+			// Verify User Authorization On The Requested Ressource
+			// Root User Can Bypass
+
+			if ( $rbac->Users->hasRole( 'root', $authService->getSessionInfo('ID') ) || $rbac->check( $collection, $authService->getSessionInfo('ID') ) ) {
+
+				// MAINTENANCE CHECKER
+				// Logout the user
+
+				if ( BGP_MAINTENANCE_MODE == 1 && ($rbac->Users->hasRole( 'root', $authService->getSessionInfo('ID') ) === FALSE) ) {
+					Core_AuthService::logout();
+					Flight::redirect('/503'); // If the maintenance mode is ON, we drop the user.
+				}
+
+				// User Is Allowed
+
+				switch (Flight::request()->method)
+				{
+					case 'GET':
+						// Page
+						if ( !empty($page) ) {
+							$mod_path = MODS_DIR . '/' . $module . '/' . $module . '.' . $page . '.php';
+						}
+						// Controller
+						else if ( !empty($page) && $page == 'process' && !empty($task) ) {
+							$mod_path = MODS_DIR . '/' . $module . '/' . $module . '.process.php';
+						}
+						// Module Page
+						else {
+							$mod_path = MODS_DIR . '/' . $module . '/' . $module . '.php';
+						}
+						break;
+
+					case 'POST':
+					case 'PUT':
+					case 'DELETE':
+						// Controller
+							$mod_path = MODS_DIR . '/' . $module . '/' . $module . '.process.php';
+						break;
+
+					default:
+						break;
+				}
+
+				bgp_safe_require( $mod_path );
 			}
 			else {
-				$mod_path = MODS_DIR . '/' . 'user.' . $module . '/' . 'user.' . $module . '.php';
-			}
-
-			bgp_safe_require( $mod_path );
-
-			if ( Core_AuthService::isAdmin() ) {
-				// Forbidden
 				Flight::redirect('/403');
 			}
-*/
-
-
-
 		}
 	}
 });

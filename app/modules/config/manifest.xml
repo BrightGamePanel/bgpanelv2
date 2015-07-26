@@ -16,9 +16,18 @@
 	</module_options>
 
 	<module_pages>
-		<page>apikey</page>
-		<page>cron</page>
-		<page>license</page>
+		<page>
+			<name>apikey</name>
+			<description>Api Key</description>
+		</page>
+		<page>
+			<name>cron</name>
+			<description>Cron Settings</description>
+		</page>
+		<page>
+			<name>license</name>
+			<description>System License</description>
+		</page>
 	</module_pages>
 
 	<module_dependencies>

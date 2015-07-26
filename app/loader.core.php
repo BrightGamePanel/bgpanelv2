@@ -34,7 +34,20 @@ if (!defined('LICENSE'))
 switch (ENV_RUNTIME)
 {
 	case 'INSTALL_WIZARD':
+		// PHPSeclib
 		require( LIBS_DIR	. '/phpseclib/RSA.php' );
+
+		// PHP DOC Parser
+		require( LIBS_DIR	. '/docblockparser/doc_block.php' );
+
+		// Module Class Definition
+		require( APP_DIR	. '/core/module.class.php' );
+
+		// Controller Class Definition
+		require( APP_DIR	. '/core/controller.module.class.php' );
+
+		// Module Reflection Class
+		require( APP_DIR	. '/core/reflection.class.php' );
 
 		break;
 
@@ -89,14 +102,14 @@ switch (ENV_RUNTIME)
 		// PHP DOC Parser
 		require( LIBS_DIR	. '/docblockparser/doc_block.php' );
 
-		// Module Reflection Class
-		require( APP_DIR	. '/core/reflection.class.php' );
-
 		// Module Class Definition
 		require( APP_DIR	. '/core/module.class.php' );
 
 		// Controller Class Definition
 		require( APP_DIR	. '/core/controller.module.class.php' );
+
+		// Module Reflection Class
+		require( APP_DIR	. '/core/reflection.class.php' );
 
 		break;
 }

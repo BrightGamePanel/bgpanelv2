@@ -16,8 +16,14 @@
 	</module_options>
 
 	<module_pages>
-		<page>opdb</page>
-		<page>phpinfo</page>
+		<page>
+			<name>opdb</name>
+			<description>Optimize Database</description>
+		</page>
+		<page>
+			<name>phpinfo</name>
+			<description>Php Information</description>
+		</page>
 	</module_pages>
 
 	<module_dependencies>

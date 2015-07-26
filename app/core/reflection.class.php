@@ -26,6 +26,13 @@
  */
 
 
+if ( !class_exists('BGP_Module')) {
+	trigger_error('Core_Reflection -> BGP_Module is missing !');
+}
+if ( !class_exists('DocBlock')) {
+	trigger_error('Core_Reflection -> DocBlock is missing !');
+}
+
 class Core_Reflection
 {
 	public static function getControllerPublicMethods( $bgp_module_name )
@@ -80,7 +87,8 @@ class Core_Reflection
 
 	public static function getModulePublicPages( $bgp_module_name )
 	{
-		$public_pages[0] = ucfirst( strtolower( $bgp_module_name ) ) . '/';
+		$public_pages[0]['page'] 		= ucfirst( strtolower( $bgp_module_name ) ) . '/';
+		$public_pages[0]['description'] = ucfirst( strtolower( $bgp_module_name ) ) . ' Module';
 
 		if (!empty($bgp_module_name))
 		{
@@ -99,16 +107,25 @@ class Core_Reflection
 			if (!empty($module_pages)) {
 				$module_pages = $module_pages['page'];
 
-				if (is_array($module_pages)) {
-					$module_pages = array_unique($module_pages);
+				if (isset($module_pages[0])) {
+					foreach ($module_pages as $key => $value) {
 
-					foreach ($module_pages as $module_page) {
-						$public_pages[] = $public_pages[0] . strtolower( $module_page ) . '/';
+						$page = array(
+							'page'			=> $public_pages[0]['page'] . strtolower( $value['name'] ) . '/',
+							'description'   => trim( $value['description'] )
+						);
+
+						$public_pages[] = $page;
 					}
 				}
 				else {
-					$public_pages[1] = $public_pages[0] . strtolower( $module_pages ) . '/';
-				}	
+					$page = array(
+						'page'			=> $public_pages[0]['page'] . strtolower( $module_pages['name'] ) . '/',
+						'description'   => trim( $module_pages['description'] )
+					);
+
+					$public_pages[] = $page;
+				}
 			}
 		}
 

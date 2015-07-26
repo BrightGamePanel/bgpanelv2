@@ -16,6 +16,10 @@
 	</module_options>
 
 	<module_pages>
+		<page>
+			<name>add</name>
+			<description>New Box Form</description>
+		</page>
 	</module_pages>
 
 	<module_dependencies>
