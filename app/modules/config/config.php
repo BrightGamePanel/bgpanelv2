@@ -29,9 +29,9 @@
  * Load Plugin
  */
 
-require( MODS_DIR . '/' . basename(__DIR__) . '/admin.config.class.php' );
+require( MODS_DIR . '/' . basename(__DIR__) . '/config.class.php' );
 
-$module = new BGP_Module_Admin_Config();
+$module = new BGP_Module_Config();
 
 /**
  * Call GUI Builder
@@ -155,46 +155,6 @@ $current_config = bgp_get_conf_array( $current_config );
 
 										<div class="row">
 											<div class="col-xs-5">
-												<div class="form-group" ng-class="{ 'has-error' : errorAdminTemplate }">
-													<label for="adminTemplate"><?php echo T_('Admin Template'); ?></label>
-													<select class="form-control" type="text" ng-model="formData.adminTemplate" id="adminTemplate" name="adminTemplate" required>
-<?php
-//---------------------------------------------------------+
-
-foreach ($templates as $key => $value)
-{
-	if ($value == BGP_ADMIN_TEMPLATE) {
-
-//---------------------------------------------------------+
-?>
-														<option value="<?php echo $value; ?>" ng-selected="true"><?php echo $key; ?></option>
-<?php
-//---------------------------------------------------------+
-
-	}
-	else {
-
-//---------------------------------------------------------+
-?>
-														<option value="<?php echo $value; ?>"><?php echo $key; ?></option>
-<?php
-//---------------------------------------------------------+
-
-	}
-}
-
-reset($templates);
-
-//---------------------------------------------------------+
-?>
-													</select>
-													<span class="help-block" ng-show="errorAdminTemplate" ng-bind="errorAdminTemplate"></span>
-												</div>
-											</div>
-										</div>
-
-										<div class="row">
-											<div class="col-xs-5">
 												<div class="form-group" ng-class="{ 'has-error' : errorUserTemplate }">
 													<label for="userTemplate"><?php echo T_('User Template'); ?></label>
 													<select class="form-control" type="text" ng-model="formData.userTemplate" id="userTemplate" name="userTemplate" required>
@@ -257,11 +217,10 @@ $fields = array(
 		'panelName' 		=> htmlspecialchars( $current_config['panel_name'], ENT_QUOTES),
 		'panelUrl' 			=> htmlspecialchars( $current_config['system_url'], ENT_QUOTES),
 		'maintenanceMode' 	=> htmlspecialchars( $current_config['maintenance_mode'], ENT_QUOTES),
-		'adminTemplate' 	=> htmlspecialchars( $current_config['admin_template'], ENT_QUOTES),
 		'userTemplate' 		=> htmlspecialchars( $current_config['user_template'], ENT_QUOTES)
 	);
 
-$js->getAngularController( 'updateSysConfig', $module::getModuleName( '/' ), $fields, './admin/config' );
+$js->getAngularController( 'updateSysConfig', $module::getModuleName( '/' ), $fields, './config' );
 
 ?>
 					<!-- END: SCRIPT -->

@@ -7,13 +7,16 @@
 	</module_info>
 
 	<module_settings>
-		<title>Admin Dashboard</title>
-		<href>./admin/dashboard</href>
+		<title>Dashboard</title>
+		<href>./dashboard</href>
 		<icon>fa fa-dashboard fa-fw</icon>
 	</module_settings>
 
 	<module_options>
 	</module_options>
+
+	<module_pages>
+	</module_pages>
 
 	<module_dependencies>
 		<stylesheets>
@@ -34,6 +37,6 @@
 		</javascripts>
 	</module_dependencies>
 
-	<class_definition filename="app/modules/admin.dashboard/admin.dashboard.class.php" classname="BGP_Module_Admin_Dashboard"/>
-	<controller_class_definition filename="app/modules/admin.dashboard/admin.dashboard.controller.class.php" classname="BGP_Controller_Admin_Dashboard"/>
+	<class_definition filename="app/modules/dashboard/dashboard.class.php" classname="BGP_Module_Dashboard"/>
+	<controller_class_definition filename="app/modules/dashboard/dashboard.controller.class.php" classname="BGP_Controller_Dashboard"/>
 </bgp_module>

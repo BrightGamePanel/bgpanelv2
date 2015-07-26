@@ -29,9 +29,9 @@
  * Load Plugin
  */
 
-require( MODS_DIR . '/' . basename(__DIR__) . '/admin.config.class.php' );
+require( MODS_DIR . '/' . basename(__DIR__) . '/dashboard.class.php' );
 
-$module = new BGP_Module_Admin_Config_Apikey();
+$module = new BGP_Module_Dashboard();
 
 /**
  * Call GUI Builder
@@ -55,28 +55,7 @@ $gui->getHeader();
 ?>
 					<!-- CONTENTS -->
 					<div class="row">
-						<div class="col-md-10 col-md-offset-1">
-							<div class="panel panel-default">
-								<div class="panel-body">
 
-									<div class="alert alert-info" role="alert">
-										<strong><?php echo T_('Tip'); ?></strong><br />
-										<?php echo T_('Use this key to authenticate your application, in order to remotely access BGPanel components.'); ?><br />
-									</div>
-									<legend><?php echo T_('API Key'); ?>:</legend>
-									<div>
-										<pre class="text-center"><?php
-//------------------------------------------------------------------------------------------------------------+
-
-										echo APP_API_KEY;
-
-//------------------------------------------------------------------------------------------------------------+
-										?></pre>
-									</div>
-
-								</div>
-							</div>
-						</div>
 					</div>
 					<!-- END: CONTENTS -->
 

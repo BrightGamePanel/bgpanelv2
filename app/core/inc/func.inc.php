@@ -29,64 +29,20 @@
 /**
  * Secure require alias for the routing component of the system
  */
-function bgp_routing_require_mod( $mod_path ) {
-	if ( file_exists($mod_path) ) {
+function bgp_safe_require( $path ) {
+	if ( file_exists($path) ) {
 		// Protect class files and xml files from being called directly
 		if (
-			(strstr($mod_path, '.class') === FALSE) &&
-			(strstr($mod_path, '.xml') === FALSE) &&
-			(strstr($mod_path, '.ini') === FALSE)
+			(strstr($path, '.class') === FALSE) &&
+			(strstr($path, '.xml') === FALSE) &&
+			(strstr($path, '.ini') === FALSE)
 		   ) {
-			require( $mod_path );
+			require_once( $path );
 			return 0;
 		}
 	}
 
 	Flight::notFound();
-}
-
-/**
- * Update User Activity on page request
- */
-function bgp_routing_update_user_activity( $type ) {
-	$dbh = Core_DBH::getDBH();		// Get Database Handle
-	$last_activity = date('Y-m-d H:i:s');
-
-	switch ($type) {
-
-		case 'Admin':
-			$sth = $dbh->prepare("
-				UPDATE " . DB_PREFIX . "admin
-				SET
-					last_activity	= :last_activity
-				WHERE
-					admin_id		= :admin_id
-				;");
-
-			$uid = Core_AuthService::getSessionInfo('ID');
-			$sth->bindParam(':last_activity', $last_activity);
-			$sth->bindParam(':admin_id', $uid);
-
-			$sth->execute();
-			break;
-
-		case 'User':
-			$sth = $dbh->prepare("
-				UPDATE " . DB_PREFIX . "user
-				SET
-					last_activity	= :last_activity
-				WHERE
-					user_id			= :user_id
-				;");
-
-			$uid = Core_AuthService::getSessionInfo('ID');
-			$sth->bindParam(':last_activity', $last_activity);
-			$sth->bindParam(':user_id', $uid);
-
-			$sth->execute();
-			break;
-
-	}
 }
 
 /**

@@ -232,7 +232,7 @@ if ( ENV_RUNTIME != 'INSTALL_WIZARD' ) {
 	$coreSessionHandler = new Core_SessionHandler();
 	session_set_save_handler($coreSessionHandler, TRUE);
 	session_start();
-	$_SESSION['timestamp'] = time();
+	$_SESSION['TIMESTAMP'] = time();
 
 	/**
 	 * VALITRON Configuration

@@ -26,7 +26,7 @@
  */
 
 if ( !class_exists('BGP_Controller')) {
-	trigger_error('Module_Login -> BGP_Controller is missing !');
+	trigger_error('Controller_Login -> BGP_Controller is missing !');
 }
 
 /**
@@ -111,11 +111,10 @@ class BGP_Controller_Login extends BGP_Controller
 					$result[0]['firstname'],
 					$result[0]['lastname'],
 					$result[0]['lang'],
-					BGP_USER_TEMPLATE,
-					'User'
+					BGP_USER_TEMPLATE
 					);
 
-				session_regenerate_id();
+				session_regenerate_id( TRUE );
 
 				$authService->setSessionPerms();
 

@@ -26,63 +26,34 @@
  */
 
 /**
- * Load Plugin
+ * Load Plugin Controller
  */
 
-require( MODS_DIR . '/' . basename(__DIR__) . '/admin.dashboard.class.php' );
+require( MODS_DIR . '/' . basename(__DIR__) . '/box.controller.class.php' );
 
-$module = new BGP_Module_Admin_Dashboard();
+// Init Controller
+$controller = new BGP_Controller_Box();
 
-/**
- * Call GUI Builder
- */
-$gui = new Core_GUI( $module );
 
-/**
- * Javascript Generator
- */
-$js = new Core_JS_GUI();
+// Get the method
+if ( isset($_POST['task']) ) {
+	$task = $_POST['task'];
+	unset($_POST['task']);
+}
+else if ( isset($_GET['task']) ) {
+	$task = $_GET['task'];
+	unset($_GET['task']);
+}
+else {
+	$task = 'None';
+}
 
-/**
- * Build Page Header
- */
-$gui->getHeader();
 
-/**
- * PAGE BODY
- */
-//------------------------------------------------------------------------------------------------------------+
-?>
-					<!-- CONTENTS -->
-					<div class="row">
+// Call the method
+switch ($task)
+{
+	default:
+		Flight::redirect('/400');
+}
 
-					</div>
-					<!-- END: CONTENTS -->
-
-					<!-- SCRIPT -->
-<?php
-
-/**
- * Generate AngularJS Code
- */
-
-$js->getAngularController( '', $module::getModuleName( '/' ), array());
-
-?>
-					<!-- END: SCRIPT -->
-
-<?php
-//------------------------------------------------------------------------------------------------------------+
-/**
- * END: PAGE BODY
- */
-
-/**
- * Build Page Footer
- */
-$gui->getFooter();
-
-// Clean Up
-unset( $module, $gui, $js );
-
-?>
+Flight::redirect('/403');

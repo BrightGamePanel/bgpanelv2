@@ -8,16 +8,19 @@
 
 	<module_settings>
 		<title>Boxes</title>
-		<href>./admin/box</href>
+		<href>./box</href>
 		<icon>fa fa-hdd-o fa-fw</icon>
 	</module_settings>
 
 	<module_options>
 	</module_options>
 
+	<module_pages>
+	</module_pages>
+
 	<module_dependencies>
 	</module_dependencies>
 
-	<class_definition filename="app/modules/admin.box/admin.box.class.php" classname="BGP_Module_Admin_Box"/>
-	<controller_class_definition filename="app/modules/admin.box/admin.box.controller.class.php" classname="BGP_Controller_Admin_Box"/>
+	<class_definition filename="app/modules/box/box.class.php" classname="BGP_Module_Box"/>
+	<controller_class_definition filename="app/modules/box/box.controller.class.php" classname="BGP_Controller_Box"/>
 </bgp_module>

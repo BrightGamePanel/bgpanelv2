@@ -29,9 +29,9 @@
  * Load Plugin
  */
 
-require( MODS_DIR . '/' . basename(__DIR__) . '/admin.tools.class.php' );
+require( MODS_DIR . '/' . basename(__DIR__) . '/config.class.php' );
 
-$module = new BGP_Module_Admin_Tools_Phpinfo();
+$module = new BGP_Module_Config_Apikey();
 
 /**
  * Call GUI Builder
@@ -59,28 +59,19 @@ $gui->getHeader();
 							<div class="panel panel-default">
 								<div class="panel-body">
 
-									<div style="width:auto;height:480px;overflow:scroll;overflow-y:scroll;overflow-x:hidden;">
-<?php
+									<div class="alert alert-info" role="alert">
+										<strong><?php echo T_('Tip'); ?></strong><br />
+										<?php echo T_('Use this key to authenticate your application, in order to remotely access BGPanel components.'); ?><br />
+									</div>
+									<legend><?php echo T_('API Key'); ?>:</legend>
+									<div>
+										<pre class="text-center"><?php
 //------------------------------------------------------------------------------------------------------------+
 
-/**
- * php at SPAMMENOT dot tof2k dot com 10-Sep-2006 03:32
- * http://php.net/manual/fr/function.phpinfo.php
- * "obtain a phpinfo without headers (and css)"
- */
-
-ob_start();
-phpinfo();
-$info = ob_get_contents();
-ob_end_clean();
-$info = preg_replace('%^.*<body>(.*)</body>.*$%ms', '$1', $info);
-
-echo "\r\n<!--PHP Info-->\r\n";
-echo $info;
-echo "\r\n<!--END : PHP Info-->\r\n";
+										echo APP_API_KEY;
 
 //------------------------------------------------------------------------------------------------------------+
-?>
+										?></pre>
 									</div>
 
 								</div>

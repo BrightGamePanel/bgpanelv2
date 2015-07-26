@@ -26,18 +26,51 @@
  */
 
 if ( !class_exists('BGP_Controller')) {
-	trigger_error('Module_Admin_Dashboard -> BGP_Controller is missing !');
+	trigger_error('Controller_Tools -> BGP_Controller is missing !');
 }
 
 /**
- * Admin Dashboard Controller
+ * Tools Controller
  */
 
-class BGP_Controller_Admin_Dashboard extends BGP_Controller {
+class BGP_Controller_Tools extends BGP_Controller {
 
 	function __construct( )	{
-
+	
 		// Call parent constructor
 		parent::__construct( basename(__DIR__) );
+	}
+
+	public function optimizeDB( $form ) {
+		$dbh = Core_DBH::getDBH(); // Get Database Handle
+
+		// process =====================================================================
+
+		$tables = array();
+
+		$result = $dbh->query( "SHOW TABLES" );
+		$tables[] = $result->fetchAll( PDO::FETCH_NUM );
+		$tables = $tables[0];
+
+		if (!empty($tables)) {
+			foreach ($tables as $table)
+			{
+				$table = $table[0];
+
+				if (strstr($table, DB_PREFIX)) {
+					$dbh->query("OPTIMIZE TABLE " . $table . ";");
+				}
+			}
+		}
+
+		// return a response ===========================================================
+
+		$data['success'] = true;
+
+		// notification
+		bgp_set_alert(  T_('Optimizing tables... Done!'), T_('Tables are up to date.'), 'success' );
+		
+		// return all our data to an AJAX call
+		return json_encode($data);
 	}
 }

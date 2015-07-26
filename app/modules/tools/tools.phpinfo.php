@@ -29,9 +29,9 @@
  * Load Plugin
  */
 
-require( MODS_DIR . '/' . basename(__DIR__) . '/admin.box.class.php' );
+require( MODS_DIR . '/' . basename(__DIR__) . '/tools.class.php' );
 
-$module = new BGP_Module_Admin_Box_Del();
+$module = new BGP_Module_Tools_Phpinfo();
 
 /**
  * Call GUI Builder
@@ -49,37 +49,6 @@ $js = new Core_JS_GUI();
 $gui->getHeader();
 
 /**
- * Object Attributes
- */
-$thisObjId = $GLOBALS['OBJ_ID'];
-if ( empty($thisObjId) || !is_numeric($thisObjId) ) {
-	trigger_error('Object ID is missing or malformed !');
-}
-
-// DB
-$dbh = Core_DBH::getDBH(); // Get Database Handle
-
-$rows = array();
-
-$sth = $dbh->prepare("
-	SELECT box_id, name
-	FROM " . DB_PREFIX . "box
-	WHERE
-		box_id = :box_id
-	;");
-
-$sth->bindParam(':box_id', $thisObjId);
-
-$sth->execute();
-
-$rows = $sth->fetchAll( PDO::FETCH_ASSOC );
-if ( empty($rows) ) {
-	trigger_error('Invalid Object ID !');
-}
-$rows = $rows[0];
-
-
-/**
  * PAGE BODY
  */
 //------------------------------------------------------------------------------------------------------------+
@@ -88,27 +57,32 @@ $rows = $rows[0];
 					<div class="row">
 						<div class="col-md-10 col-md-offset-1">
 							<div class="panel panel-default">
-
-								<div class="panel-heading">
-									<h3 class="panel-title"><?php echo T_('Delete Operation'); ?></h3>
-								</div>
-
 								<div class="panel-body">
-									<div class="alert alert-danger" role="alert">
-										<strong><?php echo T_('Are you sure you want to delete box:'); ?>
-										<h3><?php echo htmlspecialchars( $rows['name'], ENT_QUOTES); ?> (<?php echo htmlspecialchars( $rows['box_id'], ENT_QUOTES); ?>) ?</h3>
-										</strong>
+
+									<div style="width:auto;height:480px;overflow:scroll;overflow-y:scroll;overflow-x:hidden;">
+<?php
+//------------------------------------------------------------------------------------------------------------+
+
+/**
+ * php at SPAMMENOT dot tof2k dot com 10-Sep-2006 03:32
+ * http://php.net/manual/fr/function.phpinfo.php
+ * "obtain a phpinfo without headers (and css)"
+ */
+
+ob_start();
+phpinfo();
+$info = ob_get_contents();
+ob_end_clean();
+$info = preg_replace('%^.*<body>(.*)</body>.*$%ms', '$1', $info);
+
+echo "\r\n<!--PHP Info-->\r\n";
+echo $info;
+echo "\r\n<!--END : PHP Info-->\r\n";
+
+//------------------------------------------------------------------------------------------------------------+
+?>
 									</div>
 
-									<div class="well" style="max-width: 400px; margin: 0 auto 10px; padding-left: 35px; padding-right: 35px;">
-										<form ng-submit="processForm()">
-											<div class="row">
-												<div class="text-center">
-													<button class="btn btn-danger btn-lg btn-block" type="submit"><?php echo T_('Yes'); ?>,&nbsp;<?php echo T_('delete!'); ?></button>
-												</div>
-											</div>
-										</form>
-									</div>
 								</div>
 							</div>
 						</div>
@@ -122,7 +96,7 @@ $rows = $rows[0];
  * Generate AngularJS Code
  */
 
-$js->getAngularController( 'deleteBox', $module::getModuleName( '/' ), array(), './admin/box');
+$js->getAngularController( '', $module::getModuleName( '/' ), array());
 
 ?>
 					<!-- END: SCRIPT -->

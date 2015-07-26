@@ -37,15 +37,15 @@ class BGP_Module
 	public static $module_definition = array();
 	public static $module_name = '';
 
-	function __construct( $module_name, $manifest_file = 'manifest.xml' ) {
+	function __construct( $module_name ) {
 
 		// Test Manifest File
-		if ( !file_exists(MODS_DIR . '/' . $module_name . '/' . $manifest_file) ) {
-			$manifest_file = 'manifest.xml';
+		if ( !file_exists(MODS_DIR . '/' . $module_name . '/manifest.xml' ) ) {
+			trigger_error("BGP_Module -> Missing manifest file !", E_USER_ERROR);
 		}
 
 		// Load Plugin Manifest
-		$xml = simplexml_load_string( file_get_contents( MODS_DIR . '/' . $module_name . '/' . $manifest_file ) );
+		$xml = simplexml_load_string( file_get_contents( MODS_DIR . '/' . $module_name . '/manifest.xml' ) );
 		$json = json_encode($xml);
 		self::$module_definition = json_decode($json, TRUE);
 		self::$module_name = $module_name;
@@ -96,6 +96,16 @@ class BGP_Module
 		}
 		else {
 			return '';
+		}
+	}
+
+	public static function getModulePages( ) {
+
+		if (isset(self::$module_definition['module_pages'])) {
+			return self::$module_definition['module_pages'];
+		}
+		else {
+			return array();
 		}
 	}
 

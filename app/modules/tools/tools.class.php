@@ -26,14 +26,14 @@
  */
 
 if ( !class_exists('BGP_Module')) {
-	trigger_error('Module_Admin_Dashboard -> BGP_Module is missing !');
+	trigger_error('Module_Tools -> BGP_Module is missing !');
 }
 
 /**
- * Admin Dashboard Module
+ * Tools Module
  */
 
-class BGP_Module_Admin_Dashboard extends BGP_Module {
+class BGP_Module_Tools extends BGP_Module {
 
 	function __construct( )	{
 
@@ -41,4 +41,40 @@ class BGP_Module_Admin_Dashboard extends BGP_Module {
 		parent::__construct( basename(__DIR__) );
 	}
 
+}
+
+/**
+ * Tools Module
+ * Page: Phpinfo
+ * Title: Php Info
+ */
+
+class BGP_Module_Tools_Phpinfo extends BGP_Module_Tools {
+
+	function __construct( )	{
+
+		// Call parent constructor
+		parent::__construct( );
+
+		// Override module title
+		self::$module_definition['module_settings']['title'] = 'Php Info';
+	}
+}
+
+/**
+ * Tools Module
+ * Page: Opdb
+ * Title: Optimize Database
+ */
+
+class BGP_Module_Tools_Opdb extends BGP_Module_Tools {
+
+	function __construct( )	{
+
+		// Call parent constructor
+		parent::__construct( );
+
+		// Override module title
+		self::$module_definition['module_settings']['title'] = 'Optimize Database';
+	}
 }

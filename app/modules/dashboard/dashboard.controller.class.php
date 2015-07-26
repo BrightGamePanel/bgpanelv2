@@ -25,38 +25,19 @@
  * @link		http://www.bgpanel.net/
  */
 
-if ( !class_exists('BGP_Module')) {
-	trigger_error('Module_Admin_Box -> BGP_Module is missing !');
+if ( !class_exists('BGP_Controller')) {
+	trigger_error('Controller_Dashboard -> BGP_Controller is missing !');
 }
 
 /**
- * Admin Box Module
+ * Dashboard Controller
  */
 
-class BGP_Module_Admin_Box extends BGP_Module {
+class BGP_Controller_Dashboard extends BGP_Controller {
 
 	function __construct( )	{
 
 		// Call parent constructor
 		parent::__construct( basename(__DIR__) );
-	}
-
-}
-
-/**
- * Admin Box Module
- * Page: Delete Box
- * Title: Delete Box
- */
-
-class BGP_Module_Admin_Box_Del extends BGP_Module_Admin_Box {
-
-	function __construct( )	{
-
-		// Call parent constructor
-		parent::__construct( );
-
-		// Override module title
-		self::$module_definition['module_settings']['title'] = 'Delete Box';
 	}
 }

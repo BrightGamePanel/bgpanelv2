@@ -61,25 +61,13 @@ $languages = parse_ini_file( CONF_LANG_INI );
 
 $dbh = Core_DBH::getDBH(); // Get Database Handle
 
-$type = strtolower(Core_AuthService::getSessionType()); // Get user type
 $uid = Core_AuthService::getSessionInfo('ID'); // Get user id
 
-if ($type == 'admin') {
-
-	$sth = $dbh->prepare("
-	SELECT *
-	FROM " . DB_PREFIX . "admin
-	WHERE admin_id = :uid
-	;");
-}
-else {
-
-	$sth = $dbh->prepare("
-	SELECT *
-	FROM " . DB_PREFIX . "user
-	WHERE user_id = :uid
-	;");
-}
+$sth = $dbh->prepare("
+SELECT *
+FROM " . DB_PREFIX . "user
+WHERE user_id = :uid
+;");
 
 $sth->bindParam( ':uid', $uid );
 

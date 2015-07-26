@@ -29,9 +29,9 @@
  * Load Plugin
  */
 
-require( MODS_DIR . '/' . basename(__DIR__) . '/admin.tools.class.php' );
+require( MODS_DIR . '/' . basename(__DIR__) . '/tools.class.php' );
 
-$module = new BGP_Module_Admin_Tools_Opdb();
+$module = new BGP_Module_Tools_Opdb();
 
 /**
  * Call GUI Builder
@@ -169,7 +169,7 @@ unset($analysis);
  * Generate AngularJS Code
  */
 
-$js->getAngularController( 'optimizeDB', $module::getModuleName( '/' ), array(), './admin/tools/opdb');
+$js->getAngularController( 'optimizeDB', $module::getModuleName( '/' ), array(), './tools/opdb');
 
 ?>
 					<!-- END: SCRIPT -->

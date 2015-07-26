@@ -86,6 +86,9 @@ switch (ENV_RUNTIME)
 		// HTTP Status Codes Class
 		require( APP_DIR	. '/core/http.status.class.php' );
 
+		// Module Reflection Class
+		require( APP_DIR	. '/core/reflection.class.php' );
+
 		// Module Class Definition
 		require( APP_DIR	. '/core/module.class.php' );
 

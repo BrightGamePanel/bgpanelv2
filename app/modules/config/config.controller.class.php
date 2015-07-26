@@ -26,14 +26,14 @@
  */
 
 if ( !class_exists('BGP_Controller')) {
-	trigger_error('Module_Admin_Config -> BGP_Controller is missing !');
+	trigger_error('Controller_Config -> BGP_Controller is missing !');
 }
 
 /**
  * Admin Configuration Controller
  */
 
-class BGP_Controller_Admin_Config extends BGP_Controller {
+class BGP_Controller_Config extends BGP_Controller {
 
 	function __construct( )	{
 	
@@ -60,7 +60,6 @@ class BGP_Controller_Admin_Config extends BGP_Controller {
 				'required' => [
 					['panelName'],
 					['panelUrl'],
-					['adminTemplate'],
 					['userTemplate']
 				],
 				'regex' => [
@@ -70,7 +69,6 @@ class BGP_Controller_Admin_Config extends BGP_Controller {
 					['panelUrl']
 				],
 				'in' => [
-					['adminTemplate', $templates],
 					['userTemplate', $templates]
 				]
 			];
@@ -78,7 +76,6 @@ class BGP_Controller_Admin_Config extends BGP_Controller {
 		$labels = array(
 				'panelName' 	=> 'Panel Name',
 				'panelUrl' 		=> 'Panel URL',
-				'adminTemplate' => 'Admin Template',
 				'userTemplate' 	=> 'User Template'
 			);
 
@@ -96,7 +93,6 @@ class BGP_Controller_Admin_Config extends BGP_Controller {
 
 			$db_data['panel_name']			= $form['panelName'];
 			$db_data['system_url']			= $form['panelUrl'];
-			$db_data['admin_template'] 		= $form['adminTemplate'];
 			$db_data['user_template'] 		= $form['userTemplate'];
 			$db_data['maintenance_mode']	= '0';
 
@@ -115,9 +111,6 @@ class BGP_Controller_Admin_Config extends BGP_Controller {
 				$sth->bindParam( ':' . $key, $value );
 				$sth->execute();
 			}
-
-			// Reload Current Template
-			$_SESSION['TEMPLATE'] = $db_data['admin_template'];
 		}
 
 		// return a response ===========================================================

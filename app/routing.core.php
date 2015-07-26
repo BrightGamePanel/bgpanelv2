@@ -36,101 +36,9 @@ if ( !class_exists('Flight')) {
 }
 
 
-
 /**
  * Flight FW Routing Definitions
  */
-
-
-
-// DEFAULT BEHAVIOUR
-Flight::route('GET|POST|PUT|DELETE (/@module(/@page(/@element)))', function( $module, $page, $element ) {
-
-	// User Authentication
-
-	$authService = Core_AuthService::getAuthService();
-
-	// Test if the user is allowed to access the system
-
-	if ($authService->getSessionValidity() == FALSE) {
-
-		// The user is not logged in
-
-		switch (Flight::request()->method)
-		{
-			case 'GET':
-				// Forgot passwd? Page
-				if ( !empty($page) && $page == 'password' ) {
-					$mod_path = MODS_DIR . '/login/login.password.php';
-				}
-				// Login View
-				else {
-					$mod_path = MODS_DIR . '/login/login.php';
-				}
-				break;
-
-			case 'POST':
-				// Login Controller
-					$mod_path = MODS_DIR . '/login/login.process.php';
-				break;
-
-			default:
-				break;
-		}
-
-		bgp_routing_require_mod( $mod_path );
-	}
-
-	// The user is already logged in
-
-	if (empty($module))	{
-
-		// Redirect to the Dashboard
-
-		Flight::redirect('/dashboard/');
-	}
-	else {
-
-		// Check User Permissions 
-
-		exit('auth');
-
-		// Done
-
-		// element
-/*
-		// MAINTENANCE CHECKER
-		// Logout the user
-		if ( BGP_MAINTENANCE_MODE == 1 ) {
-			Core_AuthService::logout();
-			Flight::redirect('/503'); // If the maintenance mode is ON, we drop the user.
-		}
-
-		// Update User Acivity
-		bgp_routing_update_user_activity( 'User' );
-
-		if ( !empty($page) ) {
-			$mod_path = MODS_DIR . '/' . 'user.' . $module . '/' . 'user.' . $module . '.' . $page . '.php';
-		}
-		else {
-			$mod_path = MODS_DIR . '/' . 'user.' . $module . '/' . 'user.' . $module . '.php';
-		}
-
-		bgp_routing_require_mod( $mod_path );
-
-		if ( Core_AuthService::isAdmin() ) {
-			// Forbidden
-			Flight::redirect('/403');
-		}
-		else {
-			$return = '/' . str_replace( BASE_URL, '', REQUEST_URI );
-			Flight::redirect( '/login?page=' . $return );
-		}
-*/
-
-	}
-});
-
 
 
 // HTTP status codes VIEW
@@ -155,9 +63,127 @@ Flight::route('/logout/', function() {
 });
 
 
+// DEFAULT BEHAVIOUR
+Flight::route('GET|POST|PUT|DELETE (/@module(/@page(/@element)))', function( $module, $page, $element ) {
+
+	// Var Init
+
+	if (isset($module) && preg_match("#\w#", $module)) {
+		$module = strtolower($module);
+	} else {
+		$module = NULL;
+	}
+	if (isset($page) && preg_match("#\w#", $page)) {
+		$page = strtolower($page);
+	} else {
+		$page = NULL;
+	}
+	if (isset($element) && preg_match("#\w#", $element)) {
+		$element = strtolower($element);
+	} else {
+		$element = NULL;
+	}
+
+	// User Authentication
+
+	$authService = Core_AuthService::getAuthService();
+
+	// Test if the user is allowed to access the system
+
+	if ($authService->getSessionValidity() == FALSE) {
+
+		// The user is not logged in
+
+		if ($module != 'login') {
+
+			// Redirect to login form
+
+			$return = '/' . str_replace( BASE_URL, '', REQUEST_URI );
+			Flight::redirect( '/login?page=' . $return );
+		}
+
+		// Login
+
+		switch (Flight::request()->method)
+		{
+			case 'GET':
+				// Forgot passwd? Page
+				if ( !empty($page) && $page == 'password' ) {
+					$mod_path = MODS_DIR . '/login/login.password.php';
+				}
+				// Login View
+				else {
+					$mod_path = MODS_DIR . '/login/login.php';
+				}
+				break;
+
+			case 'POST':
+				// Login Controller
+					$mod_path = MODS_DIR . '/login/login.process.php';
+				break;
+
+			default:
+				break;
+		}
+
+		bgp_safe_require( $mod_path );
+	}
+	else {
+
+		// The user is already logged in
+
+		if (empty($module) || $module == 'login')	{
+
+			// Redirect to the Dashboard
+
+			Flight::redirect('/dashboard/');
+		}
+		else if (!empty($module)) {
+
+			// NIST Level 2 Standard Role Based Access Control Library
+			$rbac = new PhpRbac\Rbac();
+
+			// Get Public Methods
+			$methods = Core_Reflection::getControllerPublicMethods( $module );
+
+			// Get Module Pages
+			$pages = Core_Reflection::getModulePublicPages( $module );
+
+			exit(var_dump($_SESSION));
+
+			// $element
+
+
+/*
+			// MAINTENANCE CHECKER
+			// Logout the user
+			if ( BGP_MAINTENANCE_MODE == 1 ) {
+				Core_AuthService::logout();
+				Flight::redirect('/503'); // If the maintenance mode is ON, we drop the user.
+			}
+
+			if ( !empty($page) ) {
+				$mod_path = MODS_DIR . '/' . 'user.' . $module . '/' . 'user.' . $module . '.' . $page . '.php';
+			}
+			else {
+				$mod_path = MODS_DIR . '/' . 'user.' . $module . '/' . 'user.' . $module . '.php';
+			}
+
+			bgp_safe_require( $mod_path );
+
+			if ( Core_AuthService::isAdmin() ) {
+				// Forbidden
+				Flight::redirect('/403');
+			}
+*/
+		}
+	}
+});
+
 
 /**
  * Start the FW
  */
+
 
 Flight::start();

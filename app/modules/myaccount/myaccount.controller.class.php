@@ -26,7 +26,7 @@
  */
 
 if ( !class_exists('BGP_Controller')) {
-	trigger_error('Module_Myaccount -> BGP_Controller is missing !');
+	trigger_error('Controller_Myaccount -> BGP_Controller is missing !');
 }
 
 /**
@@ -114,19 +114,9 @@ class BGP_Controller_Myaccount extends BGP_Controller {
 
 			foreach ($db_data as $key => $value) {
 
-				if (Core_AuthService::getSessionType() == 'Admin') {
-					$sth = $dbh->prepare( "	UPDATE " . DB_PREFIX . "admin
-											SET " . $key . " = :" . $key . "
-											WHERE admin_id = '" . $uid . "';" );
-				}
-				else if (Core_AuthService::getSessionType() == 'User') {
-					$sth = $dbh->prepare( "	UPDATE " . DB_PREFIX . "user
-											SET " . $key . " = :" . $key . "
-											WHERE user_id = '" . $uid . "';" );
-				}
-				else {
-					exit(1);
-				}
+				$sth = $dbh->prepare( "	UPDATE " . DB_PREFIX . "user
+										SET " . $key . " = :" . $key . "
+										WHERE user_id = '" . $uid . "';" );
 
 				$sth->bindParam( ':' . $key, $value );
 				$sth->execute();
@@ -135,36 +125,16 @@ class BGP_Controller_Myaccount extends BGP_Controller {
 			// Reload Session
 			$authService->rmSessionInfo();
 
-			switch (Core_AuthService::getSessionType()) {
-				case 'Admin':
-					$authService->setSessionInfo(
-						$uid,
-						$db_data['username'],
-						$db_data['firstname'],
-						$db_data['lastname'],
-						$db_data['lang'],
-						BGP_ADMIN_TEMPLATE,
-						'Admin'
-						);
-					$authService->setSessionPerms( 'Admin' );
-					break;
+			$authService->setSessionInfo(
+				$uid,
+				$db_data['username'],
+				$db_data['firstname'],
+				$db_data['lastname'],
+				$db_data['lang'],
+				BGP_USER_TEMPLATE
+				);
 
-				case 'User':
-					$authService->setSessionInfo(
-						$uid,
-						$db_data['username'],
-						$db_data['firstname'],
-						$db_data['lastname'],
-						$db_data['lang'],
-						BGP_USER_TEMPLATE,
-						'User'
-						);
-					$authService->setSessionPerms( 'User' );
-					break;
-
-				default:
-					exit(1);
-			}
+			$authService->setSessionPerms( );
 
 			$this->rmCookie( 'LANG' );
 		}

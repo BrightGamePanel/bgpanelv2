@@ -342,7 +342,7 @@ try {
 
 		$dbh->exec( "
 	INSERT INTO ".DB_PREFIX."rolepermissions (RoleID, PermissionID, AssignmentDate)
-	VALUES (1, 1, UNIX_TIMESTAMP());
+	VALUES (1, 1, " . time() . ");
 		" );
 
 	//---------------------------------------------------------+
@@ -527,7 +527,7 @@ try {
 
 		$dbh->exec( "
 	INSERT INTO ".DB_PREFIX."userroles (UserID, RoleID, AssignmentDate)
-	VALUES (1, 1, UNIX_TIMESTAMP());
+	VALUES (1, 1, " . time() . ");
 		" );
 
 

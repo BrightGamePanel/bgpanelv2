@@ -140,7 +140,7 @@ else {
 
 // Redirect
 if (!empty($_GET['page'])) {
-	$return = '.' . $_GET['page'];
+	$return = $_GET['page'];
 }
 else {
 	$return = './';

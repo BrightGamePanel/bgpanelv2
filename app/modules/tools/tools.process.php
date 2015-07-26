@@ -29,10 +29,10 @@
  * Load Plugin Controller
  */
 
-require( MODS_DIR . '/' . basename(__DIR__) . '/admin.dashboard.controller.class.php' );
+require( MODS_DIR . '/' . basename(__DIR__) . '/tools.controller.class.php' );
 
 // Init Controller
-$controller = new BGP_Controller_Admin_Dashboard();
+$controller = new BGP_Controller_Tools();
 
 
 // Get the method
@@ -52,6 +52,10 @@ else {
 // Call the method
 switch ($task)
 {
+	case 'optimizeDB':
+		echo $controller->optimizeDB( $_POST );
+		exit( 0 );
+
 	default:
 		Flight::redirect('/400');
 }

@@ -13,50 +13,37 @@ use \Jf;
  */
 class Rbac
 {
-    public function __construct($unit_test = '')
-    {
-		// WARHAWK3407 PATCH
+	public function __construct( )
+	{
+		$this->Permissions  = Jf::$Rbac->Permissions;
+		$this->Roles        = Jf::$Rbac->Roles;
+		$this->Users        = Jf::$Rbac->Users;
+	}
 
-		$host			= DB_HOST;
-		$dbname			= DB_NAME;
-		$user			= DB_USER;
-		$pass			= DB_PASSWORD;
-		$tablePrefix	= DB_PREFIX;
-		$adapter		= DB_DRIVER;
+	public function assign($role, $permission)
+	{
+		return Jf::$Rbac->assign($role, $permission);
+	}
 
-		// END: WARHAWK3407 PATCH
+	public function check($permission, $user_id)
+	{
+		return Jf::$Rbac->check($permission, $user_id);
+	}
 
-        require_once 'core/lib/Jf.php';
+	public function enforce($permission, $user_id)
+	{
+		return Jf::$Rbac->enforce($permission, $user_id);
+	}
 
-        $this->Permissions = Jf::$Rbac->Permissions;
-        $this->Roles = Jf::$Rbac->Roles;
-        $this->Users = Jf::$Rbac->Users;
-    }
+	public function reset($ensure = false)
+	{
+		return Jf::$Rbac->reset($ensure);
+	}
 
-    public function assign($role, $permission)
-    {
-        return Jf::$Rbac->assign($role, $permission);
-    }
-
-    public function check($permission, $user_id)
-    {
-        return Jf::$Rbac->check($permission, $user_id);
-    }
-
-    public function enforce($permission, $user_id)
-    {
-        return Jf::$Rbac->enforce($permission, $user_id);
-    }
-
-    public function reset($ensure = false)
-    {
-        return Jf::$Rbac->reset($ensure);
-    }
-
-    public function tablePrefix()
-    {
-        return Jf::$Rbac->tablePrefix();
-    }
+	public function tablePrefix()
+	{
+		return Jf::$Rbac->tablePrefix();
+	}
 }
 
 /** @} */ // End group phprbac */

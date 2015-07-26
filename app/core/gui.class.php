@@ -803,7 +803,6 @@ class Core_GUI
 	 */
 	private function parseGUIManifestFiles ()
 	{
-		$type = Core_AuthService::getSessionType();
 		$manifestFiles = array();
 		
 		$handle = opendir( MODS_DIR );
@@ -827,27 +826,12 @@ class Core_GUI
 						$lowerTypeAlias = NULL;
 						$module = $parts[0];
 					}
-		
-					// Case: "admin.module" OR "user.module"
-					if (!empty($lowerTypeAlias) && $type == ucfirst($lowerTypeAlias)) {
-		
-						// Get the manifest
-						$manifest = MODS_DIR . '/' . $lowerTypeAlias . '.' . $module . '/gui.manifest.xml';
-		
-						if (is_file( $manifest )) {
-							$manifestFiles[] = simplexml_load_file( $manifest ); // Store the object
-						}
-					}
-		
-					// Case: "module"
-					else {
-		
-						// Get the manifest
-						$manifest = MODS_DIR . '/' . $module . '/gui.manifest.xml';
-		
-						if (is_file( $manifest )) {
-							$manifestFiles[] = simplexml_load_file( $manifest );
-						}
+
+					// Get the manifest
+					$manifest = MODS_DIR . '/' . $module . '/gui.manifest.xml';
+	
+					if (is_file( $manifest )) {
+						$manifestFiles[] = simplexml_load_file( $manifest );
 					}
 				}
 			}

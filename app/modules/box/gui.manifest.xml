@@ -6,7 +6,7 @@
 	<module_sidebar>
 		<rank>2</rank>
 		<txt>Boxes</txt>
-		<href>./admin/box</href>
+		<href>./box</href>
 		<icon>fa fa-hdd-o fa-fw</icon>
 
 		<sub_menu></sub_menu>

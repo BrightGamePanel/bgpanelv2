@@ -29,9 +29,9 @@
  * Load Plugin
  */
 
-require( MODS_DIR . '/' . basename(__DIR__) . '/admin.box.class.php' );
+require( MODS_DIR . '/' . basename(__DIR__) . '/box.class.php' );
 
-$module = new BGP_Module_Admin_Box();
+$module = new BGP_Module_Box();
 
 /**
  * Call GUI Builder

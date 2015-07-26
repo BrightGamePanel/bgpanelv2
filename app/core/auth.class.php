@@ -47,10 +47,6 @@ class Core_AuthService
 	// Session Passphrase
 	private $session_key;
 
-	// RSA Keys
-	private $rsa_private_key;
-	private $rsa_public_key;
-
 	/**
 	 * Default Constructor
 	 *
@@ -89,15 +85,6 @@ class Core_AuthService
 		$this->session_key = $CONFIG['APP_SESSION_KEY'];
 		if ( empty($this->session_key) ) {
 			trigger_error("Core_AuthService -> Session key is missing !", E_USER_ERROR);
-		}
-
-		// RSA KEYS
-		if ( file_exists(RSA_PRIVATE_KEY_FILE) && file_exists(RSA_PUBLIC_KEY_FILE) ) {
-			$this->rsa_private_key = file_get_contents( RSA_PRIVATE_KEY_FILE );
-			$this->rsa_public_key  = file_get_contents( RSA_PUBLIC_KEY_FILE );
-		}
-		if ( empty($this->rsa_private_key) || empty($this->rsa_public_key) ) {
-			trigger_error("Core_AuthService -> RSA keys are missing !", E_USER_ERROR);
 		}
 	}
 
@@ -277,6 +264,25 @@ class Core_AuthService
 
 				// Verify
 				if ( $userResult[0]['username'] == $this->username && $userResult[0]['last_ip'] == $_SERVER['REMOTE_ADDR'] && $userResult[0]['token'] == session_id() ) {
+
+					// Update User Activity on page request
+
+					$last_activity = date('Y-m-d H:i:s');
+
+					$sth = $dbh->prepare("
+						UPDATE " . DB_PREFIX . "user
+						SET
+							last_activity	= :last_activity
+						WHERE
+							user_id			= :user_id
+						;");
+
+					$uid = Core_AuthService::getSessionInfo('ID');
+					$sth->bindParam(':last_activity', $last_activity);
+					$sth->bindParam(':user_id', $uid);
+
+					$sth->execute();
+
 					return TRUE;
 				}
 				else {
@@ -383,20 +389,12 @@ class Core_AuthService
 			switch ( CONF_SEC_SESSION_METHOD )
 			{
 				case 'aes256':
+				default:
 					$cipher = new Crypt_AES(CRYPT_AES_MODE_ECB);
 					$cipher->setKeyLength(256);
 					$cipher->setKey( $this->session_key );
 
 					$this->session['CREDENTIALS'] = $cipher->encrypt( $credentials );
-					break;
-
-				case 'rsa':
-				default:
-					$rsa = new Crypt_RSA();
-					$rsa->loadKey( $this->rsa_public_key ); // public key
-
-					$rsa->setEncryptionMode(CRYPT_RSA_ENCRYPTION_PKCS1);
-					$this->session['CREDENTIALS'] = $rsa->encrypt( $credentials );
 					break;
 			}
 
@@ -431,20 +429,12 @@ class Core_AuthService
 			switch ( CONF_SEC_SESSION_METHOD )
 			{
 				case 'aes256':
+				default:
 					$cipher = new Crypt_AES(CRYPT_AES_MODE_ECB);
 					$cipher->setKeyLength(256);
 					$cipher->setKey( $this->session_key );
 
 					$credentials = unserialize( $cipher->decrypt( $this->session['CREDENTIALS'] ) );
-					break;
-
-				case 'rsa':
-				default:
-					$rsa = new Crypt_RSA();
-					$rsa->loadKey( $this->rsa_private_key ); // private key
-
-					$rsa->setEncryptionMode(CRYPT_RSA_ENCRYPTION_PKCS1);
-					$credentials = unserialize( $rsa->decrypt( $this->session['CREDENTIALS'] ) );
 					break;
 			}
 

@@ -3,7 +3,7 @@
 <bgp_module>
 	<module_tabs>
 		<general>
-			<href>./admin/config</href>
+			<href>./config</href>
 			<icon>fa fa-cog fa-fw</icon>
 		</general>
 	</module_tabs>
@@ -17,21 +17,21 @@
 		<sub_menu>
 			<general>
 				<system-settings>
-					<href>./admin/config</href>
+					<href>./config</href>
 					<icon>fa fa-wrench fa-fw</icon>
 				</system-settings>
 			</general>
 			<misc>
 				<cron-settings>
-					<href>./admin/config/cron</href>
+					<href>./config/cron</href>
 					<icon>fa fa-info-circle fa-fw</icon>
 				</cron-settings>
 				<api-key>
-					<href>./admin/config/apikey</href>
+					<href>./config/apikey</href>
 					<icon>fa fa-info-circle fa-fw</icon>
 				</api-key>
 				<system-license>
-					<href>./admin/config/license</href>
+					<href>./config/license</href>
 					<icon>fa fa-certificate fa-fw</icon>
 				</system-license>
 			</misc>

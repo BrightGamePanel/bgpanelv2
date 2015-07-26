@@ -33,7 +33,7 @@ interface ExtendedNestedSet extends NestedSetInterface
  */
 class FullNestedSet extends BaseNestedSet implements ExtendedNestedSet
 {
-	/**
+	/*
     public $AutoRipRightLeft=true;
 
   	private  function RipRightLeft(&$ResultSet)
@@ -47,7 +47,8 @@ class FullNestedSet extends BaseNestedSet implements ExtendedNestedSet
                 unset($v[$this->Right]);
         }
     }
-    **/
+    */
+
     protected function lock()
     {
     	Jf::sql("LOCK TABLE {$this->table()} WRITE");

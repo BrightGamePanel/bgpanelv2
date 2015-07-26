@@ -43,6 +43,7 @@ class Jf
 	static function sql($Query)
 	{
 		$args = func_get_args ();
+
 		if (get_class ( self::$Db ) == "PDO")
 			return call_user_func_array ( "self::sqlPdo", $args );
 		else
@@ -203,4 +204,4 @@ class Jf
 }
 
 Jf::setTablePrefix(DB_PREFIX);
-Jf::$Rbac=new RbacManager();
+Jf::$Rbac = new RbacManager();
