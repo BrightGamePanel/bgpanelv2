@@ -44,16 +44,31 @@ class Core_Reflection
 				if (is_subclass_of($bgp_controller_name, 'BGP_Controller'))
 				{
 					// Reflection
-					$class_definition = new ReflectionClass( $bgp_controller_name );
-					$methods = $class_definition->getMethods( ReflectionMethod::IS_PUBLIC );
+					$reflector = new ReflectionClass( $bgp_controller_name );
+					$methods = $reflector->getMethods( ReflectionMethod::IS_PUBLIC );
 
 					// Filter
 					foreach ($methods as $method) {
 						$name  = $method->name;
 						$class = $method->class;
+						$doc   = $reflector->getMethod( $name )->getDocComment();
+
+						// Parse Doc
+						if (is_string($doc)) {
+							$doc = new DocBlock($doc);
+							$desc = $doc->description;
+						}
+						else {
+							$desc = '';
+						}
 
 						if ($class == $bgp_controller_name && $name[0] != '_') {
-							$public_methods[] = ucfirst( strtolower( $bgp_module_name ) ) . '.' . $name;
+							$method = array(
+								'method' 		=> trim(ucfirst( strtolower( $bgp_module_name ) ) . '.' . $name),
+								'description'   => trim($desc)
+							);
+
+							$public_methods[] = $method;
 						}
 					}
 				}

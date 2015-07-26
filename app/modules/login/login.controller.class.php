@@ -42,6 +42,13 @@ class BGP_Controller_Login extends BGP_Controller
 		parent::__construct( basename(__DIR__) );
 	}
 
+	/**
+	 * Authentication
+	 *
+	 * @param array $form
+	 *
+	 * @author Nikita Rousseau
+	 */
 	public function authenticateUser( $form ) {
 		$errors			= array();  	// array to hold validation errors
 		$data 			= array(); 		// array to pass back data
@@ -227,6 +234,14 @@ class BGP_Controller_Login extends BGP_Controller
 		setcookie($cookie, '', time() - 3600, BASE_URL);
 	}
 
+	/**
+	 * User Password Renewal
+	 *
+	 * @param array $form
+	 * @param string $captcha_validation
+	 *
+	 * @author Nikita Rousseau
+	 */
 	public function sendNewPassword( $form, $captcha_validation ) {
 		$errors			= array();  	// array to hold validation errors
 		$data 			= array(); 		// array to pass back data

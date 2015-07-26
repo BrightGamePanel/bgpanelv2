@@ -41,6 +41,13 @@ class BGP_Controller_Tools extends BGP_Controller {
 		parent::__construct( basename(__DIR__) );
 	}
 
+	/**
+	 * Optimize Database
+	 *
+	 * @param array $form
+	 *
+	 * @author Nikita Rousseau
+	 */
 	public function optimizeDB( $form ) {
 		$dbh = Core_DBH::getDBH(); // Get Database Handle
 

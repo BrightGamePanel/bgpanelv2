@@ -41,6 +41,13 @@ class BGP_Controller_Config extends BGP_Controller {
 		parent::__construct( basename(__DIR__) );
 	}
 
+	/**
+	 * Update System Configuration
+	 *
+	 * @param array $form
+	 *
+	 * @author Nikita Rousseau
+	 */
 	public function updateSysConfig( $form )
 	{
 		$errors			= array();  	// array to hold validation errors

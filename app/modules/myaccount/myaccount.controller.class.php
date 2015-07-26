@@ -41,6 +41,13 @@ class BGP_Controller_Myaccount extends BGP_Controller {
 		parent::__construct( basename(__DIR__) );
 	}
 
+	/**
+	 * Update User Configuration
+	 *
+	 * @param array $form
+	 *
+	 * @author Nikita Rousseau
+	 */
 	public function updateUserConfig( $form )
 	{
 		$errors			= array();  	// array to hold validation errors

@@ -74,7 +74,7 @@ switch (ENV_RUNTIME)
 
 		// PHPSeclib
 		require( LIBS_DIR	. '/phpseclib/AES.php' );
-		require( LIBS_DIR	. '/phpseclib/RSA.php' );
+		//require( LIBS_DIR	. '/phpseclib/RSA.php' );
 		require( LIBS_DIR	. '/phpseclib/ANSI.php' );
 
 		// PHP-RBAC: Role Based Access Control Library
@@ -85,6 +85,9 @@ switch (ENV_RUNTIME)
 
 		// HTTP Status Codes Class
 		require( APP_DIR	. '/core/http.status.class.php' );
+
+		// PHP DOC Parser
+		require( LIBS_DIR	. '/docblockparser/doc_block.php' );
 
 		// Module Reflection Class
 		require( APP_DIR	. '/core/reflection.class.php' );

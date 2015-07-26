@@ -84,6 +84,8 @@ Flight::route('GET|POST|PUT|DELETE (/@module(/@page(/@element)))', function( $mo
 		$element = NULL;
 	}
 
+	$task = Flight::request()->query['task'];
+
 	// User Authentication
 
 	$authService = Core_AuthService::getAuthService();
@@ -103,8 +105,6 @@ Flight::route('GET|POST|PUT|DELETE (/@module(/@page(/@element)))', function( $mo
 		}
 
 		// Login
-
-		$task = Flight::request()->query['task'];
 
 		switch (Flight::request()->method)
 		{
@@ -155,7 +155,14 @@ Flight::route('GET|POST|PUT|DELETE (/@module(/@page(/@element)))', function( $mo
 			// Get Module Pages
 			$pages = Core_Reflection::getModulePublicPages( $module );
 
-			exit(var_dump($_SESSION));
+
+
+
+			exit(var_dump($methods));
+
+
+
+
 
 			// $element
 
@@ -182,6 +189,9 @@ Flight::route('GET|POST|PUT|DELETE (/@module(/@page(/@element)))', function( $mo
 				Flight::redirect('/403');
 			}
 */
+
+
+
 		}
 	}
 });
