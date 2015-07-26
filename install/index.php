@@ -30,7 +30,7 @@ define('LICENSE', 'GNU GENERAL PUBLIC LICENSE - Version 3, 29 June 2007');
 /**
  * Install Wizard Version
  */
-define('WIZARDVERSION', 'v2.0.1b');
+define('WIZARDVERSION', 'v2.1.0');
 define('ENV_RUNTIME', 'INSTALL_WIZARD');
 
 //---------------------------------------------------------+
@@ -54,6 +54,12 @@ require( INSTALL_DIR . '/inc/versions.inc.php' );
  * BGP GAME CONFIGURATION DATABASE
  */
 require( INSTALL_DIR . '/inc/game.conf.inc.php' );
+
+/**
+ * PHP-RBAC Library
+ */
+require( LIBS_DIR . '/phprbac2.0/core/Jf.php' );
+require( LIBS_DIR . '/phprbac2.0/Rbac.php' );
 
 //---------------------------------------------------------+
 
@@ -950,9 +956,93 @@ APP_API_KEY 		= \"".$APP_API_KEY."\"
 			}
 
 			//---------------------------------------------------------+
-			//---------------------------------------------------------+
+			// Creating Database Schema
 
 			require("./sql/full.php");
+
+			//---------------------------------------------------------+
+			// Creating System Permissions
+
+			Jf::$Db = $dbh;
+
+			$rbac = new PhpRbac\Rbac();
+
+			$perms = array();
+			
+			$handle = opendir( MODS_DIR );
+
+			if ($handle) {
+			
+				// Foreach modules
+				while (false !== ($entry = readdir($handle))) {
+			
+					// Dump specific directories
+					if ($entry != "." && $entry != "..")
+					{
+						$module = $entry;
+
+						// Get Module Pages
+						$pages = Core_Reflection::getModulePublicPages( $module );
+
+						if (!empty($pages)) {
+
+							// Create Page Access Permission
+
+							foreach ($pages as $value) {
+								$id = $rbac->Permissions->add($value['page'], $value['description']);
+								$perms[$module][] = $id;
+							}
+						}
+
+						// Get Public Methods
+						$methods = Core_Reflection::getControllerPublicMethods( $module );
+
+						if (!empty($methods)) {
+
+							// Create Method Permission
+
+							foreach ($methods as $key => $value) {
+								$id = $rbac->Permissions->add($value['method'], $value['description']);
+								$perms[$module][] = $id;
+							}
+						}
+					}
+				}
+			
+				closedir($handle);
+			}
+
+			// Create Default Roles
+
+			$adminRoleId = $rbac->Roles->add('admin', 'System Administrator');
+			$userRoleId  = $rbac->Roles->add('user', 'Regular System User');
+
+			// Bind Perms To Roles
+
+			foreach ($perms as $module => $ids) {
+				switch ($module) {
+					case 'box':
+					case 'config':
+					case 'tools':
+
+						// Admin Only
+
+						foreach ($ids as $id) {
+							$rbac->Roles->assign($adminRoleId, $id);
+						}
+
+						break 1;
+					
+					default:
+
+						foreach ($ids as $id) {
+							$rbac->Roles->assign($adminRoleId, $id);
+							$rbac->Roles->assign($userRoleId, $id);
+						}
+
+						break 1;
+				}
+			}
 
 			break;
 
@@ -1050,7 +1140,7 @@ APP_API_KEY 		= \"".$APP_API_KEY."\"
 				Admin Username: <b>admin</b><br />
 				Admin Password: <b>password</b><br />
 				<hr>
-				<i class="icon-share-alt"></i>&nbsp;<a href="../login">@Admin Login</a>
+				<i class="icon-share-alt"></i>&nbsp;<a href="../login">@Login</a>
 				<hr>
 				<div class="alert alert-error">
 					<strong>Wait!</strong>
