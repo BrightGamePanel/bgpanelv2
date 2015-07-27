@@ -69,8 +69,7 @@ switch ($task)
 		else {
 			$authService->incrementSecCount(); // Extend ban duration
 
-			header( Core_Http_Status_Codes::httpHeaderFor( 403 ) );
-			echo Core_Http_Status_Codes::getMessageForCode( 403 );
+			Flight::redirect('/401');
 		}
 		exit( 0 );
 
@@ -122,8 +121,7 @@ switch ($task)
 		else {
 			$authService->incrementSecCount(); // Extend ban duration
 
-			header( Core_Http_Status_Codes::httpHeaderFor( 403 ) );
-			echo Core_Http_Status_Codes::getMessageForCode( 403 );
+			Flight::redirect('/401');
 		}
 		exit( 0 );
 

@@ -70,31 +70,41 @@ Flight::route('GET|POST|PUT|DELETE /api(/@collection/(@element))', function( $co
 
 	/**
 
-	* WARNING SECURE
+	* WARNING UNSECURE !Flight::request()->secure
 	**/
-	if (!Flight::request()->secure && ENV_RUNTIME == 'M2M') {
 
-		// Get and Verify Headers
-		$headers = apache_request_headers();
+	if (boolval(APP_API_ENABLE) == TRUE)
+	{
+		if (!Flight::request()->secure && ENV_RUNTIME == 'M2M')
+		{
+			// Get and Verify Headers
+			$headers = apache_request_headers();
 
-		if (!empty($headers['X-API-KEY']) && !empty($headers['X-API-USER']) && !empty($headers['X-API-PASS'])) {
+			if (!empty($headers['X-API-KEY']) && !empty($headers['X-API-USER']) && !empty($headers['X-API-PASS']))
+			{
+				// Machine Authentication
+				if (Core_API::checkRemoteHost( Flight::request()->ip ) == TRUE)
+				{
 
-			// Machine Authentication
-			if (Core_API::checkRemoteHost( Flight::request()->ip ) == TRUE) {
+					exit(var_dump( 'toto' ));
+				}
+			}
+			else {
 
-				exit(var_dump( $headers ));
+				// Unauthorized
+				header( Core_Http_Status_Codes::httpHeaderFor( 401 ) );
 			}
 		}
 		else {
 
-			// Unauthorized
-			header( Core_Http_Status_Codes::httpHeaderFor( 401 ) );
+			// Unsecure
+			header( Core_Http_Status_Codes::httpHeaderFor( 418 ) );
 		}
 	}
 	else {
 
-		// Unsecure
-		header( Core_Http_Status_Codes::httpHeaderFor( 418 ) );
+		// Forbidden
+		header( Core_Http_Status_Codes::httpHeaderFor( 403 ) );
 	}
 
 	exit( 0 );
@@ -240,7 +250,7 @@ Flight::route('GET|POST|PUT|DELETE (/@module(/@page(/@element)))', function( $mo
 								$mod_path = MODS_DIR . '/' . $module . '/' . $module . '.process.php';
 							}
 							else {
-								Flight::redirect('/403');
+								Flight::redirect('/401');
 							}
 						}
 						// Module Page
@@ -264,7 +274,7 @@ Flight::route('GET|POST|PUT|DELETE (/@module(/@page(/@element)))', function( $mo
 							$mod_path = MODS_DIR . '/' . $module . '/' . $module . '.process.php';
 						}
 						else {
-							Flight::redirect('/403');
+							Flight::redirect('/401');
 						}
 						break;
 
@@ -275,7 +285,7 @@ Flight::route('GET|POST|PUT|DELETE (/@module(/@page(/@element)))', function( $mo
 				bgp_safe_require( $mod_path );
 			}
 			else {
-				Flight::redirect('/403');
+				Flight::redirect('/401');
 			}
 		}
 	}
