@@ -114,7 +114,7 @@ Flight::route('GET|POST|PUT|DELETE /api(/@collection/(@element))', function( $co
  */
 Flight::route('GET|POST|PUT|DELETE (/@module(/@page(/@element)))', function( $module, $page, $element ) {
 
-	// Var Init
+	// Vars Init
 
 	if (isset($module) && preg_match("#\w#", $module)) {
 		$module = strtolower($module);
@@ -199,7 +199,6 @@ Flight::route('GET|POST|PUT|DELETE (/@module(/@page(/@element)))', function( $mo
 
 			$rbac = new PhpRbac\Rbac();
 
-
 			$collection = str_replace('//', '/', ucfirst($module) . '/');
 			//$resource  = NULL;
 
@@ -217,12 +216,18 @@ Flight::route('GET|POST|PUT|DELETE (/@module(/@page(/@element)))', function( $mo
 
 			if ( $rbac->Users->hasRole( 'root', $authService->getSessionInfo('ID') ) || $rbac->check( $collection, $authService->getSessionInfo('ID') ) ) {
 
-				// MAINTENANCE CHECKER
-				// Logout the user
+				// MAINTENANCE CHECK
 
 				if ( BGP_MAINTENANCE_MODE == 1 && ($rbac->Users->hasRole( 'root', $authService->getSessionInfo('ID') ) === FALSE) ) {
 					Core_AuthService::logout();
-					Flight::redirect('/503'); // If the maintenance mode is ON, we drop the user.
+					Flight::redirect('/503');
+				}
+
+				// DROP API USERS
+
+				if ( $rbac->Users->hasRole( 'api', $authService->getSessionInfo('ID') ) && ($rbac->Users->hasRole( 'root', $authService->getSessionInfo('ID') ) === FALSE) ) {
+					Core_AuthService::logout();
+					Flight::redirect('/403');
 				}
 
 				switch (Flight::request()->method)
