@@ -44,11 +44,9 @@ class BGP_Controller_Tools extends BGP_Controller {
 	/**
 	 * Optimize Database
 	 *
-	 * @param array $form
-	 *
 	 * @author Nikita Rousseau
 	 */
-	public function optimizeDB( $form ) {
+	public function optimizeDB( ) {
 		$dbh = Core_DBH::getDBH(); // Get Database Handle
 
 		// process =====================================================================
@@ -73,11 +71,8 @@ class BGP_Controller_Tools extends BGP_Controller {
 		// return a response ===========================================================
 
 		$data['success'] = true;
-
-		// notification
-		bgp_set_alert(  T_('Optimizing tables... Done!'), T_('Tables are up to date.'), 'success' );
 		
 		// return all our data to an AJAX call
-		return json_encode($data);
+		return $data;
 	}
 }

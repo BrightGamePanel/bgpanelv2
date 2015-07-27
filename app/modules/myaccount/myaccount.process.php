@@ -53,7 +53,32 @@ else {
 switch ($task)
 {
 	case 'updateUserConfig':
-		echo $controller->updateUserConfig( $_POST );
+
+		if ( isset($_POST['username']) && isset($_POST['password0']) && isset($_POST['password1']) && isset($_POST['email']) && isset($_POST['language']) ) {
+
+			$firstname = '';
+			$lastname  = '';
+
+			if ( isset($_POST['firstname']) ) {
+				$firstname = $_POST['firstname'];
+			}
+			if ( isset($_POST['lastname']) ) {
+				$lastname  = $_POST['lastname'];
+			}
+
+			$json = $controller->updateUserConfig( $_POST['username'], $_POST['password0'], $_POST['password1'], $_POST['email'], $_POST['language'], $firstname, $lastname );
+
+			if ($json['success'] === TRUE) {
+				// Notification
+				bgp_set_alert( T_('Settings Updated Successfully!'), NULL, 'success' );
+			}
+
+			Flight::json( $json );		
+		}
+		else {
+			Flight::redirect('/400');
+		}
+
 		exit( 0 );
 
 	default:

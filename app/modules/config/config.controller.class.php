@@ -51,7 +51,8 @@ class BGP_Controller_Config extends BGP_Controller {
 	 *
 	 * @author Nikita Rousseau
 	 */
-	public function updateSysConfig( $panelName, $panelUrl, $userTemplate, $maintenanceMode = FALSE ) {
+	public function updateSysConfig( $panelName, $panelUrl, $userTemplate, $maintenanceMode = FALSE )
+	{
 		$form = array (
 			'panelName' 	=> $panelName,
 			'panelUrl' 		=> $panelUrl,
@@ -111,8 +112,7 @@ class BGP_Controller_Config extends BGP_Controller {
 			$db_data['user_template'] 		= $form['userTemplate'];
 			$db_data['maintenance_mode']	= '0';
 
-			if ( !empty($maintenanceMode) )
-			{
+			if ( !empty($maintenanceMode) ) {
 				$db_data['maintenance_mode'] = '1';
 			}
 

@@ -53,7 +53,16 @@ else {
 switch ($task)
 {
 	case 'optimizeDB':
-		echo $controller->optimizeDB( $_POST );
+
+		$json = $controller->optimizeDB( );
+
+		if ($json['success'] === TRUE) {
+			// Notification
+			bgp_set_alert(  T_('Optimizing tables... Done!'), T_('Tables are up to date.'), 'success' );
+		}
+
+		Flight::json( $json );
+
 		exit( 0 );
 
 	default:

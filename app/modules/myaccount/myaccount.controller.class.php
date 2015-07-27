@@ -44,12 +44,26 @@ class BGP_Controller_Myaccount extends BGP_Controller {
 	/**
 	 * Update User Configuration
 	 *
-	 * @param array $form
+	 * @param string $username
+	 * @param string $password0
+	 * @param string $password1
+	 * @param string $email
+	 * @param string $language
+	 * @param optional string $firstname
+	 * @param optional string $lastname
 	 *
 	 * @author Nikita Rousseau
 	 */
-	public function updateUserConfig( $form )
+	public function updateUserConfig( $username, $password0, $password1, $email, $language, $firstname = '', $lastname = '' )
 	{
+		$form = array (
+			'username' 		=> $username,
+			'password0' 	=> $password0,
+			'password1' 	=> $password1,
+			'email' 		=> $email,
+			'language' 		=> $language
+		);
+
 		$errors			= array();  	// array to hold validation errors
 		$data 			= array(); 		// array to pass back data
 
@@ -111,10 +125,15 @@ class BGP_Controller_Myaccount extends BGP_Controller {
 
 			$db_data['username']			= $form['username'];
 			$db_data['password']			= Core_AuthService::getHash($form['password0']);
-			$db_data['firstname'] 			= $form['firstname'];
-			$db_data['lastname'] 			= $form['lastname'];
 			$db_data['email']				= $form['email'];
 			$db_data['lang']				= $form['language'];
+
+			if ( !empty($firstname) ) {
+				$db_data['firstname'] = $firstname;
+			}
+			if ( !empty($lastname) ) {
+				$db_data['lastname'] = $lastname;
+			}
 
 			$authService = Core_AuthService::getAuthService();
 			$uid = Core_AuthService::getSessionInfo('ID');
@@ -161,13 +180,10 @@ class BGP_Controller_Myaccount extends BGP_Controller {
 		else {
 
 			$data['success'] = true;
-
-			// notification
-			bgp_set_alert( T_('Settings Updated Successfully!'), NULL, 'success' );
 		}
 		
 		// return all our data to an AJAX call
-		return json_encode($data);
+		return $data;
 	}
 
 	private function rmCookie( $cookie ) {
