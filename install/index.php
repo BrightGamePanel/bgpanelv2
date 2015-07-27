@@ -981,29 +981,33 @@ APP_API_KEY 		= \"".$APP_API_KEY."\"
 					{
 						$module = $entry;
 
-						// Get Module Pages
-						$pages = Core_Reflection::getModulePublicPages( $module );
+						// Exceptions
+						if ($module != 'login')
+						{
+							// Get Module Pages
+							$pages = Core_Reflection::getModulePublicPages( $module );
 
-						if (!empty($pages)) {
+							if (!empty($pages)) {
 
-							// Create Page Access Permission
+								// Create Page Access Permission
 
-							foreach ($pages as $value) {
-								$id = $rbac->Permissions->add($value['page'], $value['description']);
-								$perms[$module][] = $id;
+								foreach ($pages as $value) {
+									$id = $rbac->Permissions->add($value['page'], $value['description']);
+									$perms[$module][] = $id;
+								}
 							}
-						}
 
-						// Get Public Methods
-						$methods = Core_Reflection::getControllerPublicMethods( $module );
+							// Get Public Methods
+							$methods = Core_Reflection::getControllerPublicMethods( $module );
 
-						if (!empty($methods)) {
+							if (!empty($methods)) {
 
-							// Create Method Permission
+								// Create Method Permission
 
-							foreach ($methods as $key => $value) {
-								$id = $rbac->Permissions->add($value['method'], $value['description']);
-								$perms[$module][] = $id;
+								foreach ($methods as $key => $value) {
+									$id = $rbac->Permissions->add($value['method'], $value['description']);
+									$perms[$module][] = $id;
+								}
 							}
 						}
 					}
