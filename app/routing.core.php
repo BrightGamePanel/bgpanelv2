@@ -206,29 +206,30 @@ Flight::route('GET|POST|PUT|DELETE (/@module(/@page(/@element)))', function( $mo
 				$collection = str_replace('//', '/', ucfirst($module) . '/' . $page . '/');
 			}
 
+
 			//if (!empty($element)) {
 			//	$resource = str_replace('//', '/', ucfirst($module) . '/resource/' . $element);
 			//}
 
 
+			// MAINTENANCE CHECK
+
+			if ( BGP_MAINTENANCE_MODE == 1 && ($rbac->Users->hasRole( 'root', $authService->getSessionInfo('ID') ) === FALSE) ) {
+				Core_AuthService::logout();
+				Flight::redirect('/503');
+			}
+
+			// DROP API USERS
+
+			if ( $rbac->Users->hasRole( 'api', $authService->getSessionInfo('ID') ) && ($rbac->Users->hasRole( 'root', $authService->getSessionInfo('ID') ) === FALSE) ) {
+				Core_AuthService::logout();
+				Flight::redirect('/403');
+			}
+
 			// Verify User Authorization On The Requested Page (Collection)
-			// Root User Can Bypass
+			// Root Users Can Bypass
 
 			if ( $rbac->Users->hasRole( 'root', $authService->getSessionInfo('ID') ) || $rbac->check( $collection, $authService->getSessionInfo('ID') ) ) {
-
-				// MAINTENANCE CHECK
-
-				if ( BGP_MAINTENANCE_MODE == 1 && ($rbac->Users->hasRole( 'root', $authService->getSessionInfo('ID') ) === FALSE) ) {
-					Core_AuthService::logout();
-					Flight::redirect('/503');
-				}
-
-				// DROP API USERS
-
-				if ( $rbac->Users->hasRole( 'api', $authService->getSessionInfo('ID') ) && ($rbac->Users->hasRole( 'root', $authService->getSessionInfo('ID') ) === FALSE) ) {
-					Core_AuthService::logout();
-					Flight::redirect('/403');
-				}
 
 				switch (Flight::request()->method)
 				{
