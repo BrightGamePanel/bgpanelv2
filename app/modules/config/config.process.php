@@ -53,7 +53,30 @@ else {
 switch ($task)
 {
 	case 'updateSysConfig':
-		echo $controller->updateSysConfig( $_POST );
+
+		if ( isset($_POST['panelName']) && isset($_POST['panelUrl']) && isset($_POST['userTemplate']) ) {
+
+			if ( isset($_POST['maintenanceMode']) && ( $_POST['maintenanceMode'] === 'true' ) ) {
+
+				$json = $controller->updateSysConfig( $_POST['panelName'], $_POST['panelUrl'], $_POST['userTemplate'], TRUE );
+			}
+			else {
+
+				$json = $controller->updateSysConfig( $_POST['panelName'], $_POST['panelUrl'], $_POST['userTemplate'], FALSE );
+				
+			}
+
+			if ($json['success'] === TRUE) {
+				// Notification
+				bgp_set_alert( T_('Settings Updated Successfully!'), NULL, 'success' );
+			}
+
+			Flight::json( $json );		
+		}
+		else {
+			Flight::redirect('/400');
+		}
+		
 		exit( 0 );
 
 	default:

@@ -44,12 +44,20 @@ class BGP_Controller_Config extends BGP_Controller {
 	/**
 	 * Update System Configuration
 	 *
-	 * @param array $form
+	 * @param string $panelName
+	 * @param string $panelUrl
+	 * @param string $userTemplate
+	 * @param optional bool $maintenanceMode
 	 *
 	 * @author Nikita Rousseau
 	 */
-	public function updateSysConfig( $form )
-	{
+	public function updateSysConfig( $panelName, $panelUrl, $userTemplate, $maintenanceMode = FALSE ) {
+		$form = array (
+			'panelName' 	=> $panelName,
+			'panelUrl' 		=> $panelUrl,
+			'userTemplate' 	=> $userTemplate
+		);
+
 		$errors			= array();  	// array to hold validation errors
 		$data 			= array(); 		// array to pass back data
 		
@@ -103,13 +111,9 @@ class BGP_Controller_Config extends BGP_Controller {
 			$db_data['user_template'] 		= $form['userTemplate'];
 			$db_data['maintenance_mode']	= '0';
 
-			// Radio buttons check
-
-			if ( !empty($form['maintenanceMode']) )
+			if ( !empty($maintenanceMode) )
 			{
-				if ($form['maintenanceMode'] === 'true') {
-					$db_data['maintenance_mode'] = '1';
-				}
+				$db_data['maintenance_mode'] = '1';
 			}
 
 			foreach ($db_data as $key => $value) {
@@ -118,9 +122,6 @@ class BGP_Controller_Config extends BGP_Controller {
 				$sth->bindParam( ':' . $key, $value );
 				$sth->execute();
 			}
-
-			// Reload Current Template
-			$_SESSION['TEMPLATE'] = $db_data['user_template'];
 		}
 
 		// return a response ===========================================================
@@ -138,12 +139,9 @@ class BGP_Controller_Config extends BGP_Controller {
 		else {
 
 			$data['success'] = true;
-
-			// notification
-			bgp_set_alert( T_('Settings Updated Successfully!'), NULL, 'success' );
 		}
 		
 		// return all our data to an AJAX call
-		return json_encode($data);
+		return $data;
 	}
 }
