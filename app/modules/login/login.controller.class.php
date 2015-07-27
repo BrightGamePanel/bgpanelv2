@@ -45,11 +45,17 @@ class BGP_Controller_Login extends BGP_Controller
 	/**
 	 * Authentication
 	 *
-	 * @param array $form
+	 * @param string $username
+	 * @param string $password
 	 *
 	 * @author Nikita Rousseau
 	 */
-	public function authenticateUser( $form ) {
+	public function authenticateUser( $username, $password ) {
+		$form = array (
+			'username' => $username,
+			'password' => $password
+		);
+
 		$errors			= array();  	// array to hold validation errors
 		$data 			= array(); 		// array to pass back data
 
@@ -219,7 +225,7 @@ class BGP_Controller_Login extends BGP_Controller
 		}
 
 		// return all our data to an AJAX call
-		return json_encode($data);
+		return $data;
 	}
 
 	private function setRememberMeCookie( $username ) {
@@ -237,12 +243,18 @@ class BGP_Controller_Login extends BGP_Controller
 	/**
 	 * User Password Renewal
 	 *
-	 * @param array $form
-	 * @param string $captcha_validation
+	 * @param string $username
+	 * @param string $email
+	 * @param optional bool $captcha_validation
 	 *
 	 * @author Nikita Rousseau
 	 */
-	public function sendNewPassword( $form, $captcha_validation ) {
+	public function sendNewPassword( $username, $email, $captcha_validation = TRUE ) {
+		$form = array (
+			'username' => $username,
+			'email'    => $email
+		);
+
 		$errors			= array();  	// array to hold validation errors
 		$data 			= array(); 		// array to pass back data
 
@@ -400,12 +412,9 @@ class BGP_Controller_Login extends BGP_Controller
 		else {
 
 			$data['success'] = true;
-
-			// notification
-			bgp_set_alert( T_('Your password has been reset and emailed to you.'), NULL, 'success' );
 		}
 
 		// return all our data to an AJAX call
-		return json_encode($data);
+		return $data;
 	}
 }

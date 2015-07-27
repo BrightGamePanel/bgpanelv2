@@ -64,7 +64,10 @@ Flight::route('/logout/', function() {
 });
 
 
-// DEFAULT BEHAVIOUR
+/**
+ * HUMAN 2 MACHINE
+ * DEFAULT BEHAVIOUR
+ */
 Flight::route('GET|POST|PUT|DELETE (/@module(/@page(/@element)))', function( $module, $page, $element ) {
 
 	// Var Init
