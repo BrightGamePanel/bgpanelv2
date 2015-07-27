@@ -111,5 +111,8 @@ switch (ENV_RUNTIME)
 		// Module Reflection Class
 		require( APP_DIR	. '/core/reflection.class.php' );
 
+		// API Service
+		require( APP_DIR	. '/core/api.class.php' );
+
 		break;
 }

@@ -42,7 +42,7 @@ if ( !class_exists('Flight')) {
 
 
 // HTTP status codes VIEW
-Flight::route('GET|POST|PUT|DELETE /@http:[0-9]{3}', function( $http ) {
+Flight::route('/@http:[0-9]{3}', function( $http ) {
 	header( Core_Http_Status_Codes::httpHeaderFor( $http ) );
 
 	echo Core_Http_Status_Codes::getMessageForCode( $http );
@@ -57,10 +57,47 @@ Flight::route('/logout/', function() {
 
 	if ($authService->getSessionValidity() == TRUE) {
 		Core_AuthService::logout();
-		Flight::redirect('/login/');
 	}
 
-	die();
+	Flight::redirect('/login/');
+});
+
+
+/**
+ * MACHINE 2 MACHINE
+ */
+Flight::route('GET|POST|PUT|DELETE /api(/@collection/(@element))', function( $collection, $element ) {
+
+	/**
+
+	* WARNING SECURE
+	**/
+	if (!Flight::request()->secure && ENV_RUNTIME == 'M2M') {
+
+		// Get and Verify Headers
+		$headers = apache_request_headers();
+
+		if (!empty($headers['X-API-KEY']) && !empty($headers['X-API-USER']) && !empty($headers['X-API-PASS'])) {
+
+			// Machine Authentication
+			if (Core_API::checkRemoteHost( Flight::request()->ip ) == TRUE) {
+
+				exit(var_dump( $headers ));
+			}
+		}
+		else {
+
+			// Unauthorized
+			header( Core_Http_Status_Codes::httpHeaderFor( 401 ) );
+		}
+	}
+	else {
+
+		// Unsecure
+		header( Core_Http_Status_Codes::httpHeaderFor( 418 ) );
+	}
+
+	exit( 0 );
 });
 
 
@@ -168,7 +205,7 @@ Flight::route('GET|POST|PUT|DELETE (/@module(/@page(/@element)))', function( $mo
 			//}
 
 
-			// Verify User Authorization On The Requested Page
+			// Verify User Authorization On The Requested Page (Collection)
 			// Root User Can Bypass
 
 			if ( $rbac->Users->hasRole( 'root', $authService->getSessionInfo('ID') ) || $rbac->check( $collection, $authService->getSessionInfo('ID') ) ) {

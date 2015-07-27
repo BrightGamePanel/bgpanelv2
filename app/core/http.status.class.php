@@ -74,6 +74,7 @@ class Core_Http_Status_Codes {
 	const HTTP_UNSUPPORTED_MEDIA_TYPE = 415;
 	const HTTP_REQUESTED_RANGE_NOT_SATISFIABLE = 416;
 	const HTTP_EXPECTATION_FAILED = 417;
+	const HTTP_I_M_A_TEAPOT = 418;
 
 	// [Server Error 5xx]
 	const HTTP_INTERNAL_SERVER_ERROR = 500;
@@ -126,6 +127,7 @@ class Core_Http_Status_Codes {
 		415 => '415 Unsupported Media Type',
 		416 => '416 Requested Range Not Satisfiable',
 		417 => '417 Expectation Failed',
+		418 => '418 I\'m a teapot',
 
 		// [Server Error 5xx]
 		500 => '500 Internal Server Error',
