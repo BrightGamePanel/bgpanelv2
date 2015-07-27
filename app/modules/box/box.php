@@ -41,7 +41,7 @@ $gui = new Core_GUI( $module );
 /**
  * Javascript Generator
  */
-$js = new Core_JS_GUI();
+$js = new Core_JS_GUI( $module );
 
 /**
  * Build Page Header
@@ -183,9 +183,12 @@ if ( bgp_format_date(BGP_LAST_CRON_RUN) == 'Never' ) {
 
 /**
  * Generate AngularJS Code
+ * @arg $task
+ * @arg $inputs
+ * @arg $redirect
  */
 
-$js->getAngularController( '', $module::getModuleName( '/' ), array());
+$js->getAngularController();
 
 ?>
 					<!-- END: SCRIPT -->

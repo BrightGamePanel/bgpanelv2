@@ -41,7 +41,7 @@ $gui = new Core_GUI( $module );
 /**
  * Javascript Generator
  */
-$js = new Core_JS_GUI();
+$js = new Core_JS_GUI( $module );
 
 /**
  * Build Page Header
@@ -167,9 +167,12 @@ unset($analysis);
 
 /**
  * Generate AngularJS Code
+ * @arg $task
+ * @arg $inputs
+ * @arg $redirect
  */
 
-$js->getAngularController( 'optimizeDB', $module::getModuleName( '/' ), array(), './tools/opdb');
+$js->getAngularController( 'optimizeDB', array(), './tools/opdb' );
 
 ?>
 					<!-- END: SCRIPT -->

@@ -41,7 +41,7 @@ $gui = new Core_GUI( $module );
 /**
  * Javascript Generator
  */
-$js = new Core_JS_GUI();
+$js = new Core_JS_GUI( $module );
 
 /**
  * Build Page Header
@@ -96,7 +96,7 @@ echo "\r\n<!--END : PHP Info-->\r\n";
  * Generate AngularJS Code
  */
 
-$js->getAngularController( '', $module::getModuleName( '/' ), array());
+$js->getAngularController();
 
 ?>
 					<!-- END: SCRIPT -->

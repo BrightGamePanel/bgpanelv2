@@ -41,7 +41,7 @@ $gui = new Core_GUI( $module );
 /**
  * Javascript Generator
  */
-$js = new Core_JS_GUI();
+$js = new Core_JS_GUI( $module );
 
 /**
  * Build Page Header
@@ -219,6 +219,9 @@ foreach ($languages as $key => $value)
 
 /**
  * Generate AngularJS Code
+ * @arg $task
+ * @arg $inputs
+ * @arg $redirect
  */
 
 $fields = array(
@@ -231,7 +234,7 @@ $fields = array(
 		'language'		=> htmlspecialchars( Core_AuthService::getSessionInfo('LANG'), ENT_QUOTES)
 	);
 
-$js->getAngularController( 'updateUserConfig', $module::getModuleName( '/' ), $fields, './');
+$js->getAngularController( 'updateUserConfig', $fields, './' );
 
 ?>
 					<!-- END: SCRIPT -->

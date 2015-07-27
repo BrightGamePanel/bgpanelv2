@@ -41,7 +41,7 @@ $gui = new Core_GUI( $module );
 /**
  * Javascript Generator
  */
-$js = new Core_JS_GUI();
+$js = new Core_JS_GUI( $module );
 
 /**
  * Build Page Header
@@ -211,6 +211,9 @@ foreach ($templates as $key => $value)
 
 /**
  * Generate AngularJS Code
+ * @arg $task
+ * @arg $inputs
+ * @arg $redirect
  */
 
 $fields = array(
@@ -220,7 +223,7 @@ $fields = array(
 		'userTemplate' 		=> htmlspecialchars( $current_config['user_template'], ENT_QUOTES)
 	);
 
-$js->getAngularController( 'updateSysConfig', $module::getModuleName( '/' ), $fields, './config' );
+$js->getAngularController( 'updateSysConfig', $fields, './config' );
 
 ?>
 					<!-- END: SCRIPT -->

@@ -83,9 +83,6 @@ Flight::route('GET|POST|PUT|DELETE (/@module(/@page(/@element)))', function( $mo
 		$element = '';
 	}
 
-	// Process Task Query Parameter
-	$task = Flight::request()->query['task'];
-
 	// User Authentication
 
 	$authService = Core_AuthService::getAuthService();
@@ -96,7 +93,7 @@ Flight::route('GET|POST|PUT|DELETE (/@module(/@page(/@element)))', function( $mo
 
 		// The user is not logged in
 
-		if ($module != 'login') {
+		if (!empty($module) && $module != 'login') {
 
 			// Redirect to login form
 
@@ -109,6 +106,9 @@ Flight::route('GET|POST|PUT|DELETE (/@module(/@page(/@element)))', function( $mo
 		switch (Flight::request()->method)
 		{
 			case 'GET':
+				// Process Task Query Parameter
+				$task = Flight::request()->query['task'];
+
 				// Forgot passwd? Page
 				if ( !empty($page) && $page == 'password' ) {
 					$mod_path = MODS_DIR . '/login/login.password.php';
@@ -125,7 +125,7 @@ Flight::route('GET|POST|PUT|DELETE (/@module(/@page(/@element)))', function( $mo
 
 			case 'POST':
 				// Login Controller
-					$mod_path = MODS_DIR . '/login/login.process.php';
+				$mod_path = MODS_DIR . '/login/login.process.php';
 				break;
 
 			default:
@@ -152,15 +152,15 @@ Flight::route('GET|POST|PUT|DELETE (/@module(/@page(/@element)))', function( $mo
 
 
 			$collection = str_replace('//', '/', ucfirst($module) . '/');
-			$resource  = NULL;
+			//$resource  = NULL;
 
 			if (!empty($page)) {
 				$collection = str_replace('//', '/', ucfirst($module) . '/' . $page . '/');
 			}
 
-			if (!empty($element)) {
-				$resource = str_replace('//', '/', ucfirst($module) . '/resource/' . $element);
-			}
+			//if (!empty($element)) {
+			//	$resource = str_replace('//', '/', ucfirst($module) . '/resource/' . $element);
+			//}
 
 
 			// Verify User Authorization On The Requested Ressource
@@ -176,17 +176,21 @@ Flight::route('GET|POST|PUT|DELETE (/@module(/@page(/@element)))', function( $mo
 					Flight::redirect('/503'); // If the maintenance mode is ON, we drop the user.
 				}
 
-				// User Is Allowed
-
 				switch (Flight::request()->method)
 				{
 					case 'GET':
+						// Process Task Query Parameter
+						$task = Flight::request()->query['task'];
+
 						// Page
 						if ( !empty($page) ) {
 							$mod_path = MODS_DIR . '/' . $module . '/' . $module . '.' . $page . '.php';
 						}
 						// Controller
 						else if ( !empty($page) && $page == 'process' && !empty($task) ) {
+
+							exit(var_dump($task));
+
 							$mod_path = MODS_DIR . '/' . $module . '/' . $module . '.process.php';
 						}
 						// Module Page
@@ -199,7 +203,12 @@ Flight::route('GET|POST|PUT|DELETE (/@module(/@page(/@element)))', function( $mo
 					case 'PUT':
 					case 'DELETE':
 						// Controller
-							$mod_path = MODS_DIR . '/' . $module . '/' . $module . '.process.php';
+
+						exit(var_dump( Flight::request() ));
+						exit(var_dump( Flight::request()->data->task ));
+
+						$mod_path = MODS_DIR . '/' . $module . '/' . $module . '.process.php';
+
 						break;
 
 					default:

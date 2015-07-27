@@ -54,19 +54,9 @@ class BGP_Module
 		self::requireDepends( );
 	}
 
-	public static function getModuleName( $format = '.' ) {
+	public static function getModuleName( ) {
 
-		switch ($format)
-		{
-			case '/':
-				return str_replace('.', '/', self::$module_name);
-
-			case '_':
-				return str_replace('.', '_', self::$module_name);
-
-			default:
-				return self::$module_name;
-		}
+		return self::$module_name;
 	}
 
 	public static function getModuleInfo( $info = '' ) {

@@ -31,17 +31,17 @@
 
 require( MODS_DIR . '/' . basename(__DIR__) . '/login.class.php' );
 
-$loginModule = new BGP_Module_Login();
+$module = new BGP_Module_Login();
 
 /**
  * Call GUI Builder
  */
-$gui = new Core_GUI( $loginModule );
+$gui = new Core_GUI( $module );
 
 /**
  * Javascript Generator
  */
-$js = new Core_JS_GUI();
+$js = new Core_JS_GUI( $module );
 
 /**
  * Build Page Header
@@ -137,6 +137,9 @@ if ( $authService->isBanned() ) {
 
 /**
  * Generate AngularJS Code
+ * @arg $task
+ * @arg $inputs
+ * @arg $redirect
  */
 
 $fields = array(
@@ -145,7 +148,7 @@ $fields = array(
 		'Captcha'
 	);
 
-$js->getAngularController( 'sendNewPassword', $loginModule::getModuleName( '/' ), $fields, './login' );
+$js->getAngularController( 'sendNewPassword', $fields, './login' );
 
 ?>
 					<!-- END: SCRIPT -->
@@ -162,6 +165,6 @@ $js->getAngularController( 'sendNewPassword', $loginModule::getModuleName( '/' )
 $gui->getFooter();
 
 // Clean Up
-unset( $loginModule, $gui, $js );
+unset( $module, $gui, $js );
 
 ?>

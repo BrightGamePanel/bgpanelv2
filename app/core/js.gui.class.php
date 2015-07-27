@@ -29,19 +29,33 @@
 
 class Core_JS_GUI
 {
+	private $module_name;
+
+	/**
+	 * Default Constructor
+	 *
+	 * @return void
+	 * @access public
+	 */
+	function __construct( $bgp_module )
+	{
+		if ( !empty($bgp_module) && is_object($bgp_module) && is_subclass_of($bgp_module, 'BGP_Module') ) {
+			$this->module_name = $bgp_module::getModuleName( );
+		}
+	}
 
 	/**
 	 * Dynamically Generate An AngularJS Controller
 	 *
 	 * @param String $task
-	 * @param String $module
 	 * @param Array $variables
 	 * @param String $redirect
 	 * @return String
 	 * @access public
 	 */
-	public function getAngularController( $task, $module = '', $variables = array(), $redirect = './', $debug = FALSE )
+	public function getAngularController( $task = '', $variables = array(), $redirect = './', $debug = FALSE )
 	{
+		$module = $this->module_name;
 //------------------------------------------------------------------------------------------------------------+
 ?>
 					<script>
@@ -58,7 +72,7 @@ class Core_JS_GUI
 <?php
 
 		// Do not define controller if no task has been given
-		if (!empty($task))
+		if (!empty($task) && !empty($module))
 		{
 ?>
 							// $scope will allow this to pass between controller and view
