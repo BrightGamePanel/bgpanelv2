@@ -633,7 +633,7 @@ else if ($_GET['step'] == 'one')
 
 	if (!defined('APP_API_KEY'))
 	{
-		if (is_writable( CONF_API_INI ))
+		if (is_writable( CONF_API_KEY_INI ))
 		{
 ?>
 						<tr class="success">
@@ -917,9 +917,9 @@ APP_SESSION_KEY 	= \"".$APP_SESSION_KEY."\"
 				exit('Critical error while installing ! Unable to write to /conf/secret.keys.ini !');
 			}
 
-			if (is_writable( CONF_API_INI )) {
-				$handle = fopen( CONF_API_INI, 'w');
-				$data = "; API CONFIGURATION FILE
+			if (is_writable( CONF_API_KEY_INI )) {
+				$handle = fopen( CONF_API_KEY_INI, 'w');
+				$data = "; API KEY FILE
 APP_API_KEY 		= \"".$APP_API_KEY."\"
 ";
 				fwrite($handle, $data);
@@ -1018,6 +1018,7 @@ APP_API_KEY 		= \"".$APP_API_KEY."\"
 
 			// Create Default Roles
 
+			$apiRoleId = $rbac->Roles->add('api', 'API User');
 			$adminRoleId = $rbac->Roles->add('admin', 'System Administrator');
 			$userRoleId  = $rbac->Roles->add('user', 'Regular System User');
 
@@ -1047,6 +1048,9 @@ APP_API_KEY 		= \"".$APP_API_KEY."\"
 						break 1;
 				}
 			}
+
+			// Assign API Role
+			$rbac->Users->assign($apiRoleId, 2);
 
 			break;
 

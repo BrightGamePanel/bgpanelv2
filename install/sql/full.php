@@ -494,18 +494,52 @@ try {
 	)
 	VALUES (
 	  1,
-	  'admin',
+	  'root',
 	  '".getHash('password', $APP_AUTH_SALT)."',
-	  'Super',
-	  'User',
-	  'anon@nimus.com',
+	  'root',
+	  'root',
+	  'root@toor.com',
 	  '',
 	  'Active',
 	  '".CONF_DEFAULT_LOCALE."',
 	  '".date('Y-m-d H:i:s', time())."',
 	  '".date('Y-m-d H:i:s', time())."',
-	  '~',
-	  '~',
+	  '',
+	  '',
+	  NULL
+	)  ; " );
+
+		$dbh->exec( "
+	INSERT INTO ".DB_PREFIX."user (
+	  user_id,
+	  username,
+	  password,
+	  firstname,
+	  lastname,
+	  email,
+	  notes,
+	  status,
+	  lang,
+	  last_login,
+	  last_activity,
+	  last_ip,
+	  last_host,
+	  token
+	)
+	VALUES (
+	  2,
+	  'api',
+	  '".getHash(str_shuffle( 'abcdefghijkmnpqrstuvwxyz23456789-#@*!_?ABCDEFGHJKLMNPQRSTUVWXYZ' ), $APP_AUTH_SALT)."',
+	  '',
+	  '',
+	  'root@toor.com',
+	  '',
+	  'Inactive',
+	  '".CONF_DEFAULT_LOCALE."',
+	  '".date('Y-m-d H:i:s', time())."',
+	  '".date('Y-m-d H:i:s', time())."',
+	  '',
+	  '',
 	  NULL
 	)  ; " );
 
