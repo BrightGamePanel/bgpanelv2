@@ -44,7 +44,9 @@ if ( !class_exists('Flight')) {
 // HTTP status codes VIEW
 Flight::route('GET|POST|PUT|DELETE /@http:[0-9]{3}', function( $http ) {
 	header( Core_Http_Status_Codes::httpHeaderFor( $http ) );
+
 	echo Core_Http_Status_Codes::getMessageForCode( $http );
+
 	die();
 });
 
@@ -129,7 +131,7 @@ Flight::route('GET|POST|PUT|DELETE (/@module(/@page(/@element)))', function( $mo
 				break;
 
 			default:
-				break;
+				Flight::redirect('/400');
 		}
 
 		bgp_safe_require( $mod_path );
@@ -163,7 +165,7 @@ Flight::route('GET|POST|PUT|DELETE (/@module(/@page(/@element)))', function( $mo
 			//}
 
 
-			// Verify User Authorization On The Requested Ressource
+			// Verify User Authorization On The Requested Page
 			// Root User Can Bypass
 
 			if ( $rbac->Users->hasRole( 'root', $authService->getSessionInfo('ID') ) || $rbac->check( $collection, $authService->getSessionInfo('ID') ) ) {
@@ -189,9 +191,17 @@ Flight::route('GET|POST|PUT|DELETE (/@module(/@page(/@element)))', function( $mo
 						// Controller
 						else if ( !empty($page) && $page == 'process' && !empty($task) ) {
 
-							exit(var_dump($task));
+							// Verify User Authorization On The Called Method
 
-							$mod_path = MODS_DIR . '/' . $module . '/' . $module . '.process.php';
+							$taskPerm = ucfirst($module). '.' . $task;
+
+							if ( $rbac->Users->hasRole( 'root', $authService->getSessionInfo('ID') ) || $rbac->check( $taskPerm, $authService->getSessionInfo('ID') ) ) {
+
+								$mod_path = MODS_DIR . '/' . $module . '/' . $module . '.process.php';
+							}
+							else {
+								Flight::redirect('/403');
+							}
 						}
 						// Module Page
 						else {
@@ -203,16 +213,23 @@ Flight::route('GET|POST|PUT|DELETE (/@module(/@page(/@element)))', function( $mo
 					case 'PUT':
 					case 'DELETE':
 						// Controller
+						$task = Flight::request()->data->task;
 
-						exit(var_dump( Flight::request() ));
-						exit(var_dump( Flight::request()->data->task ));
+						// Verify User Authorization On The Called Method
 
-						$mod_path = MODS_DIR . '/' . $module . '/' . $module . '.process.php';
+						$taskPerm = ucfirst($module). '.' . $task;
 
+						if ( $rbac->Users->hasRole( 'root', $authService->getSessionInfo('ID') ) || $rbac->check( $taskPerm, $authService->getSessionInfo('ID') ) ) {
+
+							$mod_path = MODS_DIR . '/' . $module . '/' . $module . '.process.php';
+						}
+						else {
+							Flight::redirect('/403');
+						}
 						break;
 
 					default:
-						break;
+						Flight::redirect('/400');
 				}
 
 				bgp_safe_require( $mod_path );
