@@ -38,9 +38,6 @@ class Core_AuthService
 	// Session
 	private $session = array();
 
-	// Hash Salt
-	public $auth_salt;
-
 	// Authentication Passphrase
 	private $auth_key;
 
@@ -68,12 +65,6 @@ class Core_AuthService
 		// SECRET KEYS
 		$CONFIG = parse_ini_file( CONF_SECRET_INI );
 
-
-		// AUTH SALT
-		$this->auth_salt = $CONFIG['APP_AUTH_SALT'];
-		if ( empty($this->auth_salt) ) {
-			trigger_error("Core_AuthService -> Auth salt is missing !", E_USER_ERROR);
-		}
 
 		// LOGGED IN KEY
 		$this->auth_key = $CONFIG['APP_LOGGED_IN_KEY'];
@@ -225,9 +216,16 @@ class Core_AuthService
 	 * @access public
 	 */
 	public static function getHash( $data ) {
-		$authService = Core_AuthService::getAuthService();
+		// SECRET KEYS
+		$CONFIG = parse_ini_file( CONF_SECRET_INI );
 
-		return hash( 'sha512', $authService->auth_salt . $data );
+		// AUTH SALT
+		$auth_salt = $CONFIG['APP_AUTH_SALT'];
+		if ( empty($auth_salt) ) {
+			trigger_error("Core_AuthService -> Auth salt is missing !", E_USER_ERROR);
+		}
+
+		return hash( 'sha512', $auth_salt . $data );
 	}
 
 	/**

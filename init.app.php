@@ -225,16 +225,18 @@ if ( ENV_RUNTIME != 'INSTALL_WIZARD' ) {
 }
 
 if ( ENV_RUNTIME != 'INSTALL_WIZARD' ) {
-	/**
-	 * SESSION HANDLER
-	 */
-	require( APP_DIR . '/core/session.class.php' );
+	if ( ENV_RUNTIME == 'H2M' ) {
+		/**
+		 * SESSION HANDLER
+		 */
+		require( APP_DIR . '/core/session.class.php' );
 
-	// Start new or resume existing session
-	$coreSessionHandler = new Core_SessionHandler();
-	session_set_save_handler($coreSessionHandler, TRUE);
-	session_start();
-	$_SESSION['TIMESTAMP'] = time();
+		// Start new or resume existing session
+		$coreSessionHandler = new Core_SessionHandler();
+		session_set_save_handler($coreSessionHandler, TRUE);
+		session_start();
+		$_SESSION['TIMESTAMP'] = time();
+	}
 
 	/**
 	 * VALITRON Configuration

@@ -68,41 +68,38 @@ Flight::route('/logout/', function() {
  */
 Flight::route('GET|POST|PUT|DELETE /api(/@collection/(@element))', function( $collection, $element ) {
 
-	/**
-
-	* WARNING UNSECURE !Flight::request()->secure
-	**/
-
-	if (boolval(APP_API_ENABLE) == TRUE)
+	if (boolval(APP_API_ENABLE) === TRUE)
 	{
-		if (!Flight::request()->secure && ENV_RUNTIME == 'M2M')
+		//if (Flight::request()->secure && ENV_RUNTIME == 'M2M')
+		if (ENV_RUNTIME == 'M2M')
 		{
 			// Get and Verify Headers
 			$headers = apache_request_headers();
 
-			if (!empty($headers['X-API-KEY']) && !empty($headers['X-API-USER']) && !empty($headers['X-API-PASS']))
+			if (!empty($headers['X-API-KEY']) AND !empty($headers['X-API-USER']) AND !empty($headers['X-API-PASS']))
 			{
 				// Machine Authentication
-				if (Core_API::checkRemoteHost( Flight::request()->ip ) == TRUE)
+				if (Core_API::checkRemoteHost( Flight::request()->ip, $headers['X-API-KEY'], $headers['X-API-USER'], $headers['X-API-PASS'] ) === TRUE)
 				{
 
 					exit(var_dump( 'toto' ));
 				}
+				else {
+					// Unauthorized
+					header( Core_Http_Status_Codes::httpHeaderFor( 401 ) );
+				}
 			}
 			else {
-
 				// Unauthorized
 				header( Core_Http_Status_Codes::httpHeaderFor( 401 ) );
 			}
 		}
 		else {
-
 			// Unsecure
 			header( Core_Http_Status_Codes::httpHeaderFor( 418 ) );
 		}
 	}
 	else {
-
 		// Forbidden
 		header( Core_Http_Status_Codes::httpHeaderFor( 403 ) );
 	}
