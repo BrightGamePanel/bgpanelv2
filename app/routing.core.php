@@ -70,8 +70,7 @@ Flight::route('GET|POST|PUT|DELETE /api(/@collection/(@element))', function( $co
 
 	if (boolval(APP_API_ENABLE) === TRUE)
 	{
-		//if (Flight::request()->secure && ENV_RUNTIME == 'M2M')
-		if (ENV_RUNTIME == 'M2M')
+		if ( ( Flight::request()->secure || ( boolval(APP_API_ALLOW_UNSECURE) === TRUE ) ) && ENV_RUNTIME == 'M2M' )
 		{
 			// Get and Verify Headers
 			$headers = apache_request_headers();
