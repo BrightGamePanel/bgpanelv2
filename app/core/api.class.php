@@ -175,6 +175,60 @@ class Core_API
 
 	public static function getWADLResources( ) {
 
+		$authorizations = self::getAPIUserPermissions();
+
+		exit(var_dump($authorizations));
+
 		return "";
+	}
+
+	public static function getAPIUserPermissions( ) {
+
+		// NIST Level 2 Standard Role Based Access Control Library
+
+		$rbac = new PhpRbac\Rbac();
+
+		// root api users access all methods and resources
+
+		// if ( $rbac->Users->hasRole( 'root', $_SERVER['PHP_AUTH_USER'] ) ) {
+
+		// }
+
+		// fetch all allowed resources and methods
+
+		$roles = $rbac->Users->allRoles( $_SERVER['PHP_AUTH_USER'] );
+		$perms = array();
+		$authorizations = array();
+
+		foreach ($roles as $role) {
+			$perms[] = $rbac->Roles->permissions( $role['ID'], false );
+		}
+
+		foreach ($perms as $perm) {
+
+			foreach ($perm as $p) {
+
+				// filter pages and get only modules and methods
+				if (substr_count($p['Title'], '/') === intval(1)) {
+					$module = $p['Title'];
+					$module = substr(strtolower($module), 0, -1);
+
+					if (!isset($authorizations[$module])) {
+						$authorizations[$module] = array();
+					}
+				}
+				else if (preg_match("#(^[A-Z])*(\.)#", $p['Title'])) {
+					list($module, $method) = explode(".", $p['Title']);
+					$module = strtolower($module);
+
+					// append method only if the module was allowed
+					if (isset($authorizations[$module])) {
+						$authorizations[$module][] = $method;
+					}
+				}
+			}
+		}
+
+		return $authorizations;
 	}
 }

@@ -103,7 +103,7 @@ Flight::route('GET|POST|PUT|DELETE /api(/@collection(/@element))', function( $co
 				if (Core_API::checkRemoteHost( Flight::request()->ip, $headers['X-API-KEY'], $headers['X-API-USER'], $headers['X-API-PASS'] ) === TRUE)
 				{
 					// Resource Access
-					if (!empty($resource))
+					if ($resource != '/')
 					{
 						exit(var_dump( $resource ));
 					}
