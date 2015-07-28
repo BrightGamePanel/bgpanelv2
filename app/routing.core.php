@@ -93,13 +93,13 @@ Flight::route('GET|POST|PUT|DELETE /api(/@resource)', function( $resource ) {
 					// Resource Access
 					if (!empty($resource))
 					{
-
 						exit(var_dump( $resource ));
 					}
-					else {
+					else
+					{
 						// Web Application Description Language (WADL)
 
-						if (Flight::request()->method == 'GET') {
+						if (Flight::request()->method == 'GET' && Flight::request()->url == '/api?WADL') {
 							header('Content-Type: application/xml; charset=utf-8');
 							echo Core_API::getWADL( );
 						}

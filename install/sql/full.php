@@ -155,6 +155,7 @@ try {
 	  ('panel_name',		'BrightGamePanel V2'),
 	  ('system_url',		'http://localhost/'),
 	  ('panel_version',		'".LASTBGPVERSION."'),
+	  ('api_version',		'".LASTAPIVERSION."'),
 	  ('maintenance_mode',	'0'),
 	  ('last_cron_run',		'Never'),
 	  ('user_template',		'bootstrap.min.css')  ; " );

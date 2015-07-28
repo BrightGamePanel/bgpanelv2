@@ -36,6 +36,8 @@ if (!defined('LICENSE'))
 
 //---------------------------------------------------------+
 
+$last_api_version = '100';
+
 $bgpVersions = array(
 	'0.1.0',
 );
@@ -47,5 +49,6 @@ $bgpVersions = array(
  */
 
 define( 'LASTBGPVERSION', end($bgpVersions) );
+define( 'LASTAPIVERSION', end($last_api_version) );
 
 ?>
