@@ -149,13 +149,14 @@ class Core_API
 			$resourcesScheme = 'https://';
 		}
 
-		$applicationTitle = "BrightGamePanel Web Services (build " . BGP_API_VERSION . ")";
+		$applicationDoc = "BrightGamePanel REST API (build " . BGP_API_VERSION . ")";
 
 		$resourcesBaseUrl = get_url($_SERVER);
 		$resourcesBaseUrl = str_replace('?WADL', '/', $resourcesBaseUrl);
 
-		$header = "<application xmlns:xsd=\"http://www.w3.org/Submission/wadl/wadl.xsd\">
-   <doc xml:lang=\"en\" title=\"" . $applicationTitle . "\"/>
+		$header = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+   <application xmlns=\"http://wadl.dev.java.net/2009/02\">
+   <doc xml:lang=\"en\" title=\"BGPanel API\">" . $applicationDoc . "</doc>
    <resources base=\"" . $resourcesBaseUrl . "\">
 ";
 
