@@ -66,21 +66,33 @@ Flight::route('/logout/', function() {
 /**
  * MACHINE 2 MACHINE
  */
-Flight::route('GET|POST|PUT|DELETE /api(/@resource)', function( $resource ) {
+Flight::route('GET|POST|PUT|DELETE /api(/@collection(/@element))', function( $collection, $element ) {
+
+	if (ENV_RUNTIME != 'M2M') {
+		header( Core_Http_Status_Codes::httpHeaderFor( 403 ) );
+		exit( 1 );
+	}
 
 	// Vars Init
 
-	if (isset($resource) && preg_match("#\w#", $resource)) {
-		$resource = strtolower($resource);
+	if (isset($collection) && preg_match("#\w#", $collection)) {
+		$collection = strtolower($collection);
 	} else {
-		$resource = '';
+		$collection = '';
 	}
+	if (isset($element) && preg_match("#\w#", $element)) {
+		$element = strtolower($element);
+	} else {
+		$element = '';
+	}
+
+	$resource = $collection . '/' . $element;
 
 	// API Process
 
 	if (boolval(APP_API_ENABLE) === TRUE)
 	{
-		if ( ( Flight::request()->secure || ( boolval(APP_API_ALLOW_UNSECURE) === TRUE ) ) && ENV_RUNTIME == 'M2M' )
+		if ( Flight::request()->secure || ( boolval(APP_API_ALLOW_UNSECURE) === TRUE ) )
 		{
 			// Get and Verify Headers
 			$headers = apache_request_headers();
@@ -138,6 +150,11 @@ Flight::route('GET|POST|PUT|DELETE /api(/@resource)', function( $resource ) {
  * DEFAULT BEHAVIOUR
  */
 Flight::route('GET|POST|PUT|DELETE (/@module(/@page))', function( $module, $page ) {
+
+	if (ENV_RUNTIME != 'H2M') {
+		Flight::redirect('/403');
+		exit( 1 );
+	}
 
 	// Vars Init
 

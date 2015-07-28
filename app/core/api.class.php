@@ -100,6 +100,9 @@ class Core_API
 					die();
 				}
 
+				// Update $_SERVER
+				$_SERVER['PHP_AUTH_USER'] = $user_id;
+
 				return TRUE;
 			}
 		}
@@ -160,7 +163,7 @@ class Core_API
    <resources base=\"" . $resourcesBaseUrl . "\">
 ";
 
-		$body = "";
+		$body = self::getWADLResources();
 
 		$footer = "
    </resources>
@@ -168,5 +171,10 @@ class Core_API
 ";
 
 		return $header . $body . $footer;
+	}
+
+	public static function getWADLResources( ) {
+
+		return "";
 	}
 }
