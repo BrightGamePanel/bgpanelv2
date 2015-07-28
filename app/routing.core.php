@@ -66,7 +66,17 @@ Flight::route('/logout/', function() {
 /**
  * MACHINE 2 MACHINE
  */
-Flight::route('GET|POST|PUT|DELETE /api(/@collection(/@element))', function( $collection, $element ) {
+Flight::route('GET|POST|PUT|DELETE /api(/@resource)', function( $resource ) {
+
+	// Vars Init
+
+	if (isset($resource) && preg_match("#\w#", $resource)) {
+		$resource = strtolower($resource);
+	} else {
+		$resource = '';
+	}
+
+	// API Process
 
 	if (boolval(APP_API_ENABLE) === TRUE)
 	{
@@ -80,33 +90,11 @@ Flight::route('GET|POST|PUT|DELETE /api(/@collection(/@element))', function( $co
 				// Machine Authentication
 				if (Core_API::checkRemoteHost( Flight::request()->ip, $headers['X-API-KEY'], $headers['X-API-USER'], $headers['X-API-PASS'] ) === TRUE)
 				{
+					// Resource Access
+					if (!empty($resource))
+					{
 
-					// Vars Init
-
-					if (isset($collection) && preg_match("#\w#", $collection)) {
-						$collection = strtolower($collection);
-					} else {
-						$collection = '';
-					}
-					if (isset($element) && preg_match("#\w#", $element)) {
-						$element = strtolower($element);
-					} else {
-						$element = '';
-					}
-
-					/**
-					 * Resources
-					 */
-
-					if (!empty($collection) && !empty($element)) {
-						// Element Within a Collection
-
-						exit(var_dump( $element ));
-					}
-					else if (!empty($collection)) {
-						// Collection
-
-						exit(var_dump( $collection ));
+						exit(var_dump( $resource ));
 					}
 					else {
 						// Web Application Description Language (WADL)
@@ -149,7 +137,7 @@ Flight::route('GET|POST|PUT|DELETE /api(/@collection(/@element))', function( $co
  * HUMAN 2 MACHINE
  * DEFAULT BEHAVIOUR
  */
-Flight::route('GET|POST|PUT|DELETE (/@module(/@page(/@element)))', function( $module, $page, $element ) {
+Flight::route('GET|POST|PUT|DELETE (/@module(/@page))', function( $module, $page ) {
 
 	// Vars Init
 
@@ -162,11 +150,6 @@ Flight::route('GET|POST|PUT|DELETE (/@module(/@page(/@element)))', function( $mo
 		$page = strtolower($page);
 	} else {
 		$page = '';
-	}
-	if (isset($element) && preg_match("#\w#", $element)) {
-		$element = strtolower($element);
-	} else {
-		$element = '';
 	}
 
 	// User Authentication
@@ -237,10 +220,10 @@ Flight::route('GET|POST|PUT|DELETE (/@module(/@page(/@element)))', function( $mo
 
 			$rbac = new PhpRbac\Rbac();
 
-			$collection = str_replace('//', '/', ucfirst($module) . '/');
+			$resource = str_replace('//', '/', ucfirst($module) . '/');
 
 			if (!empty($page)) {
-				$collection = str_replace('//', '/', ucfirst($module) . '/' . $page . '/');
+				$resource = str_replace('//', '/', ucfirst($module) . '/' . $page . '/');
 			}
 
 
@@ -258,10 +241,10 @@ Flight::route('GET|POST|PUT|DELETE (/@module(/@page(/@element)))', function( $mo
 				Flight::redirect('/403');
 			}
 
-			// Verify User Authorization On The Requested Page (Collection)
+			// Verify User Authorization On The Requested Resource
 			// Root Users Can Bypass
 
-			if ( $rbac->Users->hasRole( 'root', $authService->getSessionInfo('ID') ) || $rbac->check( $collection, $authService->getSessionInfo('ID') ) ) {
+			if ( $rbac->Users->hasRole( 'root', $authService->getSessionInfo('ID') ) || $rbac->check( $resource, $authService->getSessionInfo('ID') ) ) {
 
 				switch (Flight::request()->method)
 				{
@@ -278,9 +261,9 @@ Flight::route('GET|POST|PUT|DELETE (/@module(/@page(/@element)))', function( $mo
 
 							// Verify User Authorization On The Called Method
 
-							$taskPerm = ucfirst($module). '.' . $task;
+							$resourcePerm = ucfirst($module). '.' . $task;
 
-							if ( $rbac->Users->hasRole( 'root', $authService->getSessionInfo('ID') ) || $rbac->check( $taskPerm, $authService->getSessionInfo('ID') ) ) {
+							if ( $rbac->Users->hasRole( 'root', $authService->getSessionInfo('ID') ) || $rbac->check( $resourcePerm, $authService->getSessionInfo('ID') ) ) {
 
 								$mod_path = MODS_DIR . '/' . $module . '/' . $module . '.process.php';
 							}
@@ -302,9 +285,9 @@ Flight::route('GET|POST|PUT|DELETE (/@module(/@page(/@element)))', function( $mo
 
 						// Verify User Authorization On The Called Method
 
-						$taskPerm = ucfirst($module). '.' . $task;
+						$resourcePerm = ucfirst($module). '.' . $task;
 
-						if ( $rbac->Users->hasRole( 'root', $authService->getSessionInfo('ID') ) || $rbac->check( $taskPerm, $authService->getSessionInfo('ID') ) ) {
+						if ( $rbac->Users->hasRole( 'root', $authService->getSessionInfo('ID') ) || $rbac->check( $resourcePerm, $authService->getSessionInfo('ID') ) ) {
 
 							$mod_path = MODS_DIR . '/' . $module . '/' . $module . '.process.php';
 						}
