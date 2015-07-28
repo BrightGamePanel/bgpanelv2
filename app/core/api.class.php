@@ -141,4 +141,31 @@ class Core_API
 
 		return FALSE;
 	}
+
+	public static function getWADL( )
+	{
+		$resourcesScheme = 'http://';
+		if (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on') {
+			$resourcesScheme = 'https://';
+		}
+
+		$resourcesBaseUrl = get_url($_SERVER);
+		if (substr($resourcesBaseUrl, -1) != '/') {
+			$resourcesBaseUrl .= '/';
+		}
+
+		$header = "<application xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:html=\"http://www.w3.org/1999/xhtml\" xmlns=\"http://research.sun.com/wadl/2006/10\">
+   <doc xmlns:bgpanel=\"http://www.bgpanel.net/\"/>
+   <resources base=\"" . $resourcesBaseUrl . "\">
+";
+
+		$body = "";
+
+		$footer = "
+   </resources>
+</application>
+";
+
+		return $header . $body . $footer;
+	}
 }

@@ -66,7 +66,7 @@ Flight::route('/logout/', function() {
 /**
  * MACHINE 2 MACHINE
  */
-Flight::route('GET|POST|PUT|DELETE /api(/@collection/(@element))', function( $collection, $element ) {
+Flight::route('GET|POST|PUT|DELETE /api(/@collection(/@element))', function( $collection, $element ) {
 
 	if (boolval(APP_API_ENABLE) === TRUE)
 	{
@@ -81,7 +81,45 @@ Flight::route('GET|POST|PUT|DELETE /api(/@collection/(@element))', function( $co
 				if (Core_API::checkRemoteHost( Flight::request()->ip, $headers['X-API-KEY'], $headers['X-API-USER'], $headers['X-API-PASS'] ) === TRUE)
 				{
 
-					exit(var_dump( 'toto' ));
+					// Vars Init
+
+					if (isset($collection) && preg_match("#\w#", $collection)) {
+						$collection = strtolower($collection);
+					} else {
+						$collection = '';
+					}
+					if (isset($element) && preg_match("#\w#", $element)) {
+						$element = strtolower($element);
+					} else {
+						$element = '';
+					}
+
+					/**
+					 * Resources
+					 */
+
+					if (!empty($collection) && !empty($element)) {
+						// Element Within a Collection
+
+						exit(var_dump( $element ));
+					}
+					else if (!empty($collection)) {
+						// Collection
+
+						exit(var_dump( $collection ));
+					}
+					else {
+						// Web Application Description Language (WADL)
+
+						if (Flight::request()->method == 'GET') {
+							header('Content-Type: application/xml; charset=utf-8');
+							echo Core_API::getWADL( );
+						}
+						else {
+							// Forbidden
+							header( Core_Http_Status_Codes::httpHeaderFor( 403 ) );
+						}
+					}
 				}
 				else {
 					// Unauthorized
@@ -194,21 +232,16 @@ Flight::route('GET|POST|PUT|DELETE (/@module(/@page(/@element)))', function( $mo
 		}
 		else if (!empty($module)) {
 
+
 			// NIST Level 2 Standard Role Based Access Control Library
 
 			$rbac = new PhpRbac\Rbac();
 
 			$collection = str_replace('//', '/', ucfirst($module) . '/');
-			//$resource  = NULL;
 
 			if (!empty($page)) {
 				$collection = str_replace('//', '/', ucfirst($module) . '/' . $page . '/');
 			}
-
-
-			//if (!empty($element)) {
-			//	$resource = str_replace('//', '/', ucfirst($module) . '/resource/' . $element);
-			//}
 
 
 			// MAINTENANCE CHECK

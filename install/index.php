@@ -1145,14 +1145,14 @@ APP_API_KEY 		= \"".$APP_API_KEY."\"
 ?>
 				<h2>Install Complete!</h2>
 				<legend>Login Information :</legend>
-				Admin Username: <b>admin</b><br />
-				Admin Password: <b>password</b><br />
+				Root Username: <b>root</b><br />
+				Root Password: <b>password</b><br />
 				<hr>
 				<i class="icon-share-alt"></i>&nbsp;<a href="../login">@Login</a>
 				<hr>
 				<div class="alert alert-error">
 					<strong>Wait!</strong>
-					Remember to change the admin username and password.
+					Remember to change the root username and password.
 				</div>
 <?php
 	}
