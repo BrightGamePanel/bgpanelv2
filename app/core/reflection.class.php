@@ -85,6 +85,15 @@ class Core_Reflection
 		return $public_methods;
 	}
 
+	public static function getControllerMethod( $bgp_module_name, $public_method )
+	{
+		$method_definition = array();
+
+		exit(var_dump('BREAK;'));
+
+		return $method_definition;
+	}
+
 	public static function getModulePublicPages( $bgp_module_name )
 	{
 		$public_pages[0]['page'] 		= ucfirst( strtolower( $bgp_module_name ) ) . '/';

@@ -26,6 +26,9 @@
  */
 
 
+if ( !class_exists('Core_Reflection')) {
+	trigger_error('Core_API -> Core_Reflection is missing !');
+}
 
 class Core_API
 {
@@ -175,30 +178,55 @@ class Core_API
 
 	public static function getWADLResources( ) {
 
+		$rbac = new PhpRbac\Rbac();
+
+		$body = '';
+		$reflectedMethods = array();
+
 		$authorizations = self::getAPIUserPermissions();
 
-		exit(var_dump($authorizations));
+		foreach ($authorizations as $module => $methods) {
 
-		return "";
+			foreach ($methods as $method) {
+
+				$reflectedMethods[$module][$method] = Core_Reflection::getControllerMethod( $module, $method );
+			}
+		}
+
+		foreach ($reflectedMethods as $module => $reflectedMethod) {
+			$body .= self::buildAPIResourceXML( $module, $reflectedMethod );
+		}
+
+		return $body;
+	}
+
+	public static function buildAPIResourceXML( $module, $reflectedMethod ) {
+
+		return '';
 	}
 
 	public static function getAPIUserPermissions( ) {
 
-		// NIST Level 2 Standard Role Based Access Control Library
-
 		$rbac = new PhpRbac\Rbac();
 
-		// root api users access all methods and resources
+		$authorizations = array();
 
-		// if ( $rbac->Users->hasRole( 'root', $_SERVER['PHP_AUTH_USER'] ) ) {
+		// Notice:
+		// root+api users access all methods and resources
 
-		// }
+		if ($rbac->Users->hasRole( 'root', $_SERVER['PHP_AUTH_USER'] )) {
+
+			// todo
+			// code
+
+			// return $authorizations;
+		}
 
 		// fetch all allowed resources and methods
 
 		$roles = $rbac->Users->allRoles( $_SERVER['PHP_AUTH_USER'] );
 		$perms = array();
-		$authorizations = array();
+		
 
 		foreach ($roles as $role) {
 			$perms[] = $rbac->Roles->permissions( $role['ID'], false );
