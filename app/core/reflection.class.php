@@ -47,36 +47,36 @@ class Core_Reflection
 			{
 				// Try to load controller
 				require_once( MODS_DIR . '/' . strtolower( $bgp_module_name ) . '/' . strtolower( $bgp_module_name ) . '.controller.class.php' );
+			}
 
-				if (is_subclass_of($bgp_controller_name, 'BGP_Controller'))
-				{
-					// Reflection
-					$reflector = new ReflectionClass( $bgp_controller_name );
-					$methods = $reflector->getMethods( ReflectionMethod::IS_PUBLIC );
+			if (is_subclass_of($bgp_controller_name, 'BGP_Controller'))
+			{
+				// Reflection
+				$reflector = new ReflectionClass( $bgp_controller_name );
+				$methods = $reflector->getMethods( ReflectionMethod::IS_PUBLIC );
 
-					// Filter
-					foreach ($methods as $method) {
-						$name  = $method->name;
-						$class = $method->class;
-						$doc   = $reflector->getMethod( $name )->getDocComment();
+				// Filter
+				foreach ($methods as $method) {
+					$name  = $method->name;
+					$class = $method->class;
+					$doc   = $reflector->getMethod( $name )->getDocComment();
 
-						// Parse Doc
-						if (is_string($doc)) {
-							$doc = new DocBlock($doc);
-							$desc = $doc->description;
-						}
-						else {
-							$desc = '';
-						}
+					// Parse Doc
+					if (is_string($doc)) {
+						$doc = new DocBlock($doc);
+						$desc = $doc->description;
+					}
+					else {
+						$desc = '';
+					}
 
-						if ($class == $bgp_controller_name && $name[0] != '_') {
-							$method = array(
-								'method' 		=> trim(ucfirst( strtolower( $bgp_module_name ) ) . '.' . $name),
-								'description'   => trim($desc)
-							);
+					if ($class == $bgp_controller_name && $name[0] != '_') {
+						$method = array(
+							'method' 		=> trim(ucfirst( strtolower( $bgp_module_name ) ) . '.' . $name),
+							'description'   => trim($desc)
+						);
 
-							$public_methods[] = $method;
-						}
+						$public_methods[] = $method;
 					}
 				}
 			}
@@ -89,7 +89,51 @@ class Core_Reflection
 	{
 		$method_definition = array();
 
-		exit(var_dump('BREAK;'));
+		if (!empty($bgp_module_name) && !empty($public_method))
+		{
+			$bgp_controller_name = 'BGP_Controller_' . ucfirst( strtolower( $bgp_module_name ) );
+
+			if (!class_exists( $bgp_controller_name ) && file_exists( MODS_DIR . '/' . strtolower( $bgp_module_name ) . '/' . strtolower( $bgp_module_name ) . '.controller.class.php' ))
+			{
+				require_once( MODS_DIR . '/' . strtolower( $bgp_module_name ) . '/' . strtolower( $bgp_module_name ) . '.controller.class.php' );
+			}
+
+			if (is_subclass_of($bgp_controller_name, 'BGP_Controller'))
+			{
+				// Reflection
+				$reflector = new ReflectionClass( $bgp_controller_name );
+				$method = $reflector->getMethod( $public_method );
+
+				$name  = $method->name;
+				$class = $method->class;
+				$doc   = $reflector->getMethod( $name )->getDocComment();
+
+				// Parse Doc
+				if (is_string($doc)) {
+					$doc = new DocBlock($doc);
+
+					$desc = $doc->description;
+					$params = $doc->all_params;
+					$args = $params['param'];
+					$http = $params['http_method'][0];
+					$response = $params['return'][0];
+				}
+				else {
+					$desc = '';
+					$params = array();
+					$http = 'GET';
+					$response = 'application/json';
+				}
+
+				$method_definition = array(
+					'id' 			=> trim($public_method),
+					'name'			=> trim($http),
+					'description'   => trim($desc),
+					'params'		=> $args,
+					'response'		=> trim($response)
+				);
+			}
+		}
 
 		return $method_definition;
 	}

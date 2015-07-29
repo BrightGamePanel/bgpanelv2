@@ -42,12 +42,32 @@ class BGP_Controller_Config extends BGP_Controller {
 	}
 
 	/**
-	 * Update System Configuration
+	 * Update One System Setting
+	 *
+	 * @http_method PUT
+	 *
+	 * @param string $setting
+	 *
+	 * @return application/json
+	 *
+	 * @author Nikita Rousseau
+	 */
+	public function updateSysConfigSetting( $setting )
+	{
+		return FALSE;
+	}
+
+	/**
+	 * Update System Full Configuration
+	 *
+	 * @http_method PUT
 	 *
 	 * @param string $panelName
 	 * @param string $panelUrl
 	 * @param string $userTemplate
 	 * @param optional bool $maintenanceMode
+	 *
+	 * @return application/json
 	 *
 	 * @author Nikita Rousseau
 	 */

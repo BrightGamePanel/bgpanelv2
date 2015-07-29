@@ -181,28 +181,38 @@ class Core_API
 		$rbac = new PhpRbac\Rbac();
 
 		$body = '';
-		$reflectedMethods = array();
 
 		$authorizations = self::getAPIUserPermissions();
 
-		foreach ($authorizations as $module => $methods) {
+		foreach ($authorizations as $module => $methods)
+		{
+			$body .= "      <resource path=\"" . $module . "\">";
 
 			foreach ($methods as $method) {
 
-				$reflectedMethods[$module][$method] = Core_Reflection::getControllerMethod( $module, $method );
+				$body .= self::buildAPIMethodXML( Core_Reflection::getControllerMethod( $module, $method ) );
 			}
-		}
 
-		foreach ($reflectedMethods as $module => $reflectedMethod) {
-			$body .= self::buildAPIResourceXML( $module, $reflectedMethod );
+			$body .= "      </resource>";
 		}
 
 		return $body;
 	}
 
-	public static function buildAPIResourceXML( $module, $reflectedMethod ) {
+	public static function buildAPIMethodXML( $reflectedMethod ) {
 
-		return '';
+		$body  = "         <method name=\"" . $reflectedMethod['name'] . "\" id=\"" . $reflectedMethod['id'] . "\">";
+		$body .= "            <doc xml:lang=\"en\" title=\"" . $reflectedMethod['description'] . "\"/>";
+		$body .= "            <request>";
+		$body .= "            </request>";
+		$body .= "            <response>";
+		$body .= "               <representation mediaType=\"" . $reflectedMethod['response'] . "\"/>";
+		$body .= "            </response>";
+		$body .= "         </method>";
+
+		exit(var_dump( $reflectedMethod ));
+
+		return $body;
 	}
 
 	public static function getAPIUserPermissions( ) {

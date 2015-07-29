@@ -27,7 +27,7 @@
 
 
 /**
- * Secure require alias for the routing component of the system
+ * Secure require_once alias for the routing component of the system
  */
 function bgp_safe_require( $path ) {
 	if ( file_exists($path) ) {
