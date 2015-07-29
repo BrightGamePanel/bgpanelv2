@@ -46,7 +46,7 @@ class BGP_Controller_Config extends BGP_Controller {
 	 *
 	 * @http_method PUT
 	 *
-	 * @param string $setting
+	 * @param string $setting query
 	 *
 	 * @return application/json
 	 *
@@ -62,10 +62,10 @@ class BGP_Controller_Config extends BGP_Controller {
 	 *
 	 * @http_method PUT
 	 *
-	 * @param string $panelName
-	 * @param string $panelUrl
-	 * @param string $userTemplate
-	 * @param optional bool $maintenanceMode
+	 * @param string $panelName query
+	 * @param string $panelUrl query
+	 * @param string $userTemplate query
+	 * @param optional bool $maintenanceMode query
 	 *
 	 * @return application/json
 	 *

@@ -168,8 +168,7 @@ class Core_API
 
 		$body = self::getWADLResources();
 
-		$footer = "
-   </resources>
+		$footer = "   </resources>
 </application>
 ";
 
@@ -186,14 +185,14 @@ class Core_API
 
 		foreach ($authorizations as $module => $methods)
 		{
-			$body .= "      <resource path=\"" . $module . "\">";
+			$body .= "      <resource path=\"" . $module . "\">\n";
 
 			foreach ($methods as $method) {
 
 				$body .= self::buildAPIMethodXML( Core_Reflection::getControllerMethod( $module, $method ) );
 			}
 
-			$body .= "      </resource>";
+			$body .= "      </resource>\n";
 		}
 
 		return $body;
@@ -201,16 +200,52 @@ class Core_API
 
 	public static function buildAPIMethodXML( $reflectedMethod ) {
 
-		$body  = "         <method name=\"" . $reflectedMethod['name'] . "\" id=\"" . $reflectedMethod['id'] . "\">";
-		$body .= "            <doc xml:lang=\"en\" title=\"" . $reflectedMethod['description'] . "\"/>";
-		$body .= "            <request>";
-		$body .= "            </request>";
-		$body .= "            <response>";
-		$body .= "               <representation mediaType=\"" . $reflectedMethod['response'] . "\"/>";
-		$body .= "            </response>";
-		$body .= "         </method>";
+		$body  = "         <method name=\"" . $reflectedMethod['name'] . "\" id=\"" . $reflectedMethod['id'] . "\">\n";
+		$body .= "            <doc xml:lang=\"en\" title=\"" . $reflectedMethod['description'] . "\"/>\n";
+		$body .= "            <request>\n";
 
-		exit(var_dump( $reflectedMethod ));
+		foreach ($reflectedMethod['params'] as $param) {
+
+			if (strstr($param, 'optional') === FALSE) {
+				$required = 'true';
+			} else {
+				$required = 'false';
+				$param = str_replace('optional ', '', $param);
+			}
+
+			$param = explode(' ', $param);
+
+			list($type, $name) = $param;
+			$name = substr($name, 1);
+
+			if (!empty($param[2])) {
+				$style = $param[2];
+			} else {
+				$style = '';
+			}
+			if (!empty($param[3])) {
+				$doc = $param[3];
+			} else {
+				$doc = '';
+			}
+
+			if (!empty($doc)) {
+				$body .= "               <param name=\"" . $name . "\" type=\"xs:" . $type . "\" required=\"" . $required . "\" style=\"" . $style . "\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\">\n";
+				$body .= "                  <doc>" . $doc . "</doc>\n";
+				$body .= "               </param>\n";
+			}
+			else {
+				$body .= "               <param name=\"" . $name . "\" type=\"xs:" . $type . "\" required=\"" . $required . "\" style=\"" . $style . "\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\"/>\n";
+			}
+			
+			
+		}
+
+		$body .= "            </request>\n";
+		$body .= "            <response>\n";
+		$body .= "               <representation mediaType=\"" . $reflectedMethod['response'] . "\"/>\n";
+		$body .= "            </response>\n";
+		$body .= "         </method>\n";
 
 		return $body;
 	}
