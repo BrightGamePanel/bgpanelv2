@@ -150,11 +150,6 @@ class Core_API
 
 	public static function getWADL( )
 	{
-		$resourcesScheme = 'http://';
-		if (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on') {
-			$resourcesScheme = 'https://';
-		}
-
 		$applicationDoc = "BrightGamePanel REST API (build " . BGP_API_VERSION . ")";
 
 		$resourcesBaseUrl = get_url($_SERVER);
@@ -210,24 +205,19 @@ class Core_API
 				$required = 'true';
 			} else {
 				$required = 'false';
-				$param = str_replace('optional ', '', $param);
+				$param = trim(str_replace('optional', '', $param));
 			}
 
-			$param = explode(' ', $param);
+			$paramParts = explode(' ', $param); // Get type and name
+			list($type, $name) = $paramParts; // Assign
 
-			list($type, $name) = $param;
-			$name = substr($name, 1);
+			$doc = trim(str_replace( $type . ' ' . $name, '', $param)); // Remove from original string type and name to get doc part
+			$name = substr($name, 1); // Remove $
 
-			if (!empty($param[2])) {
-				$style = $param[2];
-			} else {
-				$style = '';
-			}
-			if (!empty($param[3])) {
-				$doc = $param[3];
-			} else {
-				$doc = '';
-			}
+			$docParts = explode(' ', $doc); // Get style
+			$style = $docParts[0];
+
+			$doc = trim(str_replace( $style, '', $doc )); // Get real description
 
 			if (!empty($doc)) {
 				$body .= "               <param name=\"" . $name . "\" type=\"xs:" . $type . "\" required=\"" . $required . "\" style=\"" . $style . "\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\">\n";
@@ -237,8 +227,6 @@ class Core_API
 			else {
 				$body .= "               <param name=\"" . $name . "\" type=\"xs:" . $type . "\" required=\"" . $required . "\" style=\"" . $style . "\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\"/>\n";
 			}
-			
-			
 		}
 
 		$body .= "            </request>\n";
@@ -255,16 +243,50 @@ class Core_API
 		$rbac = new PhpRbac\Rbac();
 
 		$authorizations = array();
+		$restricted_modules = array('login', 'myaccount');
 
 		// Notice:
 		// root+api users access all methods and resources
 
 		if ($rbac->Users->hasRole( 'root', $_SERVER['PHP_AUTH_USER'] )) {
 
-			// todo
-			// code
+			// Parse all modules
 
-			// return $authorizations;
+			$handle = opendir( MODS_DIR );
+
+			if ($handle) {
+			
+				// Foreach modules
+				while (false !== ($entry = readdir($handle))) {
+			
+					// Dump specific directories
+					if ($entry != "." && $entry != "..")
+					{
+						$module = $entry;
+
+						// Exceptions
+						if (!in_array($module, $restricted_modules))
+						{
+							// Get Public Methods
+							$methods = Core_Reflection::getControllerPublicMethods( $module );
+
+							if (!empty($methods)) {
+
+								foreach ($methods as $key => $value) {
+									list($module, $method) = explode(".", $value['method']);
+									$module = strtolower($module);
+
+									$authorizations[$module][] = $method;
+								}
+							}
+						}
+					}
+				}
+			
+				closedir($handle);
+			}
+
+			return $authorizations;
 		}
 
 		// fetch all allowed resources and methods
@@ -286,7 +308,7 @@ class Core_API
 					$module = $p['Title'];
 					$module = substr(strtolower($module), 0, -1);
 
-					if (!isset($authorizations[$module])) {
+					if (!isset($authorizations[$module]) && !in_array($module, $restricted_modules)) {
 						$authorizations[$module] = array();
 					}
 				}

@@ -114,24 +114,26 @@ class Core_Reflection
 
 					$desc = $doc->description;
 					$params = $doc->all_params;
-					$args = $params['param'];
+
+					// Params
+					if (!empty($params['param'])) {
+						$args = $params['param'];
+					}
+					else {
+						$args = array();
+					}
+
 					$http = $params['http_method'][0];
 					$response = $params['return'][0];
-				}
-				else {
-					$desc = '';
-					$params = array();
-					$http = 'GET';
-					$response = 'application/json';
-				}
 
-				$method_definition = array(
-					'id' 			=> trim($public_method),
-					'name'			=> trim($http),
-					'description'   => trim($desc),
-					'params'		=> $args,
-					'response'		=> trim($response)
-				);
+					$method_definition = array(
+						'id' 			=> trim($public_method),
+						'name'			=> trim($http),
+						'description'   => trim($desc),
+						'params'		=> $args,
+						'response'		=> trim($response)
+					);
+				}
 			}
 		}
 

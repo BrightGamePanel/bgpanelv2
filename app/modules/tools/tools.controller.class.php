@@ -44,6 +44,10 @@ class BGP_Controller_Tools extends BGP_Controller {
 	/**
 	 * Optimize Database
 	 *
+	 * @http_method PUT
+	 *
+	 * @return application/json
+	 *
 	 * @author Nikita Rousseau
 	 */
 	public function optimizeDB( ) {
