@@ -42,9 +42,9 @@ class BGP_Controller_Config extends BGP_Controller {
 	}
 
 	/**
-	 * Update One System Setting
+	 * Get Configuration Setting By Element
 	 *
-	 * @http_method PUT
+	 * @http_method GET
 	 *
 	 * @param string $setting query
 	 *
@@ -52,33 +52,155 @@ class BGP_Controller_Config extends BGP_Controller {
 	 *
 	 * @author Nikita Rousseau
 	 */
-	public function updateSysConfigSetting( $setting )
+	public function getSysConfigSetting( $setting )
 	{
-		return FALSE;
+		$errors			= array();  	// array to hold validation errors
+		$data 			= array(); 		// array to pass back data
+		
+		$dbh = Core_DBH::getDBH();		// Get Database Handle
+		
+		// validate the variables ======================================================
+
+		$v = new Valitron\Validator( array( 'setting' => $setting ) );
+
+		$v->rule('required', 'setting');
+		$v->rule('slug', 'setting');
+
+		$v->labels( array( 'setting' => 'Configuration Setting') );
+
+		$v->validate();
+
+		$errors = $v->errors();
+
+		// Apply =======================================================================
+
+		if (empty($errors))
+		{
+			// Verify that the setting exists
+
+			try {
+				$sth = $dbh->prepare("
+					SELECT setting, value
+					FROM " . DB_PREFIX . "config
+					WHERE
+						setting = :setting
+					;");
+
+				$sth->bindParam(':setting', $setting);
+
+				$sth->execute();
+
+				$result = $sth->fetchAll( PDO::FETCH_ASSOC );
+			}
+			catch (PDOException $e) {
+				echo $e->getMessage().' in '.$e->getFile().' on line '.$e->getLine();
+				die();
+			}
+
+			if (!empty($result)) {
+
+				// return element
+				$data['collection']['config'] = $result;
+			}
+			else {
+
+				$data['collection']['config'][0] = array();
+			}
+		}
+
+		// return a response ===========================================================
+
+		$data['errors'] = $errors;
+
+		if (!empty($data['errors'])) {
+
+			$data['success'] = false;
+		} else {
+
+			$data['success'] = true;
+		}
+
+		return array(
+			'response' => 'application/json',
+			'data' => json_encode($data)
+		);
 	}
 
 	/**
-	 * Update System Full Configuration
+	 * Get Configuration Collection
 	 *
-	 * @http_method PUT
-	 *
-	 * @param string $panelName query
-	 * @param string $panelUrl query
-	 * @param string $userTemplate query
-	 * @param optional bool $maintenanceMode query
+	 * @http_method GET
 	 *
 	 * @return application/json
 	 *
 	 * @author Nikita Rousseau
 	 */
-	public function updateSysConfig( $panelName, $panelUrl, $userTemplate, $maintenanceMode = FALSE )
+	public function getSysConfigCollection( )
 	{
-		$form = array (
-			'panelName' 	=> $panelName,
-			'panelUrl' 		=> $panelUrl,
-			'userTemplate' 	=> $userTemplate
-		);
+		$errors			= array();  	// array to hold validation errors
+		$data 			= array(); 		// array to pass back data
+		
+		$dbh = Core_DBH::getDBH();		// Get Database Handle
 
+		// Apply =======================================================================
+
+		try {
+			$sth = $dbh->prepare("
+				SELECT setting, value
+				FROM " . DB_PREFIX . "config
+				;");
+
+			$sth->execute();
+
+			$result = $sth->fetchAll( PDO::FETCH_ASSOC );
+		}
+		catch (PDOException $e) {
+			echo $e->getMessage().' in '.$e->getFile().' on line '.$e->getLine();
+			die();
+		}
+
+		if (!empty($result)) {
+
+			// return collection
+			$data['collection']['config'] = $result;
+		}
+		else {
+
+			$data['collection']['config'] = array();
+		}
+
+		// return a response ===========================================================
+
+		$data['errors'] = $errors;
+
+		if (!empty($data['errors'])) {
+
+			$data['success'] = false;
+		} else {
+
+			$data['success'] = true;
+		}
+
+		return array(
+			'response' => 'application/json',
+			'data' => json_encode($data)
+		);
+	}
+
+	/**
+	 * Update A System Configuration By Element
+	 *
+	 * @http_method PUT
+	 *
+	 * @param string $setting query
+	 * @param string $value query
+	 *
+	 * @return application/json
+	 *
+	 * @author Nikita Rousseau
+	 */
+	public function updateSysConfigSetting( $setting, $value )
+	{
 		$errors			= array();  	// array to hold validation errors
 		$data 			= array(); 		// array to pass back data
 		
@@ -90,50 +212,53 @@ class BGP_Controller_Config extends BGP_Controller {
 		
 		// validate the variables ======================================================
 
-		$v = new Valitron\Validator( $form );
+		$v = new Valitron\Validator( array( $setting => $value ) );
 
-		$rules = [
-				'required' => [
-					['panelName'],
-					['panelUrl'],
-					['userTemplate']
-				],
-				'regex' => [
-					['panelName', "/^([-a-z0-9_ -])+$/i"]
-				],
-				'url' => [
-					['panelUrl']
-				],
-				'in' => [
-					['userTemplate', $templates]
-				]
-			];
+		switch ( $setting ) {
+			case 'panel_name':
+				$v->rule('regex', 'panel_name', "/^([-a-z0-9_ -])+$/i");
+				$v->labels( array('panel_name' => 'Panel Name') );
+				break;
 
-		$labels = array(
-				'panelName' 	=> 'Panel Name',
-				'panelUrl' 		=> 'Panel URL',
-				'userTemplate' 	=> 'User Template'
-			);
+			case 'system_url':
+				$v->rule('url', 'system_url');
+				$v->labels( array('system_url' => 'Panel URL') );
+				break;
 
-		$v->rules( $rules );
-		$v->labels( $labels );
+			case 'user_template':
+				$v->rule('in', 'user_template', $templates);
+				$v->labels( array('user_template' => 'User Template') );
+				break;
+
+			case 'maintenance_mode':
+				// No validation
+				break;
+
+			default:
+				$errors[$setting] = T_('Unknown Setting!');
+				break;
+		}
+
 		$v->validate();
 
-		$errors = $v->errors();
+		if (empty($errors)) {
+			$errors = $v->errors();
+		}
 
-		// Apply the form ==============================================================
+		// Apply =======================================================================
 
 		if (empty($errors))
 		{
 			// Database update
 
-			$db_data['panel_name']			= $form['panelName'];
-			$db_data['system_url']			= $form['panelUrl'];
-			$db_data['user_template'] 		= $form['userTemplate'];
-			$db_data['maintenance_mode']	= '0';
+			$db_data[ $setting ] = $value;
 
-			if ( !empty($maintenanceMode) ) {
-				$db_data['maintenance_mode'] = '1';
+			if ( !empty($db_data['maintenance_mode']) ) {
+				if ( $db_data['maintenance_mode'] == 'true' ) {
+					$db_data['maintenance_mode'] = '1';
+				} else {
+					$db_data['maintenance_mode'] = '0';
+				}
 			}
 
 			foreach ($db_data as $key => $value) {
@@ -145,23 +270,69 @@ class BGP_Controller_Config extends BGP_Controller {
 		}
 
 		// return a response ===========================================================
-		
-		// response if there are errors
-		if (!empty($errors)) {
-		
-			// if there are items in our errors array, return those errors
-			$data['success'] = false;
-			$data['errors']  = $errors;
 
-			$data['msgType'] = 'warning';
-			$data['msg'] = T_('Bad Settings!');
-		}
-		else {
+		$data['errors'] = $errors;
+
+		if (!empty($data['errors'])) {
+
+			$data['success'] = false;
+		} else {
 
 			$data['success'] = true;
 		}
-		
-		// return all our data to an AJAX call
-		return $data;
+
+		return array(
+			'response' => 'application/json',
+			'data' => json_encode($data)
+		);
+	}
+
+	/**
+	 * Update Configuration Collection
+	 *
+	 * @http_method PUT
+	 *
+	 * @param string $settings query
+	 *
+	 * @return application/json
+	 *
+	 * @author Nikita Rousseau
+	 */
+	public function updateSysConfigCollection( $settings )
+	{
+		$settings = json_decode($settings, TRUE);
+
+		$errors			= array();  	// array to hold validation errors
+		$data 			= array(); 		// array to pass back data
+
+		// Apply =======================================================================
+
+		foreach ($settings as $setting => $value) {
+
+			$r = $this->updateSysConfigSetting( $setting, $value );
+			$r = json_decode( $r['data'], TRUE );
+
+			if ($r['success'] == false) {
+
+				$errors[ $setting ]  = $r['errors'][ $setting ];
+			}
+		}
+
+		// return a response ===========================================================
+
+		$data['errors'] = $errors;
+
+		if (!empty($data['errors'])) {
+
+			$data['success'] = false;
+		} else {
+
+			$data['success'] = true;
+		}
+
+		return array(
+			'response' => 'application/json',
+			'data' => json_encode($data)
+		);
 	}
 }

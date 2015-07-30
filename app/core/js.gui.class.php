@@ -53,7 +53,7 @@ class Core_JS_GUI
 	 * @return String
 	 * @access public
 	 */
-	public function getAngularController( $task = '', $variables = array(), $redirect = './', $debug = FALSE )
+	public function getAngularController( $task = '', $variables = array(), $redirect = './' )
 	{
 		$module = $this->module_name;
 //------------------------------------------------------------------------------------------------------------+
@@ -105,20 +105,9 @@ class Core_JS_GUI
 								data    : $.param($scope.formData),
 								headers : { 'Content-Type': 'application/x-www-form-urlencoded' }
 								})
-									.success(function(data) {
-<?php
-
-			// Debug param
-			if ($debug)
-			{
-?>
-										console.log(data); // Debug
-<?php
-			}
-
-?>
-
-										if (!data.success)
+									.success(function(data)
+									{
+										if (!data.success || (data.success == false))
 										{
 											// If not successful, bind errors to error variables
 <?php
@@ -158,7 +147,7 @@ class Core_JS_GUI
 			{
 ?>
 
-										if (data.success)
+										if (data.success && (data.success == true))
 										{
 											// If successful, we redirect the user to the resource
 											window.location = ( <?php echo "'$redirect'"; ?> );
@@ -178,7 +167,8 @@ class Core_JS_GUI
 
 ?>
 									})
-									.error(function(data) {
+									.error(function(data)
+									{
 										// An error has been triggered while submitting the form.
 
 										$scope.msgType = 'danger';

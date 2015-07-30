@@ -69,7 +69,12 @@ $sth = $dbh->prepare("
 $sth->execute();
 
 $current_config = $sth->fetchAll( PDO::FETCH_ASSOC );
-$current_config = bgp_get_conf_array( $current_config );
+
+foreach ($current_config as $key => $config) {
+	$current_config[$config['setting']] = $config['value'];
+
+	unset($current_config[$key]);
+}
 
 
 /**

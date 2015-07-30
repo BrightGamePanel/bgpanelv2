@@ -105,7 +105,13 @@ Flight::route('GET|POST|PUT|DELETE /api(/@collection(/@element))', function( $co
 					// Resource Access
 					if ($resource != '/')
 					{
-						exit(var_dump( $resource ));
+						// require_once( MODS_DIR . '/config/config.controller.class.php' );
+						// $controller = new BGP_Controller_Config();
+						// $r = $controller->getSysConfigSetting( 'panel_name' );
+
+						// exit(print_r( json_decode($r['data'], TRUE) ));
+
+						exit('ok');
 					}
 					else
 					{

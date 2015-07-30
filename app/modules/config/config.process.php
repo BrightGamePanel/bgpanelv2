@@ -54,29 +54,39 @@ switch ($task)
 {
 	case 'updateSysConfig':
 
-		if ( isset($_POST['panelName']) && isset($_POST['panelUrl']) && isset($_POST['userTemplate']) ) {
+		$data 			 = array();
+		$data['success'] = true;
+		$data['errors']  = array();
 
-			if ( isset($_POST['maintenanceMode']) && ( $_POST['maintenanceMode'] === 'true' ) ) {
+		// Call method ===========================================================================
 
-				$json = $controller->updateSysConfig( $_POST['panelName'], $_POST['panelUrl'], $_POST['userTemplate'], TRUE );
-			}
-			else {
+		$return = $controller->updateSysConfigCollection( json_encode($_POST) );
+		$return = json_decode( $return['data'], TRUE );
 
-				$json = $controller->updateSysConfig( $_POST['panelName'], $_POST['panelUrl'], $_POST['userTemplate'], FALSE );
-				
-			}
+		// User notification =====================================================================
 
-			if ($json['success'] === TRUE) {
-				// Notification
-				bgp_set_alert( T_('Settings Updated Successfully!'), NULL, 'success' );
-			}
+		$data['errors'] = $return['errors'];
 
-			Flight::json( $json );		
+		if (!empty($data['errors'])) {
+
+			$data['success'] = false;
+
+			// Notification
+			$data['msgType'] = 'warning';
+			$data['msg']     = T_('Bad Settings!');
+		} else {
+
+			$data['success'] = true;
+
+			// Notification
+			bgp_set_alert( T_('Settings Updated Successfully!'), NULL, 'success' );
 		}
-		else {
-			Flight::redirect('/400');
-		}
-		
+
+		// Return ================================================================================
+
+		header('Content-Type: application/json');
+		echo json_encode($data);
+
 		exit( 0 );
 
 	default:
