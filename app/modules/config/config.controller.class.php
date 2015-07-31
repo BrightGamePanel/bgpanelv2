@@ -108,16 +108,23 @@ class BGP_Controller_Config extends BGP_Controller {
 			}
 		}
 
-		// return a response ===========================================================
+		// return a response and log ===================================================
+
+		Logger::configure( bgp_get_log4php_conf_array() );
+		$logger = Logger::getLogger( self::getLoggerName() );
 
 		$data['errors'] = $errors;
 
 		if (!empty($data['errors'])) {
 
 			$data['success'] = false;
+
+			$logger->info('Failed to get system configuration setting. (setting => ' . $setting . ')');
 		} else {
 
 			$data['success'] = true;
+
+			$logger->info('Got system configuration setting. (setting => ' . $setting . ')');
 		}
 
 		return array(
@@ -169,16 +176,23 @@ class BGP_Controller_Config extends BGP_Controller {
 			$data['collection']['config'] = array();
 		}
 
-		// return a response ===========================================================
+		// return a response and log ===================================================
+
+		Logger::configure( bgp_get_log4php_conf_array() );
+		$logger = Logger::getLogger( self::getLoggerName() );
 
 		$data['errors'] = $errors;
 
 		if (!empty($data['errors'])) {
 
 			$data['success'] = false;
+
+			$logger->info('Failed to get system configuration collection.');
 		} else {
 
 			$data['success'] = true;
+
+			$logger->info('Got system configuration collection.');
 		}
 
 		return array(
@@ -263,22 +277,35 @@ class BGP_Controller_Config extends BGP_Controller {
 
 			foreach ($db_data as $key => $value) {
 
-				$sth = $dbh->prepare( "UPDATE " . DB_PREFIX . "config SET value = :" . $key . " WHERE setting = '" . $key . "';" );
-				$sth->bindParam( ':' . $key, $value );
-				$sth->execute();
+				try {
+					$sth = $dbh->prepare( "UPDATE " . DB_PREFIX . "config SET value = :" . $key . " WHERE setting = '" . $key . "';" );
+					$sth->bindParam( ':' . $key, $value );
+					$sth->execute();
+				}
+				catch (PDOException $e) {
+					echo $e->getMessage().' in '.$e->getFile().' on line '.$e->getLine();
+					die();
+				}
 			}
 		}
 
-		// return a response ===========================================================
+		// return a response and log ===================================================
+
+		Logger::configure( bgp_get_log4php_conf_array() );
+		$logger = Logger::getLogger( self::getLoggerName() );
 
 		$data['errors'] = $errors;
 
 		if (!empty($data['errors'])) {
 
 			$data['success'] = false;
+
+			$logger->info('Failed to update system configuration setting. (' . $setting . ' => ' . $value . ')');
 		} else {
 
 			$data['success'] = true;
+
+			$logger->info('Updated system configuration setting. (' . $setting . ' => ' . $value . ')');
 		}
 
 		return array(
@@ -318,16 +345,23 @@ class BGP_Controller_Config extends BGP_Controller {
 			}
 		}
 
-		// return a response ===========================================================
+		// return a response and log ===================================================
+
+		Logger::configure( bgp_get_log4php_conf_array() );
+		$logger = Logger::getLogger( self::getLoggerName() );
 
 		$data['errors'] = $errors;
 
 		if (!empty($data['errors'])) {
 
 			$data['success'] = false;
+
+			$logger->info('Failed to update system configuration collection.');
 		} else {
 
 			$data['success'] = true;
+
+			$logger->info('Updated system configuration collection.');
 		}
 
 		return array(

@@ -44,6 +44,6 @@ class BGP_Controller extends BGP_Module
 	}
 
 	public static function getLoggerName( ) {
-		return self::getModuleName( '.' );
+		return self::getModuleName( );
 	}
 }
