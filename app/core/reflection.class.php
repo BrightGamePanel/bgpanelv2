@@ -124,9 +124,11 @@ class Core_Reflection
 					}
 
 					$http = $params['http_method'][0];
+					$resource = $params['resource'][0];
 					$response = $params['return'][0];
 
 					$method_definition = array(
+						'resource'		=> trim($resource),
 						'id' 			=> trim($public_method),
 						'name'			=> trim($http),
 						'description'   => trim($desc),

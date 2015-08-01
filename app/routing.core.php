@@ -66,7 +66,7 @@ Flight::route('/logout/', function() {
 /**
  * MACHINE 2 MACHINE
  */
-Flight::route('GET|POST|PUT|DELETE /api(/@collection(/@element))', function( $collection, $element ) {
+Flight::route('GET|POST|PUT|DELETE /api(/@collection(/@resource))', function( $collection, $resource ) {
 
 	if (ENV_RUNTIME != 'M2M') {
 		header( Core_Http_Status_Codes::httpHeaderFor( 403 ) );
@@ -80,13 +80,13 @@ Flight::route('GET|POST|PUT|DELETE /api(/@collection(/@element))', function( $co
 	} else {
 		$collection = '';
 	}
-	if (isset($element) && preg_match("#\w#", $element)) {
-		$element = strtolower($element);
+	if (isset($resource) && preg_match("#\w#", $resource)) {
+		$resource = strtolower($resource);
 	} else {
-		$element = '';
+		$resource = '';
 	}
 
-	$resource = $collection . '/' . $element;
+	$url = $collection . '/' . $resource;
 
 	// API Process
 
@@ -103,15 +103,20 @@ Flight::route('GET|POST|PUT|DELETE /api(/@collection(/@element))', function( $co
 				if (Core_API::checkRemoteHost( Flight::request()->ip, $headers['X-API-KEY'], $headers['X-API-USER'], $headers['X-API-PASS'] ) === TRUE)
 				{
 					// Resource Access
-					if ($resource != '/')
+					if ($url != '/')
 					{
+						// Verify Authorizations
+
+						$rbac = new PhpRbac\Rbac();
+
+						exit(var_dump( Flight::request() ));
+
+
 						// require_once( MODS_DIR . '/config/config.controller.class.php' );
 						// $controller = new BGP_Controller_Config();
 						// $r = $controller->getSysConfigSetting( 'panel_name' );
 
 						// exit(print_r( json_decode($r['data'], TRUE) ));
-
-						exit('ok');
 					}
 					else
 					{

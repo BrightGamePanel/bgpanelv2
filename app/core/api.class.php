@@ -155,17 +155,15 @@ class Core_API
 		$resourcesBaseUrl = get_url($_SERVER);
 		$resourcesBaseUrl = str_replace('?WADL', '/', $resourcesBaseUrl);
 
-		$header = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
-   <application xmlns=\"http://wadl.dev.java.net/2009/02\">
-   <doc xml:lang=\"en\" title=\"BGPanel API\">" . $applicationDoc . "</doc>
-   <resources base=\"" . $resourcesBaseUrl . "\">
-";
+		$header  = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n";
+		$header .= "  <application xmlns=\"http://wadl.dev.java.net/2009/02\">\n";
+		$header .= "  <doc xml:lang=\"en\" title=\"BGPanel API\">" . $applicationDoc . "</doc>\n";
+		$header .= "  <resources base=\"" . $resourcesBaseUrl . "\">\n";
 
 		$body = self::getWADLResources();
 
-		$footer = "   </resources>
-</application>
-";
+		$footer  = "   </resources>\n";
+		$footer .= "</application>\n";
 
 		return $header . $body . $footer;
 	}
@@ -174,21 +172,41 @@ class Core_API
 
 		$rbac = new PhpRbac\Rbac();
 
-		$body = '';
-
 		$authorizations = self::getAPIUserPermissions();
+
+		$bodyAssoc = array();
 
 		foreach ($authorizations as $module => $methods)
 		{
-			$body .= "      <resource path=\"" . $module . "\">\n";
-
 			foreach ($methods as $method) {
+				$reflectedMethod = Core_Reflection::getControllerMethod( $module, $method );
 
-				$body .= self::buildAPIMethodXML( Core_Reflection::getControllerMethod( $module, $method ) );
+				$path = $reflectedMethod['resource'];
+				$pathParts = array_reverse(explode('/', $path));
+
+				$resource = self::buildAPIMethodXML( Core_Reflection::getControllerMethod( $module, $method ) );
+
+				$resourceAssoc = $resource;
+				foreach ($pathParts as $node) {
+
+					$tmp = $resourceAssoc;
+					$resourceAssoc = array();
+
+					$resourceAssoc[$node] = $tmp;
+				}
+
+				$bodyAssoc = array_merge_recursive($bodyAssoc, $resourceAssoc);
 			}
-
-			$body .= "      </resource>\n";
 		}
+
+		// $resource  = "\n      <resource path=\"" . $reflectedMethod['resource'] . "\">\n";
+		// $resource  = "\n      <resource/>\n";
+
+		$body = ''
+
+		// Build XML from associative array
+		print_r( $bodyAssoc );
+		die();
 
 		return $body;
 	}
@@ -197,7 +215,13 @@ class Core_API
 
 		$body  = "         <method name=\"" . $reflectedMethod['name'] . "\" id=\"" . $reflectedMethod['id'] . "\">\n";
 		$body .= "            <doc xml:lang=\"en\" title=\"" . $reflectedMethod['description'] . "\"/>\n";
-		$body .= "            <request>\n";
+
+		if (!empty($reflectedMethod['params'])) {
+			$body .= "            <request>\n";
+		}
+		else {
+			$body .= "            <request/>\n";
+		}
 
 		foreach ($reflectedMethod['params'] as $param) {
 
@@ -229,7 +253,10 @@ class Core_API
 			}
 		}
 
-		$body .= "            </request>\n";
+		if (!empty($reflectedMethod['params'])) {
+			$body .= "            </request>\n";
+		}
+
 		$body .= "            <response>\n";
 		$body .= "               <representation mediaType=\"" . $reflectedMethod['response'] . "\"/>\n";
 		$body .= "            </response>\n";

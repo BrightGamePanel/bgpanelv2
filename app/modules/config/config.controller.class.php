@@ -45,6 +45,7 @@ class BGP_Controller_Config extends BGP_Controller {
 	 * Get Configuration Setting By Element
 	 *
 	 * @http_method GET
+	 * @resource config/setting
 	 *
 	 * @param string $setting query
 	 *
@@ -137,6 +138,7 @@ class BGP_Controller_Config extends BGP_Controller {
 	 * Get Configuration Collection
 	 *
 	 * @http_method GET
+	 * @resource config/
 	 *
 	 * @return application/json
 	 *
@@ -205,6 +207,7 @@ class BGP_Controller_Config extends BGP_Controller {
 	 * Update A System Configuration By Element
 	 *
 	 * @http_method PUT
+	 * @resource config/setting
 	 *
 	 * @param string $setting query
 	 * @param string $value query
@@ -318,6 +321,7 @@ class BGP_Controller_Config extends BGP_Controller {
 	 * Update Configuration Collection
 	 *
 	 * @http_method PUT
+	 * @resource config/
 	 *
 	 * @param string $settings query
 	 *
