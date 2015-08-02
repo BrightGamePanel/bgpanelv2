@@ -42,6 +42,133 @@ class BGP_Controller_Config extends BGP_Controller {
 	}
 
 	/**
+	 * Get Configuration Collection
+	 *
+	 * @http_method GET
+	 * @resource config/
+	 *
+	 * @return application/json
+	 *
+	 * @author Nikita Rousseau
+	 */
+	public function getSysConfigCollection( )
+	{
+		$errors			= array();  	// array to hold validation errors
+		$data 			= array(); 		// array to pass back data
+		
+		$dbh = Core_DBH::getDBH();		// Get Database Handle
+
+		// Apply =======================================================================
+
+		try {
+			$sth = $dbh->prepare("
+				SELECT setting, value
+				FROM " . DB_PREFIX . "config
+				;");
+
+			$sth->execute();
+
+			$result = $sth->fetchAll( PDO::FETCH_ASSOC );
+		}
+		catch (PDOException $e) {
+			echo $e->getMessage().' in '.$e->getFile().' on line '.$e->getLine();
+			die();
+		}
+
+		if (!empty($result)) {
+
+			// return collection
+			$data['collection']['config'] = $result;
+		}
+		else {
+
+			$data['collection']['config'] = array();
+		}
+
+		// return a response and log ===================================================
+
+		Logger::configure( bgp_get_log4php_conf_array() );
+		$logger = Logger::getLogger( self::getLoggerName() );
+
+		$data['errors'] = $errors;
+
+		if (!empty($data['errors'])) {
+
+			$data['success'] = false;
+
+			$logger->info('Failed to get system configuration collection.');
+		} else {
+
+			$data['success'] = true;
+
+			$logger->info('Got system configuration collection.');
+		}
+
+		return array(
+			'response' => 'application/json',
+			'data' => json_encode($data)
+		);
+	}
+
+	/**
+	 * Update Configuration Collection
+	 *
+	 * @http_method PUT
+	 * @resource config/
+	 *
+	 * @param string $settings query
+	 *
+	 * @return application/json
+	 *
+	 * @author Nikita Rousseau
+	 */
+	public function updateSysConfigCollection( $settings )
+	{
+		$settings = json_decode($settings, TRUE);
+
+		$errors			= array();  	// array to hold validation errors
+		$data 			= array(); 		// array to pass back data
+
+		// Apply =======================================================================
+
+		foreach ($settings as $setting => $value) {
+
+			$r = $this->updateSysConfigSetting( $setting, $value );
+			$r = json_decode( $r['data'], TRUE );
+
+			if ($r['success'] == false) {
+
+				$errors[ $setting ]  = $r['errors'][ $setting ];
+			}
+		}
+
+		// return a response and log ===================================================
+
+		Logger::configure( bgp_get_log4php_conf_array() );
+		$logger = Logger::getLogger( self::getLoggerName() );
+
+		$data['errors'] = $errors;
+
+		if (!empty($data['errors'])) {
+
+			$data['success'] = false;
+
+			$logger->info('Failed to update system configuration collection.');
+		} else {
+
+			$data['success'] = true;
+
+			$logger->info('Updated system configuration collection.');
+		}
+
+		return array(
+			'response' => 'application/json',
+			'data' => json_encode($data)
+		);
+	}
+
+
+	/**
 	 * Get Configuration Setting By Element
 	 *
 	 * @http_method GET
@@ -126,75 +253,6 @@ class BGP_Controller_Config extends BGP_Controller {
 			$data['success'] = true;
 
 			$logger->info('Got system configuration setting. (setting => ' . $setting . ')');
-		}
-
-		return array(
-			'response' => 'application/json',
-			'data' => json_encode($data)
-		);
-	}
-
-	/**
-	 * Get Configuration Collection
-	 *
-	 * @http_method GET
-	 * @resource config/
-	 *
-	 * @return application/json
-	 *
-	 * @author Nikita Rousseau
-	 */
-	public function getSysConfigCollection( )
-	{
-		$errors			= array();  	// array to hold validation errors
-		$data 			= array(); 		// array to pass back data
-		
-		$dbh = Core_DBH::getDBH();		// Get Database Handle
-
-		// Apply =======================================================================
-
-		try {
-			$sth = $dbh->prepare("
-				SELECT setting, value
-				FROM " . DB_PREFIX . "config
-				;");
-
-			$sth->execute();
-
-			$result = $sth->fetchAll( PDO::FETCH_ASSOC );
-		}
-		catch (PDOException $e) {
-			echo $e->getMessage().' in '.$e->getFile().' on line '.$e->getLine();
-			die();
-		}
-
-		if (!empty($result)) {
-
-			// return collection
-			$data['collection']['config'] = $result;
-		}
-		else {
-
-			$data['collection']['config'] = array();
-		}
-
-		// return a response and log ===================================================
-
-		Logger::configure( bgp_get_log4php_conf_array() );
-		$logger = Logger::getLogger( self::getLoggerName() );
-
-		$data['errors'] = $errors;
-
-		if (!empty($data['errors'])) {
-
-			$data['success'] = false;
-
-			$logger->info('Failed to get system configuration collection.');
-		} else {
-
-			$data['success'] = true;
-
-			$logger->info('Got system configuration collection.');
 		}
 
 		return array(
@@ -309,63 +367,6 @@ class BGP_Controller_Config extends BGP_Controller {
 			$data['success'] = true;
 
 			$logger->info('Updated system configuration setting. (' . $setting . ' => ' . $value . ')');
-		}
-
-		return array(
-			'response' => 'application/json',
-			'data' => json_encode($data)
-		);
-	}
-
-	/**
-	 * Update Configuration Collection
-	 *
-	 * @http_method PUT
-	 * @resource config/
-	 *
-	 * @param string $settings query
-	 *
-	 * @return application/json
-	 *
-	 * @author Nikita Rousseau
-	 */
-	public function updateSysConfigCollection( $settings )
-	{
-		$settings = json_decode($settings, TRUE);
-
-		$errors			= array();  	// array to hold validation errors
-		$data 			= array(); 		// array to pass back data
-
-		// Apply =======================================================================
-
-		foreach ($settings as $setting => $value) {
-
-			$r = $this->updateSysConfigSetting( $setting, $value );
-			$r = json_decode( $r['data'], TRUE );
-
-			if ($r['success'] == false) {
-
-				$errors[ $setting ]  = $r['errors'][ $setting ];
-			}
-		}
-
-		// return a response and log ===================================================
-
-		Logger::configure( bgp_get_log4php_conf_array() );
-		$logger = Logger::getLogger( self::getLoggerName() );
-
-		$data['errors'] = $errors;
-
-		if (!empty($data['errors'])) {
-
-			$data['success'] = false;
-
-			$logger->info('Failed to update system configuration collection.');
-		} else {
-
-			$data['success'] = true;
-
-			$logger->info('Updated system configuration collection.');
 		}
 
 		return array(

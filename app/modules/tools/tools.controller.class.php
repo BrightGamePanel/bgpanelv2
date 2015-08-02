@@ -54,7 +54,7 @@ class BGP_Controller_Tools extends BGP_Controller {
 	public function optimizeDB( ) {
 		$dbh = Core_DBH::getDBH(); // Get Database Handle
 
-		// process =====================================================================
+		// Apply =======================================================================
 
 		$tables = array();
 
@@ -73,7 +73,7 @@ class BGP_Controller_Tools extends BGP_Controller {
 			}
 		}
 
-		// return a response ===========================================================
+		// return a response and log ===================================================
 
 		$data['success'] = true;
 		

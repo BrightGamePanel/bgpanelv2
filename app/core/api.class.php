@@ -174,39 +174,47 @@ class Core_API
 
 		$authorizations = self::getAPIUserPermissions();
 
-		$bodyAssoc = array();
+		$body = '';
 
 		foreach ($authorizations as $module => $methods)
 		{
+			$body .= "      <resource path=\"" . $module . "\">\n";
+
+			$subResource = ''; // Tag closure helper for sub resources
+
 			foreach ($methods as $method) {
 				$reflectedMethod = Core_Reflection::getControllerMethod( $module, $method );
+				$method = self::buildAPIMethodXML( $reflectedMethod );
 
 				$path = $reflectedMethod['resource'];
-				$pathParts = array_reverse(explode('/', $path));
+				$pathParts = explode('/', $path);
 
-				$resource = self::buildAPIMethodXML( Core_Reflection::getControllerMethod( $module, $method ) );
+				// Sub-resource case (Element)
+				if (!empty($pathParts[1])) {
 
-				$resourceAssoc = $resource;
-				foreach ($pathParts as $node) {
+					$path = str_replace($pathParts[0] . '/', '', $path); // Remove parent resource
 
-					$tmp = $resourceAssoc;
-					$resourceAssoc = array();
+					$body .= "         <resource path=\"" . $path . "\">\n";
 
-					$resourceAssoc[$node] = $tmp;
+					$methodLines = explode("\n", $method);
+
+					foreach ($methodLines as $line) {
+						if (!empty($line)) {
+							$body .= '   ' . $line . "\n"; // Pad
+						}
+					}
+
+					$body .= "         </resource>\n";
 				}
+				// Resource case (Collection)
+				else {
 
-				$bodyAssoc = array_merge_recursive($bodyAssoc, $resourceAssoc);
+					$body .= $method;
+				}
 			}
+
+			$body .= "      </resource>\n";
 		}
-
-		// $resource  = "\n      <resource path=\"" . $reflectedMethod['resource'] . "\">\n";
-		// $resource  = "\n      <resource/>\n";
-
-		$body = ''
-
-		// Build XML from associative array
-		print_r( $bodyAssoc );
-		die();
 
 		return $body;
 	}

@@ -66,27 +66,15 @@ Flight::route('/logout/', function() {
 /**
  * MACHINE 2 MACHINE
  */
-Flight::route('GET|POST|PUT|DELETE /api(/@collection(/@resource))', function( $collection, $resource ) {
+Flight::route('GET|POST|PUT|DELETE /api/*', function() {
 
 	if (ENV_RUNTIME != 'M2M') {
 		header( Core_Http_Status_Codes::httpHeaderFor( 403 ) );
 		exit( 1 );
 	}
 
-	// Vars Init
-
-	if (isset($collection) && preg_match("#\w#", $collection)) {
-		$collection = strtolower($collection);
-	} else {
-		$collection = '';
-	}
-	if (isset($resource) && preg_match("#\w#", $resource)) {
-		$resource = strtolower($resource);
-	} else {
-		$resource = '';
-	}
-
-	$url = $collection . '/' . $resource;
+	$url = Flight::request()->url;
+	$http_method = Flight::request()->method;
 
 	// API Process
 
@@ -95,41 +83,53 @@ Flight::route('GET|POST|PUT|DELETE /api(/@collection(/@resource))', function( $c
 		if ( Flight::request()->secure || ( boolval(APP_API_ALLOW_UNSECURE) === TRUE ) )
 		{
 			// Get and Verify Headers
+
 			$headers = apache_request_headers();
 
 			if (!empty($headers['X-API-KEY']) AND !empty($headers['X-API-USER']) AND !empty($headers['X-API-PASS']))
 			{
 				// Machine Authentication
+
 				if (Core_API::checkRemoteHost( Flight::request()->ip, $headers['X-API-KEY'], $headers['X-API-USER'], $headers['X-API-PASS'] ) === TRUE)
 				{
 					// Resource Access
-					if ($url != '/')
-					{
-						// Verify Authorizations
 
-						$rbac = new PhpRbac\Rbac();
-
-						exit(var_dump( Flight::request() ));
-
-
-						// require_once( MODS_DIR . '/config/config.controller.class.php' );
-						// $controller = new BGP_Controller_Config();
-						// $r = $controller->getSysConfigSetting( 'panel_name' );
-
-						// exit(print_r( json_decode($r['data'], TRUE) ));
-					}
-					else
+					if ($http_method == 'GET' && $url == '/api?WADL') 
 					{
 						// Web Application Description Language (WADL)
 
-						if (Flight::request()->method == 'GET' && Flight::request()->url == '/api?WADL') {
-							header('Content-Type: application/xml; charset=utf-8');
-							echo Core_API::getWADL( );
+						header('Content-Type: application/xml; charset=utf-8');
+						echo Core_API::getWADL( );
+					}
+					else if (strstr($url, '/api/') !== FALSE)
+					{
+						$urlParts = explode('/', $url);
+						$module = $urlParts[2];
+						$module = ucfirst($module) . '/';
+
+						if (!empty($module))
+						{
+							// Verify Module Authorization
+
+							$rbac = new PhpRbac\Rbac();
+
+							if ( $rbac->Users->hasRole( 'root', $_SERVER['PHP_AUTH_USER'] ) || $rbac->check( $module, $_SERVER['PHP_AUTH_USER'] ) ) {
+
+								// Verify Method Authorization
+
+									// Call Method And Return Media Rsponse
+
+								exit(var_dump( $url ));
+							}
 						}
 						else {
 							// Forbidden
 							header( Core_Http_Status_Codes::httpHeaderFor( 403 ) );
 						}
+					}
+					else {
+						// Forbidden
+						header( Core_Http_Status_Codes::httpHeaderFor( 403 ) );
 					}
 				}
 				else {
@@ -243,17 +243,17 @@ Flight::route('GET|POST|PUT|DELETE (/@module(/@page))', function( $module, $page
 		}
 		else if (!empty($module)) {
 
-
 			// NIST Level 2 Standard Role Based Access Control Library
 
 			$rbac = new PhpRbac\Rbac();
 
-			$resource = str_replace('//', '/', ucfirst($module) . '/');
+			$resource = ucfirst($module) . '/';
 
 			if (!empty($page)) {
-				$resource = str_replace('//', '/', ucfirst($module) . '/' . $page . '/');
+				$resource = ucfirst($module) . '/' . $page . '/';
 			}
 
+			$resource = preg_replace('#(\/+)#', '/', $resource);
 
 			// MAINTENANCE CHECK
 
