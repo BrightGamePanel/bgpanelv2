@@ -32,6 +32,8 @@ if ( !class_exists('Core_Reflection')) {
 
 class Core_API
 {
+	public static $restricted_modules = array('login', 'myaccount');
+
 	public static function checkRemoteAPIUser( $remote_ip, $api_user, $api_user_pass )
 	{
 		$username = $api_user;
@@ -278,7 +280,6 @@ class Core_API
 		$rbac = new PhpRbac\Rbac();
 
 		$authorizations = array();
-		$restricted_modules = array('login', 'myaccount');
 
 		// Notice:
 		// root+api users access all methods and resources
@@ -300,7 +301,7 @@ class Core_API
 						$module = $entry;
 
 						// Exceptions
-						if (!in_array($module, $restricted_modules))
+						if (!in_array($module, Core_API::$restricted_modules))
 						{
 							// Get Public Methods
 							$methods = Core_Reflection::getControllerPublicMethods( $module );
@@ -343,7 +344,7 @@ class Core_API
 					$module = $p['Title'];
 					$module = substr(strtolower($module), 0, -1);
 
-					if (!isset($authorizations[$module]) && !in_array($module, $restricted_modules)) {
+					if (!isset($authorizations[$module]) && !in_array($module, Core_API::$restricted_modules)) {
 						$authorizations[$module] = array();
 					}
 				}
@@ -360,5 +361,54 @@ class Core_API
 		}
 
 		return $authorizations;
+	}
+
+	public static function resolveAPIRequest( $module, $url, $http_method ) {
+
+		$request_method = array();
+
+		if (!in_array($module, Core_API::$restricted_modules))
+		{
+			// Get Public Methods
+			$methods = Core_Reflection::getControllerPublicMethods( $module );
+
+			if (!empty($methods)) {
+
+				$api_schema = array();
+				foreach ($methods as $key => $value) {
+
+					list($module, $method) = explode(".", $value['method']);
+					$module = strtolower($module);
+
+					$reflectedMethod = Core_Reflection::getControllerMethod($module, $method);
+
+					$api_schema[$reflectedMethod['resource']][$reflectedMethod['name']] = array(
+							$reflectedMethod['id'] => $reflectedMethod['params']
+					);
+				}
+			}
+
+			// Get Resource
+			$resource = str_replace('/api/', '', $url);
+
+			// Resolve
+			if (!empty($api_schema[$resource][$http_method])) {
+
+				$resource = $api_schema[$resource][$http_method];
+
+				foreach ($resource as $key => $value) {
+
+					$request_method['method'] = $key;
+					$request_method['args'] = $value;
+				}
+			}
+		}
+
+		return $request_method;
+	}
+
+	public static function callAPIControllerMethod( $method, $args ) {
+
+		
 	}
 }

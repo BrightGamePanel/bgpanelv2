@@ -73,16 +73,16 @@ Flight::route('GET|POST|PUT|DELETE /api/*', function() {
 		exit( 1 );
 	}
 
-	$url = Flight::request()->url;
-	$http_method = Flight::request()->method;
-
 	// API Process
 
 	if (boolval(APP_API_ENABLE) === TRUE)
 	{
 		if ( Flight::request()->secure || ( boolval(APP_API_ALLOW_UNSECURE) === TRUE ) )
 		{
-			// Get and Verify Headers
+
+			$url = Flight::request()->url;
+			$http_method = Flight::request()->method;
+			$params = Flight::request()->query;
 
 			$headers = apache_request_headers();
 
@@ -94,7 +94,7 @@ Flight::route('GET|POST|PUT|DELETE /api/*', function() {
 				{
 					// Resource Access
 
-					if ($http_method == 'GET' && $url == '/api?WADL') 
+					if ($http_method === 'GET' && $url === '/api?WADL') 
 					{
 						// Web Application Description Language (WADL)
 
@@ -105,21 +105,38 @@ Flight::route('GET|POST|PUT|DELETE /api/*', function() {
 					{
 						$urlParts = explode('/', $url);
 						$module = $urlParts[2];
-						$module = ucfirst($module) . '/';
 
 						if (!empty($module))
 						{
-							// Verify Module Authorization
+							// Resolve Request
 
-							$rbac = new PhpRbac\Rbac();
+							$method = Core_API::resolveAPIRequest( $module, $url, $http_method );
 
-							if ( $rbac->Users->hasRole( 'root', $_SERVER['PHP_AUTH_USER'] ) || $rbac->check( $module, $_SERVER['PHP_AUTH_USER'] ) ) {
+							if (!empty($method))
+							{
+								$resourcePerm = ucfirst($module) . '/' . $method;
 
-								// Verify Method Authorization
+								// Verify Authorizations
 
-									// Call Method And Return Media Rsponse
+								$rbac = new PhpRbac\Rbac();
 
-								exit(var_dump( $url ));
+								if ( $rbac->Users->hasRole( 'root', $_SERVER['PHP_AUTH_USER'] ) || $rbac->check( $resourcePerm, $_SERVER['PHP_AUTH_USER'] ) ) {
+
+									// Call The Method
+									// And Return The Media Response
+
+									$media = Core_API::callAPIControllerMethod( $method, $params );
+
+									exit(var_dump($media));
+								}
+								else {
+									// Forbidden
+									header( Core_Http_Status_Codes::httpHeaderFor( 403 ) );
+								}
+							}
+							else {
+								// Bad Request
+								header( Core_Http_Status_Codes::httpHeaderFor( 400 ) );
 							}
 						}
 						else {
