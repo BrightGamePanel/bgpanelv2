@@ -29,8 +29,6 @@
  * Load Plugin Controller
  */
 
-require( MODS_DIR . '/' . basename(__DIR__) . '/login.controller.class.php' );
-
 // Init Controller
 $loginController = new BGP_Controller_Login();
 

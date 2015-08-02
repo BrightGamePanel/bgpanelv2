@@ -49,6 +49,7 @@ switch (ENV_RUNTIME)
 		// Module Reflection Class
 		require( APP_DIR	. '/core/reflection.class.php' );
 
+		// Exit
 		break;
 
 	/**
@@ -114,5 +115,28 @@ switch (ENV_RUNTIME)
 		// API Service
 		require( APP_DIR	. '/core/api.class.php' );
 
+		/**
+		 * Load Module Controllers
+		 */
+		$handle = opendir( MODS_DIR );
+
+		if ($handle) {
+		
+			// Foreach modules
+			while (false !== ($module = readdir($handle))) {
+		
+				// Dump specific directories
+				if ($module != "." && $module != "..")
+				{
+					require( MODS_DIR . '/' . $module . '/' . $module . '.controller.class.php'  );
+				}
+			}
+		
+			closedir($handle);
+		}
+
+		unset($handle, $module);
+
+		// Exit
 		break;
 }

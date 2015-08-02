@@ -43,12 +43,6 @@ class Core_Reflection
 		{
 			$bgp_controller_name = 'BGP_Controller_' . ucfirst( strtolower( $bgp_module_name ) );
 
-			if (!class_exists( $bgp_controller_name ) && file_exists( MODS_DIR . '/' . strtolower( $bgp_module_name ) . '/' . strtolower( $bgp_module_name ) . '.controller.class.php' ))
-			{
-				// Try to load controller
-				require_once( MODS_DIR . '/' . strtolower( $bgp_module_name ) . '/' . strtolower( $bgp_module_name ) . '.controller.class.php' );
-			}
-
 			if (is_subclass_of($bgp_controller_name, 'BGP_Controller'))
 			{
 				// Reflection
@@ -92,11 +86,6 @@ class Core_Reflection
 		if (!empty($bgp_module_name) && !empty($public_method))
 		{
 			$bgp_controller_name = 'BGP_Controller_' . ucfirst( strtolower( $bgp_module_name ) );
-
-			if (!class_exists( $bgp_controller_name ) && file_exists( MODS_DIR . '/' . strtolower( $bgp_module_name ) . '/' . strtolower( $bgp_module_name ) . '.controller.class.php' ))
-			{
-				require_once( MODS_DIR . '/' . strtolower( $bgp_module_name ) . '/' . strtolower( $bgp_module_name ) . '.controller.class.php' );
-			}
 
 			if (is_subclass_of($bgp_controller_name, 'BGP_Controller'))
 			{

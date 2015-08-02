@@ -114,7 +114,7 @@ Flight::route('GET|POST|PUT|DELETE /api/*', function() {
 
 							if (!empty($method))
 							{
-								$resourcePerm = ucfirst($module) . '/' . $method;
+								$resourcePerm = ucfirst($module) . '/' . $method['method'];
 
 								// Verify Authorizations
 

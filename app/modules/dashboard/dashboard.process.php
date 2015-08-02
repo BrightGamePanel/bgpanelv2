@@ -29,8 +29,6 @@
  * Load Plugin Controller
  */
 
-require( MODS_DIR . '/' . basename(__DIR__) . '/dashboard.controller.class.php' );
-
 // Init Controller
 $controller = new BGP_Controller_Dashboard();
 
