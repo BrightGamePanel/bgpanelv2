@@ -382,6 +382,15 @@ class Core_API
 
 					$reflectedMethod = Core_Reflection::getControllerMethod($module, $method);
 
+					// The ending slash of a collection is always omitted
+					// when the resource is called.
+					// We delete the ending slash if any in order to avoid bad resolution
+					// in the next step (#Resolve).
+
+					if (substr($reflectedMethod['resource'], -1) == '/') {
+						$reflectedMethod['resource'] = substr($reflectedMethod['resource'], 0, -1);
+					}
+
 					$api_schema[$reflectedMethod['resource']][$reflectedMethod['name']] = array(
 							$reflectedMethod['id'] => $reflectedMethod['params']
 					);
@@ -392,7 +401,7 @@ class Core_API
 			$path = parse_url($url, PHP_URL_PATH);
 			$resource = str_replace('/api/', '', $path);
 
-			// Resolve
+			// #Resolve
 			if (!empty($api_schema[$resource][$http_method])) {
 
 				$resource = $api_schema[$resource][$http_method];
@@ -418,8 +427,10 @@ class Core_API
 
 		foreach ($args as $arg) {
 
-			list($param, $value) = explode('=', $arg);
-			$param_array[] = urldecode($value);
+			if (!empty($arg)) {
+				list($param, $value) = explode('=', $arg);
+				$param_array[] = urldecode($value);
+			}
 		}
 
 		return call_user_func_array(array($controller, (string)$controller_method), $param_array);

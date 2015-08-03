@@ -127,7 +127,7 @@ Flight::route('GET|POST|PUT|DELETE /api/*', function() {
 
 									$media = Core_API::callAPIControllerMethod( $module, $method, $params );
 
-									header('Content-Type: ' . $media['response']);
+									header('Content-Type: ' . $media['response'] . '; charset=utf-8');
 									echo $media['data'];
 								}
 								else {
