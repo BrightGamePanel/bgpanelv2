@@ -106,8 +106,8 @@ class Core_AuthService
 	public static function logout() {
 
 		// Log Event
-		Logger::configure( bgp_get_log4php_conf_array() );
-		$logger = Logger::getLogger( 'auth.core' );
+		Logger::configure( bgp_log4php_def_conf() );
+		$logger = Logger::getLogger( 'core.auth' );
 		$logger->info('Log out.');
 
 		$_SESSION = array(); // Destroy session variables
@@ -147,8 +147,8 @@ class Core_AuthService
 			$this->session['SEC_BAN'] = time() + CONF_SEC_BAN_DURATION; // Mark the end of the ban
 
 			// Log Event
-			Logger::configure( bgp_get_log4php_conf_array() );
-			$logger = Logger::getLogger( 'auth.core' );
+			Logger::configure( bgp_log4php_def_conf() );
+			$logger = Logger::getLogger( 'core.auth' );
 			$logger->info('Session banned.');
 		}
 

@@ -87,8 +87,7 @@ class BGP_Controller_Config extends BGP_Controller {
 
 		// return a response and log ===================================================
 
-		Logger::configure( bgp_get_log4php_conf_array() );
-		$logger = Logger::getLogger( self::getLoggerName() );
+		$logger = self::getLogger();
 
 		$data['errors'] = $errors;
 
@@ -144,8 +143,7 @@ class BGP_Controller_Config extends BGP_Controller {
 
 		// return a response and log ===================================================
 
-		Logger::configure( bgp_get_log4php_conf_array() );
-		$logger = Logger::getLogger( self::getLoggerName() );
+		$logger = self::getLogger();
 
 		$data['errors'] = $errors;
 
@@ -238,8 +236,7 @@ class BGP_Controller_Config extends BGP_Controller {
 
 		// return a response and log ===================================================
 
-		Logger::configure( bgp_get_log4php_conf_array() );
-		$logger = Logger::getLogger( self::getLoggerName() );
+		$logger = self::getLogger();
 
 		$data['errors'] = $errors;
 
@@ -352,8 +349,7 @@ class BGP_Controller_Config extends BGP_Controller {
 
 		// return a response and log ===================================================
 
-		Logger::configure( bgp_get_log4php_conf_array() );
-		$logger = Logger::getLogger( self::getLoggerName() );
+		$logger = self::getLogger();
 
 		$data['errors'] = $errors;
 

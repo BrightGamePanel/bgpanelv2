@@ -264,13 +264,13 @@ if ( ENV_RUNTIME != 'INSTALL_WIZARD' ) {
 		define( 'REAL_LOGGING_DIR', LOGS_DIR );
 	}
 
-	function bgp_get_log4php_conf_array( ) {
+	function bgp_log4php_def_conf( ) {
 		return array(
 			'rootLogger' => array(
 				'appenders' => array('default')
 			),
 			'loggers' => array(
-				'sys.core' => array(
+				'core' => array(
 					'additivity' => false,
 					'appenders' => array('coreAppender')
 				)
@@ -299,6 +299,29 @@ if ( ENV_RUNTIME != 'INSTALL_WIZARD' ) {
 					),
 					'params' => array(
 						'file' => REAL_LOGGING_DIR . '/' . date('Y-m-d') . '.core.txt',
+						'append' => true
+					)
+				)
+			)
+		);
+	}
+
+	function bgp_log4php_api_conf( ) {
+		return array(
+			'rootLogger' => array(
+				'appenders' => array('default')
+			),
+			'appenders' => array(
+				'default' => array(
+					'class' => 'LoggerAppenderFile',
+					'layout' => array(
+						'class' => 'LoggerLayoutPattern',
+						'params' => array(
+							'conversionPattern' => '[%date{Y-m-d H:i:s,u}] %-5level %-3server{PHP_AUTH_USER} %-15.15server{REMOTE_ADDR} %-35server{REQUEST_URI} %-35class %-20method "%msg"%n'
+						)
+					),
+					'params' => array(
+						'file' => REAL_LOGGING_DIR . '/' . date('Y-m-d') . '.api.txt',
 						'append' => true
 					)
 				)

@@ -389,7 +389,8 @@ class Core_API
 			}
 
 			// Get Resource
-			$resource = str_replace('/api/', '', $url);
+			$path = parse_url($url, PHP_URL_PATH);
+			$resource = str_replace('/api/', '', $path);
 
 			// Resolve
 			if (!empty($api_schema[$resource][$http_method])) {
@@ -407,8 +408,20 @@ class Core_API
 		return $request_method;
 	}
 
-	public static function callAPIControllerMethod( $method, $args ) {
+	public static function callAPIControllerMethod( $bgp_module_name, $controller_method, $args ) {
 
-		
+		$bgp_controller_name = 'BGP_Controller_' . ucfirst( strtolower( $bgp_module_name ) );
+		$controller_method = $controller_method['method'];
+		$param_array = array();
+
+		$controller = new $bgp_controller_name();
+
+		foreach ($args as $arg) {
+
+			list($param, $value) = explode('=', $arg);
+			$param_array[] = urldecode($value);
+		}
+
+		return call_user_func_array(array($controller, (string)$controller_method), $param_array);
 	}
 }

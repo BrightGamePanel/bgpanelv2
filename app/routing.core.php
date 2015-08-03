@@ -82,7 +82,7 @@ Flight::route('GET|POST|PUT|DELETE /api/*', function() {
 
 			$url = Flight::request()->url;
 			$http_method = Flight::request()->method;
-			$params = Flight::request()->query;
+			$params = explode('&', parse_url($url, PHP_URL_QUERY));
 
 			$headers = apache_request_headers();
 
@@ -125,9 +125,10 @@ Flight::route('GET|POST|PUT|DELETE /api/*', function() {
 									// Call The Method
 									// And Return The Media Response
 
-									$media = Core_API::callAPIControllerMethod( $method, $params );
+									$media = Core_API::callAPIControllerMethod( $module, $method, $params );
 
-									exit(var_dump($media));
+									header('Content-Type: ' . $media['response']);
+									echo $media['data'];
 								}
 								else {
 									// Forbidden

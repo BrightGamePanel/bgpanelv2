@@ -43,7 +43,18 @@ class BGP_Controller extends BGP_Module
 		parent::__construct( $module_name );
 	}
 
-	public static function getLoggerName( ) {
-		return self::getModuleName( );
+	public static function getLogger( ) {
+
+		switch (ENV_RUNTIME) {
+			case 'M2M':
+				Logger::configure( bgp_log4php_api_conf() );
+				return Logger::getLogger( 'api' );
+				break;
+			
+			default:
+				Logger::configure( bgp_log4php_def_conf() );
+				return Logger::getLogger( self::getModuleName() );
+				break;
+		}
 	}
 }
