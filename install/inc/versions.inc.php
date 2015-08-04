@@ -49,6 +49,6 @@ $bgpVersions = array(
  */
 
 define( 'LASTBGPVERSION', end($bgpVersions) );
-define( 'LASTAPIVERSION', end($last_api_version) );
+define( 'LASTAPIVERSION', $last_api_version );
 
 ?>
