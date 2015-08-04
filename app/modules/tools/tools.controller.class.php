@@ -51,33 +51,55 @@ class BGP_Controller_Tools extends BGP_Controller {
 	 *
 	 * @author Nikita Rousseau
 	 */
-	public function optimizeDB( ) {
+	public function optimizeDB( )
+	{
+
+		$tables = array();
+
 		$dbh = Core_DBH::getDBH(); // Get Database Handle
 
 		// Apply =======================================================================
 
-		$tables = array();
-
-		$result = $dbh->query( "SHOW TABLES" );
-		$tables[] = $result->fetchAll( PDO::FETCH_NUM );
-		$tables = $tables[0];
-
-		if (!empty($tables)) {
-			foreach ($tables as $table)
-			{
-				$table = $table[0];
-
-				if (strstr($table, DB_PREFIX)) {
-					$dbh->query("OPTIMIZE TABLE " . $table . ";");
+		try {
+			$result = $dbh->query( "SHOW TABLES" );
+			$tables[] = $result->fetchAll( PDO::FETCH_NUM );
+			$tables = $tables[0];
+	
+			if (!empty($tables)) {
+				foreach ($tables as $table)
+				{
+					$table = $table[0];
+	
+					if (strstr($table, DB_PREFIX)) {
+						$dbh->query("OPTIMIZE TABLE " . $table . ";");
+					}
 				}
 			}
+		}
+		catch (PDOException $e) {
+			echo $e->getMessage().' in '.$e->getFile().' on line '.$e->getLine();
+			die();
 		}
 
 		// return a response and log ===================================================
 
-		$data['success'] = true;
+		$logger = self::getLogger();
 		
-		// return all our data to an AJAX call
-		return $data;
+		if (!empty($data['errors'])) {
+		
+			$data['success'] = false;
+		
+			$logger->info('Failed to optimize database tables.');
+		} else {
+		
+			$data['success'] = true;
+		
+			$logger->info('Optimized database tables.');
+		}
+		
+		return array(
+			'response' => 'application/json',
+			'data' => json_encode($data)
+		);
 	}
 }

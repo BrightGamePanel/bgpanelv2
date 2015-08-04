@@ -26,6 +26,7 @@
  */
 
 
+
 /**
  * SessionHandlerInterface is an interface which defines a prototype for creating a custom session handler. In order to pass a custom session handler to session_set_save_handler() using its OOP invocation, 
  * the class must implement this interface.

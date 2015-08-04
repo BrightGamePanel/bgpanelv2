@@ -368,7 +368,7 @@ class BGP_Controller_Login extends BGP_Controller
 				$logger->info('Bad password reset.');
 
 				// Messages
-				if ( empty($result) && empty($adminResult) ) {
+				if ( empty($result) ) {
 					$errors['username'] = T_('Wrong information.');
 					$errors['email'] = T_('Wrong information.');
 				}

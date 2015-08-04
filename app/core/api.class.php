@@ -26,9 +26,6 @@
  */
 
 
-if ( !class_exists('Core_Reflection')) {
-	trigger_error('Core_API -> Core_Reflection is missing !');
-}
 
 class Core_API
 {

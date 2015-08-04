@@ -26,12 +26,6 @@
  */
 
 
-if ( !class_exists('BGP_Module')) {
-	trigger_error('Core_Reflection -> BGP_Module is missing !');
-}
-if ( !class_exists('DocBlock')) {
-	trigger_error('Core_Reflection -> DocBlock is missing !');
-}
 
 class Core_Reflection
 {
@@ -139,7 +133,7 @@ class Core_Reflection
 		if (!empty($bgp_module_name))
 		{
 			// Test Manifest File
-			if ( !file_exists(MODS_DIR . '/' . strtolower( $bgp_module_name ) . '/manifest.xml' ) ) {
+			if ( !file_exists( MODS_DIR . '/' . strtolower( $bgp_module_name ) . '/manifest.xml' ) ) {
 				return array();
 			}
 

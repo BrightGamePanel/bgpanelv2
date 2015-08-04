@@ -30,7 +30,7 @@ if ( !class_exists('BGP_Controller')) {
 }
 
 /**
- * Admin Configuration Controller
+ * Configuration Controller
  */
 
 class BGP_Controller_Config extends BGP_Controller {
@@ -244,12 +244,12 @@ class BGP_Controller_Config extends BGP_Controller {
 
 			$data['success'] = false;
 
-			$logger->info('Failed to get system configuration setting. (setting => ' . $setting . ')');
+			$logger->info('Failed to get system configuration setting.');
 		} else {
 
 			$data['success'] = true;
 
-			$logger->info('Got system configuration setting. (setting => ' . $setting . ')');
+			$logger->info('Got system configuration setting.');
 		}
 
 		return array(
@@ -357,12 +357,12 @@ class BGP_Controller_Config extends BGP_Controller {
 
 			$data['success'] = false;
 
-			$logger->info('Failed to update system configuration setting. (' . $setting . ' => ' . $value . ')');
+			$logger->info('Failed to update system configuration setting.');
 		} else {
 
 			$data['success'] = true;
 
-			$logger->info('Updated system configuration setting. (' . $setting . ' => ' . $value . ')');
+			$logger->info('Updated system configuration setting.');
 		}
 
 		return array(
