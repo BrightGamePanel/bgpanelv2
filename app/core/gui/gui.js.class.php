@@ -27,7 +27,7 @@
 
 
 
-class Core_JS_GUI
+class Core_GUI_JS
 {
 	private $module_name;
 

@@ -57,8 +57,8 @@ switch (ENV_RUNTIME)
 	 */
 	case 'H2M':
 		// Graphical User Interface Builder
-		require( APP_DIR	. '/core/gui.class.php' );
-		require( APP_DIR	. '/core/js.gui.class.php' );
+		require( APP_DIR	. '/core/gui/gui.class.php' );
+		require( APP_DIR	. '/core/gui/gui.js.class.php' );
 
 	/**
 	 * MACHINE TO MACHINE

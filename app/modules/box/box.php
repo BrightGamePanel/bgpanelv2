@@ -41,7 +41,7 @@ $gui = new Core_GUI( $module );
 /**
  * Javascript Generator
  */
-$js = new Core_JS_GUI( $module );
+$js = new Core_GUI_JS( $module );
 
 /**
  * Build Page Header
