@@ -94,9 +94,9 @@ if ( !is_dir( CONF_DIR ) ) {
 		<meta charset="utf-8">
 	</head>
 	<body>
-		<h1>Unable to locate BrightGamePanel V2 configuration directory (conf).</h1><br />
+		<h1>Unable to find configuration directory (conf).</h1><br />
 		<h3>&nbsp;</h3>
-		<p>Make sure you have renamed the configuration directory from "conf-dist" to "conf".</p>
+		<p>Make sure you have renamed the configuration directory from "conf-dist" to "conf" then retry.</p>
 	</body>
 </html>
 <?php
@@ -154,9 +154,9 @@ if ( is_dir( INSTALL_DIR ) ) {
 		<meta charset="utf-8">
 	</head>
 	<body>
-		<h1>Install Directory Detected</h1><br />
-		<h3>REMOVE THE INSTALLATION DIRECTORY.</h3>
-		<p>You will not be able to proceed beyond this point until the installation directory has been removed. This is a security feature of BrightGamePanel V2.</p>
+		<h1>Install Directory Detected !</h1><br />
+		<h3>FOR SECUIRTY REASONS PLEASE REMOVE THE INSTALLATION DIRECTORY.</h3>
+		<p>You will not be able to proceed beyond this point until the installation directory has been removed.</p>
 	</body>
 </html>
 <?php
@@ -216,7 +216,7 @@ if ( ENV_RUNTIME != 'INSTALL_WIZARD' ) {
 		<body>
 			<h1>Wrong Database Version Detected</h1><br />
 			<h3>&nbsp;</h3>
-			<p>Make sure you have followed the instructions to install/update the database.</p>
+			<p>Make sure you have followed the instructions to install/update the database and check that you are running a compatible MySQL Server</p>
 		</body>
 	</html>
 	<?php
