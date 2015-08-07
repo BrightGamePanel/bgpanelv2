@@ -103,10 +103,14 @@ Flight::route('GET|POST|PUT|DELETE /api/*', function() {
 					}
 					else if (strpos($url, '/api/') !== FALSE)
 					{
+						// Extract Module Name
+
 						$module = strstr($url, '/api/');
+
 						if (strpos($module, '?') !== FALSE) {
 							$module = strstr($module, '?', TRUE);
 						}
+
 						$module = str_replace('/api/', '', $module);
 
 						if (!empty($module))
@@ -224,33 +228,37 @@ Flight::route('GET|POST|PUT|DELETE (/@module(/@page))', function( $module, $page
 		switch (Flight::request()->method)
 		{
 			case 'GET':
+
 				// Process Task Query Parameter
 				$task = Flight::request()->query['task'];
 
 				// Forgot passwd? Page
 				if ( !empty($page) && $page == 'password' ) {
-					$mod_path = MODS_DIR . '/login/login.password.php';
+
+					bgp_safe_require( MODS_DIR . '/login/login.password.php' );
 				}
 				// Login Controller
 				else if ( !empty($page) && $page == 'process' && !empty($task) ) {
-					$mod_path = MODS_DIR . '/login/login.process.php';
+
+					bgp_safe_require( MODS_DIR . '/login/login.process.php' );
 				}
 				// Login View
 				else {
-					$mod_path = MODS_DIR . '/login/login.php';
+
+					bgp_safe_require( MODS_DIR . '/login/login.php' );
 				}
 				break;
 
 			case 'POST':
+
 				// Login Controller
-				$mod_path = MODS_DIR . '/login/login.process.php';
+				bgp_safe_require( MODS_DIR . '/login/login.process.php' );
+
 				break;
 
 			default:
 				Flight::redirect('/400');
 		}
-
-		bgp_safe_require( $mod_path );
 	}
 	else {
 
@@ -303,7 +311,8 @@ Flight::route('GET|POST|PUT|DELETE (/@module(/@page))', function( $module, $page
 
 						// Page
 						if ( !empty($page) ) {
-							$mod_path = MODS_DIR . '/' . $module . '/' . $module . '.' . $page . '.php';
+
+							bgp_safe_require( MODS_DIR . '/' . $module . '/' . $module . '.' . $page . '.php' );
 						}
 						// Controller
 						else if ( !empty($page) && $page == 'process' && !empty($task) ) {
@@ -314,7 +323,7 @@ Flight::route('GET|POST|PUT|DELETE (/@module(/@page))', function( $module, $page
 
 							if ( $rbac->Users->hasRole( 'root', $authService->getSessionInfo('ID') ) || $rbac->check( $resourcePerm, $authService->getSessionInfo('ID') ) ) {
 
-								$mod_path = MODS_DIR . '/' . $module . '/' . $module . '.process.php';
+								bgp_safe_require( MODS_DIR . '/' . $module . '/' . $module . '.process.php' );
 							}
 							else {
 								Flight::redirect('/401');
@@ -322,7 +331,8 @@ Flight::route('GET|POST|PUT|DELETE (/@module(/@page))', function( $module, $page
 						}
 						// Module Page
 						else {
-							$mod_path = MODS_DIR . '/' . $module . '/' . $module . '.php';
+
+							bgp_safe_require( MODS_DIR . '/' . $module . '/' . $module . '.php' );
 						}
 						break;
 
@@ -338,7 +348,7 @@ Flight::route('GET|POST|PUT|DELETE (/@module(/@page))', function( $module, $page
 
 						if ( $rbac->Users->hasRole( 'root', $authService->getSessionInfo('ID') ) || $rbac->check( $resourcePerm, $authService->getSessionInfo('ID') ) ) {
 
-							$mod_path = MODS_DIR . '/' . $module . '/' . $module . '.process.php';
+							bgp_safe_require( MODS_DIR . '/' . $module . '/' . $module . '.process.php' );
 						}
 						else {
 							Flight::redirect('/401');
@@ -348,8 +358,6 @@ Flight::route('GET|POST|PUT|DELETE (/@module(/@page))', function( $module, $page
 					default:
 						Flight::redirect('/400');
 				}
-
-				bgp_safe_require( $mod_path );
 			}
 			else {
 				Flight::redirect('/401');
