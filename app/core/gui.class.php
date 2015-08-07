@@ -177,7 +177,7 @@ class Core_GUI
 ?>
 		<!-- Javascript -->
 			<script src="./gui/angularjs/js/angular.min.js"></script>
-			<script src="./gui/jquery/js/jquery-2.1.1.min.js"></script>
+			<script src="./gui/jquery/js/jquery.min.js"></script>
 			<script src="./gui/bootstrap3/js/bootstrap.min.js"></script>
 			<!-- Metis Menu Plugin -->
 			<script src="./gui/metisMenu/js/metisMenu.min.js"></script>
