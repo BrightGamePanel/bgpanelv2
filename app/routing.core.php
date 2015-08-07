@@ -101,10 +101,13 @@ Flight::route('GET|POST|PUT|DELETE /api/*', function() {
 						header('Content-Type: application/xml; charset=utf-8');
 						echo Core_API::getWADL( );
 					}
-					else if (strstr($url, '/api/') !== FALSE)
+					else if (strpos($url, '/api/') !== FALSE)
 					{
-						$urlParts = explode('/', $url);
-						$module = $urlParts[2];
+						$module = strstr($url, '/api/');
+						if (strpos($module, '?') !== FALSE) {
+							$module = strstr($module, '?', TRUE);
+						}
+						$module = str_replace('/api/', '', $module);
 
 						if (!empty($module))
 						{

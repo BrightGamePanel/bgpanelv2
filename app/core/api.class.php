@@ -232,7 +232,7 @@ class Core_API
 
 		foreach ($reflectedMethod['params'] as $param) {
 
-			if (strstr($param, 'optional') === FALSE) {
+			if (strpos($param, 'optional') === FALSE) {
 				$required = 'true';
 			} else {
 				$required = 'false';

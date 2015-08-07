@@ -33,9 +33,9 @@ function bgp_safe_require( $path ) {
 	if ( file_exists($path) ) {
 		// Protect class files and xml files from being called directly
 		if (
-			(strstr($path, '.class') === FALSE) &&
-			(strstr($path, '.xml') === FALSE) &&
-			(strstr($path, '.ini') === FALSE)
+			(strpos($path, '.class') === FALSE) &&
+			(strpos($path, '.xml') === FALSE) &&
+			(strpos($path, '.ini') === FALSE)
 		   ) {
 			require_once( $path );
 			return 0;
