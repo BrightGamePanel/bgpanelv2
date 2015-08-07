@@ -57,6 +57,7 @@ class Core_GUI
 	function __construct( $bgp_module )
 	{
 		if ( !empty($bgp_module) && is_object($bgp_module) && is_subclass_of($bgp_module, 'BGP_Module') ) {
+
 			$this->module_name = $bgp_module::getModuleName( );
 			$this->module_title = $bgp_module::getModuleSetting( 'title' );
 			$this->module_icon = $bgp_module::getModuleSetting( 'icon' );
@@ -65,9 +66,8 @@ class Core_GUI
 			// Get parent module properties if this module is a subpage of a module
 			if ( is_subclass_of($bgp_module, $bgp_module::getModuleClassName() ) ) {
 
-				// Hack
 				$parentClassName = $bgp_module::getModuleClassName();
-				$parentModule = new $parentClassName(); // Ugly, but it works ;-)
+				$parentModule = new $parentClassName();
 
 				$this->parent_module_title = $parentModule::getModuleSetting( 'title' );
 				$this->parent_module_href = $parentModule::getModuleSetting( 'href' );
@@ -92,6 +92,7 @@ class Core_GUI
 			}
 		}
 		else {
+
 			trigger_error("Core_GUI -> Missing module !", E_USER_ERROR);
 		}
 	}
@@ -129,7 +130,7 @@ class Core_GUI
 //------------------------------------------------------------------------------------------------------------+
 ?>
 <!DOCTYPE html>
-<html ng-app="bgpApp" lang="<?php
+<html ng-app lang="<?php
 
 	// Language
 	if ( isset($_SESSION['LANG']) ) {
@@ -179,6 +180,11 @@ class Core_GUI
 			<script src="./gui/angularjs/js/angular.min.js"></script>
 			<script src="./gui/jquery/js/jquery.min.js"></script>
 			<script src="./gui/bootstrap3/js/bootstrap.min.js"></script>
+			<!-- API-Check (angular.formly Requirement) -->
+			<script src="./gui/api-check/js/api-check.min.js"></script>
+			<!-- Angular Formly -->
+			<script src="./gui/angularjs/js/angular.formly.min.js"></script>
+			<script src="./gui/angularjs/js/angular.formly-templates-bootstrap.min.js"></script>
 			<!-- Metis Menu Plugin -->
 			<script src="./gui/metisMenu/js/metisMenu.min.js"></script>
 			<!-- DataTables -->
