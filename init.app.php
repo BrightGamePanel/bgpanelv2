@@ -281,7 +281,7 @@ if ( ENV_RUNTIME != 'INSTALL_WIZARD' ) {
 					'layout' => array(
 						'class' => 'LoggerLayoutPattern',
 						'params' => array(
-							'conversionPattern' => '[%date{Y-m-d H:i:s,u}] %-5level %-10.10logger %-12session{USERNAME} %-3session{ID} %-15.15server{REMOTE_ADDR} %-35server{REQUEST_URI} %-35class %-20method "%msg"%n'
+							'conversionPattern' => '[%date{Y-m-d H:i:s,u}] %-5level %-10.10logger %-12session{USERNAME} %-3session{ID} %-15.15server{REMOTE_ADDR} %-30class %-30method %-35server{REQUEST_URI} "%msg"%n'
 						)
 					),
 					'params' => array(
@@ -294,7 +294,7 @@ if ( ENV_RUNTIME != 'INSTALL_WIZARD' ) {
 					'layout' => array(
 						'class' => 'LoggerLayoutPattern',
 						'params' => array(
-							'conversionPattern' => '[%date{Y-m-d H:i:s,u}] %-5level System Core V2 localhost %-35class %-20method "%msg"%n'
+							'conversionPattern' => '[%date{Y-m-d H:i:s,u}] %-5level System Core V2 localhost %-30class %-30method "%msg"%n'
 						)
 					),
 					'params' => array(
@@ -317,7 +317,7 @@ if ( ENV_RUNTIME != 'INSTALL_WIZARD' ) {
 					'layout' => array(
 						'class' => 'LoggerLayoutPattern',
 						'params' => array(
-							'conversionPattern' => '[%date{Y-m-d H:i:s,u}] %-5level %-3server{PHP_AUTH_USER} %-15.15server{REMOTE_ADDR} %-35server{REQUEST_URI} %-35class %-20method "%msg"%n'
+							'conversionPattern' => '[%date{Y-m-d H:i:s,u}] %-5level %-3server{PHP_AUTH_USER} %-15.15server{REMOTE_ADDR} %-30class %-30method %-6.6server{REQUEST_METHOD} %-100server{REQUEST_URI} "%msg"%n'
 						)
 					),
 					'params' => array(
