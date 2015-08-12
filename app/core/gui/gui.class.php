@@ -130,7 +130,7 @@ class Core_GUI
 //------------------------------------------------------------------------------------------------------------+
 ?>
 <!DOCTYPE html>
-<html ng-app lang="<?php
+<html ng-app="bgpApp" lang="<?php
 
 	// Language
 	if ( isset($_SESSION['LANG']) ) {
@@ -180,11 +180,6 @@ class Core_GUI
 			<script src="./gui/angularjs/js/angular.min.js"></script>
 			<script src="./gui/jquery/js/jquery.min.js"></script>
 			<script src="./gui/bootstrap3/js/bootstrap.min.js"></script>
-			<!-- API-Check (angular.formly Requirement) -->
-			<script src="./gui/api-check/js/api-check.min.js"></script>
-			<!-- Angular Formly -->
-			<script src="./gui/angularjs/js/angular.formly.min.js"></script>
-			<script src="./gui/angularjs/js/angular.formly-templates-bootstrap.min.js"></script>
 			<!-- Metis Menu Plugin -->
 			<script src="./gui/metisMenu/js/metisMenu.min.js"></script>
 			<!-- DataTables -->
@@ -209,7 +204,10 @@ class Core_GUI
 		<![endif]-->
 	</head>
 
-	<body ng-controller="bgpController">
+	<body ng-controller="bgpCtrl">
+
+	<!-- Powered By Bright Game Panel -->
+
 	<div id="wrapper">
 
 		<!-- NAVIGATION -->

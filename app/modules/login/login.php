@@ -79,34 +79,6 @@ if ( $authService->isBanned() ) {
 								<div class="panel-body">
 									<legend><?php echo T_('Sign In'); ?></legend>
 
-									<form ng-submit="processForm()">
-										<div class="form-group" ng-class="{ 'has-error' : errorUsername }">
-											<label for="username"><?php echo T_('Username'); ?></label>
-											<div class="input-group">
-												<div class="input-group-addon"><span class="glyphicon glyphicon-user"></span></div>
-												<input class="form-control" type="text" ng-model="formData.username" id="username" name="username" placeholder="<?php echo T_('Login'); ?>" required>
-											</div>
-											<span class="help-block" ng-show="errorUsername" ng-bind="errorUsername"></span>
-										</div>
-
-										<div class="form-group" ng-class="{ 'has-error' : errorPassword }">
-											<label for="password"><?php echo T_('Password'); ?></label>
-											<div class="input-group">
-												<div class="input-group-addon"><span class="glyphicon glyphicon-lock"></span></div>
-												<input class="form-control" type="password" ng-model="formData.password" id="password" name="password" placeholder="<?php echo T_('Password'); ?>" required>
-											</div>
-											<span class="help-block" ng-show="errorPassword" ng-bind="errorPassword"></span>
-										</div>
-
-										<div class="checkbox">
-											<label>
-												<input type="checkbox" ng-model="formData.rememberMe" ng-checked="true" name="rememberMe"><?php echo T_('Remember Me'); ?>&nbsp;
-											</label>
-										</div>
-
-										<button class="btn btn-primary btn-lg btn-block" type="submit"><?php echo T_('Login'); ?></button>
-									</form>
-
 									<ul class="pager">
 										<li>
 											<a href="./login/password"><?php echo T_('Forgot Password?'); ?></a>
@@ -149,7 +121,7 @@ else {
 	$return = './';
 }
 
-$js->getAngularController( 'authenticateUser', $fields, $return );
+$js->getAngularCode( 'authenticateUser', $fields, $return );
 
 ?>
 					<!-- END: SCRIPT -->

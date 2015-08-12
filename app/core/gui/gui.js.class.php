@@ -53,150 +53,20 @@ class Core_GUI_JS
 	 * @return String
 	 * @access public
 	 */
-	public function getAngularController( $task = '', $variables = array(), $redirect = './' )
+	public function getAngularCode( $task = '', $variables = array(), $redirect = './' )
 	{
 		$module = $this->module_name;
 //------------------------------------------------------------------------------------------------------------+
 ?>
 					<script>
-<?php
+						console.clear();
 
-		// Define angular module/app
-		$this->defAngularMod();
+						angular.module('bgpApp', [])
+							.controller('bgpCtrl', function($scope, $http) {
 
-?>
+						});
 
-						// create angular controller and pass in $scope and $http
-						function bgpController($scope, $http) {
-
-<?php
-
-		// Do not define controller if no task has been given
-		if (!empty($task) && !empty($module))
-		{
-?>
-							// $scope will allow this to pass between controller and view
-
-							// create a JSON object to hold our form information
-							// we specify the controller method
-							$scope.formData = {
-<?php
-
-			// Complete Form Fields
-			foreach ($variables as $var => $value)
-			{
-				if (!is_numeric($var) && !empty($value)) {
-?>
-								<?php echo "'" . $var . "'"; ?>:<?php echo "'$value'"; ?>,
-<?php
-				}
-			}
-
-?>
-								'task':<?php echo "'$task'"; ?>
-
-							};
-
-							// Process the form
-							$scope.processForm = function() {
-								$http({
-								method  : 'POST',
-								url     : <?php echo "'./$module/process'"; ?>,
-								data    : $.param($scope.formData),
-								headers : { 'Content-Type': 'application/x-www-form-urlencoded' }
-								})
-									.success(function(data)
-									{
-										if (!data.success || (data.success == false))
-										{
-											// If not successful, bind errors to error variables
-<?php
-
-			// Form Fields
-			foreach ($variables as $var => $value)
-			{
-
-				// bind field errors to error variables
-				if (is_numeric($var)) {
-
-					// Hack in case the values are not defined in the array
-					$var = lcfirst($value);
-				}
-?>
-											$scope.error<?php echo ucfirst($var); ?> = data.errors.<?php echo $var; ?>;
-<?php
-			}
-
-			// Display notification only on.error when a redirection has been specified
-			if (!empty($redirect))
-			{
-?>
-
-											// Bind notification message to message
-											$scope.msgType = data.msgType;
-											$scope.msg = data.msg;
-<?php
-			}
-
-?>
-										}
-<?php
-
-			// Redirect on.form.success if required
-			if (!empty($redirect))
-			{
-?>
-
-										if (data.success && (data.success == true))
-										{
-											// If successful, we redirect the user to the resource
-											window.location = ( <?php echo "'$redirect'"; ?> );
-										}
-<?php
-			}
-			// Display notification when no redirection has been specified
-			else
-			{
-?>
-
-										// Bind notification message to message
-										$scope.msgType = data.msgType;
-										$scope.msg = data.msg;
-<?php
-			}
-
-?>
-									})
-									.error(function(data)
-									{
-										// An error has been triggered while submitting the form.
-
-										$scope.msgType = 'danger';
-										$scope.msg = data;
-									});
-							};
-<?php
-		}
-
-?>
-						}
 					</script>
-<?php
-//------------------------------------------------------------------------------------------------------------+
-	}
-
-	/**
-	 * Define Angular Module/App as JS Code
-	 *
-	 * @param none
-	 * @return String
-	 * @access private
-	 */
-	private function defAngularMod() {
-//------------------------------------------------------------------------------------------------------------+
-?>
-						// define angular module/app
-						var bgpApp = angular.module('bgpApp', []);
 <?php
 //------------------------------------------------------------------------------------------------------------+
 	}
