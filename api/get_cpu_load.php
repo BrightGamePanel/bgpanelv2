@@ -1,4 +1,4 @@
 <?php
-$cpu = shell_exec("cat /proc/stat | grep 'cpu ' /proc/stat | awk '{usage=($2+$4)*100/($2+$4+$5)} END {print usage "%"}'")
-echo "<pre>$cpu</pre>";
+$output = shell_exec('sh get_cpu_usage.sh');
+echo "<pre>$output</pre>";
 ?>
