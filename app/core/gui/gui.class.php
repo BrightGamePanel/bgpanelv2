@@ -178,8 +178,15 @@ class Core_GUI
 ?>
 		<!-- Javascript -->
 			<script src="./gui/angularjs/js/angular.min.js"></script>
+			<script src="./gui/angularjs/js/angular-sanitize.min.js"></script>
 			<script src="./gui/jquery/js/jquery.min.js"></script>
 			<script src="./gui/bootstrap3/js/bootstrap.min.js"></script>
+			<!-- Angular Schema Form Dependencies -->
+			<script src="./gui/libs/js/tv4.min.js"></script>
+			<script src="./gui/libs/js/objectpath.js"></script>
+			<!-- Angular Schema Form -->
+			<script src="./gui/angularjs/js/angular.schema-form.min.js"></script>
+			<script src="./gui/angularjs/js/angular.bootstrap-decorator.min.js"></script>
 			<!-- Metis Menu Plugin -->
 			<script src="./gui/metisMenu/js/metisMenu.min.js"></script>
 			<!-- DataTables -->

@@ -46,24 +46,94 @@ class Core_GUI_JS
 
 	/**
 	 * Dynamically Generate An AngularJS Controller
+	 * 
+	 * Powered by Textalk/angular-schema-form
 	 *
-	 * @param String $task
-	 * @param Array $variables
-	 * @param String $redirect
-	 * @return String
+	 * @param 	String 	$task
+	 * @param 	String 	$scopeSchema
+	 * @param 	String 	$scopeForm
+	 * @param 	String 	$scopeModel
+	 * @param 	String 	$redirect
+	 * @return 	String
+	 * @see 	https://github.com/Textalk/angular-schema-form/blob/development/docs/index.md
 	 * @access public
 	 */
-	public function getAngularCode( $task = '', $variables = array(), $redirect = './' )
-	{
+	public function getAngularCode(
+		$task = '',
+		$scopeSchema = array(),
+		$scopeForm = array(),
+		$scopeModel = '',
+		$redirect = './' )	{
+
 		$module = $this->module_name;
 //------------------------------------------------------------------------------------------------------------+
 ?>
 					<script>
 						console.clear();
 
-						angular.module('bgpApp', [])
-							.controller('bgpCtrl', function($scope, $http) {
+						angular.module('bgpApp', ['schemaForm']).controller('bgpCtrl', function($scope, $http)
+						{
+							// Schema
+							$scope.schema = <?php echo $scopeSchema; ?>;
 
+							// Form
+							$scope.form = <?php echo $scopeForm; ?>;
+
+							// Model
+							$scope.task = {'task': <?php echo "'$task'"; ?>};
+							$scope.model = {};
+							angular.extend($scope.model, $scope.task);
+
+							// Submit Handle
+							$scope.onSubmit = function(form)
+							{
+								// Client side validation
+								$scope.$broadcast('schemaFormValidate');
+
+								// Backend Validation
+								if (form.$valid) {
+
+									// Post form to process
+									$http({
+										method  : 'POST',
+										url     : <?php echo "'./$module/process'"; ?>,
+										data    : $.param($scope.model),
+										headers : { 'Content-Type': 'application/x-www-form-urlencoded' }
+									})
+
+									.success(function(data)
+									{
+										if (!data.success || (data.success == false))
+										{
+											// If not successful, bind errors to error variables
+
+											//$scope.$broadcast('schemaForm.error.username', 'usernameAlreadyTaken', 'The username is already taken');
+
+											// Bind notification message to message
+
+											$scope.msgType = data.msgType;
+											$scope.msg = data.msg;
+										}
+
+										if (data.success && (data.success == true))
+										{
+											// If successful, we redirect the user to the resource
+
+											window.location = ( <?php echo "'$redirect'"; ?> );
+										}
+									})
+
+									.error(function(data)
+									{
+										// An error has been triggered while submitting the form.
+
+										// Bind notification message to message
+
+										$scope.msgType = 'danger';
+										$scope.msg = data;
+									});
+								}
+							}
 						});
 
 					</script>

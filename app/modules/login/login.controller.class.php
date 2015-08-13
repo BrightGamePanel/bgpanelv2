@@ -173,8 +173,7 @@ class BGP_Controller_Login extends BGP_Controller
 				$this->setLangCookie( $result[0]['lang'] );
 
 				// Log Event
-				Logger::configure( bgp_log4php_def_conf() );
-				$logger = Logger::getLogger( self::getLoggerName() );
+				$logger = self::getLogger();
 				$logger->info('Log in.');
 			}
 			else {
@@ -188,8 +187,7 @@ class BGP_Controller_Login extends BGP_Controller
 				$authService->incrementSecCount();
 
 				// Log Event
-				Logger::configure( bgp_log4php_def_conf() );
-				$logger = Logger::getLogger( self::getLoggerName() );
+				$logger = self::getLogger();
 				$logger->info('Login failure.');
 
 				// Messages
@@ -353,8 +351,7 @@ class BGP_Controller_Login extends BGP_Controller
 				$mail = mail($to, $subject, $message, $headers);
 
 				// Log Event
-				Logger::configure( bgp_log4php_def_conf() );
-				$logger = Logger::getLogger( self::getLoggerName() );
+				$logger = self::getLogger();
 				$logger->info('Password reset.');
 			}
 			else {
@@ -363,8 +360,7 @@ class BGP_Controller_Login extends BGP_Controller
 				$authService->incrementSecCount();
 
 				// Log Event
-				Logger::configure( bgp_log4php_def_conf() );
-				$logger = Logger::getLogger( self::getLoggerName() );
+				$logger = self::getLogger();
 				$logger->info('Bad password reset.');
 
 				// Messages

@@ -164,7 +164,4 @@ $js->getAngularController( 'sendNewPassword', $fields, './login' );
  */
 $gui->getFooter();
 
-// Clean Up
-unset( $module, $gui, $js );
-
 ?>

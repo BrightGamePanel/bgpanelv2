@@ -79,6 +79,11 @@ if ( $authService->isBanned() ) {
 								<div class="panel-body">
 									<legend><?php echo T_('Sign In'); ?></legend>
 
+									<form name="thisForm" ng-submit="onSubmit(thisForm)">
+										<div sf-schema="schema" sf-form="form" sf-model="model"></div>
+										<button class="btn btn-primary btn-lg btn-block" type="submit"><?php echo T_('Login'); ?></button>
+									</form>
+
 									<ul class="pager">
 										<li>
 											<a href="./login/password"><?php echo T_('Forgot Password?'); ?></a>
@@ -95,33 +100,81 @@ if ( $authService->isBanned() ) {
 
 /**
  * Generate AngularJS Code
- * @arg $task
- * @arg $inputs
- * @arg $redirect
+ *
+ * @param 	String 	$task
+ * @param 	String 	$schema
+ * @param 	String 	$form
+ * @param 	String 	$model
+ * @param 	String 	$redirect
  */
 
+// Schema Definition
+$schema = "{
+	type: 'object',
+	properties: {
+		username: {
+			title: 'Username',
+			type: 'string'
+		},
+		password: {
+			title: 'Password',
+			type: 'string'
+		},
+		rememberMe: {
+			type: 'boolean',
+			title: 'Remember Me'
+		}
+	},
+	'required': [
+		'username',
+		'password'
+	]
+}";
+
+// Form Definition
+$form = "[
+	{
+		'key': 'username',
+		'type': 'text',
+		placeholder: 'Login',
+		disableSuccessState: true
+	},
+	{
+		'key': 'password',
+		'type': 'password',
+		placeholder: 'Password',
+		disableSuccessState: true
+	},
+	{
+		'key': 'rememberMe',
+		'type': 'checkbox',
+		disableSuccessState: true
+	}
+]";
+
+// Model Init
 if ( isset($_COOKIE['USERNAME']) ) {
-	$fields = array(
+	$model = json_encode( array(
 			'username' => htmlspecialchars($_COOKIE['USERNAME'], ENT_QUOTES),
 			'password'
-		);
+		) );
 }
 else {
-	$fields = array(
+	$model = json_encode( array(
 			'username',
 			'password'
-		);
+		) );
 }
 
 // Redirect
 if (!empty($_GET['page'])) {
-	$return = '.' . $_GET['page'];
+	$redirect = '.' . $_GET['page'];
 }
 else {
-	$return = './';
+	$redirect = './';
 }
 
-$js->getAngularCode( 'authenticateUser', $fields, $return );
+$js->getAngularCode( 'authenticateUser', $schema, $form, $model, $redirect );
 
 ?>
 					<!-- END: SCRIPT -->
@@ -136,8 +189,5 @@ $js->getAngularCode( 'authenticateUser', $fields, $return );
  * Build Page Footer
  */
 $gui->getFooter();
-
-// Clean Up
-unset( $module, $gui, $js );
 
 ?>
