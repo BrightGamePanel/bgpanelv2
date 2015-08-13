@@ -1,4 +1,4 @@
 <?php
-$uptime = shell_exec("uptime")
-echo "<pre>$uptime</pre>";
+$output = shell_exec('uptime');
+echo "<pre>$output</pre>";
 ?>

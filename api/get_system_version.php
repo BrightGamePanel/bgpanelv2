@@ -1,4 +1,4 @@
 <?php
-$output = shell_exec('free -m');
+$output = shell_exec('uname -a');
 echo "<pre>$output</pre>";
 ?>

@@ -1,4 +1,4 @@
 <?php
-$v = shell_exec("cat ../version.txt")
-echo "<pre>$v</pre>";
+$output = shell_exec('cat ../version.txt');
+echo "<pre>$output</pre>";
 ?>

@@ -1,4 +1,4 @@
 <?php
-$ramg = shell_exec("free -g")
-echo "<pre>$ramg</pre>";
+$output = shell_exec('free -g');
+echo "<pre>$output</pre>";
 ?>
