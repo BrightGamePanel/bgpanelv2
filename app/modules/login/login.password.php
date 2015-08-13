@@ -148,7 +148,7 @@ $fields = array(
 		'Captcha'
 	);
 
-$js->getAngularController( 'sendNewPassword', $fields, './login' );
+$js->getAngularCode( 'authenticateUser', $schema, $form, $model, './login' );
 
 ?>
 					<!-- END: SCRIPT -->

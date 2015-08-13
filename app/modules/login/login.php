@@ -81,7 +81,7 @@ if ( $authService->isBanned() ) {
 
 									<form name="thisForm" ng-submit="onSubmit(thisForm)">
 										<div sf-schema="schema" sf-form="form" sf-model="model"></div>
-										<button class="btn btn-primary btn-lg btn-block" type="submit"><?php echo T_('Login'); ?></button>
+										<button class="btn btn-primary btn-lg btn-block" type="submit" ng-disabled="thisForm.$invalid && !thisForm.$submitted"><?php echo T_('Login'); ?></button>
 									</form>
 
 									<ul class="pager">
@@ -155,15 +155,11 @@ $form = "[
 // Model Init
 if ( isset($_COOKIE['USERNAME']) ) {
 	$model = json_encode( array(
-			'username' => htmlspecialchars($_COOKIE['USERNAME'], ENT_QUOTES),
-			'password'
-		) );
+			'username' => htmlspecialchars($_COOKIE['USERNAME'], ENT_QUOTES)
+		), JSON_FORCE_OBJECT );
 }
 else {
-	$model = json_encode( array(
-			'username',
-			'password'
-		) );
+	$model = json_encode( array(), JSON_FORCE_OBJECT );
 }
 
 // Redirect

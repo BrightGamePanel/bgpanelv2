@@ -194,6 +194,8 @@ class Core_GUI
 			<script src="./gui/datatables/js/dataTables.bootstrap.js"></script>
 			<!-- SB Admin 2 -->
 			<script src="./gui/bootstrap3/js/sb-admin-2.js"></script>
+			<!-- Javascript Functions -->
+			<script src="./gui/libs/js/toCamel.func.js"></script>
 <?php 
 //------------------------------------------------------------------------------------------------------------+
 

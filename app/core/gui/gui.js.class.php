@@ -58,18 +58,36 @@ class Core_GUI_JS
 	 * @see 	https://github.com/Textalk/angular-schema-form/blob/development/docs/index.md
 	 * @access public
 	 */
-	public function getAngularCode(
-		$task = '',
-		$scopeSchema = array(),
-		$scopeForm = array(),
-		$scopeModel = '',
-		$redirect = './' )	{
-
+	public function getAngularCode(	$task = '',	$scopeSchema = '', $scopeForm = '', $scopeModel = '', $redirect = './' )
+	{
 		$module = $this->module_name;
+
+		ob_start();
+
+		// Required params
+		if (empty($scopeSchema) || empty($scopeForm) || empty($scopeModel))
+		{
 //------------------------------------------------------------------------------------------------------------+
 ?>
 					<script>
 						console.clear();
+
+						angular.module('bgpApp', []).controller('bgpCtrl', function() {});
+					</script>
+<?php
+//------------------------------------------------------------------------------------------------------------+
+			ob_end_flush();
+			return 1;
+		}
+
+//------------------------------------------------------------------------------------------------------------+
+?>
+					<script>
+						console.clear();
+
+						/**
+						 * AngularJS
+						 */
 
 						angular.module('bgpApp', ['schemaForm']).controller('bgpCtrl', function($scope, $http)
 						{
@@ -81,7 +99,7 @@ class Core_GUI_JS
 
 							// Model
 							$scope.task = {'task': <?php echo "'$task'"; ?>};
-							$scope.model = {};
+							$scope.model = <?php echo $scopeModel; ?>;
 							angular.extend($scope.model, $scope.task);
 
 							// Submit Handle
@@ -106,8 +124,9 @@ class Core_GUI_JS
 										if (!data.success || (data.success == false))
 										{
 											// If not successful, bind errors to error variables
-
-											//$scope.$broadcast('schemaForm.error.username', 'usernameAlreadyTaken', 'The username is already taken');
+											angular.forEach(data.errors, function(value, key) {
+												$scope.$broadcast('schemaForm.error.' + key, value.toCamel(), value);
+											});
 
 											// Bind notification message to message
 
@@ -115,12 +134,34 @@ class Core_GUI_JS
 											$scope.msg = data.msg;
 										}
 
+<?php
+//------------------------------------------------------------------------------------------------------------+
+
+		// Redirect on.form.success if required
+		if (!empty($redirect))
+		{
+?>
 										if (data.success && (data.success == true))
 										{
 											// If successful, we redirect the user to the resource
 
 											window.location = ( <?php echo "'$redirect'"; ?> );
 										}
+<?php
+		}
+		// Display notification message when no redirection is specified
+		else
+		{
+?>
+										// Bind notification message to message
+
+										$scope.msgType = data.msgType;
+										$scope.msg = data.msg;
+<?php
+		}
+
+//------------------------------------------------------------------------------------------------------------+
+?>
 									})
 
 									.error(function(data)
@@ -139,6 +180,8 @@ class Core_GUI_JS
 					</script>
 <?php
 //------------------------------------------------------------------------------------------------------------+
+
+		ob_end_flush();
 	}
 
 }
