@@ -1,4 +1,4 @@
-This api can be used using CURL to get information about the server or sending a command install curl and set a request
+This api can be used using CURL to get information about the server or sending a command install curl and send a request
 
 eg to see the current system uptime type :
 curl http://yourserver.com/api/get_uptime
