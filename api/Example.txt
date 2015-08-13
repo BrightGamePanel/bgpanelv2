@@ -11,6 +11,7 @@ get_php_version			// Displays the server php version
 get_ram_usage_advanced		// Displays advanced information about the ram
 get_ram_usage_g			// Displays ram information in gigabytes
 get_ram_usage_m			// Displays ram information in megabytes
+get_ram_precentage		// Gives the currently used ram in a precentage
 get_uptime                      // Displays the system uptime
 
 More coming soon
