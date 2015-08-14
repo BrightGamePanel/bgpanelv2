@@ -109,20 +109,21 @@ if ( $authService->isBanned() ) {
  */
 
 // Schema Definition
-$schema = "{
+$schema = "
+{
 	type: 'object',
 	properties: {
 		username: {
-			title: 'Username',
+			title: '" . T_('Username') . "',
 			type: 'string'
 		},
 		password: {
-			title: 'Password',
+			title: '" . T_('Password') . "',
 			type: 'string'
 		},
 		rememberMe: {
 			type: 'boolean',
-			title: 'Remember Me'
+			title: '" . T_('Remember Me') . "'
 		}
 	},
 	'required': [
@@ -132,17 +133,18 @@ $schema = "{
 }";
 
 // Form Definition
-$form = "[
+$form = "
+[
 	{
 		'key': 'username',
 		'type': 'text',
-		placeholder: 'Login',
+		placeholder: '" . T_('Login') . "',
 		disableSuccessState: true
 	},
 	{
 		'key': 'password',
 		'type': 'password',
-		placeholder: 'Password',
+		placeholder: '" . T_('Password') . "',
 		disableSuccessState: true
 	},
 	{

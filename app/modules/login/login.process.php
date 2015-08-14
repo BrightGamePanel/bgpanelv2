@@ -57,7 +57,15 @@ switch ($task)
 		if ( $authService->isBanned() == FALSE ) {
 
 			if ( isset($_POST['username']) && isset($_POST['password']) ) {
-				$json = $loginController->authenticateUser( $_POST['username'], $_POST['password'] );
+				// Checkbox
+				if ( !empty($_POST['rememberMe']) && ($_POST['rememberMe'] == 'true') ) {
+					$_POST['rememberMe'] = TRUE;
+				}
+				else {
+					$_POST['rememberMe'] = FALSE;
+				}
+
+				$json = $loginController->authenticateUser( $_POST['username'], $_POST['password'], $_POST['rememberMe'] );
 				Flight::json( $json );
 			}
 			else {

@@ -79,24 +79,8 @@ if ( $authService->isBanned() ) {
 								<div class="panel-body">
 									<legend><?php echo T_('Lost Password'); ?></legend>
 
-									<form ng-submit="processForm()">
-										<div class="form-group" ng-class="{ 'has-error' : errorUsername }">
-											<label for="username"><?php echo T_('Username'); ?></label>
-											<div class="input-group">
-												<div class="input-group-addon"><span class="glyphicon glyphicon-user"></span></div>
-												<input class="form-control" type="text" ng-model="formData.username" id="username" name="username" placeholder="<?php echo T_('Login'); ?>" required>
-											</div>
-											<span class="help-block" ng-show="errorUsername" ng-bind="errorUsername"></span>
-										</div>
-
-										<div class="form-group" ng-class="{ 'has-error' : errorEmail }">
-											<label for="email"><?php echo T_('Email'); ?></label>
-											<div class="input-group">
-												<div class="input-group-addon"><span class="glyphicon glyphicon-envelope"></span></div>
-												<input class="form-control" type="email" ng-model="formData.email" id="email" name="email" placeholder="<?php echo T_('Email'); ?>" required>
-											</div>
-											<span class="help-block" ng-show="errorEmail" ng-bind="errorEmail"></span>
-										</div>
+									<form name="thisForm" ng-submit="onSubmit(thisForm)">
+										<div sf-schema="schema" sf-form="form" sf-model="model"></div>
 
 										<!-- CAPTCHA -->
 										<img class="img-thumbnail" id="captcha" src="./login/process?task=getCaptcha" alt="CAPTCHA Image" />
@@ -108,17 +92,17 @@ if ( $authService->isBanned() ) {
 										</button>
 										<!-- END: CAPTCHA -->
 
-										<div class="form-group" ng-class="{ 'has-error' : errorCaptcha }">
+										<div class="form-group" ng-class="{'has-error': formErrors.captcha[0]}">
 											<label for="captcha">Captcha</label>
 											<div class="input-group">
 												<div class="input-group-addon"><span class="glyphicon glyphicon-picture"></span></div>
-												<input class="form-control" type="text" ng-model="formData.captcha" id="captcha" name="captcha" placeholder="Captcha Code" required>
+												<input class="form-control" type="text" ng-model="model['captcha']" id="captcha" name="captcha" placeholder="<?php echo T_('Captcha Code'); ?>" required>
 											</div>
-											<span class="help-block" ng-show="errorCaptcha" ng-bind="errorCaptcha"></span>
+											<span class="help-block" ng-show="formErrors.captcha[0]" ng-bind="formErrors.captcha[0]"></span>
 											<p class="help-block"><?php echo T_('Refresh the CAPTCHA image each time you submit the form above.'); ?></p>
 										</div>
 
-										<button class="btn btn-primary btn-lg btn-block" type="submit"><?php echo T_('Send Password'); ?></button>
+										<button class="btn btn-primary btn-lg btn-block" type="submit" ng-disabled="thisForm.$invalid && !thisForm.$submitted"><?php echo T_('Send Password'); ?></button>
 									</form>
 
 									<ul class="pager">
@@ -137,18 +121,52 @@ if ( $authService->isBanned() ) {
 
 /**
  * Generate AngularJS Code
- * @arg $task
- * @arg $inputs
- * @arg $redirect
+ *
+ * @param 	String 	$task
+ * @param 	String 	$schema
+ * @param 	String 	$form
+ * @param 	String 	$model
+ * @param 	String 	$redirect
  */
 
-$fields = array(
-		'Username',
-		'Email',
-		'Captcha'
-	);
+// Schema Definition
+$schema = "
+{
+	type: 'object',
+	properties: {
+		username: {
+			title: '" . T_('Username') . "',
+			type: 'string'
+		},
+		email: {
+			title: '" . T_('Email') . "',
+			type: 'string'
+		}
+	},
+	'required': [
+		'username',
+		'email'
+	]
+}";
 
-$js->getAngularCode( 'authenticateUser', $schema, $form, $model, './login' );
+// Form Definition
+$form = "
+[
+	{
+		'key': 'username',
+		'type': 'text',
+		placeholder: '" . T_('Login') . "'
+	},
+	{
+		'key': 'email',
+		'type': 'email',
+		placeholder: '" . T_('Email') . "'
+	}
+]";
+
+$model = json_encode( array(), JSON_FORCE_OBJECT );
+
+$js->getAngularCode( 'sendNewPassword', $schema, $form, $model, './login' );
 
 ?>
 					<!-- END: SCRIPT -->

@@ -102,16 +102,43 @@ class Core_GUI_JS
 							$scope.model = <?php echo $scopeModel; ?>;
 							angular.extend($scope.model, $scope.task);
 
-							// Submit Handle
+							// Errors repository
+							$scope.formErrors = {};
+
+							// Submit Function
+
 							$scope.onSubmit = function(form)
 							{
-								// Client side validation
+								// Reset backend validation (if any) because of its async state
+
+								if ($scope.formErrors)
+								{
+									angular.forEach($scope.formErrors, function(value, key)
+									{
+										angular.forEach(value, function(subValue, subKey)
+										{
+											if (subKey != 0) {
+												$scope.$broadcast('schemaForm.error.' + key, subValue.toCamel(), true);
+												$scope.$broadcast('schemaForm.error.' + key, 'required', true);
+											}
+										});
+									});
+								}
+
+								// Model is not correctly registred...
+
+								console.log($scope.model);
+
+								// Client validation
+
 								$scope.$broadcast('schemaFormValidate');
 
-								// Backend Validation
+								// Backend validation
+
 								if (form.$valid) {
 
-									// Post form to process
+									// Post form to process page
+
 									$http({
 										method  : 'POST',
 										url     : <?php echo "'./$module/process'"; ?>,
@@ -123,9 +150,23 @@ class Core_GUI_JS
 									{
 										if (!data.success || (data.success == false))
 										{
+											// Reset errors repository
+											$scope.formErrors = {};
+
 											// If not successful, bind errors to error variables
+
 											angular.forEach(data.errors, function(value, key) {
+
+												// Bind validation messages
+
 												$scope.$broadcast('schemaForm.error.' + key, value.toCamel(), value);
+
+												// Copy errors to another repository
+												// Useful for hybrid forms
+
+												$scope.formErrors[key] = {};
+												$scope.formErrors[key][value.toCamel()] = value;
+												$scope.formErrors[key][0] = value;
 											});
 
 											// Bind notification message to message
@@ -166,7 +207,7 @@ class Core_GUI_JS
 
 									.error(function(data)
 									{
-										// An error has been triggered while submitting the form.
+										// An error has been triggered while submitting the form
 
 										// Bind notification message to message
 
@@ -183,5 +224,4 @@ class Core_GUI_JS
 
 		ob_end_flush();
 	}
-
 }

@@ -47,13 +47,15 @@ class BGP_Controller_Login extends BGP_Controller
 	 *
 	 * @param string $username
 	 * @param string $password
+	 * @param bool $rememberMe
 	 *
 	 * @author Nikita Rousseau
 	 */
-	public function authenticateUser( $username, $password ) {
+	public function authenticateUser( $username, $password, $rememberMe ) {
 		$form = array (
 			'username' => $username,
-			'password' => $password
+			'password' => $password,
+			'rememberMe' => $rememberMe
 		);
 
 		$errors			= array();  	// array to hold validation errors
@@ -162,7 +164,7 @@ class BGP_Controller_Login extends BGP_Controller
 				// Cookies
 
 				// Remember Me
-				if ( isset($form['rememberMe']) ) {
+				if ( $form['rememberMe'] == TRUE ) {
 					$this->setRememberMeCookie( $result[0]['username'] );
 				}
 				else if ( isset($_COOKIE['USERNAME']) ) {
@@ -345,7 +347,7 @@ class BGP_Controller_Login extends BGP_Controller
 
 				$headers  = 'MIME-Version: 1.0' . "\r\n";
 				$headers .= 'Content-type: text/html; charset=iso-8859-1' . "\r\n";
-				$headers .= 'From: Bright Game Panel System <localhost@'. $_SERVER['SERVER_NAME'] .'>' . "\r\n";
+				$headers .= 'From: Bright Game Panel System <root@'. $_SERVER['SERVER_NAME'] .'>' . "\r\n";
 				$headers .= 'X-Mailer: PHP/' . phpversion();
 
 				$mail = mail($to, $subject, $message, $headers);
