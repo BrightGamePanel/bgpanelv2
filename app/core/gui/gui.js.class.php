@@ -110,6 +110,10 @@ class Core_GUI_JS
 							$scope.onSubmit = function(form)
 							{
 								// Reset backend validation (if any) because of its async state
+								//
+								//  * Fake validation
+								//  * Refresh model
+								//  * Refresh form validation
 
 								if ($scope.formErrors)
 								{
@@ -118,22 +122,27 @@ class Core_GUI_JS
 										angular.forEach(value, function(subValue, subKey)
 										{
 											if (subKey != 0) {
-												$scope.$broadcast('schemaForm.error.' + key, subValue.toCamel(), true);
-												$scope.$broadcast('schemaForm.error.' + key, 'required', true);
+												// Reset the previous error
+
+												$scope.$broadcast('schemaForm.error.' + key, subValue.toCamel(), true); 
+
+												// Refresh model
+
+												$scope.model[key] = form[key].$$lastCommittedViewValue; 
+
+												// Validate the new form entry
+
+												form[key].$$parseAndValidate(); 
 											}
 										});
 									});
 								}
 
-								// Model is not correctly registred...
-
-								console.log($scope.model);
-
-								// Client validation
+								// Client side validation
 
 								$scope.$broadcast('schemaFormValidate');
 
-								// Backend validation
+								// Backend side validation
 
 								if (form.$valid) {
 
@@ -151,6 +160,7 @@ class Core_GUI_JS
 										if (!data.success || (data.success == false))
 										{
 											// Reset errors repository
+
 											$scope.formErrors = {};
 
 											// If not successful, bind errors to error variables
