@@ -55,7 +55,12 @@ $gui->getTabs( 'profile' );
 
 
 // Get languages
+
 $languages = parse_ini_file( CONF_LANG_INI );
+
+// Get templates
+
+$templates = parse_ini_file( CONF_TEMPLATES_INI );
 
 // Get profile settings from database
 
@@ -76,6 +81,24 @@ $sth->execute();
 $profile = $sth->fetchAll( PDO::FETCH_ASSOC );
 $profile = $profile[0];
 
+// Lang list as json
+
+$langMap = '[';
+foreach ($languages as $key => $value) {
+	$langMap .= '{' . 'value: "' . $value . '", name: "' . $key . '"}' . ',';
+}
+$langMap = substr($langMap, 0, -1);
+$langMap .= ']';
+
+// Template list as json
+
+$templateMap = '[';
+foreach ($templates as $key => $value) {
+	$templateMap .= '{' . 'value: "' . $value . '", name: "' . $key . '"}' . ',';
+}
+$templateMap = substr($templateMap, 0, -1);
+$templateMap .= ']';
+
 
 /**
  * PAGE BODY
@@ -91,121 +114,12 @@ $profile = $profile[0];
 								</div>
 
 								<div class="panel-body">
-									<form ng-submit="processForm()">
-										<div class="row">
-											<div class="col-xs-5">
-												<div class="form-group" ng-class="{ 'has-error' : errorUsername }">
-													<label for="username"><?php echo T_('Username'); ?></label>
-													<input class="form-control" type="text" ng-model="formData.username" id="username" name="username" required>
-													<span class="help-block" ng-show="errorUsername" ng-bind="errorUsername"></span>
-												</div>
-											</div>
-										</div>
+									<form name="thisForm" ng-submit="onSubmit(thisForm)">
+										<div sf-schema="schema" sf-form="form" sf-model="model"></div>
 
-										<div class="row">
-											<div class="col-xs-4">
-												<div class="form-group" ng-class="{ 'has-error' : errorPassword0 }">
-													<label for="password0"><?php echo T_('Password'); ?></label>
-													<input class="form-control" type="password" ng-model="formData.password0" id="password0" name="password0" required>
-													<span class="help-block" ng-show="errorPassword0" ng-bind="errorPassword0"></span>
-												</div>
-											</div>
-										</div>
-
-										<div class="row">
-											<div class="col-xs-4">
-												<div class="form-group" ng-class="{ 'has-error' : errorPassword1 }">
-													<label for="password1"><?php echo T_('Confirm Password'); ?></label>
-													<input class="form-control" type="password" ng-model="formData.password1" id="password1" name="password1" required>
-													<span class="help-block" ng-show="errorPassword1" ng-bind="errorPassword1"></span>
-												</div>
-											</div>
-										</div>
-
-										<div class="row">
-											<div class="col-xs-5">
-												<div class="form-group" ng-class="{ 'has-error' : errorFirstname }">
-													<label for="firstname"><?php echo T_('First Name'); ?></label>
-													<div class="input-group">
-														<input class="form-control" type="text" ng-model="formData.firstname" id="firstname" name="firstname">
-														<div class="input-group-addon">Optional</div>
-													</div>
-													<span class="help-block" ng-show="errorFirstname" ng-bind="errorFirstname"></span>
-												</div>
-											</div>
-										</div>
-
-										<div class="row">
-											<div class="col-xs-5">
-												<div class="form-group" ng-class="{ 'has-error' : errorLastname }">
-													<label for="lastname"><?php echo T_('Last Name'); ?></label>
-													<div class="input-group">
-														<input class="form-control" type="text" ng-model="formData.lastname" id="lastname" name="lastname">
-														<div class="input-group-addon">Optional</div>
-													</div>
-													<span class="help-block" ng-show="errorLastname" ng-bind="errorLastname"></span>
-												</div>
-											</div>
-										</div>
-
-										<div class="row">
-											<div class="col-xs-5">
-												<div class="form-group" ng-class="{ 'has-error' : errorEmail }">
-													<label for="email"><?php echo T_('Email'); ?></label>
-													<div class="input-group">
-														<div class="input-group-addon"><span class="glyphicon glyphicon-envelope"></span></div>
-														<input class="form-control" type="email" ng-model="formData.email" id="email" name="email" required>
-													</div>
-													<span class="help-block" ng-show="errorEmail" ng-bind="errorEmail"></span>
-												</div>
-											</div>
-										</div>
-
-										<div class="row">
-											<div class="col-xs-2">
-												<div class="form-group" ng-class="{ 'has-error' : errorLanguage }">
-													<label for="language"><?php echo T_('Language'); ?></label>
-													<select class="form-control" type="text" ng-model="formData.language" id="language" name="language" required>
-<?php
-//---------------------------------------------------------+
-
-foreach ($languages as $key => $value)
-{
-	if ($value == Core_AuthService::getSessionInfo('LANG')) {
-
-//---------------------------------------------------------+
-?>
-														<option value="<?php echo $value; ?>" ng-selected="true"><?php echo $key; ?></option>
-<?php
-//---------------------------------------------------------+
-
-	}
-	else {
-
-//---------------------------------------------------------+
-?>
-														<option value="<?php echo $value; ?>"><?php echo $key; ?></option>
-<?php
-//---------------------------------------------------------+
-
-	}
-}
-
-//---------------------------------------------------------+
-?>
-													</select>
-													<span class="help-block" ng-show="errorLanguage" ng-bind="errorLanguage"></span>
-												</div>
-											</div>
-										</div>
-
-										<hr>
-
-										<div class="row">
-											<div class="text-center">
-												<button class="btn btn-primary" type="submit"><?php echo T_('Apply'); ?></button>
-												<button class="btn btn-default" type="reset"><?php echo T_('Cancel Changes'); ?></button>
-											</div>
+										<div class="text-center">
+											<button class="btn btn-primary" type="submit" ng-disabled="thisForm.$invalid && !thisForm.$submitted"><?php echo T_('Apply'); ?></button>
+											<button class="btn btn-default" type="reset"><?php echo T_('Cancel Changes'); ?></button>
 										</div>
 									</form>
 								</div>
@@ -219,22 +133,123 @@ foreach ($languages as $key => $value)
 
 /**
  * Generate AngularJS Code
- * @arg $task
- * @arg $inputs
- * @arg $redirect
+ *
+ * @param 	String 	$task
+ * @param 	String 	$schema
+ * @param 	String 	$form
+ * @param 	String 	$model
+ * @param 	String 	$redirect
  */
 
-$fields = array(
+// Schema Definition
+$schema = "
+{
+	type: 'object',
+	properties: {
+		username: {
+			title: '" . T_('Login') . "',
+			type: 'string'
+		},
+		password0: {
+			title: '" . T_('Password') . "',
+			type: 'string'
+		},
+		password1: {
+			title: '" . T_('Confirm Password') . "',
+			type: 'string'
+		},
+		firstname: {
+			title: '" . T_('First Name') . "',
+			type: 'string'
+		},
+		lastname: {
+			title: '" . T_('Last Name') . "',
+			type: 'string'
+		},
+		email: {
+			title: '" . T_('Email') . "',
+			type: 'string'
+		},
+		language: {
+			title: '" . T_('Language') . "',
+			type: 'string'
+		},
+		template: {
+			title: '" . T_('Template') . "',
+			type: 'string'
+		}
+	},
+	'required': [
+		'username',
+		'password0',
+		'password1',
+		'email',
+		'language'
+	]
+}";
+
+// Form Definition
+$form = "
+[
+	{
+		'key': 'username',
+		'type': 'text',
+		fieldAddonLeft: '<span class=\"glyphicon glyphicon-user\"></span>',
+		placeholder: '" . T_('Login') . "'
+	},
+	{
+		'key': 'password0',
+		'type': 'password',
+		fieldAddonLeft: '<span class=\"glyphicon glyphicon-lock\"></span>',
+		placeholder: '" . T_('Password') . "'
+	},
+	{
+		'key': 'password1',
+		'type': 'password',
+		fieldAddonLeft: '<span class=\"glyphicon glyphicon-lock\"></span>',
+		placeholder: '" . T_('Password') . "'
+	},
+	{
+		'key': 'firstname',
+		'type': 'text',
+		fieldAddonLeft: 'Optional'
+	},
+	{
+		'key': 'lastname',
+		'type': 'text',
+		fieldAddonLeft: 'Optional'
+	},
+	{
+		'key': 'email',
+		'type': 'email',
+		fieldAddonLeft: '<span class=\"glyphicon glyphicon-envelope\"></span>',
+		placeholder: '" . T_('Email') . "'
+	},
+	{
+		'key': 'language',
+		'type': 'select',
+		titleMap: " . $langMap . "
+	},
+	{
+		'key': 'template',
+		'type': 'select',
+		titleMap: " . $templateMap . "
+	}
+]";
+
+// Model Init
+$model = json_encode( array(
 		'username' 		=> htmlspecialchars( $profile['username'], ENT_QUOTES),
 		'password0',
 		'password1',
 		'firstname' 	=> htmlspecialchars( $profile['firstname'], ENT_QUOTES),
 		'lastname' 		=> htmlspecialchars( $profile['lastname'], ENT_QUOTES),
 		'email' 		=> htmlspecialchars( $profile['email'], ENT_QUOTES),
-		'language'		=> htmlspecialchars( Core_AuthService::getSessionInfo('LANG'), ENT_QUOTES)
-	);
+		'language'		=> htmlspecialchars( Core_AuthService::getSessionInfo('LANG'), ENT_QUOTES),
+		'template'		=> htmlspecialchars( $profile['template'], ENT_QUOTES)
+	), JSON_FORCE_OBJECT );
 
-$js->getAngularController( 'updateUserConfig', $fields, './' );
+$js->getAngularCode( 'updateUserConfig', $schema, $form, $model );
 
 ?>
 					<!-- END: SCRIPT -->
@@ -249,8 +264,5 @@ $js->getAngularController( 'updateUserConfig', $fields, './' );
  * Build Page Footer
  */
 $gui->getFooter();
-
-// Clean Up
-unset( $module, $gui, $js );
 
 ?>

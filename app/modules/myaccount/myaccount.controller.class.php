@@ -51,17 +51,19 @@ class BGP_Controller_Myaccount extends BGP_Controller {
 	 * @param string $language
 	 * @param optional string $firstname
 	 * @param optional string $lastname
+	 * @param optional string $template
 	 *
 	 * @author Nikita Rousseau
 	 */
-	public function updateUserConfig( $username, $password0, $password1, $email, $language, $firstname = '', $lastname = '' )
+	public function updateUserConfig( $username, $password0, $password1, $email, $language, $firstname = '', $lastname = '', $template = 'bootstrap.min.css' )
 	{
 		$form = array (
 			'username' 		=> $username,
 			'password0' 	=> $password0,
 			'password1' 	=> $password1,
 			'email' 		=> $email,
-			'language' 		=> $language
+			'language' 		=> $language,
+			'template'		=> $template
 		);
 
 		$errors			= array();  	// array to hold validation errors
@@ -72,6 +74,10 @@ class BGP_Controller_Myaccount extends BGP_Controller {
 		// Get languages
 		$languages = parse_ini_file( CONF_LANG_INI );
 		$languages = array_flip(array_values($languages));
+
+		// Get templates
+		$templates = parse_ini_file( CONF_TEMPLATES_INI );
+		$templates = array_flip(array_values($templates));
 
 		// validate the variables ======================================================
 
@@ -99,16 +105,18 @@ class BGP_Controller_Myaccount extends BGP_Controller {
 					['email']
 				],
 				'in' => [
-					['language', $languages]
+					['language', $languages],
+					['template', $templates]
 				]
 			];
 
 		$labels = array(
-				'username' 	=> 'Username',
-				'password0' => 'Password',
-				'password1' => 'Confirmation Password',
-				'email'		=> 'Email',
-				'language' 	=> 'Language'
+				'username' 	=> T_('Username'),
+				'password0' => T_('Password'),
+				'password1' => T_('Confirmation Password'),
+				'email'		=> T_('Email'),
+				'language' 	=> T_('Language'),
+				'template'  => T_('Template')
 			);
 
 		$v->rules( $rules );
@@ -117,7 +125,7 @@ class BGP_Controller_Myaccount extends BGP_Controller {
 
 		$errors = $v->errors();
 
-		// Apply the form ==============================================================
+		// Apply =======================================================================
 
 		if (empty($errors))
 		{
@@ -134,18 +142,27 @@ class BGP_Controller_Myaccount extends BGP_Controller {
 			if ( !empty($lastname) ) {
 				$db_data['lastname'] = $lastname;
 			}
+			if ( $template != 'bootstrap.min.css' ) {
+				$db_data['template'] = $template;
+			}
 
 			$authService = Core_AuthService::getAuthService();
 			$uid = Core_AuthService::getSessionInfo('ID');
 
 			foreach ($db_data as $key => $value) {
 
-				$sth = $dbh->prepare( "	UPDATE " . DB_PREFIX . "user
-										SET " . $key . " = :" . $key . "
-										WHERE user_id = '" . $uid . "';" );
+				try {
+					$sth = $dbh->prepare( "	UPDATE " . DB_PREFIX . "user
+											SET " . $key . " = :" . $key . "
+											WHERE user_id = '" . $uid . "';" );
 
-				$sth->bindParam( ':' . $key, $value );
-				$sth->execute();
+					$sth->bindParam( ':' . $key, $value );
+					$sth->execute();
+				}
+				catch (PDOException $e) {
+					echo $e->getMessage().' in '.$e->getFile().' on line '.$e->getLine();
+					die();
+				}
 			}
 
 			// Reload Session
@@ -157,7 +174,7 @@ class BGP_Controller_Myaccount extends BGP_Controller {
 				$db_data['firstname'],
 				$db_data['lastname'],
 				$db_data['lang'],
-				BGP_USER_TEMPLATE
+				$db_data['template']
 				);
 
 			$authService->setSessionPerms( );
@@ -165,21 +182,26 @@ class BGP_Controller_Myaccount extends BGP_Controller {
 			$this->rmCookie( 'LANG' );
 		}
 
-		// return a response ===========================================================
-		
+		// return a response and log ===================================================
+
+		$logger = self::getLogger();
+
 		// response if there are errors
 		if (!empty($errors)) {
-		
+
 			// if there are items in our errors array, return those errors
 			$data['success'] = false;
 			$data['errors']  = $errors;
 
 			$data['msgType'] = 'warning';
 			$data['msg'] = T_('Bad Settings!');
-		}
-		else {
+
+			$logger->info('Failed to update user configuration.');
+		} else {
 
 			$data['success'] = true;
+
+			$logger->info('Updated user configuration.');
 		}
 		
 		// return all our data to an AJAX call

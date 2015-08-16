@@ -105,11 +105,6 @@ class Core_AuthService
 	 */
 	public static function logout() {
 
-		// Log Event
-		Logger::configure( bgp_log4php_def_conf() );
-		$logger = Logger::getLogger( 'core.auth' );
-		$logger->info('Log out.');
-
 		$_SESSION = array(); // Destroy session variables
 		session_destroy();
 

@@ -56,6 +56,7 @@ switch ($task)
 
 			$firstname = '';
 			$lastname  = '';
+			$template  = '';
 
 			if ( isset($_POST['firstname']) ) {
 				$firstname = $_POST['firstname'];
@@ -63,8 +64,11 @@ switch ($task)
 			if ( isset($_POST['lastname']) ) {
 				$lastname  = $_POST['lastname'];
 			}
+			if ( isset($_POST['template']) ) {
+				$template  = $_POST['template'];
+			}
 
-			$json = $controller->updateUserConfig( $_POST['username'], $_POST['password0'], $_POST['password1'], $_POST['email'], $_POST['language'], $firstname, $lastname );
+			$json = $controller->updateUserConfig( $_POST['username'], $_POST['password0'], $_POST['password1'], $_POST['email'], $_POST['language'], $firstname, $lastname, $template );
 
 			if ($json['success'] === TRUE) {
 				// Notification
