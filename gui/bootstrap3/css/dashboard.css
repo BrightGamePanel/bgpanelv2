@@ -61,6 +61,10 @@
     display: inline-block;
 }
 
+.navbar-right {
+	margin-right: 0px;
+}
+
 .navbar-top-links li {
     display: inline-block;
 }
