@@ -524,6 +524,7 @@ try {
 	  notes,
 	  status,
 	  lang,
+	  template,
 	  last_login,
 	  last_activity,
 	  last_ip,

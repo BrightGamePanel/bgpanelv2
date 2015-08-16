@@ -155,11 +155,13 @@ $form = "
 	{
 		'key': 'username',
 		'type': 'text',
+		fieldAddonLeft: '<span class=\"glyphicon glyphicon-user\"></span>',
 		placeholder: '" . T_('Login') . "'
 	},
 	{
 		'key': 'email',
 		'type': 'email',
+		fieldAddonLeft: '<span class=\"glyphicon glyphicon-envelope\"></span>',
 		placeholder: '" . T_('Email') . "'
 	}
 ]";

@@ -64,9 +64,9 @@ $dbh = Core_DBH::getDBH(); // Get Database Handle
 $uid = Core_AuthService::getSessionInfo('ID'); // Get user id
 
 $sth = $dbh->prepare("
-SELECT *
-FROM " . DB_PREFIX . "user
-WHERE user_id = :uid
+	SELECT *
+	FROM " . DB_PREFIX . "user
+	WHERE user_id = :uid
 ;");
 
 $sth->bindParam( ':uid', $uid );

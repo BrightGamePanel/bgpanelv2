@@ -91,7 +91,7 @@ class BGP_Controller_Login extends BGP_Controller
 
 			try {
 				$sth = $dbh->prepare("
-					SELECT user_id, username, firstname, lastname, lang
+					SELECT user_id, username, firstname, lastname, lang, template
 					FROM " . DB_PREFIX . "user
 					WHERE
 						username = :username AND
@@ -126,7 +126,7 @@ class BGP_Controller_Login extends BGP_Controller
 					$result[0]['firstname'],
 					$result[0]['lastname'],
 					$result[0]['lang'],
-					BGP_USER_TEMPLATE
+					$result[0]['template']
 					);
 
 				session_regenerate_id( TRUE );
@@ -135,31 +135,37 @@ class BGP_Controller_Login extends BGP_Controller
 
 				// Database update
 
-				$sth = $dbh->prepare("
-					UPDATE " . DB_PREFIX . "user
-					SET
-						last_login		= :last_login,
-						last_activity	= :last_activity,
-						last_ip 		= :last_ip,
-						last_host		= :last_host,
-						token 			= :token
-					WHERE
-						user_id			= :user_id
-					;");
+				try {
+					$sth = $dbh->prepare("
+						UPDATE " . DB_PREFIX . "user
+						SET
+							last_login		= :last_login,
+							last_activity	= :last_activity,
+							last_ip 		= :last_ip,
+							last_host		= :last_host,
+							token 			= :token
+						WHERE
+							user_id			= :user_id
+						;");
 
-				$last_login = date('Y-m-d H:i:s');
-				$last_activity = date('Y-m-d H:i:s');
-				$last_host = gethostbyaddr($_SERVER['REMOTE_ADDR']);
-				$token = session_id();
+					$last_login = date('Y-m-d H:i:s');
+					$last_activity = date('Y-m-d H:i:s');
+					$last_host = gethostbyaddr($_SERVER['REMOTE_ADDR']);
+					$token = session_id();
 
-				$sth->bindParam(':last_login', $last_login);
-				$sth->bindParam(':last_activity', $last_activity);
-				$sth->bindParam(':last_ip', $_SERVER['REMOTE_ADDR']);
-				$sth->bindParam(':last_host', $last_host);
-				$sth->bindParam(':token', $token);
-				$sth->bindParam(':user_id', $result[0]['user_id']);
+					$sth->bindParam(':last_login', $last_login);
+					$sth->bindParam(':last_activity', $last_activity);
+					$sth->bindParam(':last_ip', $_SERVER['REMOTE_ADDR']);
+					$sth->bindParam(':last_host', $last_host);
+					$sth->bindParam(':token', $token);
+					$sth->bindParam(':user_id', $result[0]['user_id']);
 
-				$sth->execute();
+					$sth->execute();
+				}
+				catch (PDOException $e) {
+					echo $e->getMessage().' in '.$e->getFile().' on line '.$e->getLine();
+					die();
+				}
 
 				// Cookies
 
@@ -321,19 +327,25 @@ class BGP_Controller_Login extends BGP_Controller
 				$plainTextPasswd = bgp_create_random_password( 13 );
 				$digestPasswd = Core_AuthService::getHash($plainTextPasswd);
 
-				// Update User Passwd
-				$sth = $dbh->prepare("
-					UPDATE " . DB_PREFIX . "user
-					SET
-						password 	= :password
-					WHERE
-						user_id		= :user_id
-					;");
+				try {
+					// Update User Passwd
+					$sth = $dbh->prepare("
+						UPDATE " . DB_PREFIX . "user
+						SET
+							password 	= :password
+						WHERE
+							user_id		= :user_id
+						;");
 
-				$sth->bindParam(':password', $digestPasswd);
-				$sth->bindParam(':user_id', $result[0]['user_id']);
+					$sth->bindParam(':password', $digestPasswd);
+					$sth->bindParam(':user_id', $result[0]['user_id']);
 
-				$sth->execute();
+					$sth->execute();
+				}
+				catch (PDOException $e) {
+					echo $e->getMessage().' in '.$e->getFile().' on line '.$e->getLine();
+					die();
+				}
 
 				// Send Email
 				$to = htmlentities($result[0]['email'], ENT_QUOTES);

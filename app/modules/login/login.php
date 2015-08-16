@@ -138,12 +138,14 @@ $form = "
 	{
 		'key': 'username',
 		'type': 'text',
+		fieldAddonLeft: '<span class=\"glyphicon glyphicon-user\"></span>',
 		placeholder: '" . T_('Login') . "',
 		disableSuccessState: true
 	},
 	{
 		'key': 'password',
 		'type': 'password',
+		fieldAddonLeft: '<span class=\"glyphicon glyphicon-lock\"></span>',
 		placeholder: '" . T_('Password') . "',
 		disableSuccessState: true
 	},
