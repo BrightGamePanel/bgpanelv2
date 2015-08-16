@@ -291,6 +291,33 @@ else if ($_GET['step'] == 'one')
 ?>
 <?php
 
+	$apache2Check = strpos($_SERVER['SERVER_SOFTWARE'], 'Apache/2');
+	if ($apache2Check === FALSE)
+	{
+?>
+						<tr class="error">
+							<td>Checking your server software</td>
+							<td><span class="label label-important">FAILED (<?php echo $_SERVER['SERVER_SOFTWARE']; ?>)</span></td>
+							<td>BrightGamePanel V2 requires an Apache2 setup</td>
+						</tr>
+<?php
+		$error = TRUE;
+	}
+	else
+	{
+?>
+						<tr class="success">
+							<td>Checking your server software</td>
+							<td><span class="label label-success"><?php echo $_SERVER['SERVER_SOFTWARE']; ?></span></td>
+							<td></td>
+						</tr>
+<?php
+	}
+	unset($apache2Check);
+
+?>
+<?php
+
 	if (ini_get('safe_mode'))
 	{
 ?>
