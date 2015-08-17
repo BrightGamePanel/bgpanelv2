@@ -1047,7 +1047,7 @@ APP_API_KEY 		= \"".$APP_API_KEY."\"
 
 			$apiRoleId = $rbac->Roles->add('api', 'API User');
 			$adminRoleId = $rbac->Roles->add('admin', 'System Administrator');
-			$userRoleId  = $rbac->Roles->add('user', 'Regular System User');
+			$userRoleId  = $rbac->Roles->add('user', 'Regular User');
 
 			// Bind Perms To Roles
 

@@ -103,6 +103,24 @@ if ( !is_dir( CONF_DIR ) ) {
 	die();
 }
 
+// VERIFY HTACCESS
+if ( !is_file( '.htaccess' ) ) {
+?>
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+	</head>
+	<body>
+		<h1>Unable to find .htaccess.</h1><br />
+		<h3>&nbsp;</h3>
+		<p>Make sure you have uploaded the ".htaccess" file at the root of the application directory then retry.</p>
+	</body>
+</html>
+<?php
+	die();
+}
+
 
 // DEFINE INI CONSTANTS
 $CONFIG  = parse_ini_file( CONF_DB_INI );
