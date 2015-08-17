@@ -117,10 +117,8 @@ class Core_GUI_JS
 
 								if ($scope.formErrors)
 								{
-									angular.forEach($scope.formErrors, function(value, key)
-									{
-										angular.forEach(value, function(subValue, subKey)
-										{
+									angular.forEach($scope.formErrors, function(value, key) {
+										angular.forEach(value, function(subValue, subKey) {
 											if (subKey != 0) {
 												// Reset the previous error
 
@@ -168,6 +166,17 @@ class Core_GUI_JS
 											angular.forEach(data.errors, function(value, key) {
 
 												// Bind validation messages
+
+												// Multiple errors case
+
+												if (angular.isArray(value)) {
+
+													var tmp   = value;
+													var value = '';
+													angular.forEach(tmp, function(subValue, subKey) {
+														value = value + subValue + '. ';
+													});
+												}
 
 												$scope.$broadcast('schemaForm.error.' + key, value.toCamel(), value);
 

@@ -19,22 +19,24 @@
 	</module_pages>
 
 	<module_dependencies>
+		<!--
 		<stylesheets>
 			<datatables>
 				<comment>DataTables</comment>
-				<href>./gui/datatables/css/dataTables.bootstrap.css</href>
+				<href>./gui/datatables/css/dataTables.bootstrap.min.css</href>
 			</datatables>
 		</stylesheets>
 		<javascripts>
 			<jquery-datatables>
 				<comment>DataTables jQuery Plugin</comment>
-				<src>./gui/datatables/js/jquery.dataTables.js</src>
+				<src>./gui/datatables/js/jquery.dataTables.min.js</src>
 			</jquery-datatables>
 			<bootstrap-datatables>
 				<comment>DataTables BS3 Plugin</comment>
-				<src>./gui/datatables/js/dataTables.bootstrap.js</src>
+				<src>./gui/datatables/js/dataTables.bootstrap.min.js</src>
 			</bootstrap-datatables>
 		</javascripts>
+		-->
 	</module_dependencies>
 
 	<class_definition filename="app/modules/dashboard/dashboard.class.php" classname="BGP_Module_Dashboard"/>

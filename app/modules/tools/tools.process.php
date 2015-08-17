@@ -52,14 +52,38 @@ switch ($task)
 {
 	case 'optimizeDB':
 
-		$json = $controller->optimizeDB( );
+		$data 			 = array();
+		$data['success'] = true;
+		$data['errors']  = array();
 
-		if ($json['success'] === TRUE) {
+		// Call method ===========================================================================
+
+		$return =  $controller->optimizeDB( );
+		$return = json_decode( $return['data'], TRUE );
+
+		// User notification =====================================================================
+
+		$data['errors'] = $return['errors'];
+
+		if (!empty($data['errors'])) {
+
+			$data['success'] = false;
+
+			// Notification
+			$data['msgType'] = 'warning';
+			$data['msg']     = T_('Bad Settings!');
+		} else {
+
+			$data['success'] = true;
+
 			// Notification
 			bgp_set_alert(  T_('Optimizing tables... Done!'), T_('Tables are up to date.'), 'success' );
 		}
 
-		Flight::json( $json );
+		// Return ================================================================================
+
+		header('Content-Type: application/json');
+		echo json_encode($data);
 
 		exit( 0 );
 

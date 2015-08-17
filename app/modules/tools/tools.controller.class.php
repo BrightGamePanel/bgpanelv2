@@ -53,8 +53,10 @@ class BGP_Controller_Tools extends BGP_Controller {
 	 */
 	public function optimizeDB( )
 	{
-
 		$tables = array();
+
+		$errors			= array();  	// array to hold validation errors
+		$data 			= array(); 		// array to pass back data
 
 		$dbh = Core_DBH::getDBH(); // Get Database Handle
 
@@ -85,18 +87,11 @@ class BGP_Controller_Tools extends BGP_Controller {
 
 		$logger = self::getLogger();
 		
-		if (!empty($data['errors'])) {
-		
-			$data['success'] = false;
-		
-			$logger->info('Failed to optimize database tables.');
-		} else {
-		
-			$data['success'] = true;
-		
-			$logger->info('Optimized database tables.');
-		}
-		
+		$data['success'] = true;
+		$data['errors'] = null;
+	
+		$logger->info('Optimized database tables.');
+
 		return array(
 			'response' => 'application/json',
 			'data' => json_encode($data)
