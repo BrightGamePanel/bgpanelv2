@@ -88,12 +88,15 @@ $gui->getHeader();
 
 /**
  * Generate AngularJS Code
- * @arg $task
- * @arg $inputs
- * @arg $redirect
+ *
+ * @param 	String 	$task
+ * @param 	String 	$schema
+ * @param 	String 	$form
+ * @param 	String 	$model
+ * @param 	String 	$redirect
  */
 
-$js->getAngularController();
+$js->getAngularCode();
 
 ?>
 					<!-- END: SCRIPT -->
@@ -108,8 +111,5 @@ $js->getAngularController();
  * Build Page Footer
  */
 $gui->getFooter();
-
-// Clean Up
-unset( $module, $gui, $js );
 
 ?>

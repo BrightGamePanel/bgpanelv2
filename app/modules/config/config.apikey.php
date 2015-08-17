@@ -48,6 +48,11 @@ $js = new Core_GUI_JS( $module );
  */
 $gui->getHeader();
 
+// API Key
+
+$apiMasterKey = parse_ini_file( CONF_API_KEY_INI );
+$apiMasterKey = $apiMasterKey['APP_API_KEY'];
+
 /**
  * PAGE BODY
  */
@@ -68,7 +73,7 @@ $gui->getHeader();
 										<pre class="text-center"><?php
 //------------------------------------------------------------------------------------------------------------+
 
-										echo APP_API_KEY;
+										echo $apiMasterKey;
 
 //------------------------------------------------------------------------------------------------------------+
 										?></pre>
@@ -85,12 +90,15 @@ $gui->getHeader();
 
 /**
  * Generate AngularJS Code
- * @arg $task
- * @arg $inputs
- * @arg $redirect
+ *
+ * @param 	String 	$task
+ * @param 	String 	$schema
+ * @param 	String 	$form
+ * @param 	String 	$model
+ * @param 	String 	$redirect
  */
 
-$js->getAngularController();
+$js->getAngularCode();
 
 ?>
 					<!-- END: SCRIPT -->
@@ -105,8 +113,5 @@ $js->getAngularController();
  * Build Page Footer
  */
 $gui->getFooter();
-
-// Clean Up
-unset( $module, $gui, $js );
 
 ?>
