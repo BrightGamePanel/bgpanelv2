@@ -94,9 +94,15 @@ echo "\r\n<!--END : PHP Info-->\r\n";
 
 /**
  * Generate AngularJS Code
+ *
+ * @param 	String 	$task
+ * @param 	String 	$schema
+ * @param 	String 	$form
+ * @param 	String 	$model
+ * @param 	String 	$redirect
  */
 
-$js->getAngularController();
+$js->getAngularCode();
 
 ?>
 					<!-- END: SCRIPT -->
@@ -111,8 +117,5 @@ $js->getAngularController();
  * Build Page Footer
  */
 $gui->getFooter();
-
-// Clean Up
-unset( $module, $gui, $js );
 
 ?>

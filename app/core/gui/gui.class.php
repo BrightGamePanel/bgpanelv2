@@ -165,7 +165,7 @@ class Core_GUI
 			<link href="./gui/font-awesome/css/font-awesome.min.css" rel="stylesheet">
 			<link href="./gui/font-awesome/css/font-awesome-animation.min.css" rel="stylesheet">
 			<!-- DataTables -->
-			<link href="./gui/datatables/css/dataTables.bootstrap.css" rel="stylesheet">
+			<link href="./gui/datatables/css/dataTables.bootstrap.min.css" rel="stylesheet">
 			<!-- SB Admin 2 -->
 			<link href="./gui/bootstrap3/css/dashboard.css" rel="stylesheet">
 <?php
@@ -190,8 +190,8 @@ class Core_GUI
 			<!-- Metis Menu Plugin -->
 			<script src="./gui/metisMenu/js/metisMenu.min.js"></script>
 			<!-- DataTables -->
-			<script src="./gui/datatables/js/jquery.dataTables.js"></script>
-			<script src="./gui/datatables/js/dataTables.bootstrap.js"></script>
+			<script src="./gui/datatables/js/jquery.dataTables.min.js"></script>
+			<script src="./gui/datatables/js/dataTables.bootstrap.min.js"></script>
 			<!-- SB Admin 2 -->
 			<script src="./gui/bootstrap3/js/sb-admin-2.js"></script>
 			<!-- Javascript Functions -->

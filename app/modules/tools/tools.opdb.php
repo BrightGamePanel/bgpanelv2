@@ -102,11 +102,11 @@ if (!empty($tables)) {
 									</div>
 
 									<div class="well" style="max-width: 400px; margin: 0 auto 10px; padding-left: 35px; padding-right: 35px;">
-										<form ng-submit="processForm()">
-											<div class="row">
-												<div class="text-center">
-													<button class="btn btn-primary btn-lg btn-block" type="submit"><?php echo T_('Optimize!'); ?></button>
-												</div>
+										<form name="thisForm" ng-submit="onSubmit(thisForm)">
+											<div sf-schema="schema" sf-form="form" sf-model="model"></div>
+
+											<div class="text-center">
+												<button class="btn btn-primary btn-lg btn-block" type="submit" ng-disabled="thisForm.$invalid && !thisForm.$submitted"><?php echo T_('Optimize !'); ?></button>
 											</div>
 										</form>
 									</div>
@@ -167,12 +167,19 @@ unset($analysis);
 
 /**
  * Generate AngularJS Code
- * @arg $task
- * @arg $inputs
- * @arg $redirect
+ *
+ * @param 	String 	$task
+ * @param 	String 	$schema
+ * @param 	String 	$form
+ * @param 	String 	$model
+ * @param 	String 	$redirect
  */
 
-$js->getAngularController( 'optimizeDB', array(), './tools/opdb' );
+$schema = json_encode( array(), JSON_FORCE_OBJECT );
+$form   = json_encode( array(), JSON_FORCE_OBJECT );
+$model  = json_encode( array(), JSON_FORCE_OBJECT );
+
+$js->getAngularCode( 'optimizeDB', $schema, $form, $model, './tools/opdb' );
 
 ?>
 					<!-- END: SCRIPT -->
@@ -187,8 +194,5 @@ $js->getAngularController( 'optimizeDB', array(), './tools/opdb' );
  * Build Page Footer
  */
 $gui->getFooter();
-
-// Clean Up
-unset( $module, $gui, $js );
 
 ?>
