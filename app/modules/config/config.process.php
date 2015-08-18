@@ -56,6 +56,11 @@ switch ($task)
 		$data['success'] = true;
 		$data['errors']  = array();
 
+		// Format input ==========================================================================
+
+		$strtolower(preg_replace('/([a-z])([A-Z])/', '$1_$2', $class_name)); // To underscore
+		// Specific format for checkboxes
+
 		// Call method ===========================================================================
 
 		$return = $controller->updateSysConfigCollection( json_encode($_POST) );

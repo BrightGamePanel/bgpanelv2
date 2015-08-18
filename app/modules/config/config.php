@@ -76,6 +76,15 @@ foreach ($current_config as $key => $config) {
 	unset($current_config[$key]);
 }
 
+// Template list as json
+
+$templateMap = '[';
+foreach ($templates as $key => $value) {
+	$templateMap .= '{' . 'value: "' . $value . '", name: "' . $key . '"}' . ',';
+}
+$templateMap = substr($templateMap, 0, -1);
+$templateMap .= ']';
+
 
 /**
  * PAGE BODY
@@ -91,7 +100,8 @@ foreach ($current_config as $key => $config) {
 								</div>
 
 								<div class="panel-body">
-									<form ng-submit="processForm()">
+
+									<form name="thisForm" ng-submit="onSubmit(thisForm)">
 										<div class="row">
 											<div class="col-xs-5">
 												<label>Current Core Version</label><br />
@@ -99,110 +109,11 @@ foreach ($current_config as $key => $config) {
 											</div>
 										</div>
 
-										<div class="row">
-											<div class="col-xs-5">
-												<div class="form-group" ng-class="{ 'has-error' : errorPanelName }">
-													<label for="panelName"><?php echo T_('Panel Name'); ?></label>
-													<input class="form-control" type="text" ng-model="formData.panelName" id="panelName" name="panelName" required>
-													<span class="help-block" ng-show="errorPanelName" ng-bind="errorPanelName"></span>
-												</div>
-											</div>
-										</div>
+										<div sf-schema="schema" sf-form="form" sf-model="model"></div>
 
-										<div class="row">
-											<div class="col-xs-8">
-												<div class="form-group" ng-class="{ 'has-error' : errorPanelUrl }">
-													<label for="panelUrl"><?php echo T_('Panel URL'); ?></label>
-													<input class="form-control" type="text" ng-model="formData.panelUrl" id="panelUrl" name="panelUrl" required>
-													<span class="help-block" ng-show="errorPanelUrl" ng-bind="errorPanelUrl"></span>
-												</div>
-											</div>
-										</div>
-
-										<div class="row">
-											<div class="col-xs-12">
-												<div class="form-group">
-													<label><?php echo T_('Maintenance Mode'); ?></label>
-													<div class="radio">
-														<label>
-															<input type="radio" ng-model="formData.maintenanceMode" name="maintenanceMode" id="maintenanceMode1" ng-value="true" <?php 
-															
-															if ( $current_config['maintenance_mode'] == '1' ) {
-
-																echo "ng-checked=\"true\"";
-															}
-															
-															?>>
-															On
-														</label>
-													</div>
-													<div class="radio">
-														<label>
-															<input type="radio" ng-model="formData.maintenanceMode" name="maintenanceMode" id="maintenanceMode2" ng-value="false" <?php 
-															
-															if ( $current_config['maintenance_mode'] == '0' ) {
-
-																echo "ng-checked=\"true\"";
-															}
-															
-															?>>
-															Off
-														</label>
-													</div>
-													<span class="help-block">
-														<?php echo T_('Switch the panel in maintenance mode.') . "\r\n"; ?>
-														<?php echo T_('Only'); ?> <b><?php echo T_('Administrators'); ?></b> <?php echo T_('will be able to log into the panel.'); ?><br />
-														<b><?php echo T_('NOTE: CRON JOB IS DISABLED IN THIS MODE!'); ?></b>
-													</span>
-												</div>
-											</div>
-										</div>
-
-										<div class="row">
-											<div class="col-xs-5">
-												<div class="form-group" ng-class="{ 'has-error' : errorUserTemplate }">
-													<label for="userTemplate"><?php echo T_('User Template'); ?></label>
-													<select class="form-control" type="text" ng-model="formData.userTemplate" id="userTemplate" name="userTemplate" required>
-<?php
-//---------------------------------------------------------+
-
-foreach ($templates as $key => $value)
-{
-	if ($value == BGP_USER_TEMPLATE) {
-
-//---------------------------------------------------------+
-?>
-														<option value="<?php echo $value; ?>" ng-selected="true"><?php echo $key; ?></option>
-<?php
-//---------------------------------------------------------+
-
-	}
-	else {
-
-//---------------------------------------------------------+
-?>
-														<option value="<?php echo $value; ?>"><?php echo $key; ?></option>
-<?php
-//---------------------------------------------------------+
-
-	}
-}
-
-//---------------------------------------------------------+
-?>
-													</select>
-													<span class="help-block" ng-show="errorUserTemplate" ng-bind="errorUserTemplate"></span>
-												</div>
-											</div>
-										</div>
-
-										<hr>
-
-										<div class="row">
-											<div class="text-center">
-												<button class="btn btn-primary" type="submit"><?php echo T_('Apply'); ?></button>
-												<button class="btn btn-default" type="reset"><?php echo T_('Cancel Changes'); ?></button>
-											</div>
+										<div class="text-center">
+											<button class="btn btn-primary" type="submit" ng-disabled="thisForm.$invalid && !thisForm.$submitted"><?php echo T_('Apply'); ?></button>
+											<button class="btn btn-default" type="reset"><?php echo T_('Cancel Changes'); ?></button>
 										</div>
 									</form>
 								</div>
@@ -216,19 +127,85 @@ foreach ($templates as $key => $value)
 
 /**
  * Generate AngularJS Code
- * @arg $task
- * @arg $inputs
- * @arg $redirect
+ *
+ * @param 	String 	$task
+ * @param 	String 	$schema
+ * @param 	String 	$form
+ * @param 	String 	$model
+ * @param 	String 	$redirect
  */
 
-$fields = array(
-		'panelName' 		=> htmlspecialchars( $current_config['panel_name'], ENT_QUOTES),
-		'panelUrl' 			=> htmlspecialchars( $current_config['system_url'], ENT_QUOTES),
-		'maintenanceMode' 	=> htmlspecialchars( $current_config['maintenance_mode'], ENT_QUOTES),
-		'userTemplate' 		=> htmlspecialchars( $current_config['user_template'], ENT_QUOTES)
-	);
+// Schema Definition
+$schema = "
+{
+	type: 'object',
+	properties: {
+		panelName: {
+			title: '" . T_('Panel Name') . "',
+			type: 'string'
+		},
+		panelUrl: {
+			title: '" . T_('Panel URL') . "',
+			type: 'string'
+		},
+		maintenanceMode: {
+			title: '" . T_('Enable Maintenance Mode') . "',
+			type: 'boolean'
+		},
+		userTemplate: {
+			title: '" . T_('Default User Template') . "',
+			type: 'string'
+		}
+	},
+	'required': [
+		'panelName',
+		'panelUrl',
+		'userTemplate'
+	]
+}";
 
-$js->getAngularController( 'updateSysConfig', $fields, './config' );
+// Form Definition
+$form = "
+[
+	{
+		key: 'panelName',
+		type: 'text',
+		fieldAddonLeft: '<span class=\"glyphicon glyphicon-font\"></span>'
+	},
+	{
+		key: 'panelUrl',
+		type: 'text',
+		fieldAddonLeft: '<span class=\"glyphicon glyphicon-globe\"></span>'
+	},
+	{
+		type: 'help',
+		helpvalue: \"<label>Maintenance Mode</label>\"
+	},
+	{
+		key: 'maintenanceMode',
+		type: 'checkbox',
+		disableSuccessState: true,
+	},
+	{
+		type: 'help',
+		helpvalue: \"Switch the panel in maintenance mode. Only <b>Administrators</b> will be able to log into the panel. <br> <b>NOTE: CRON JOB IS DISABLED IN THIS MODE!</b> <br><br>\"
+	},
+	{
+		key: 'userTemplate',
+		type: 'select',
+		titleMap: " . $templateMap . "
+	}
+]";
+
+// Model Init
+$model = json_encode( array(
+		'panelName' 		=> htmlspecialchars( $current_config['panel_name'], ENT_QUOTES),
+		'panelUrl'			=> htmlspecialchars( $current_config['system_url'], ENT_QUOTES),
+		'maintenanceMode'	=> htmlspecialchars( $current_config['maintenance_mode'], ENT_QUOTES),
+		'userTemplate' 		=> htmlspecialchars( $current_config['user_template'], ENT_QUOTES)
+	), JSON_FORCE_OBJECT );
+
+$js->getAngularCode( 'updateSysConfig', $schema, $form, $model, './config' );
 
 ?>
 					<!-- END: SCRIPT -->
@@ -243,8 +220,5 @@ $js->getAngularController( 'updateSysConfig', $fields, './config' );
  * Build Page Footer
  */
 $gui->getFooter();
-
-// Clean Up
-unset( $module, $gui, $js );
 
 ?>
