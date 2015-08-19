@@ -31,7 +31,7 @@
 
 require( MODS_DIR . '/' . basename(__DIR__) . '/box.class.php' );
 
-$module = new BGP_Module_Box();
+$module = new BGP_Module_Box_Add( 'add' );
 
 /**
  * Call GUI Builder
@@ -47,11 +47,6 @@ $js = new Core_GUI_JS( $module );
  * Build Page Header
  */
 $gui->getHeader();
-
-/**
- * Build Page Tabs
- */
-$gui->getTabs( 'add' );
 
 // Os list as json
 
@@ -214,13 +209,13 @@ $form = "
 	{
 		key: 'remoteUserHome',
 		type: 'text',
-		placeholder: '/home/user/',
+		placeholder: '/home/{user}/',
 		fieldAddonLeft: 'Optional'
 	},
 	{
 		key: 'steamcmd',
 		type: 'text',
-		placeholder: '/home/user/steamcmd.sh',
+		placeholder: '/home/{user}/steamcmd.sh',
 		fieldAddonLeft: 'Optional'
 	},
 	{

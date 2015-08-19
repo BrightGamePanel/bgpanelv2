@@ -42,3 +42,20 @@ class BGP_Module_Box extends BGP_Module {
 	}
 
 }
+
+/**
+ * Box Module
+ * Page: Add
+ * Title: Box Add
+ */
+
+class BGP_Module_Box_Add extends BGP_Module_Box {
+
+	function __construct( $page = '' )	{
+
+		// Call parent constructor
+		parent::__construct( );
+
+		self::setModulePageTitle( $page );
+	}
+}
