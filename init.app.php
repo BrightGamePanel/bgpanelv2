@@ -261,6 +261,10 @@ if ( ENV_RUNTIME != 'INSTALL_WIZARD' ) {
 
 	*/
 
+	// SESSION HANDLER
+	session_start();
+	$_SESSION['TIMESTAMP'] = time();
+
 	/**
 	 * VALITRON Configuration
 	 * Valitron is a simple, minimal and elegant stand-alone validation library with NO dependencies
