@@ -243,10 +243,13 @@ if ( ENV_RUNTIME != 'INSTALL_WIZARD' ) {
 }
 
 if ( ENV_RUNTIME != 'INSTALL_WIZARD' ) {
+
+	/* NOT IMPLEMENTED
+
 	if ( ENV_RUNTIME == 'H2M' ) {
-		/**
-		 * SESSION HANDLER
-		 */
+
+		// SESSION HANDLER
+
 		require( APP_DIR . '/core/session.class.php' );
 
 		// Start new or resume existing session
@@ -255,6 +258,8 @@ if ( ENV_RUNTIME != 'INSTALL_WIZARD' ) {
 		session_start();
 		$_SESSION['TIMESTAMP'] = time();
 	}
+
+	*/
 
 	/**
 	 * VALITRON Configuration
