@@ -74,8 +74,8 @@ $rows = $sth->fetchAll( PDO::FETCH_ASSOC );
 					<div style="max-width: 400px; margin: 0 auto 10px; padding-left: 35px; padding-right: 35px;">
 						<div class="row">
 							<div class="text-center">
-								<a class="btn btn-primary btn-lg btn-block" href="./admin/box/add">
-									<i class="fa fa-plus"></i>&nbsp;<?php echo T_('Add New Box'); ?>
+								<a class="btn btn-primary btn-lg btn-block" href="./box/add">
+									<i class="fa fa-plus"></i>&nbsp;<?php echo T_('Add A New Box'); ?>
 								</a>
 							</div>
 						</div>
@@ -126,13 +126,13 @@ foreach($rows as $key => $value)
 													<td></td>
 													<td>
 														<div class="text-center">
-															<a class="btn btn-default" href="./admin/box/edit/<?php echo htmlspecialchars( $value['box_id'], ENT_QUOTES); ?>">
+															<a class="btn btn-default" href="./box/edit/<?php echo htmlspecialchars( $value['box_id'], ENT_QUOTES); ?>">
 																<i class="fa fa-edit"></i>
 															</a>&nbsp;
-															<a class="btn btn-primary" href="./admin/box/view/<?php echo htmlspecialchars( $value['box_id'], ENT_QUOTES); ?>">
+															<a class="btn btn-primary" href="./box/view/<?php echo htmlspecialchars( $value['box_id'], ENT_QUOTES); ?>">
 																<i class="fa fa-info-circle"></i>
 															</a>&nbsp;
-															<a class="btn btn-danger" href="./admin/box/del/<?php echo htmlspecialchars( $value['box_id'], ENT_QUOTES); ?>">
+															<a class="btn btn-danger" href="./box/del/<?php echo htmlspecialchars( $value['box_id'], ENT_QUOTES); ?>">
 																<i class="fa fa-trash"></i>
 															</a>
 														</div>
@@ -183,12 +183,15 @@ if ( bgp_format_date(BGP_LAST_CRON_RUN) == 'Never' ) {
 
 /**
  * Generate AngularJS Code
- * @arg $task
- * @arg $inputs
- * @arg $redirect
+ *
+ * @param 	String 	$task
+ * @param 	String 	$schema
+ * @param 	String 	$form
+ * @param 	String 	$model
+ * @param 	String 	$redirect
  */
 
-$js->getAngularController();
+$js->getAngularCode();
 
 ?>
 					<!-- END: SCRIPT -->
@@ -203,8 +206,5 @@ $js->getAngularController();
  * Build Page Footer
  */
 $gui->getFooter();
-
-// Clean Up
-unset( $module, $gui, $js );
 
 ?>
