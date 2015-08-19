@@ -53,6 +53,26 @@ $gui->getHeader();
  */
 $gui->getTabs( 'add' );
 
+// Os list as json
+
+$dbh = Core_DBH::getDBH(); // Get Database Handle
+
+$sth = $dbh->prepare("
+	SELECT *
+	FROM " . DB_PREFIX . "os
+	;");
+
+$sth->execute();
+
+$os = $sth->fetchAll( PDO::FETCH_ASSOC );
+
+$osMap = '[';
+foreach ($os as $key => $value) {
+	$osMap .= '{' . 'value: "' . $value['os_id'] . '", name: "' . $value['operating_system'] . '"}' . ',';
+}
+$osMap = substr($osMap, 0, -1);
+$osMap .= ']';
+
 
 /**
  * PAGE BODY
@@ -95,7 +115,126 @@ $gui->getTabs( 'add' );
  * @param 	String 	$redirect
  */
 
-$js->getAngularCode();
+// Schema Definition
+$schema = "
+{
+	type: 'object',
+	properties: {
+		name: {
+			title: '" . T_('Remote Machine Name') . "',
+			type: 'string'
+		},
+		ip: {
+			title: '" . T_('IP Address') . "',
+			type: 'string'
+		},
+		port: {
+			title: '" . T_('Port') . "',
+			type: 'string'
+		},
+		com: {
+			title: '" . T_('Communications Protocol') . "',
+			type: 'string'
+		},
+		login: {
+			title: '" . T_('Login') . "',
+			type: 'string'
+		},
+		password: {
+			title: '" . T_('Password') . "',
+			type: 'string'
+		},
+		remoteUserHome: {
+			title: '" . T_('Remote User Home Path') . "',
+			type: 'string'
+		},
+		os: {
+			title: '" . T_('Operating System') . "',
+			type: 'string'
+		},
+		steamcmd: {
+			title: '" . T_('SteamCMD Binary Path') . "',
+			type: 'string'
+		},
+		notes: {
+			title: '" . T_('Notes') . "',
+			type: 'string'
+		}
+	},
+	'required': [
+		'name',
+		'ip',
+		'com',
+		'login',
+		'password',
+		'port'
+	]
+}";
+
+// Form Definition
+$form = "
+[
+	{
+		key: 'name',
+		type: 'text',
+		fieldAddonLeft: '<span class=\"glyphicon glyphicon-font\"></span>'
+	},
+	{
+		key: 'os',
+		type: 'select',
+		titleMap: " . $osMap . "
+	},
+	{
+		key: 'com',
+		type: 'text',
+		readonly: true,
+		disableSuccessState: true,
+	},
+	{
+		key: 'ip',
+		type: 'text',
+		fieldAddonLeft: '<span class=\"glyphicon glyphicon-globe\"></span>'
+	},
+	{
+		key: 'port',
+		type: 'text',
+		placeholder: '22',
+		fieldAddonLeft: '<span class=\"glyphicon glyphicon-log-in\"></span>'
+	},
+	{
+		key: 'login',
+		type: 'text',
+		fieldAddonLeft: '<span class=\"glyphicon glyphicon-user\"></span>'
+	},
+	{
+		key: 'password',
+		type: 'password',
+		fieldAddonLeft: '<span class=\"glyphicon glyphicon-lock\"></span>'
+	},
+	{
+		key: 'remoteUserHome',
+		type: 'text',
+		placeholder: '/home/user/',
+		fieldAddonLeft: 'Optional'
+	},
+	{
+		key: 'steamcmd',
+		type: 'text',
+		placeholder: '/home/user/steamcmd.sh',
+		fieldAddonLeft: 'Optional'
+	},
+	{
+		key: 'notes',
+		type: 'textarea'
+	},
+]";
+
+$model = json_encode( array(
+		'os'	=> '1',
+		'com' 	=> 'ssh2'
+	), JSON_FORCE_OBJECT );
+
+$js->getAngularCode( 'postBox', $schema, $form, $model, './box' );
 
 ?>
 					<!-- END: SCRIPT -->

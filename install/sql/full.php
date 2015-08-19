@@ -240,34 +240,6 @@ try {
 
 	//---------------------------------------------------------+
 
-	// Table structure for table "group"
-
-		$dbh->exec( "DROP TABLE IF EXISTS ".DB_PREFIX."group  ; " );
-		$dbh->exec( "
-	CREATE TABLE ".DB_PREFIX."group (
-	  group_id		INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
-	  name			TEXT NOT NULL,
-	  description	TEXT,
-	  PRIMARY KEY  (group_id)
-	)
-	ENGINE=MyISAM CHARSET=utf8 COLLATE=utf8_unicode_ci  ; " );
-
-	//---------------------------------------------------------+
-
-	// Table structure for table "group_member"
-
-		$dbh->exec( "DROP TABLE IF EXISTS ".DB_PREFIX."group_member  ; " );
-		$dbh->exec( "
-	CREATE TABLE ".DB_PREFIX."group_member (
-	  group_member_id	INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
-	  group_id			INTEGER UNSIGNED NOT NULL,
-	  client_id			INTEGER UNSIGNED NOT NULL,
-	  PRIMARY KEY  (group_member_id)
-	)
-	ENGINE=MyISAM CHARSET=utf8 COLLATE=utf8_unicode_ci  ; " );
-
-	//---------------------------------------------------------+
-
 	// Table structure for table "lgsl"
 
 		$dbh->exec( "DROP TABLE IF EXISTS ".DB_PREFIX."lgsl  ; " );
@@ -301,6 +273,24 @@ try {
 	  PRIMARY KEY (os_id)
 	)
 	ENGINE=MyISAM CHARSET=utf8 COLLATE=utf8_unicode_ci  ; " );
+
+	// Data for table "os"
+
+		$dbh->exec( "
+	INSERT INTO ".DB_PREFIX."os (operating_system)
+	VALUES
+		('Generic Linux 3.x Kernel'),
+		('Debian'),
+		('Ubuntu'),
+		('Linux Mint'),
+		('Fedora'),
+		('Red Hat Enterprise Linux'),
+		('SUSE Linux Enterprise Server'),
+		('CentOS'),
+		('Oracle Linux'),
+		('Mandriva'),
+		('Arch Linux')
+	; " );
 
 	//---------------------------------------------------------+
 
