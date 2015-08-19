@@ -58,8 +58,26 @@ switch ($task)
 
 		// Format input ==========================================================================
 
-		$strtolower(preg_replace('/([a-z])([A-Z])/', '$1_$2', $class_name)); // To underscore
-		// Specific format for checkboxes
+		// Checkbox
+
+		if ( !empty($_POST['maintenanceMode']) && ($_POST['maintenanceMode'] == 'true') ) {
+			$_POST['maintenanceMode'] = TRUE;
+		}
+		else {
+			$_POST['maintenanceMode'] = FALSE;
+		}
+
+		// camelCase To Underscore
+
+		foreach ($_POST as $key => $value) {
+			if ($key == 'task') {
+				continue;
+			}
+			unset($_POST[$key]);
+			$key = camelToUnderscore($key);
+
+			$_POST[$key] = $value;
+		}
 
 		// Call method ===========================================================================
 

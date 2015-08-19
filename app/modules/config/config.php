@@ -144,7 +144,7 @@ $schema = "
 			title: '" . T_('Panel Name') . "',
 			type: 'string'
 		},
-		panelUrl: {
+		systemUrl: {
 			title: '" . T_('Panel URL') . "',
 			type: 'string'
 		},
@@ -159,7 +159,7 @@ $schema = "
 	},
 	'required': [
 		'panelName',
-		'panelUrl',
+		'systemUrl',
 		'userTemplate'
 	]
 }";
@@ -173,7 +173,7 @@ $form = "
 		fieldAddonLeft: '<span class=\"glyphicon glyphicon-font\"></span>'
 	},
 	{
-		key: 'panelUrl',
+		key: 'systemUrl',
 		type: 'text',
 		fieldAddonLeft: '<span class=\"glyphicon glyphicon-globe\"></span>'
 	},
@@ -199,10 +199,10 @@ $form = "
 
 // Model Init
 $model = json_encode( array(
-		'panelName' 		=> htmlspecialchars( $current_config['panel_name'], ENT_QUOTES),
-		'panelUrl'			=> htmlspecialchars( $current_config['system_url'], ENT_QUOTES),
-		'maintenanceMode'	=> htmlspecialchars( $current_config['maintenance_mode'], ENT_QUOTES),
-		'userTemplate' 		=> htmlspecialchars( $current_config['user_template'], ENT_QUOTES)
+		'panelName' 		=> htmlspecialchars( $current_config['panel_name'], ENT_QUOTES ),
+		'systemUrl'			=> htmlspecialchars( $current_config['system_url'], ENT_QUOTES ),
+		'maintenanceMode'	=> boolval( $current_config['maintenance_mode'] ),
+		'userTemplate' 		=> htmlspecialchars( $current_config['user_template'], ENT_QUOTES )
 	), JSON_FORCE_OBJECT );
 
 $js->getAngularCode( 'updateSysConfig', $schema, $form, $model, './config' );

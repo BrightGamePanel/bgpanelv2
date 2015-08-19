@@ -180,3 +180,7 @@ function get_url($s, $use_forwarded_host = false)
 {
 	return url_origin($s, $use_forwarded_host) . $s['REQUEST_URI'];
 }
+
+function camelToUnderscore($str) {
+	return strtolower(preg_replace('/([a-z])([A-Z])/', '$1_$2', $str));
+}
