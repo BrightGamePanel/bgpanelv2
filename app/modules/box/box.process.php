@@ -51,6 +51,21 @@ else {
 switch ($task)
 {
 	default:
+
+		$ssh = new Net_SSH2('192.168.1.33', 22);
+
+		$key = new Crypt_RSA();
+		$key->loadKey(file_get_contents( RSA_PRIVATE_KEY_FILE ));
+
+		if (!$ssh->login('warhawk', $key)) {
+			exit('Login Failed');
+		}
+
+		//echo $ssh->exec("echo '" . $key->getPublicKey() . "' >> .ssh/authorized_keys");
+		echo $ssh->exec('cat ~/.ssh/authorized_keys');
+
+		exit();
+
 		Flight::redirect('/400');
 }
 

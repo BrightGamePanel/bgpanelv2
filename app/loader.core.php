@@ -88,7 +88,7 @@ switch (ENV_RUNTIME)
 
 		// PHPSeclib
 		require( LIBS_DIR	. '/phpseclib/AES.php' );
-		//require( LIBS_DIR	. '/phpseclib/RSA.php' );
+		require( LIBS_DIR	. '/phpseclib/RSA.php' );
 		require( LIBS_DIR	. '/phpseclib/ANSI.php' );
 
 		// PHP-RBAC: Role Based Access Control Library

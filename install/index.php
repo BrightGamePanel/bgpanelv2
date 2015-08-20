@@ -964,6 +964,8 @@ APP_API_KEY 		= \"".$APP_API_KEY."\"
 			{
 				$rsa = new Crypt_RSA();
 
+				$rsa->setPublicKeyFormat(CRYPT_RSA_PUBLIC_FORMAT_OPENSSH);
+
 				$keypair = $rsa->createKey(2048);
 
 				$handle = fopen( RSA_PRIVATE_KEY_FILE, 'w');

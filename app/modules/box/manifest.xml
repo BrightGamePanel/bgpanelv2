@@ -23,6 +23,11 @@
 	</module_pages>
 
 	<module_dependencies>
+		<php_libs>
+			<phpseclib>
+				<require>phpseclib/SSH2.php</require>
+			</phpseclib>
+		</php_libs>
 	</module_dependencies>
 
 	<class_definition filename="app/modules/box/box.class.php" classname="BGP_Module_Box"/>
