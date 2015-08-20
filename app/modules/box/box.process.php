@@ -50,22 +50,58 @@ else {
 // Call the method
 switch ($task)
 {
-	default:
+	case 'postBox':
 
-		$ssh = new Net_SSH2('192.168.1.33', 22);
+		$data 			 = array();
+		$data['success'] = true;
+		$data['errors']  = array();
 
-		$key = new Crypt_RSA();
-		$key->loadKey(file_get_contents( RSA_PRIVATE_KEY_FILE ));
+		// Format input ==========================================================================
 
-		if (!$ssh->login('warhawk', $key)) {
-			exit('Login Failed');
+		// Optional params
+
+		if (!isset($_POST['remoteUserHome'])) {
+			$_POST['remoteUserHome'] = '';
+		}
+		if (!isset($_POST['steamcmd'])) {
+			$_POST['steamcmd'] = '';
+		}
+		if (!isset($_POST['notes'])) {
+			$_POST['notes'] = '';
 		}
 
-		//echo $ssh->exec("echo '" . $key->getPublicKey() . "' >> .ssh/authorized_keys");
-		echo $ssh->exec('cat ~/.ssh/authorized_keys');
+		// Call method ===========================================================================
 
-		exit();
+		$return = $controller->postBox( $_POST['name'], $_POST['os'], $_POST['ip'], $_POST['port'], $_POST['login'], $_POST['password'], $_POST['remoteUserHome'], $_POST['steamcmd'], $_POST['notes'] );
+		$return = json_decode( $return['data'], TRUE );
 
+		// User notification =====================================================================
+
+		$data['errors'] = $return['errors'];
+
+		if (!empty($data['errors'])) {
+
+			$data['success'] = false;
+
+			// Notification
+			$data['msgType'] = 'warning';
+			$data['msg']     = T_('Bad Options!');
+		} else {
+
+			$data['success'] = true;
+
+			// Notification
+			bgp_set_alert( T_('Box Added Successfully!'), NULL, 'success' );
+		}
+
+		// Return ================================================================================
+
+		header('Content-Type: application/json');
+		echo json_encode($data);
+
+		exit( 0 );
+
+	default:
 		Flight::redirect('/400');
 }
 

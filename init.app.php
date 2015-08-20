@@ -60,10 +60,9 @@ define('BASE_DIR', str_replace('//', '/', realpath(dirname(__FILE__))));
 
 define('APP_DIR', BASE_DIR . '/app');
 	define('CRYPTO_DIR', APP_DIR . '/crypto');
-		define('RSA_KEYS_DIR', CRYPTO_DIR . '/rsa_keys');
+		define('RSA_KEYS_DIR', CRYPTO_DIR . '/ssh2');
 			define('RSA_PRIVATE_KEY_FILE', RSA_KEYS_DIR . '/bgp_rsa');
 			define('RSA_PUBLIC_KEY_FILE', RSA_KEYS_DIR . '/bgp_rsa.pub');
-		define('SSH_KEYS_DIR', CRYPTO_DIR . '/ssh_keys');
 	define('LIBS_DIR', APP_DIR . '/libs');
 	define('LOCALE_DIR', APP_DIR . '/locale');
 	define('MODS_DIR', APP_DIR . '/modules');

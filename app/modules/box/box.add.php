@@ -119,17 +119,21 @@ $schema = "
 			title: '" . T_('Remote Machine Name') . "',
 			type: 'string'
 		},
+		os: {
+			title: '" . T_('Operating System') . "',
+			type: 'string'
+		},
+		com: {
+			title: '" . T_('Communications Protocol') . "',
+			type: 'string'
+		},
 		ip: {
 			title: '" . T_('IP Address') . "',
 			type: 'string'
 		},
 		port: {
 			title: '" . T_('Port') . "',
-			type: 'string'
-		},
-		com: {
-			title: '" . T_('Communications Protocol') . "',
-			type: 'string'
+			type: 'numeric'
 		},
 		login: {
 			title: '" . T_('Login') . "',
@@ -141,10 +145,6 @@ $schema = "
 		},
 		remoteUserHome: {
 			title: '" . T_('Remote User Home Path') . "',
-			type: 'string'
-		},
-		os: {
-			title: '" . T_('Operating System') . "',
 			type: 'string'
 		},
 		steamcmd: {
@@ -192,7 +192,7 @@ $form = "
 	},
 	{
 		key: 'port',
-		type: 'text',
+		type: 'number',
 		placeholder: '22',
 		fieldAddonLeft: '<span class=\"glyphicon glyphicon-log-in\"></span>'
 	},
@@ -210,17 +210,20 @@ $form = "
 		key: 'remoteUserHome',
 		type: 'text',
 		placeholder: '/home/{user}/',
-		fieldAddonLeft: 'Optional'
+		fieldAddonLeft: 'Optional',
+		disableSuccessState: true
 	},
 	{
 		key: 'steamcmd',
 		type: 'text',
 		placeholder: '/home/{user}/steamcmd.sh',
-		fieldAddonLeft: 'Optional'
+		fieldAddonLeft: 'Optional',
+		disableSuccessState: true
 	},
 	{
 		key: 'notes',
-		type: 'textarea'
+		type: 'textarea',
+		disableSuccessState: true
 	},
 ]";
 

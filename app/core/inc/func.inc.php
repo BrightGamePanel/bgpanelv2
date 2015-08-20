@@ -184,3 +184,42 @@ function get_url($s, $use_forwarded_host = false)
 function camelToUnderscore($str) {
 	return strtolower(preg_replace('/([a-z])([A-Z])/', '$1_$2', $str));
 }
+
+/**
+ * Normalize a file path string
+ *
+ * @param $path string
+ *     The path to normalise.
+ * @param $encoding string
+ *     The name of the path iconv() encoding.
+ * @return string
+ *    The path, normalised.
+ */
+function normalizePath($path, $separator = DIRECTORY_SEPARATOR, $encoding = "UTF-8") {
+  
+	$path = iconv($encoding, "$encoding//IGNORE//TRANSLIT", $path);
+
+	$parts = explode('/', $path);
+	$safe  = array();  
+
+	foreach ($parts as $idx => $part) {
+		$part = str_replace($separator, '', $part);
+
+		if (empty($part) || ('.' == $part)) {
+			continue;
+		} elseif ('..' == $part) {
+			array_pop($safe);
+			continue;
+		} else {
+			$safe[] = $part;
+		}
+	}
+
+	$path = implode($separator, $safe);
+
+	if (substr($path, -1) == $separator) {
+		$path = substr($path, 0, -1);
+	}
+
+	return $path;
+}

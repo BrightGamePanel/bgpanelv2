@@ -66,7 +66,7 @@ try {
 	/*
 	-- BrightGamePanel V2 Database
 	-- Version 1.0.0
-	-- 25/07/2015
+	-- 20/08/2015
 	*/
 
 	//---------------------------------------------------------+
@@ -77,10 +77,10 @@ try {
 		$dbh->exec( "
 	CREATE TABLE ".DB_PREFIX."box (
 	  box_id 			INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
-	  box_credential_id	INTEGER UNSIGNED NOT NULL,
-	  os_id				INTEGER UNSIGNED NOT NULL,
-	  steam_lib_path	TEXT,
+	  box_credential_id	INTEGER UNSIGNED,
+	  os_id				INTEGER UNSIGNED,
 	  name				TEXT NOT NULL,
+	  steam_lib_path	TEXT,
 	  notes				TEXT,
 	  PRIMARY KEY  (box_id)
 	)
@@ -110,7 +110,7 @@ try {
 	CREATE TABLE ".DB_PREFIX."box_credential (
 	  box_credential_id	INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
 	  login				BLOB NOT NULL,
-	  password			BLOB NOT NULL,
+	  password			BLOB NULL,
 	  remote_user_home	TEXT NOT NULL,
 	  com_protocol		TEXT NOT NULL,
 	  com_port			TEXT NOT NULL,

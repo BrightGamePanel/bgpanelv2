@@ -968,13 +968,13 @@ APP_API_KEY 		= \"".$APP_API_KEY."\"
 
 				$keypair = $rsa->createKey(2048);
 
-				$handle = fopen( RSA_PRIVATE_KEY_FILE, 'w');
+				$handle = fopen( RSA_PRIVATE_KEY_FILE, 'w' );
 				$data = $keypair['privatekey'];
 				fwrite($handle, $data);
 				fclose($handle);
 				unset($handle);
 
-				$handle = fopen( RSA_PUBLIC_KEY_FILE, 'w');
+				$handle = fopen( RSA_PUBLIC_KEY_FILE, 'w' );
 				$data = $keypair['publickey'];
 				fwrite($handle, $data);
 				fclose($handle);
