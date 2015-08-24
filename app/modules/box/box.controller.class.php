@@ -155,7 +155,7 @@ class BGP_Controller_Box extends BGP_Controller {
 
 			// Verify Communication
 
-			$socket = @fsockopen( $args['ip'], $args['port'], $errno, $errstr, 100 );
+			$socket = @fsockopen( $args['ip'], $args['port'], $errno, $errstr, 3 );
 
 			if ( $socket === FALSE ) {
 

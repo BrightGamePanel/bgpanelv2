@@ -89,7 +89,10 @@ class Core_GUI_JS
 						 * AngularJS
 						 */
 
-						angular.module('bgpApp', ['schemaForm']).controller('bgpCtrl', function($scope, $http)
+						angular.module('bgpApp', [
+							'schemaForm',
+							'cgBusy'
+							]).controller('bgpCtrl', function($scope, $http)
 						{
 							// Schema
 							$scope.schema = <?php echo $scopeSchema; ?>;
@@ -146,7 +149,7 @@ class Core_GUI_JS
 
 									// Post form to process page
 
-									$http({
+									$scope.bgpPromise = $http({
 										method  : 'POST',
 										url     : <?php echo "'./$module/process'"; ?>,
 										data    : $.param($scope.model),

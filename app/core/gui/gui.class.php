@@ -178,9 +178,12 @@ class Core_GUI
 ?>
 		<!-- Javascript -->
 			<script src="./gui/angularjs/js/angular.min.js"></script>
+			<script src="./gui/angularjs/js/angular-animate.min.js"></script>
 			<script src="./gui/angularjs/js/angular-sanitize.min.js"></script>
 			<script src="./gui/jquery/js/jquery.min.js"></script>
 			<script src="./gui/bootstrap3/js/bootstrap.min.js"></script>
+			<!-- Angular Busy -->
+			<script src="./gui/angularjs/js/angular.busy.min.js"></script>
 			<!-- Angular Schema Form Dependencies -->
 			<script src="./gui/libs/js/tv4.min.js"></script>
 			<script src="./gui/libs/js/objectpath.js"></script>
@@ -217,7 +220,7 @@ class Core_GUI
 
 	<!-- Powered By Bright Game Panel -->
 
-	<div id="wrapper">
+	<div id="wrapper" cg-busy="bgpPromise">
 
 		<!-- NAVIGATION -->
 		<nav class="navbar navbar-default navbar-static-top" role="navigation">
