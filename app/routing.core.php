@@ -185,7 +185,7 @@ Flight::route('GET|POST|PUT|DELETE /api/*', function() {
  * HUMAN 2 MACHINE
  * DEFAULT BEHAVIOUR
  */
-Flight::route('GET|POST|PUT|DELETE (/@module(/@page))', function( $module, $page ) {
+Flight::route('GET|POST|PUT|DELETE (/@module(/@page)(/@id))', function( $module, $page, $id ) {
 
 	if (ENV_RUNTIME != 'H2M') {
 		Flight::redirect('/403');
@@ -203,6 +203,11 @@ Flight::route('GET|POST|PUT|DELETE (/@module(/@page))', function( $module, $page
 		$page = strtolower($page);
 	} else {
 		$page = '';
+	}
+	if (isset($id) && is_numeric($id)) {
+		Flight::set('RESOURCE_ID', $id);
+	} else {
+		$id = 0;
 	}
 
 	// User Authentication

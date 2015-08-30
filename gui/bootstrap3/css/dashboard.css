@@ -291,8 +291,8 @@ table.dataTable thead .sorting:after {
 /***********************************************************************************************/
 .go-top {
     position: fixed;
-    bottom: 2em;
-    right: 2em;
+    bottom: 45px;
+    right: 30px;
     text-decoration: none;
     color: white;
     background-color: rgba(0, 0, 0, 0.3);
@@ -319,6 +319,7 @@ table.dataTable thead .sorting:after {
 
 /***********************************************************************************************/
 /* cgross/angular-busy
+/* https://github.com/cgross/angular-busy
 /***********************************************************************************************/
 
 .cg-busy{

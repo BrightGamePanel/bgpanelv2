@@ -45,11 +45,45 @@ class BGP_Module_Box extends BGP_Module {
 
 /**
  * Box Module
+ * Page: View
+ * Title: Box Summary
+ */
+
+class BGP_Module_Box_View extends BGP_Module_Box {
+
+	function __construct( $page = '' )	{
+
+		// Call parent constructor
+		parent::__construct( );
+
+		self::setModulePageTitle( $page );
+	}
+}
+
+/**
+ * Box Module
  * Page: Add
  * Title: Box Add
  */
 
 class BGP_Module_Box_Add extends BGP_Module_Box {
+
+	function __construct( $page = '' )	{
+
+		// Call parent constructor
+		parent::__construct( );
+
+		self::setModulePageTitle( $page );
+	}
+}
+
+/**
+ * Box Module
+ * Page: Edit
+ * Title: Box Edition
+ */
+
+class BGP_Module_Box_Edit extends BGP_Module_Box {
 
 	function __construct( $page = '' )	{
 

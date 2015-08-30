@@ -1010,9 +1010,6 @@ class Core_GUI
 							<a href="https://github.com/warhawk3407/bgpanelv2/" target="_blank"><i class="fa fa-github fa-fw"></i></a>&nbsp;
 							<a href="https://twitter.com/BrightGamePanel/" target="_blank"><i class="fa fa-twitter fa-fw"></i></a>&nbsp;
 							<a href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&amp;hosted_button_id=7SDPVBR9EMQZS" target="_blank"><i class="fa fa-paypal fa-fw"></i></a>&nbsp;
-							<a href="http://getbootstrap.com/" target="_blank">
-								<img id="footer-bs3-logo" height="14" src="./gui/img/bs3_logo.png">
-							</a>
 						</div>
 					</footer>
 					<!-- END: FOOTER -->

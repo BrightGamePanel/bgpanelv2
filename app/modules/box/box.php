@@ -55,8 +55,15 @@ $dbh = Core_DBH::getDBH(); // Get Database Handle
 $rows = array();
 
 $sth = $dbh->prepare("
-	SELECT *
-	FROM " . DB_PREFIX . "box
+	SELECT
+		box.box_id,
+		box.name,
+		ip.ip
+	FROM " . DB_PREFIX . "box AS box
+	JOIN " . DB_PREFIX . "box_ip AS ip
+		ON box.box_id = ip.box_id
+	WHERE
+		ip.is_default = '1'
 	;");
 
 $sth->execute();
@@ -95,9 +102,8 @@ $rows = $sth->fetchAll( PDO::FETCH_ASSOC );
 										<table class="table table-striped table-bordered table-hover" id="overview">
 											<thead>
 												<tr>
-													<th><?php echo T_('Name'); ?></th>
-													<th><?php echo T_('IP Address'); ?></th>
-													<th><?php echo T_('Servers'); ?></th>
+													<th><?php echo T_('Machine Name'); ?></th>
+													<th><?php echo T_('Default IP Address'); ?></th>
 													<th><?php echo T_('Network Status'); ?></th>
 													<th><?php echo T_('Bandwidth Usage'); ?></th>
 													<th><?php echo T_('CPU'); ?></th>
@@ -116,8 +122,7 @@ foreach($rows as $key => $value)
 ?>
 												<tr>
 													<td><?php echo htmlspecialchars( $value['name'], ENT_QUOTES); ?></td>
-													<td></td>
-													<td></td>
+													<td><?php echo htmlspecialchars( $value['ip'], ENT_QUOTES); ?></td>
 													<td></td>
 													<td></td>
 													<td></td>
@@ -152,7 +157,7 @@ unset($rows);
 									$(document).ready(function(){
 										$('#overview').DataTable({
 											"columnDefs": [
-												{ "orderable": false, "targets": [4,5,6,7,8,9] }
+												{ "orderable": false, "targets": [4,5,6,7,8] }
 											]
 										});
 									});

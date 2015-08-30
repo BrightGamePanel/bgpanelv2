@@ -17,8 +17,16 @@
 
 	<module_pages>
 		<page>
+			<name>view</name>
+			<description>Box Summary</description>
+		</page>
+		<page>
 			<name>add</name>
 			<description>New Box Form</description>
+		</page>
+		<page>
+			<name>edit</name>
+			<description>Edition Form</description>
 		</page>
 	</module_pages>
 

@@ -223,11 +223,13 @@ class BGP_Controller_Box extends BGP_Controller {
 				$sth = $dbh->prepare("
 					INSERT INTO " . DB_PREFIX . "box
 					SET
-						name = :name,
-						steam_lib_path = :steamcmd,
-						notes = :notes
+						os_id 			= :os,
+						name 			= :name,
+						steam_lib_path 	= :steamcmd,
+						notes 			= :notes
 					;");
 
+				$sth->bindParam( ':os', $args['os'] );
 				$sth->bindParam( ':name', $args['name'] );
 				$sth->bindParam( ':steamcmd', $args['steamPath'] );
 				$sth->bindParam( ':notes', $args['notes'] );
