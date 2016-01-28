@@ -103,7 +103,7 @@ if ( !is_dir( CONF_DIR ) ) {
 }
 
 // VERIFY HTACCESS
-if ( !is_file( '.htaccess' ) ) {
+if ( !is_file( BASE_DIR . '/.htaccess' ) ) {
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -144,7 +144,7 @@ if ( isset($_SESSION['LANG']) ) {
  * Sets the default timezone used by all date/time functions
  * @link http://php.net/manual/en/timezones.php
  */
-date_default_timezone_set( CONF_TIMEZONE ); // Default: "Europe/London"
+date_default_timezone_set( CONF_TIMEZONE );
 
 // DEFINE ENVIRONMENT RUNTIME CONTEXT IF NOT SET
 if ( !defined('ENV_RUNTIME') ) {
