@@ -710,7 +710,7 @@ else if ($_GET['step'] == 'one')
 
 	if (!defined('RSA_PRIVATE_KEY') || !defined('RSA_PUBLIC_KEY'))
 	{
-		if (is_writable( RSA_KEYS_DIR ) && is_writable( SSH_KEYS_DIR ))
+		if (is_writable( RSA_KEYS_DIR ))
 		{
 ?>
 						<tr class="success">
