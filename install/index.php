@@ -316,6 +316,10 @@ else if ($_GET['step'] == 'one')
 	unset($apache2Check);
 
 ?>
+
+// Check mod_rewrite
+// in_array('mod_rewrite', apache_get_modules());
+
 <?php
 
 	if (ini_get('safe_mode'))
