@@ -90,6 +90,7 @@ class Engine {
         $this->loader->register('router', '\flight\net\Router');
         $this->loader->register('view', '\flight\template\View', array(), function($view) use ($self) {
             $view->path = $self->get('flight.views.path');
+            $view->extension = $self->get('flight.views.extension');
         });
 
         // Register framework methods
@@ -103,9 +104,11 @@ class Engine {
 
         // Default configuration settings
         $this->set('flight.base_url', null);
+        $this->set('flight.case_sensitive', false);
         $this->set('flight.handle_errors', true);
         $this->set('flight.log_errors', false);
         $this->set('flight.views.path', './views');
+        $this->set('flight.views.extension', '.php');
 
         $initialized = true;
     }
@@ -213,7 +216,9 @@ class Engine {
      * @param string $key Key
      * @return mixed
      */
-    public function get($key) {
+    public function get($key = null) {
+        if ($key === null) return $this->vars;
+
         return isset($this->vars[$key]) ? $this->vars[$key] : null;
     }
 
@@ -290,15 +295,13 @@ class Engine {
         // Enable error handling
         $this->handleErrors($this->get('flight.handle_errors'));
 
-        // Disable caching for AJAX requests
-        if ($request->ajax) {
-            $response->cache(false);
-        }
-
         // Allow post-filters to run
         $this->after('start', function() use ($self) {
             $self->stop();
         });
+
+        // Set case-sensitivity
+        $router->case_sensitive = $this->get('flight.case_sensitive');
 
         // Route the request
         while ($route = $router->route($request)) {
@@ -314,6 +317,8 @@ class Engine {
             if (!$continue) break;
 
             $router->next();
+
+            $dispatched = false;
         }
 
         if (!$dispatched) {
@@ -340,7 +345,7 @@ class Engine {
      * @param string $message Response message
      */
     public function _halt($code = 200, $message = '') {
-        $this->response(false)
+        $this->response()
             ->status($code)
             ->write($message)
             ->send();
@@ -443,13 +448,14 @@ class Engine {
      * @param mixed $data JSON data
      * @param int $code HTTP status code
      * @param bool $encode Whether to perform JSON encoding
+     * @param string $charset Charset
      */
-    public function _json($data, $code = 200, $encode = true) {
+    public function _json($data, $code = 200, $encode = true, $charset = 'utf-8') {
         $json = ($encode) ? json_encode($data) : $data;
 
-        $this->response(false)
+        $this->response()
             ->status($code)
-            ->header('Content-Type', 'application/json')
+            ->header('Content-Type', 'application/json; charset='.$charset)
             ->write($json)
             ->send();
     }
@@ -461,15 +467,16 @@ class Engine {
      * @param string $param Query parameter that specifies the callback name.
      * @param int $code HTTP status code
      * @param bool $encode Whether to perform JSON encoding
+     * @param string $charset Charset
      */
-    public function _jsonp($data, $param = 'jsonp', $code = 200, $encode = true) {
+    public function _jsonp($data, $param = 'jsonp', $code = 200, $encode = true, $charset = 'utf-8') {
         $json = ($encode) ? json_encode($data) : $data;
 
         $callback = $this->request()->query[$param];
 
-        $this->response(false)
+        $this->response()
             ->status($code)
-            ->header('Content-Type', 'application/javascript')
+            ->header('Content-Type', 'application/javascript; charset='.$charset)
             ->write($callback.'('.$json.');')
             ->send();
     }

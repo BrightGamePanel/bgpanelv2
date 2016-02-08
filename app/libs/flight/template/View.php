@@ -22,6 +22,13 @@ class View {
     public $path;
 
     /**
+     * File extension.
+     *
+     * @var string
+     */
+    public $extension = '.php';
+
+    /**
      * View variables.
      *
      * @var array
@@ -151,9 +158,16 @@ class View {
      * @return string Template file location
      */
     public function getTemplate($file) {
-        if ((substr($file, -4) != '.php')) {
-            $file .= '.php';
+        $ext = $this->extension;
+
+        if (!empty($ext) && (substr($file, -1 * strlen($ext)) != $ext)) {
+            $file .= $ext;
         }
+
+        if ((substr($file, 0, 1) == '/')) {
+            return $file;
+        }
+        
         return $this->path.'/'.$file;
     }
 

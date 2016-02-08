@@ -146,6 +146,14 @@ class Response {
     }
 
     /**
+     * Returns the headers from the response
+     * @return array
+     */
+    public function headers() {
+        return $this->headers;
+    }
+
+    /**
      * Writes content to the response body.
      *
      * @param string $str Response content
@@ -190,8 +198,10 @@ class Response {
             $expires = is_int($expires) ? $expires : strtotime($expires);
             $this->headers['Expires'] = gmdate('D, d M Y H:i:s', $expires) . ' GMT';
             $this->headers['Cache-Control'] = 'max-age='.($expires - time());
+            if (isset($this->headers['Pragma']) && $this->headers['Pragma'] == 'no-cache'){
+                unset($this->headers['Pragma']);
+            }
         }
-
         return $this;
     }
 
@@ -234,6 +244,11 @@ class Response {
             else {
                 header($field.': '.$value);
             }
+        }
+
+        // Send content length
+        if (($length = strlen($this->body)) > 0) {
+            header('Content-Length: '.$length);
         }
 
         return $this;
