@@ -206,8 +206,6 @@ Flight::route('GET|POST|PUT|DELETE (/@module(/@page)(/@id))', function( $module,
 	}
 	if (isset($id) && is_numeric($id)) {
 		Flight::set('RESOURCE_ID', $id);
-	} else {
-		$id = 0;
 	}
 
 	// User Authentication
@@ -225,6 +223,7 @@ Flight::route('GET|POST|PUT|DELETE (/@module(/@page)(/@id))', function( $module,
 			// Redirect to login form
 
 			$return = '/' . str_replace( BASE_URL, '', REQUEST_URI );
+			$return = str_replace( 'index.php', 'dashboard', $return );
 			Flight::redirect( '/login?page=' . $return );
 		}
 
@@ -269,7 +268,7 @@ Flight::route('GET|POST|PUT|DELETE (/@module(/@page)(/@id))', function( $module,
 
 		// The user is already logged in
 
-		if (empty($module) || $module == 'login')	{
+		if (empty($module) || $module == 'login' || $module == 'index.php')	{
 
 			// Redirect to the Dashboard
 
