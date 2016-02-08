@@ -145,26 +145,28 @@ class Core_Reflection
 			$module_pages = BGP_Module::getModulePages();
 
 			if (!empty($module_pages)) {
-				$module_pages = $module_pages['page'];
+				if (!empty($module_pages['page'])) {
+					$module_pages = $module_pages['page'];
 
-				if (isset($module_pages[0])) {
-					foreach ($module_pages as $key => $value) {
+					if (isset($module_pages[0])) {
+						foreach ($module_pages as $key => $value) {
 
+							$page = array(
+								'page'			=> $public_pages[0]['page'] . strtolower( $value['name'] ) . '/',
+								'description'   => trim( $value['description'] )
+							);
+
+							$public_pages[] = $page;
+						}
+					}
+					else {
 						$page = array(
-							'page'			=> $public_pages[0]['page'] . strtolower( $value['name'] ) . '/',
-							'description'   => trim( $value['description'] )
+							'page'			=> $public_pages[0]['page'] . strtolower( $module_pages['name'] ) . '/',
+							'description'   => trim( $module_pages['description'] )
 						);
 
 						$public_pages[] = $page;
 					}
-				}
-				else {
-					$page = array(
-						'page'			=> $public_pages[0]['page'] . strtolower( $module_pages['name'] ) . '/',
-						'description'   => trim( $module_pages['description'] )
-					);
-
-					$public_pages[] = $page;
 				}
 			}
 		}
