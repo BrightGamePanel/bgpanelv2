@@ -30,7 +30,7 @@ define('LICENSE', 'GNU GENERAL PUBLIC LICENSE - Version 3, 29 June 2007');
 /**
  * Install Wizard Version
  */
-define('WIZARDVERSION', 'v2.1.0');
+define('WIZARDVERSION', 'v2.2.0');
 define('ENV_RUNTIME', 'INSTALL_WIZARD');
 
 //---------------------------------------------------------+
@@ -316,10 +316,33 @@ else if ($_GET['step'] == 'one')
 	unset($apache2Check);
 
 ?>
+<?php
 
-// Check mod_rewrite
-// in_array('mod_rewrite', apache_get_modules());
+	$mod_rewriteCheck = in_array('mod_rewrite', apache_get_modules());
+	if ($mod_rewriteCheck === FALSE)
+	{
+?>
+						<tr class="error">
+							<td>Checking your server software (Apache/2 w/ mod_rewrite)</td>
+							<td><span class="label label-important">FAILED (mod_rewrite is either not installed or deactivated)</span></td>
+							<td>BrightGamePanel V2 requires an Apache2 setup with mod_rewrite installed/activated.</td>
+						</tr>
+<?php
+		$error = TRUE;
+	}
+	else
+	{
+?>
+						<tr class="success">
+							<td>Checking your server software (Apache/2 w/ mod_rewrite)</td>
+							<td><span class="label label-success">mod_rewrite</span></td>
+							<td></td>
+						</tr>
+<?php
+	}
+	unset($mod_rewriteCheck);
 
+?>
 <?php
 
 	if (ini_get('safe_mode'))
@@ -738,45 +761,27 @@ else if ($_GET['step'] == 'one')
 	}
 
 
-
-	//--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-	// PHPSECLIB
-
-	// TODO
-	// PHPSECLIb REQUIREMENTS + OPENSSL TEST
-	// http://phpseclib.sourceforge.net/math/intro.html
-	// GMP + OPENSSL EXT
-
-
-
-	// some versions of XAMPP have mismatched versions of OpenSSL which causes it not to work
-
-	/*
-	ob_start();
-	@phpinfo();
-	$content = ob_get_contents();
-	ob_end_clean();
-
-	preg_match_all('#OpenSSL (Header|Library) Version(.*)#im', $content, $matches);
-
-	$versions = array();
-	if (!empty($matches[1])) {
-		for ($i = 0; $i < count($matches[1]); $i++) {
-			$versions[$matches[1][$i]] = trim(str_replace('=>', '', strip_tags($matches[2][$i])));
-		}
+	if (is_writable( CONF_PHPSECLIB_INI ))
+	{
+?>
+						<tr class="success">
+							<td>Checking for PHPSECLIB configuration file write permission</td>
+							<td><span class="label label-success">OK</span></td>
+							<td></td>
+						</tr>
+<?php
 	}
-
-	// it doesn't appear that OpenSSL versions were reported upon until PHP 5.3+
-	switch (true) {
-		case !isset($versions['Header']):
-		case !isset($versions['Library']):
-		case $versions['Header'] == $versions['Library']:
-			define('MATH_BIGINTEGER_OPENSSL_ENABLED', true);
-			break;
-		default:
-			define('MATH_BIGINTEGER_OPENSSL_DISABLE', true);
+	else
+	{
+?>
+						<tr class="error">
+							<td>Checking for PHPSECLIB configuration file write permission</td>
+							<td><span class="label label-important">FAILED</span></td>
+							<td></td>
+						</tr>
+<?php
+		$error = TRUE;
 	}
-	*/
 
 
 
@@ -920,6 +925,70 @@ else if ($_GET['step'] == 'three')
 	switch (@$_GET['version'])
 	{
 		case 'full':
+
+			//---------------------------------------------------------+
+			// PHPSECLIB Configuration
+			// http://phpseclib.sourceforge.net/math/intro.html
+			// GMP + OPENSSL EXT
+			//
+			// Ref: https://github.com/phpseclib/phpseclib/blob/master/phpseclib/Math/BigInteger.php#L252
+			// function __construct
+
+			ob_start();
+			@phpinfo();
+			$content = ob_get_contents();
+			ob_end_clean();
+
+			preg_match_all('#OpenSSL (Header|Library) Version(.*)#im', $content, $matches);
+
+			$versions = array();
+			if (!empty($matches[1])) {
+				for ($i = 0; $i < count($matches[1]); $i++) {
+					$fullVersion = trim(str_replace('=>', '', strip_tags($matches[2][$i])));
+					if (!preg_match('/(\d+\.\d+\.\d+)/i', $fullVersion, $m)) {
+						$versions[$matches[1][$i]] = $fullVersion;
+					} else {
+						$versions[$matches[1][$i]] = $m[0];
+					}
+				}
+			}
+
+			$CRYPT_RSA_MODE = CRYPT_RSA_MODE_INTERNAL;
+			$MATH_BIGINTEGER_OPENSSL_ENABLED = 0;
+			$MATH_BIGINTEGER_OPENSSL_DISABLE = 1;
+
+			switch (true) {
+				case !isset($versions['Header']):
+				case !isset($versions['Library']):
+				case $versions['Header'] == $versions['Library']:
+					$CRYPT_RSA_MODE = CRYPT_RSA_MODE_OPENSSL;
+					$MATH_BIGINTEGER_OPENSSL_ENABLED = 1;
+				break;
+				default:
+					$CRYPT_RSA_MODE = CRYPT_RSA_MODE_INTERNAL;
+					$MATH_BIGINTEGER_OPENSSL_DISABLE = 1;
+			}
+
+			if (is_writable( CONF_PHPSECLIB_INI )) {
+				$handle = fopen( CONF_PHPSECLIB_INI, 'w');
+				$data = "; BIGINTEGER CONFIGURATION FILE
+
+MATH_BIGINTEGER_OPENSSL_ENABLED		= " . $MATH_BIGINTEGER_OPENSSL_ENABLED . "
+MATH_BIGINTEGER_OPENSSL_DISABLE		= " . $MATH_BIGINTEGER_OPENSSL_DISABLE . "
+
+; RSA CONFIGURATION FILE
+
+; MODE INTERNAL
+
+CRYPT_RSA_MODE						= " . $CRYPT_RSA_MODE . "
+";
+				fwrite($handle, $data);
+				fclose($handle);
+				unset($handle);
+			}
+			else {
+				exit('Critical error while installing ! Unable to write to /conf/libs/phpseclib.ini !');
+			}
 
 			//---------------------------------------------------------+
 			// Generating Secret Keys
