@@ -30,7 +30,7 @@ define('LICENSE', 'GNU GENERAL PUBLIC LICENSE - Version 3, 29 June 2007');
 /**
  * Install Wizard Version
  */
-define('WIZARDVERSION', 'v2.2.0');
+define('WIZARDVERSION', 'v2.2.1');
 define('ENV_RUNTIME', 'INSTALL_WIZARD');
 
 //---------------------------------------------------------+
@@ -962,8 +962,6 @@ else if ($_GET['step'] == 'three')
 
 			//---------------------------------------------------------+
 			// PHPSECLIB Configuration
-			// http://phpseclib.sourceforge.net/math/intro.html
-			// GMP + OPENSSL EXT
 			//
 			// Ref: https://github.com/phpseclib/phpseclib/blob/master/phpseclib/Math/BigInteger.php#L252
 			// function __construct
