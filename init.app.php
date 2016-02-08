@@ -59,18 +59,19 @@ define('REQUEST_URI', $_SERVER["REQUEST_URI"]);
 define('BASE_DIR', str_replace('//', '/', realpath(dirname(__FILE__))));
 
 define('APP_DIR', BASE_DIR . '/app');
-	define('CRYPTO_DIR', APP_DIR . '/crypto');
-		define('RSA_KEYS_DIR', CRYPTO_DIR . '/ssh2');
-			define('RSA_PRIVATE_KEY_FILE', RSA_KEYS_DIR . '/bgp_rsa');
-			define('RSA_PUBLIC_KEY_FILE', RSA_KEYS_DIR . '/bgp_rsa.pub');
 	define('LIBS_DIR', APP_DIR . '/libs');
 	define('LOCALE_DIR', APP_DIR . '/locale');
 	define('MODS_DIR', APP_DIR . '/modules');
 	define('CORE_VERSION_FILE', APP_DIR . '/version/version.xml');
 
 define('CONF_DIR', BASE_DIR . '/conf');
+	define('CRYPTO_DIR', CONF_DIR . '/crypto');
+		// CRYPTO SSH2
+		define('RSA_KEYS_DIR', CRYPTO_DIR . '/ssh2');
+			define('RSA_PRIVATE_KEY_FILE', RSA_KEYS_DIR . '/bgp_rsa');
+			define('RSA_PUBLIC_KEY_FILE', RSA_KEYS_DIR . '/bgp_rsa.pub');
 	define('CONF_LIBS_DIR', CONF_DIR . '/libs');
-		// LIBARIES SPECIFIC CONSTANTS
+		// LIBS SPECIFIC CONSTANTS
 		define('CONF_PHPSECLIB_INI', CONF_LIBS_DIR . '/phpseclib.ini');
 	define('CONF_API_INI', CONF_DIR . '/api.conf.ini');
 	define('CONF_API_KEY_INI', CONF_DIR . '/api.key.ini');
@@ -128,7 +129,7 @@ if ( !is_file( BASE_DIR . '/.htaccess' ) ) {
 $CONFIG  = parse_ini_file( CONF_DB_INI );
 $CONFIG += parse_ini_file( CONF_GENERAL_INI );
 $CONFIG += parse_ini_file( CONF_API_INI );
-// LIBARIES SPECIFIC CONSTANTS
+// LIBS SPECIFIC CONSTANTS
 $CONFIG += parse_ini_file( CONF_PHPSECLIB_INI );
 
 foreach ($CONFIG as $setting => $value) {

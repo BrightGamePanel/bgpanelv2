@@ -30,7 +30,7 @@ define('LICENSE', 'GNU GENERAL PUBLIC LICENSE - Version 3, 29 June 2007');
 /**
  * Install Wizard Version
  */
-define('WIZARDVERSION', 'v2.3.0');
+define('WIZARDVERSION', 'v2.3.1');
 define('ENV_RUNTIME', 'INSTALL_WIZARD');
 
 //---------------------------------------------------------+
@@ -1039,7 +1039,7 @@ CRYPT_RSA_MODE						= " . $CRYPT_RSA_MODE . "
 				unset($handle);
 			}
 			else {
-				exit('Critical error while installing ! Unable to write to /conf/libs/phpseclib.ini !');
+				exit('Critical error while installing ! Unable to write to ' . CONF_PHPSECLIB_INI . ' !');
 			}
 
 			//---------------------------------------------------------+
@@ -1066,7 +1066,7 @@ APP_SESSION_KEY 	= \"".$APP_SESSION_KEY."\"
 				unset($handle);
 			}
 			else {
-				exit('Critical error while installing ! Unable to write to /conf/secret.keys.ini !');
+				exit('Critical error while installing ! Unable to write to ' . CONF_SECRET_INI . ' !');
 			}
 
 			if (is_writable( CONF_API_KEY_INI )) {
@@ -1079,7 +1079,7 @@ APP_API_KEY 		= \"".$APP_API_KEY."\"
 				unset($handle);
 			}
 			else {
-				exit('Critical error while installing ! Unable to write to /conf/api.conf.ini !');
+				exit('Critical error while installing ! Unable to write to ' . CONF_API_KEY_INI . ' !');
 			}
 
 			//---------------------------------------------------------+
@@ -1106,7 +1106,7 @@ APP_API_KEY 		= \"".$APP_API_KEY."\"
 				unset($handle);
 			}
 			else {
-				exit('Critical error while installing ! Unable to write to /app/crypto/ !');
+				exit('Critical error while installing ! Unable to write to ' . RSA_KEYS_DIR . ' !');
 			}
 
 			//---------------------------------------------------------+
