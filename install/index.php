@@ -318,24 +318,40 @@ else if ($_GET['step'] == 'one')
 ?>
 <?php
 
-	$mod_rewriteCheck = in_array('mod_rewrite', apache_get_modules());
+	// MOD_REWRITE
+
+	if (function_exists('apache_get_modules')) {
+		$mod_rewriteCheck = in_array('mod_rewrite', apache_get_modules());
+	} else {
+		$mod_rewriteCheck = "?";
+	}
+
 	if ($mod_rewriteCheck === FALSE)
 	{
 ?>
 						<tr class="error">
-							<td>Checking your server software (Apache/2 w/ mod_rewrite)</td>
-							<td><span class="label label-important">FAILED (mod_rewrite is either not installed or deactivated)</span></td>
-							<td>BrightGamePanel V2 requires an Apache2 setup with mod_rewrite installed/activated.</td>
+							<td>Checking Apache/2.x.x w/ mod_rewrite</td>
+							<td><span class="label label-important">FAILED</span></td>
+							<td>BrightGamePanel V2 requires an Apache2 setup with mod_rewrite installed and activated.</td>
 						</tr>
 <?php
 		$error = TRUE;
+	}
+	else if ($mod_rewriteCheck === "?") {
+?>
+						<tr class="warning">
+							<td>Checking Apache/2.x.x w/ mod_rewrite</td>
+							<td><span class="label label-warning">FAILED</span></td>
+							<td>Please, verify manually that Apache2 with "mod_rewrite" is installed and enabled.</td>
+						</tr>
+<?php
 	}
 	else
 	{
 ?>
 						<tr class="success">
-							<td>Checking your server software (Apache/2 w/ mod_rewrite)</td>
-							<td><span class="label label-success">mod_rewrite</span></td>
+							<td>Checking Apache/2.x.x w/ mod_rewrite</td>
+							<td><span class="label label-success">ON</span></td>
 							<td></td>
 						</tr>
 <?php
