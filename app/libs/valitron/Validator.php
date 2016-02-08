@@ -244,7 +244,7 @@ class Validator
             return $length >= $params[0] && $length <= $params[1];
         }
         // Length same
-        return $length == $params[0];
+        return ($length !== false) && $length == $params[0];
     }
 
     /**
@@ -259,7 +259,7 @@ class Validator
     {
         $length = $this->stringLength($value);
 
-        return $length >= $params[0] && $length <= $params[1];
+        return ($length !== false) && $length >= $params[0] && $length <= $params[1];
     }
 
     /**
@@ -273,7 +273,9 @@ class Validator
      */
     protected function validateLengthMin($field, $value, $params)
     {
-        return $this->stringLength($value) >= $params[0];
+        $length = $this->stringLength($value);
+
+        return ($length !== false) && $length >= $params[0];
     }
 
     /**
@@ -287,18 +289,22 @@ class Validator
      */
     protected function validateLengthMax($field, $value, $params)
     {
-        return $this->stringLength($value) <= $params[0];
+        $length = $this->stringLength($value);
+
+        return ($length !== false) && $length <= $params[0];
     }
 
     /**
      * Get the length of a string
      *
      * @param  string $value
-     * @return int
+     * @return int|false
      */
     protected function stringLength($value)
     {
-        if (function_exists('mb_strlen')) {
+        if (!is_string($value)) {
+            return false;
+        } elseif (function_exists('mb_strlen')) {
             return mb_strlen($value);
         }
 
@@ -316,7 +322,9 @@ class Validator
      */
     protected function validateMin($field, $value, $params)
     {
-        if (function_exists('bccomp')) {
+        if (!is_numeric($value)) {
+            return false;
+        } elseif (function_exists('bccomp')) {
             return !(bccomp($params[0], $value, 14) == 1);
         } else {
             return $params[0] <= $value;
@@ -334,7 +342,9 @@ class Validator
      */
     protected function validateMax($field, $value, $params)
     {
-        if (function_exists('bccomp')) {
+        if (!is_numeric($value)) {
+            return false;
+        } elseif (function_exists('bccomp')) {
             return !(bccomp($value, $params[0], 14) == 1);
         } else {
             return $params[0] >= $value;
@@ -452,9 +462,9 @@ class Validator
     {
         foreach ($this->validUrlPrefixes as $prefix) {
             if (strpos($value, $prefix) !== false) {
-                $url = str_replace($prefix, '', strtolower($value));
-
-                return checkdnsrr($url);
+                $host = parse_url(strtolower($value), PHP_URL_HOST);
+                
+                return checkdnsrr($host, 'A') || checkdnsrr($host, 'AAAA') || checkdnsrr($host, 'CNAME');
             }
         }
 
@@ -875,7 +885,7 @@ class Validator
 
                 $result = true;
                 foreach ($values as $value) {
-                    $result = $result && call_user_func($callback, $field, $value, $v['params']);
+                    $result = $result && call_user_func($callback, $field, $value, $v['params'], $this->_fields);
                 }
 
                 if (!$result) {
