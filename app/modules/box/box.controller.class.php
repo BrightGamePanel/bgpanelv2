@@ -366,7 +366,7 @@ class BGP_Controller_Box extends BGP_Controller {
 							password = :password,
 							remote_user_home = :home,
 							com_protocol = 'ssh2',
-							com_port = :port
+							com_port = :com_port
 						;");
 
 					$login = $cipher->encrypt($args['login']);

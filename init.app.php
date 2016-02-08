@@ -69,6 +69,9 @@ define('APP_DIR', BASE_DIR . '/app');
 	define('CORE_VERSION_FILE', APP_DIR . '/version/version.xml');
 
 define('CONF_DIR', BASE_DIR . '/conf');
+	define('CONF_LIBS_DIR', CONF_DIR . '/libs');
+		// LIBARIES SPECIFIC CONSTANTS
+		define('CONF_PHPSECLIB_INI', CONF_LIBS_DIR . '/phpseclib.ini');
 	define('CONF_API_INI', CONF_DIR . '/api.conf.ini');
 	define('CONF_API_KEY_INI', CONF_DIR . '/api.key.ini');
 	define('CONF_API_WHITELIST_INI', CONF_DIR . '/api.whitelist.ini');
@@ -125,6 +128,8 @@ if ( !is_file( BASE_DIR . '/.htaccess' ) ) {
 $CONFIG  = parse_ini_file( CONF_DB_INI );
 $CONFIG += parse_ini_file( CONF_GENERAL_INI );
 $CONFIG += parse_ini_file( CONF_API_INI );
+// LIBARIES SPECIFIC CONSTANTS
+$CONFIG += parse_ini_file( CONF_PHPSECLIB_INI );
 
 foreach ($CONFIG as $setting => $value) {
 	define( $setting, $value );
