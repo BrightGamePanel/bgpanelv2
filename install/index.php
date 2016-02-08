@@ -30,7 +30,7 @@ define('LICENSE', 'GNU GENERAL PUBLIC LICENSE - Version 3, 29 June 2007');
 /**
  * Install Wizard Version
  */
-define('WIZARDVERSION', 'v2.2.1');
+define('WIZARDVERSION', 'v2.3.0');
 define('ENV_RUNTIME', 'INSTALL_WIZARD');
 
 //---------------------------------------------------------+
@@ -318,49 +318,6 @@ else if ($_GET['step'] == 'one')
 ?>
 <?php
 
-	// MOD_REWRITE
-
-	if (function_exists('apache_get_modules')) {
-		$mod_rewriteCheck = in_array('mod_rewrite', apache_get_modules());
-	} else {
-		$mod_rewriteCheck = "?";
-	}
-
-	if ($mod_rewriteCheck === FALSE)
-	{
-?>
-						<tr class="error">
-							<td>Checking Apache/2.x.x w/ mod_rewrite</td>
-							<td><span class="label label-important">FAILED</span></td>
-							<td>BrightGamePanel V2 requires an Apache2 setup with mod_rewrite installed and activated.</td>
-						</tr>
-<?php
-		$error = TRUE;
-	}
-	else if ($mod_rewriteCheck === "?") {
-?>
-						<tr class="warning">
-							<td>Checking Apache/2.x.x w/ mod_rewrite</td>
-							<td><span class="label label-warning">FAILED</span></td>
-							<td>Please, verify manually that Apache2 with "mod_rewrite" is installed and enabled.</td>
-						</tr>
-<?php
-	}
-	else
-	{
-?>
-						<tr class="success">
-							<td>Checking Apache/2.x.x w/ mod_rewrite</td>
-							<td><span class="label label-success">ON</span></td>
-							<td></td>
-						</tr>
-<?php
-	}
-	unset($mod_rewriteCheck);
-
-?>
-<?php
-
 	if (ini_get('safe_mode'))
 	{
 ?>
@@ -382,6 +339,52 @@ else if ($_GET['step'] == 'one')
 						</tr>
 <?php
 	}
+
+?>
+<?php
+
+	// HTACCESS + MOD_REWRITE
+
+	$pageURL = 'http';
+	if (isset($_SERVER["HTTPS"]) && $_SERVER["HTTPS"] == 'on') {
+		$pageURL .= "s";
+	}
+	$pageURL .= "://";
+	if ($_SERVER["SERVER_PORT"] != "80") {
+		$pageURL .= $_SERVER["SERVER_NAME"].":".$_SERVER["SERVER_PORT"].$_SERVER["REQUEST_URI"];
+	}
+	else {
+		$pageURL .= $_SERVER["SERVER_NAME"].$_SERVER["REQUEST_URI"];
+	}
+	$pageURL = str_replace('install/index.php?step=one', '', $pageURL) . 'root/';
+
+	$htaccessCheck = get_headers($pageURL);
+	$htaccessCheck = strpos($htaccessCheck[0], '200 OK');
+	
+	if ($htaccessCheck === FALSE)
+	{
+?>
+						<tr class="error">
+							<td>Checking .htaccess override with Apache/2.x.x w/ mod_rewrite</td>
+							<td><span class="label label-important">FAILED</span></td>
+							<td>BrightGamePanel V2 requires the directive <code>"AllowOverride All"</code> in your <code>'httpd.conf'</code> configuration file for this
+							<code>&lt;Directory "<?php echo BASE_DIR; ?>"&gt;</code>.
+							Verify also that <code>"mod_rewrite"</code> is installed and activated.</td>
+						</tr>
+<?php
+		$error = TRUE;
+	}
+	else
+	{
+?>
+						<tr class="success">
+							<td>Checking .htaccess override with Apache/2.x.x w/ mod_rewrite</td>
+							<td><span class="label label-success">It Works!</span></td>
+							<td></td>
+						</tr>
+<?php
+	}
+	unset($htaccessCheck, $pageURL);
 
 ?>
 <?php
@@ -731,6 +734,7 @@ else if ($_GET['step'] == 'one')
 						</tr>
 <?php
 	}
+	unset($extPHPSECLIB);
 	
 ?>
 <?php
