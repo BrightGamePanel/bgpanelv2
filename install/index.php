@@ -564,7 +564,7 @@ else if ($_GET['step'] == 'one')
 	{
 ?>
 						<tr class="error">
-							<td>Checking for ZLIB extension (LGSL - Required for America's Army 3)</td>
+							<td>Checking for ZLIB extension</td>
 							<td><span class="label label-important">FAILED</span></td>
 							<td>ZLIB extension is not installed. (<a href="http://php.net/zlib">ZLIB</a>).</td>
 						</tr>
@@ -575,7 +575,7 @@ else if ($_GET['step'] == 'one')
 	{
 ?>
 						<tr class="success">
-							<td>Checking for ZLIB extension (LGSL - Required for America's Army 3)</td>
+							<td>Checking for ZLIB extension</td>
 							<td><span class="label label-success">INSTALLED</span></td>
 							<td></td>
 						</tr>
@@ -682,6 +682,40 @@ else if ($_GET['step'] == 'one')
 <?php
 	}
 
+?>
+<?php
+
+	// PHPSECLIB
+	
+	$extPHPSECLIB = FALSE;
+	if (extension_loaded('openssl')) {
+		$extPHPSECLIB = 'openssl';
+	} elseif (extension_loaded('mcrypt')) {
+		$extPHPSECLIB = 'mcrypt';
+	}
+
+	if ($extPHPSECLIB === FALSE)
+	{
+?>
+						<tr class="error">
+							<td>Checking for OpenSSL / Mcrypt extensions</td>
+							<td><span class="label label-important">FAILED</span></td>
+							<td>OpenSSL or mcrypt extensions are not installed. (<a href="http://php.net/manual/en/intro.openssl.php">OpenSSL</a>).</td>
+						</tr>
+<?php
+		$error = TRUE;
+	}
+	else
+	{
+?>
+						<tr class="success">
+							<td>Checking for OpenSSL / Mcrypt extensions</td>
+							<td><span class="label label-success">INSTALLED (<?php echo $extPHPSECLIB; ?>)</span></td>
+							<td></td>
+						</tr>
+<?php
+	}
+	
 ?>
 <?php
 
