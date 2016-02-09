@@ -1007,7 +1007,7 @@ else if ($_GET['step'] == 'three')
 
 			$CRYPT_RSA_MODE = CRYPT_RSA_MODE_INTERNAL;
 			$MATH_BIGINTEGER_OPENSSL_ENABLED = 0;
-			$MATH_BIGINTEGER_OPENSSL_DISABLE = 1;
+			$MATH_BIGINTEGER_OPENSSL_DISABLE = 0;
 
 			switch (true) {
 				case !isset($versions['Header']):
