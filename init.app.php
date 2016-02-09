@@ -378,4 +378,4 @@ if ( ENV_RUNTIME != 'INSTALL_WIZARD' ) {
 
 
 // Clean Up
-unset( $CONFIG, $bgpCoreInfo, $lang, $headers, $key, $value );
+unset( $CONFIG, $setting, $bgpCoreInfo, $lang, $headers, $row, $key, $value );
