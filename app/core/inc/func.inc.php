@@ -28,16 +28,14 @@
 
 /**
  * Secure require_once alias for the routing component of the system
+ * Protect class files and xml files from being called directly
  */
-function bgp_safe_require( $path ) {
-	if ( file_exists($path) ) {
-		// Protect class files and xml files from being called directly
-		if (
-			(strpos($path, '.class') === FALSE) &&
-			(strpos($path, '.xml') === FALSE) &&
-			(strpos($path, '.ini') === FALSE)
-		   ) {
-			require_once( $path );
+function bgp_safe_require( $BGP_REQUIRED_PATH ) {
+	if ( file_exists( $BGP_REQUIRED_PATH ) ) {
+		$path_parts = pathinfo( $BGP_REQUIRED_PATH );
+		if ( ($path_parts['extension'] == 'php') && (strpos($path_parts['dirname'], '.class') === FALSE) ) {
+			unset( $path_parts );
+			require_once( $BGP_REQUIRED_PATH );
 			return 0;
 		}
 	}
