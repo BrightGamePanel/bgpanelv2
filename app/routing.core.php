@@ -205,9 +205,7 @@ Flight::route('GET|POST|PUT|DELETE (/@module(/@page)(/@id))', function( $module,
 		$page = '';
 	}
 	if (isset($id) && is_numeric($id)) {
-		Flight::set('RESOURCE_ID', $id);
-	} else {
-		$id = 0;
+		Flight::set('REQUEST_RESOURCE_ID', $id);
 	}
 
 	// User Authentication

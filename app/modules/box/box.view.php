@@ -51,9 +51,9 @@ $gui->getHeader();
 /**
  * Get Resource ID
  */
-if (Flight::has('RESOURCE_ID')) {
-	$resId = Flight::get('RESOURCE_ID');
-	Flight::clear('RESOURCE_ID');
+if (Flight::has('REQUEST_RESOURCE_ID')) {
+	$resId = Flight::get('REQUEST_RESOURCE_ID');
+	Flight::clear('REQUEST_RESOURCE_ID');
 } else {
 	// Bad Request
 	Flight::redirect( '/400' );
