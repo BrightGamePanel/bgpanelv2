@@ -30,7 +30,7 @@ define('LICENSE', 'GNU GENERAL PUBLIC LICENSE - Version 3, 29 June 2007');
 /**
  * Install Wizard Version
  */
-define('WIZARDVERSION', 'v2.4.1');
+define('WIZARDVERSION', 'v2.5.0');
 define('ENV_RUNTIME', 'INSTALL_WIZARD');
 
 //---------------------------------------------------------+
@@ -712,7 +712,7 @@ else if ($_GET['step'] == 'one')
 	{
 ?>
 						<tr class="error">
-							<td>Checking for OpenSSL</td>
+							<td>Checking for OpenSSL (phpseclib)</td>
 							<td><span class="label label-important">FAILED</span></td>
 							<td>OpenSSL extension is not installed. (<a href="http://php.net/manual/en/book.openssl.php">OpenSSL</a>).</td>
 						</tr>
@@ -723,18 +723,40 @@ else if ($_GET['step'] == 'one')
 	{
 ?>
 						<tr class="success">
-							<td>Checking for OpenSSL</td>
+							<td>Checking for OpenSSL (phpseclib)</td>
 							<td><span class="label label-success">INSTALLED</span></td>
 							<td></td>
 						</tr>
 <?php
 	}
 
+	if (!extension_loaded('mcrypt'))
+	{
+		?>
+		<tr class="error">
+			<td>Checking for MCRYPT extension (phpseclib)</td>
+			<td><span class="label label-important">FAILED</span></td>
+			<td>MCRYPT extension is not installed. (<a href="http://php.net/manual/en/book.mcrypt.php">MCRYPT</a>).</td>
+		</tr>
+		<?php
+		$error = TRUE;
+	}
+	else
+	{
+		?>
+		<tr class="success">
+			<td>Checking for MCRYPT extension (phpseclib)</td>
+			<td><span class="label label-success">INSTALLED</span></td>
+			<td></td>
+		</tr>
+		<?php
+	}
+
 	if (!extension_loaded('gmp'))
 	{
 ?>
 						<tr class="error">
-							<td>Checking for GMP extension</td>
+							<td>Checking for GMP extension (phpseclib)</td>
 							<td><span class="label label-important">FAILED</span></td>
 							<td>GMP extension is not installed. (<a href="http://php.net/manual/en/book.gmp.php">GNU Multiple Precision</a>).</td>
 						</tr>
@@ -745,7 +767,7 @@ else if ($_GET['step'] == 'one')
 	{
 ?>
 						<tr class="success">
-							<td>Checking for GMP extension</td>
+							<td>Checking for GMP extension (phpseclib)</td>
 							<td><span class="label label-success">INSTALLED</span></td>
 							<td></td>
 						</tr>
