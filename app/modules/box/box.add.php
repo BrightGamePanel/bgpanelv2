@@ -70,6 +70,30 @@ foreach ($os as $key => $value) {
 $osMap = substr($osMap, 0, -1);
 $osMap .= ']';
 
+// RSA Keys list as json
+
+$handle = opendir( RSA_KEYS_DIR );
+
+$rsaKeysMap = '[';
+
+if ($handle) {
+
+	// Foreach modules
+	while (false !== ($entry = readdir($handle))) {
+
+		// Dump specific directories
+		if ($entry != "." && $entry != ".." && $entry != ".htaccess" && $entry != "bgp_rsa.pub")
+		{
+			$rsaKeysMap .=  '{' . 'value: "' . $entry . '", name: "' . $entry . '"}' . ',';
+		}
+	}
+
+	closedir($handle);
+}
+unset($handle, $entry);
+
+$rsaKeysMap = substr($rsaKeysMap, 0, -1);
+$rsaKeysMap .= ']';
 
 /**
  * PAGE BODY
@@ -145,6 +169,10 @@ $schema = "
 			title: '" . T_('Password') . "',
 			type: 'string'
 		},
+		privatekey: {
+			title: '" . T_('RSA Private Key') . "',
+			type: 'string'
+		},
 		remoteUserHome: {
 			title: '" . T_('Remote User Home Path') . "',
 			type: 'string'
@@ -163,7 +191,7 @@ $schema = "
 		'ip',
 		'com',
 		'login',
-		'password',
+		'privatekey',
 		'port'
 	]
 }";
@@ -206,7 +234,14 @@ $form = "
 	{
 		key: 'password',
 		type: 'password',
-		fieldAddonLeft: '<span class=\"glyphicon glyphicon-lock\"></span>'
+		fieldAddonLeft: '<span class=\"glyphicon glyphicon-lock\"></span>',
+		description: '" . T_('Leave this field empty if you are using an authorized RSA key.') . "'
+	},
+	{
+		key: 'privatekey',
+		type: 'select',
+		description: '" . T_('RSA Keys are stored in') . ' ' . htmlspecialchars(RSA_KEYS_DIR, ENT_QUOTES ) . "',
+		titleMap: " . $rsaKeysMap . "
 	},
 	{
 		key: 'remoteUserHome',
@@ -230,8 +265,9 @@ $form = "
 ]";
 
 $model = json_encode( array(
-		'os'	=> '1',
-		'com' 	=> 'ssh2'
+		'os'			=> '1',
+		'com' 			=> 'ssh2',
+		'privatekey' 	=> 'bgp_rsa'
 	), JSON_FORCE_OBJECT );
 
 $js->getAngularCode( 'postBox', $schema, $form, $model, './box' );

@@ -111,6 +111,7 @@ try {
 	  box_credential_id	INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
 	  login				BLOB NOT NULL,
 	  password			BLOB NULL,
+	  privatekey 		TEXT NULL,
 	  remote_user_home	TEXT NOT NULL,
 	  com_protocol		TEXT NOT NULL,
 	  com_port			TEXT NOT NULL,

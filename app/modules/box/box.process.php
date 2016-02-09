@@ -60,6 +60,12 @@ switch ($task)
 
 		// Optional params
 
+		if (!isset($_POST['password'])) {
+			$_POST['password'] = '';
+		}
+		if (!isset($_POST['privatekey'])) {
+			$_POST['privatekey'] = 'bgp_rsa';
+		}
 		if (!isset($_POST['remoteUserHome'])) {
 			$_POST['remoteUserHome'] = '';
 		}
@@ -72,7 +78,7 @@ switch ($task)
 
 		// Call method ===========================================================================
 
-		$return = $controller->postBox( $_POST['name'], $_POST['os'], $_POST['ip'], $_POST['port'], $_POST['login'], $_POST['password'], $_POST['remoteUserHome'], $_POST['steamcmd'], $_POST['notes'] );
+		$return = $controller->postBox( $_POST['name'], $_POST['os'], $_POST['ip'], $_POST['port'], $_POST['login'], $_POST['password'], $_POST['privatekey'], $_POST['remoteUserHome'], $_POST['steamcmd'], $_POST['notes'] );
 		$return = json_decode( $return['data'], TRUE );
 
 		// User notification =====================================================================

@@ -52,7 +52,8 @@ class BGP_Controller_Box extends BGP_Controller {
 	 * @param string $ip query
 	 * @param string $port query
 	 * @param string $login query
-	 * @param string $password query
+	 * @param optional string $password
+	 * @param optional string $privatekey
 	 * @param optional string $userPath
 	 * @param optional string $steamPath
 	 * @param optional string $notes
@@ -61,7 +62,7 @@ class BGP_Controller_Box extends BGP_Controller {
 	 *
 	 * @author Nikita Rousseau
 	 */
-	function postBox( $name, $os, $ip, $port, $login, $password, $userPath = '', $steamPath = '', $notes = '' )
+	function postBox( $name, $os, $ip, $port, $login, $password = '', $privatekey = 'bgp_rsa', $userPath = '', $steamPath = '', $notes = '' )
 	{
 		$args = array (
 			'name' 			=> $name,
@@ -70,6 +71,7 @@ class BGP_Controller_Box extends BGP_Controller {
 			'port' 			=> $port,
 			'login' 		=> $login,
 			'password' 		=> $password,
+			'privatekey' 	=> $privatekey,
 			'userPath' 		=> $userPath,
 			'steamPath' 	=> $steamPath,
 			'notes' 		=> $notes
@@ -90,11 +92,12 @@ class BGP_Controller_Box extends BGP_Controller {
 					['os'],
 					['ip'],
 					['port'],
-					['login'],
-					['password']
+					['login']
 				],
 				'regex' => [
-					['name', "/^([-a-z0-9_ -])+$/i"]
+					['name', "/^([-a-z0-9_ -])+$/i"],
+					['login', "/^([-a-z0-9_-])+$/i"],
+					['privatekey', "/^([-a-z0-9_.-])+$/i"]
 				],
 				'integer' => [
 					['os'],
@@ -102,9 +105,6 @@ class BGP_Controller_Box extends BGP_Controller {
 				],
 				'ip' => [
 					['ip']
-				],
-				'alphaNum' => [
-					['login']
 				]
 			];
 
@@ -113,8 +113,7 @@ class BGP_Controller_Box extends BGP_Controller {
 				'os' 		=> T_('Operating System'),
 				'ip' 		=> T_('IP Address'),
 				'port'		=> T_('Port'),
-				'login' 	=> T_('Login'),
-				'password'  => T_('Password')
+				'login' 	=> T_('Login')
 			);
 
 		$v->rules( $rules );
@@ -167,13 +166,39 @@ class BGP_Controller_Box extends BGP_Controller {
 
 				$ssh = new Net_SSH2( $args['ip'], $args['port'] );
 
-				if ( !$ssh->login( $args['login'], $args['password'] ) )
-				{
+				$key = new Crypt_RSA();
 
-					$errors['com'] = 'Login failed';
+				$sshIsLoggedIn = TRUE;
+
+				// Private Key Auth
+				if (empty( $args['password'] )) {
+
+					if (!file_exists( RSA_KEYS_DIR . '/' . $args['privatekey'] )) {
+
+						$errors['privatekey'] = 'RSA Key doesn\'t exists';
+						$sshIsLoggedIn = FALSE;
+					}
+					else {
+						$key->loadKey(file_get_contents( RSA_KEYS_DIR . '/' . $args['privatekey'] ));
+
+						if ( !$ssh->login( $args['login'], $key) ) {
+
+							$errors['com'] = 'Login failed with this login / RSA private key';
+							$sshIsLoggedIn = FALSE;
+						}
+					}
 				}
+				// Normal Auth
 				else {
+					if ( !$ssh->login( $args['login'], $args['password'] ) )
+					{
 
+						$errors['com'] = 'Login failed with this login / password';
+						$sshIsLoggedIn = FALSE;
+					}
+				}
+
+				if ($sshIsLoggedIn !== FALSE) {
 					// Verify Remote Paths		
 
 					if (!empty($args['userPath'])) {
@@ -266,61 +291,68 @@ class BGP_Controller_Box extends BGP_Controller {
 
 			// CREDENTIALS
 
-			// Phase 1
-			// Connect to the remote host
+			$isUsingRSAKeyExchange = TRUE; // By default, we use the SSH authentication with RSA keypair
+
 			// Try to append our public key to authorized_keys
+			// If using normal auth
 
 			$ssh = new Net_SSH2( $args['ip'], $args['port'] );
-			$ssh->login( $args['login'], $args['password'] );
 
-			$remote_keys = $ssh->exec( 'cat ' . $home . '/.ssh/authorized_keys' );
+			// Normal Auth
+			if (!empty( $args['password'] )) {
 
-			// Check if the public key already exists
+				// Phase 1
+				// Connect to the remote host
 
-			if (strpos($remote_keys, file_get_contents( RSA_PUBLIC_KEY_FILE )) === FALSE) {
+				$ssh->login( $args['login'], $args['password'] );
 
-				// Otherwise, append it
+				$remote_keys = $ssh->exec( 'cat ' . $home . '/.ssh/authorized_keys' );
 
-				$ssh->exec( "echo '" . file_get_contents( RSA_PUBLIC_KEY_FILE ) . "' >> " . $home . "/.ssh/authorized_keys" );
-			}
+				// Check if the public key already exists
 
-			// Phase 2
-			// Verify that the public key is allowed on the remote host
+				if (strpos($remote_keys, file_get_contents( RSA_PUBLIC_KEY_FILE )) === FALSE) {
 
-			$isUsingSSHPubKey = TRUE; // By default, we use the SSH authentication keys method
+					// Otherwise, append it
 
-			$remote_keys = $ssh->exec( 'cat ' . $home . '/.ssh/authorized_keys' );
+					$ssh->exec( "echo '" . file_get_contents( RSA_PUBLIC_KEY_FILE ) . "' >> " . $home . "/.ssh/authorized_keys" );
+				}
 
-			$ssh->disconnect();
+				// Phase 2
+				// Verify that the public key is allowed on the remote host
 
-			if (strpos($remote_keys, file_get_contents( RSA_PUBLIC_KEY_FILE )) === FALSE)
-			{
-				// authorized_keys is not writable
-				// Use compatibility mode
-				// Store the password in DB
+				$remote_keys = $ssh->exec( 'cat ' . $home . '/.ssh/authorized_keys' );
 
-				$isUsingSSHPubKey = FALSE;
-			}
-			else
-			{
-				// Phase 3
-				// Try to connect with our private key on the remote host
+				$ssh->disconnect();
 
-				$ssh = new Net_SSH2( $args['ip'], $args['port'] );
-
-				$key = new Crypt_RSA();
-				$key->loadKey( file_get_contents( RSA_PRIVATE_KEY_FILE ) );
-
-				if (!$ssh->login( $args['login'], $key )) {
-
-					// Authentication failed
+				if (strpos($remote_keys, file_get_contents( RSA_PUBLIC_KEY_FILE )) === FALSE)
+				{
+					// authorized_keys is not writable
 					// Use compatibility mode
 					// Store the password in DB
 
-					$isUsingSSHPubKey = FALSE;
+					$isUsingRSAKeyExchange = FALSE;
 				}
+				else
+				{
+					// Phase 3
+					// Try to connect with our private key on the remote host
 
-				$ssh->disconnect();
+					$ssh = new Net_SSH2( $args['ip'], $args['port'] );
+
+					$key = new Crypt_RSA();
+					$key->loadKey( file_get_contents( RSA_PRIVATE_KEY_FILE ) );
+
+					if (!$ssh->login( $args['login'], $key )) {
+
+						// Authentication failed
+						// Use compatibility mode
+						// Store the password in DB
+
+						$isUsingRSAKeyExchange = FALSE;
+					}
+
+					$ssh->disconnect();
+				}
 			}
 
 			// SSH CREDENTIALS
@@ -329,13 +361,14 @@ class BGP_Controller_Box extends BGP_Controller {
 			$cipher->setKeyLength(256);
 			$cipher->setKey( $config['APP_SSH_KEY'] );
 
-			if ($isUsingSSHPubKey)
+			if ($isUsingRSAKeyExchange)
 			{
 				try {
 					$sth = $dbh->prepare("
 						INSERT INTO " . DB_PREFIX . "box_credential
 						SET
 							login = :login,
+							privatekey = :privatekey,
 							remote_user_home = :home,
 							com_protocol = 'ssh2',
 							com_port = :com_port
@@ -344,6 +377,7 @@ class BGP_Controller_Box extends BGP_Controller {
 					$login = $cipher->encrypt($args['login']);
 
 					$sth->bindParam( ':login',  $login );
+					$sth->bindParam( ':privatekey', $args['privatekey'] );
 					$sth->bindParam( ':home', $args['userPath'] );
 					$sth->bindParam( ':com_port', $args['port'] );
 
@@ -364,6 +398,7 @@ class BGP_Controller_Box extends BGP_Controller {
 						SET
 							login = :login,
 							password = :password,
+							privatekey = :privatekey,
 							remote_user_home = :home,
 							com_protocol = 'ssh2',
 							com_port = :com_port
@@ -374,6 +409,7 @@ class BGP_Controller_Box extends BGP_Controller {
 
 					$sth->bindParam( ':login', $login );
 					$sth->bindParam( ':password', $password );
+					$sth->bindParam( ':privatekey', $args['privatekey'] );
 					$sth->bindParam( ':home', $args['userPath'] );
 					$sth->bindParam( ':com_port', $args['port'] );
 
