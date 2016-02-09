@@ -30,7 +30,7 @@ define('LICENSE', 'GNU GENERAL PUBLIC LICENSE - Version 3, 29 June 2007');
 /**
  * Install Wizard Version
  */
-define('WIZARDVERSION', 'v2.3.3');
+define('WIZARDVERSION', 'v2.4.0');
 define('ENV_RUNTIME', 'INSTALL_WIZARD');
 
 //---------------------------------------------------------+
@@ -704,22 +704,17 @@ else if ($_GET['step'] == 'one')
 ?>
 <?php
 
-	// PHPSECLIB
-	
-	$extPHPSECLIB = FALSE;
-	if (extension_loaded('openssl')) {
-		$extPHPSECLIB = 'openssl';
-	} elseif (extension_loaded('mcrypt')) {
-		$extPHPSECLIB = 'mcrypt';
-	}
+	//
+	// PHPSECLIB REQUIREMENTS
+	//
 
-	if ($extPHPSECLIB === FALSE)
+	if (!extension_loaded('openssl'))
 	{
 ?>
 						<tr class="error">
-							<td>Checking for OpenSSL / Mcrypt extensions</td>
+							<td>Checking for OpenSSL</td>
 							<td><span class="label label-important">FAILED</span></td>
-							<td>OpenSSL or mcrypt extensions are not installed. (<a href="http://php.net/manual/en/intro.openssl.php">OpenSSL</a>).</td>
+							<td>OpenSSL extension is not installed. (<a href="http://php.net/manual/en/book.openssl.php">OpenSSL</a>).</td>
 						</tr>
 <?php
 		$error = TRUE;
@@ -728,14 +723,35 @@ else if ($_GET['step'] == 'one')
 	{
 ?>
 						<tr class="success">
-							<td>Checking for OpenSSL / Mcrypt extensions</td>
-							<td><span class="label label-success">INSTALLED (<?php echo $extPHPSECLIB; ?>)</span></td>
+							<td>Checking for OpenSSL</td>
+							<td><span class="label label-success">INSTALLED</span></td>
 							<td></td>
 						</tr>
 <?php
 	}
-	unset($extPHPSECLIB);
-	
+
+	if (!extension_loaded('gmp'))
+	{
+?>
+						<tr class="error">
+							<td>Checking for GMP extension</td>
+							<td><span class="label label-important">FAILED</span></td>
+							<td>GMP extension is not installed. (<a href="http://php.net/manual/en/book.gmp.php">GNU Multiple Precision</a>).</td>
+						</tr>
+<?php
+		$error = TRUE;
+	}
+	else
+	{
+?>
+						<tr class="success">
+							<td>Checking for GMP extension</td>
+							<td><span class="label label-success">INSTALLED</span></td>
+							<td></td>
+						</tr>
+<?php
+	}
+
 ?>
 <?php
 
@@ -988,9 +1004,6 @@ else if ($_GET['step'] == 'three')
 
 			//---------------------------------------------------------+
 			// PHPSECLIB Configuration
-			//
-			// Ref: https://github.com/phpseclib/phpseclib/blob/master/phpseclib/Math/BigInteger.php#L252
-			// function __construct
 
 			ob_start();
 			@phpinfo();
@@ -1011,40 +1024,50 @@ else if ($_GET['step'] == 'three')
 				}
 			}
 
-			$CRYPT_RSA_MODE = CRYPT_RSA_MODE_INTERNAL;
-
 			switch (true) {
 				case !isset($versions['Header']):
 				case !isset($versions['Library']):
 				case $versions['Header'] == $versions['Library']:
 					$CRYPT_RSA_MODE = CRYPT_RSA_MODE_OPENSSL;
-					$MATH_BIGINTEGER_OPENSSL_ENABLED = 1;
 				break;
 				default:
 					$CRYPT_RSA_MODE = CRYPT_RSA_MODE_INTERNAL;
-					$MATH_BIGINTEGER_OPENSSL_DISABLE = 1;
 			}
 
 			if (is_writable( CONF_PHPSECLIB_INI )) {
 				$handle = fopen( CONF_PHPSECLIB_INI, 'w');
 				
-				if (isset( $MATH_BIGINTEGER_OPENSSL_ENABLED )) {
+				if ( $CRYPT_RSA_MODE === CRYPT_RSA_MODE_OPENSSL ) {
 					$data = "; BIGINTEGER CONFIGURATION FILE
 
-MATH_BIGINTEGER_OPENSSL_ENABLED		= " . $MATH_BIGINTEGER_OPENSSL_ENABLED . "
+; INTERNAL 	= 1
+; BCMATH 	= 2
+; GMP 		= 3
+MATH_BIGINTEGER_MODE				= 3
+
+MATH_BIGINTEGER_OPENSSL_ENABLED		= 1
 
 ; RSA CONFIGURATION FILE
 
+; INTERNAL 	= 1
+; OPENSSL 	= 2
 CRYPT_RSA_MODE						= " . $CRYPT_RSA_MODE . "
 ";
 				}
 				else {
 					$data = "; BIGINTEGER CONFIGURATION FILE
 
-MATH_BIGINTEGER_OPENSSL_DISABLE		= " . $MATH_BIGINTEGER_OPENSSL_DISABLE . "
+; INTERNAL 	= 1
+; BCMATH 	= 2
+; GMP 		= 3
+MATH_BIGINTEGER_MODE				= 3
+
+MATH_BIGINTEGER_OPENSSL_DISABLE		= 1
 
 ; RSA CONFIGURATION FILE
 
+; INTERNAL 	= 1
+; OPENSSL 	= 2
 CRYPT_RSA_MODE						= " . $CRYPT_RSA_MODE . "
 ";
 				}

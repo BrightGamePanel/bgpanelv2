@@ -261,7 +261,7 @@ class Math_BigInteger
         if (extension_loaded('openssl') && !defined('MATH_BIGINTEGER_OPENSSL_DISABLE') && !defined('MATH_BIGINTEGER_OPENSSL_ENABLED')) {
             // Configuration done by BrightGamePanel
             // Warhawk3407
-            trigger_error("PHPSECLIB CONFIGURATION FAILURE (MATH_BIGINTEGER_OPENSSL_DISABLE, MATH_BIGINTEGER_OPENSSL_ENABLED).", E_USER_ERROR);
+            trigger_error("PHPSECLIB CONFIGURATION FAILURE (MATH_BIGINTEGER_OPENSSL_X).", E_USER_ERROR);
         }
 
         if (!defined('PHP_INT_SIZE')) {

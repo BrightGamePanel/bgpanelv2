@@ -514,9 +514,7 @@ class Crypt_RSA
                 case extension_loaded('openssl') && version_compare(PHP_VERSION, '4.2.0', '>=') && file_exists($this->configFile):
                     // Configuration done by BrightGamePanel
                     // Warhawk3407
-                    if ( !defined(CRYPT_RSA_MODE) ) {
-                        trigger_error("PHPSECLIB CONFIGURATION FAILURE (CRYPT_RSA_MODE).", E_USER_ERROR);
-                    }
+                    trigger_error("PHPSECLIB CONFIGURATION FAILURE (CRYPT_RSA_MODE).", E_USER_ERROR);
                     break;
                 default:
                     define('CRYPT_RSA_MODE', CRYPT_RSA_MODE_INTERNAL);
