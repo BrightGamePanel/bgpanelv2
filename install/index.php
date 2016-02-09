@@ -980,7 +980,7 @@ else if ($_GET['step'] == 'two')
 			<?php
 		}
 ?>
-					<input name="version" type="radio" value="full" /><b>&nbsp;<span class="label label-warning">Perform Clean Install</span>&nbsp;- Version <?php echo LASTBGPVERSION; ?></b><br /><br />
+					<input name="version" type="radio" value="full" <?php if ($currentVersion['value'] == LASTBGPVERSION) { echo "checked=\"checked\""; } ?> /><b>&nbsp;<span class="label label-warning">Perform Clean Install</span>&nbsp;- Version <?php echo LASTBGPVERSION; ?></b><br /><br />
 					<button type="submit" class="btn btn-primary">Install SQL Database</button>
 				</form>
 				</div>
