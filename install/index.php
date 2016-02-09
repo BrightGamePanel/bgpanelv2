@@ -30,7 +30,7 @@ define('LICENSE', 'GNU GENERAL PUBLIC LICENSE - Version 3, 29 June 2007');
 /**
  * Install Wizard Version
  */
-define('WIZARDVERSION', 'v2.3.1');
+define('WIZARDVERSION', 'v2.3.2');
 define('ENV_RUNTIME', 'INSTALL_WIZARD');
 
 //---------------------------------------------------------+
@@ -931,11 +931,17 @@ else if ($_GET['step'] == 'two')
 					You can update your previous version of BrightGamePanel V2 or perform a clean install <u>which will overwrite all data (BGP tables with the same prefix) in the database.</u><br />
 					It is recommend you back up your database first.<br />
 				</div>
-				<h4>Current Version:</h4>&nbsp;<span class="label label-info"><?php echo $currentVersion['value']; ?></span><br /><br />
+				<h4>Current Version:</h4>&nbsp;<span class="label label-info"><?php echo $currentVersion['value']; ?></span>&nbsp;<?php if ($currentVersion['value'] == LASTBGPVERSION) { echo "(up-to-date)"; } ?><br /><br />
 				<h4>Select Action :</h4><br />
 				<form action="index.php" method="get">
 					<input type="hidden" name="step" value="three" />
+<?php
+		if ($currentVersion['value'] != LASTBGPVERSION) {
+			?>
 					<input name="version" type="radio" value="update" checked="checked" /><b>&nbsp;Update to the Last Version (<?php echo LASTBGPVERSION; ?>)</b><br /><br /><br />
+			<?php
+		}
+?>
 					<input name="version" type="radio" value="full" /><b>&nbsp;<span class="label label-warning">Perform Clean Install</span>&nbsp;- Version <?php echo LASTBGPVERSION; ?></b><br /><br />
 					<button type="submit" class="btn btn-primary">Install SQL Database</button>
 				</form>
