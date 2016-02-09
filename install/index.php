@@ -30,7 +30,7 @@ define('LICENSE', 'GNU GENERAL PUBLIC LICENSE - Version 3, 29 June 2007');
 /**
  * Install Wizard Version
  */
-define('WIZARDVERSION', 'v2.3.2');
+define('WIZARDVERSION', 'v2.3.3');
 define('ENV_RUNTIME', 'INSTALL_WIZARD');
 
 //---------------------------------------------------------+
@@ -1012,8 +1012,6 @@ else if ($_GET['step'] == 'three')
 			}
 
 			$CRYPT_RSA_MODE = CRYPT_RSA_MODE_INTERNAL;
-			$MATH_BIGINTEGER_OPENSSL_ENABLED = 0;
-			$MATH_BIGINTEGER_OPENSSL_DISABLE = 0;
 
 			switch (true) {
 				case !isset($versions['Header']):
@@ -1029,17 +1027,28 @@ else if ($_GET['step'] == 'three')
 
 			if (is_writable( CONF_PHPSECLIB_INI )) {
 				$handle = fopen( CONF_PHPSECLIB_INI, 'w');
-				$data = "; BIGINTEGER CONFIGURATION FILE
+				
+				if (isset( $MATH_BIGINTEGER_OPENSSL_ENABLED )) {
+					$data = "; BIGINTEGER CONFIGURATION FILE
 
 MATH_BIGINTEGER_OPENSSL_ENABLED		= " . $MATH_BIGINTEGER_OPENSSL_ENABLED . "
+
+; RSA CONFIGURATION FILE
+
+CRYPT_RSA_MODE						= " . $CRYPT_RSA_MODE . "
+";
+				}
+				else {
+					$data = "; BIGINTEGER CONFIGURATION FILE
+
 MATH_BIGINTEGER_OPENSSL_DISABLE		= " . $MATH_BIGINTEGER_OPENSSL_DISABLE . "
 
 ; RSA CONFIGURATION FILE
 
-; MODE INTERNAL
-
 CRYPT_RSA_MODE						= " . $CRYPT_RSA_MODE . "
 ";
+				}
+
 				fwrite($handle, $data);
 				fclose($handle);
 				unset($handle);
