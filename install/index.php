@@ -30,7 +30,7 @@ define('LICENSE', 'GNU GENERAL PUBLIC LICENSE - Version 3, 29 June 2007');
 /**
  * Install Wizard Version
  */
-define('WIZARDVERSION', 'v2.4.0');
+define('WIZARDVERSION', 'v2.4.1');
 define('ENV_RUNTIME', 'INSTALL_WIZARD');
 
 //---------------------------------------------------------+
@@ -750,6 +750,28 @@ else if ($_GET['step'] == 'one')
 							<td></td>
 						</tr>
 <?php
+	}
+
+	if (!function_exists('hash'))
+	{
+		?>
+		<tr class="error">
+			<td>Checking for hash() function</td>
+			<td><span class="label label-important">FAILED</span></td>
+			<td>Hash extension is not installed. (<a href="http://php.net/manual/en/book.hash.php">Hash</a>).</td>
+		</tr>
+		<?php
+		$error = TRUE;
+	}
+	else
+	{
+		?>
+		<tr class="success">
+			<td>Checking for hash() function</td>
+			<td><span class="label label-success">INSTALLED</span></td>
+			<td></td>
+		</tr>
+		<?php
 	}
 
 ?>
