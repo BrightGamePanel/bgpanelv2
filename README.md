@@ -11,4 +11,11 @@ This Project Is WORK IN PROGRESS everything here is still being coded goto www.b
 
 
 
-Notes : chmod 400 /path/my-key-pair.pem
+Notes :
+	chmod 400 /path/my-key-pair.pem
+	
+	// api cli + cron
+	set_time_limit ( 300 )
+	// normal
+	set_time_limit ( 45 )
+
