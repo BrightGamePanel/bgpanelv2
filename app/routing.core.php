@@ -75,108 +75,136 @@ Flight::route('GET|POST|PUT|DELETE /api/*', function() {
 
 	// API Process
 
-	if (boolval(APP_API_ENABLE) === TRUE)
-	{
-		if ( Flight::request()->secure || ( boolval(APP_API_ALLOW_UNSECURE) === TRUE ) )
-		{
+	if (boolval(APP_API_ENABLE) === FALSE) {
 
-			$url = Flight::request()->url;
-			$http_method = Flight::request()->method;
-			$params = explode('&', parse_url($url, PHP_URL_QUERY));
+		// Service Unavailable
+		header( Core_Http_Status_Codes::httpHeaderFor( 503 ) );
+		exit( 0 );
+	}
 
-			$headers = apache_request_headers();
+	if ( (Flight::request()->secure === FALSE) AND (boolval(APP_API_ALLOW_UNSECURE) === FALSE) ) {
 
-			if (!empty($headers['X-API-KEY']) AND !empty($headers['X-API-USER']) AND !empty($headers['X-API-PASS']))
-			{
-				// Machine Authentication
+		// Unsecure
+		header( Core_Http_Status_Codes::httpHeaderFor( 418 ) );
+		exit( 0 );
+	}
 
-				if (Core_API::checkRemoteHost( Flight::request()->ip, $headers['X-API-KEY'], $headers['X-API-USER'], $headers['X-API-PASS'] ) === TRUE)
-				{
-					// Resource Access
+	$url = Flight::request()->url;
+	$http_method = Flight::request()->method;
+	$params = explode('&', parse_url($url, PHP_URL_QUERY));
 
-					if ($http_method === 'GET' && $url === '/api?WADL') 
-					{
-						// Web Application Description Language (WADL)
+	// Credentials
 
-						header('Content-Type: application/xml; charset=utf-8');
-						echo Core_API::getWADL( );
-					}
-					else if (strpos($url, '/api/') !== FALSE)
-					{
-						// Extract Module Name
+	$headers = apache_request_headers();
+	if (!isset($headers['X-API-KEY'])) {
+		$headers['X-API-KEY'] = NULL;
+	}
+	if (!isset($headers['X-API-USER'])) {
+		$headers['X-API-USER'] = NULL;
+	}
+	if (!isset($headers['X-API-PASS'])) {
+		$headers['X-API-PASS'] = NULL;
+	}
 
-						$module = strstr($url, '/api/');
+	if (!isset($_SERVER['PHP_AUTH_USER'])) {
+		$_SERVER['PHP_AUTH_USER'] = NULL;
+	}
+	if (!isset($_SERVER['PHP_AUTH_PW'])) {
+		$_SERVER['PHP_AUTH_PW'] = NULL;
+	}
 
-						if (strpos($module, '?') !== FALSE) {
-							$module = strstr($module, '?', TRUE);
-						}
+	if (empty($headers['X-API-KEY']) AND empty($headers['X-API-USER']) AND empty($headers['X-API-PASS']) AND empty($_SERVER['PHP_AUTH_USER']) AND empty($_SERVER['PHP_AUTH_PW'])) {
 
-						$module = str_replace('/api/', '', $module);
+		// Unauthorized
+		// No credentials
+		header( Core_Http_Status_Codes::httpHeaderFor( 401 ) );
+		exit( 0 );
+	}
 
-						if (!empty($module))
-						{
-							// Resolve Request
+	// Machine Authentication
 
-							$method = Core_API::resolveAPIRequest( $module, $url, $http_method );
+	// AUTH-BASIC (if allowed)
+	// OR
+	// X-HTTP-HEADERS AUTH (default)
 
-							if (!empty($method))
-							{
-								$resourcePerm = ucfirst($module) . '/' . $method['method'];
+	if ((boolval(APP_API_ALLOW_BASIC_AUTH) === TRUE) && !empty($_SERVER['PHP_AUTH_USER']) && !empty($_SERVER['PHP_AUTH_PW'])) {
+		if (Core_API::checkRemoteHost( Flight::request()->ip, $_SERVER['PHP_AUTH_USER'], $_SERVER['PHP_AUTH_PW'], '', 'auth-basic' ) === FALSE) {
 
-								// Verify Authorizations
-
-								$rbac = new PhpRbac\Rbac();
-
-								if ( $rbac->Users->hasRole( 'root', $_SERVER['PHP_AUTH_USER'] ) || $rbac->check( $resourcePerm, $_SERVER['PHP_AUTH_USER'] ) ) {
-
-									// Call The Method
-									// And Return The Media Response
-
-									$media = Core_API::callAPIControllerMethod( $module, $method, $params );
-
-									header('Content-Type: ' . $media['response'] . '; charset=utf-8');
-									echo $media['data'];
-								}
-								else {
-									// Forbidden
-									header( Core_Http_Status_Codes::httpHeaderFor( 403 ) );
-								}
-							}
-							else {
-								// Bad Request
-								header( Core_Http_Status_Codes::httpHeaderFor( 400 ) );
-							}
-						}
-						else {
-							// Forbidden
-							header( Core_Http_Status_Codes::httpHeaderFor( 403 ) );
-						}
-					}
-					else {
-						// Forbidden
-						header( Core_Http_Status_Codes::httpHeaderFor( 403 ) );
-					}
-				}
-				else {
-					// Unauthorized
-					header( Core_Http_Status_Codes::httpHeaderFor( 401 ) );
-				}
-			}
-			else {
-				// Unauthorized
-				header( Core_Http_Status_Codes::httpHeaderFor( 401 ) );
-			}
-		}
-		else {
-			// Unsecure
-			header( Core_Http_Status_Codes::httpHeaderFor( 418 ) );
+			// Unauthorized
+			header( Core_Http_Status_Codes::httpHeaderFor( 401 ) );
+			exit( 0 );
 		}
 	}
 	else {
-		// Forbidden
-		header( Core_Http_Status_Codes::httpHeaderFor( 403 ) );
+		if (Core_API::checkRemoteHost( Flight::request()->ip, $headers['X-API-USER'], $headers['X-API-PASS'], $headers['X-API-KEY'], 'x-http-headers' ) === FALSE) {
+
+			// Unauthorized
+			header( Core_Http_Status_Codes::httpHeaderFor( 401 ) );
+			exit( 0 );
+		}
 	}
 
+	// Resource Access
+
+	if ($http_method === 'GET' && $url === '/api?WADL') 
+	{
+		// Web Application Description Language (WADL)
+
+		header('Content-Type: application/xml; charset=utf-8');
+		echo Core_API::getWADL( );
+		exit( 0 );
+	}
+	else if (strpos($url, '/api/') !== FALSE)
+	{
+		// Extract Module Name
+
+		$module = strstr($url, '/api/');
+
+		if (strpos($module, '?') !== FALSE) {
+			$module = strstr($module, '?', TRUE);
+		}
+
+		$module = str_replace('/api/', '', $module);
+
+		if (empty($module))
+		{
+			// Bad Request
+			header( Core_Http_Status_Codes::httpHeaderFor( 400 ) );
+			exit( 0 );
+		}
+
+		// Resolve Request
+
+		$method = Core_API::resolveAPIRequest( $module, $url, $http_method );
+
+		if (empty($method))
+		{
+			// Bad Request
+			header( Core_Http_Status_Codes::httpHeaderFor( 400 ) );
+			exit( 0 );
+		}
+
+		$resourcePerm = ucfirst($module) . '/' . $method['method'];
+
+		// Verify Authorizations
+
+		$rbac = new PhpRbac\Rbac();
+
+		if ( $rbac->Users->hasRole( 'root', $_SERVER['PHP_AUTH_USER'] ) || $rbac->check( $resourcePerm, $_SERVER['PHP_AUTH_USER'] ) ) {
+
+			// Call The Method
+			// And Return The Media Response
+
+			$media = Core_API::callAPIControllerMethod( $module, $method, $params );
+
+			header('Content-Type: ' . $media['response'] . '; charset=utf-8');
+			echo $media['data'];
+			exit( 0 );
+		}
+	}
+
+	// Forbidden as default response
+	header( Core_Http_Status_Codes::httpHeaderFor( 403 ) );
 	exit( 0 );
 });
 

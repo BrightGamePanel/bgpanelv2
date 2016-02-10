@@ -112,7 +112,7 @@ class Core_API
 		return FALSE;
 	}
 
-	public static function checkRemoteHost( $remote_ip, $api_key, $api_user, $api_user_pass )
+	public static function checkRemoteHost( $remote_ip, $api_user, $api_user_pass, $api_key = '', $auth_method = 'x-http-headers' )
 	{
 		// Get IPs Whitelist
 
@@ -132,13 +132,25 @@ class Core_API
 				if (!empty($apiMasterKey) && isset($apiMasterKey['APP_API_KEY'])) {
 					$apiMasterKey = $apiMasterKey['APP_API_KEY'];
 
-					// Verify Master Key
+					switch ($auth_method) {
 
-					if ($api_key == $apiMasterKey) {
+						case 'auth-basic' :
 
-						// Verify API User
+							// Verify API User
 
-						return self::checkRemoteAPIUser( $remote_ip, $api_user, $api_user_pass );
+							return self::checkRemoteAPIUser( $remote_ip, $api_user, $api_user_pass );
+
+							break;
+
+						case 'x-http-headers' :
+						default :
+
+							if ($api_key == $apiMasterKey) {
+
+								return self::checkRemoteAPIUser( $remote_ip, $api_user, $api_user_pass );
+							}
+
+							break;
 					}
 				}
 			}
