@@ -44,14 +44,14 @@ class BGP_Controller_Myaccount extends BGP_Controller {
 	/**
 	 * Update User Configuration
 	 *
-	 * @param string $username
-	 * @param string $password0
-	 * @param string $password1
-	 * @param string $email
-	 * @param string $language
-	 * @param optional string $firstname
-	 * @param optional string $lastname
-	 * @param optional string $template
+	 * @param string $username query
+	 * @param string $password0 query
+	 * @param string $password1 query
+	 * @param string $email query
+	 * @param string $language query
+	 * @param optional string $firstname query
+	 * @param optional string $lastname query
+	 * @param optional string $template query
 	 *
 	 * @author Nikita Rousseau
 	 */

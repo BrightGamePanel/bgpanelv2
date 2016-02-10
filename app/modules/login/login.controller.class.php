@@ -45,9 +45,9 @@ class BGP_Controller_Login extends BGP_Controller
 	/**
 	 * Authentication
 	 *
-	 * @param string $username
-	 * @param string $password
-	 * @param bool $rememberMe
+	 * @param string $username query
+	 * @param string $password query
+	 * @param bool $rememberMe query
 	 *
 	 * @author Nikita Rousseau
 	 */
@@ -249,9 +249,9 @@ class BGP_Controller_Login extends BGP_Controller
 	/**
 	 * User Password Renewal
 	 *
-	 * @param string $username
-	 * @param string $email
-	 * @param optional bool $captcha_validation
+	 * @param string $username query
+	 * @param string $email query
+	 * @param optional bool $captcha_validation query
 	 *
 	 * @author Nikita Rousseau
 	 */

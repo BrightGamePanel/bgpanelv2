@@ -52,11 +52,11 @@ class BGP_Controller_Box extends BGP_Controller {
 	 * @param string $ip query
 	 * @param string $port query
 	 * @param string $login query
-	 * @param optional string $password
-	 * @param optional string $privatekey
-	 * @param optional string $userPath
-	 * @param optional string $steamPath
-	 * @param optional string $notes
+	 * @param optional string $password query
+	 * @param optional string $privatekey query
+	 * @param optional string $userPath query
+	 * @param optional string $steamPath query
+	 * @param optional string $notes query
 	 *
 	 * @return application/json
 	 *
@@ -466,5 +466,22 @@ class BGP_Controller_Box extends BGP_Controller {
 			'response' => 'application/json',
 			'data' => json_encode($data)
 		);
+	}
+
+	/**
+	 * Remove an existing Box from the collection
+	 *
+	 * @http_method DELETE
+	 * @resource box/del
+	 *
+	 * @param int $box_id query
+	 *
+	 * @return application/json
+	 *
+	 * @author Nikita Rousseau
+	 */
+	function deleteBox( $box_id )
+	{
+
 	}
 }
