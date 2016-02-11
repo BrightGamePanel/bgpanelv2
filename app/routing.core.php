@@ -95,7 +95,7 @@ Flight::route('GET|POST|PUT|DELETE /api/*', function() {
 
 	// Credentials
 
-	$headers = apache_request_headers();
+	$headers = array_change_key_case(apache_request_headers(), CASE_UPPER);
 	if (!isset($headers['X-API-KEY'])) {
 		$headers['X-API-KEY'] = NULL;
 	}
