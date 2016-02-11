@@ -154,14 +154,13 @@ date_default_timezone_set( CONF_TIMEZONE );
 
 // DEFINE ENVIRONMENT RUNTIME CONTEXT IF NOT SET
 if ( !defined('ENV_RUNTIME') ) {
-	$headers = apache_request_headers();
 
-	foreach ($headers as $key => $value) {
-		if ($key == 'X-API-KEY' && !empty($value)) {
-			define('ENV_RUNTIME', 'M2M');
-		}
+	// API case
+	if ( strstr(substr(REQUEST_URI, strlen(BASE_URL)), 'api', TRUE) === '' ) {
+		define('ENV_RUNTIME', 'M2M');
 	}
 
+	// Default case
 	if ( !defined('ENV_RUNTIME') ) {
 		define('ENV_RUNTIME', 'H2M');
 	}
