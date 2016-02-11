@@ -168,7 +168,7 @@ else {
 
 // Redirect
 if (!empty($_GET['page'])) {
-	$redirect = '.' . $_GET['page'];
+	$redirect = './' . $_GET['page'];
 }
 else {
 	$redirect = './';

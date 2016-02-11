@@ -52,7 +52,7 @@ ini_set('display_errors', 1);
 
 
 
-define('BASE_URL', dirname($_SERVER['PHP_SELF']).'/');
+define('BASE_URL', str_replace('//', '/', str_replace("\\", "/", dirname($_SERVER['PHP_SELF'])) . '/'));
 define('REQUEST_URI', $_SERVER["REQUEST_URI"]);
 
 // FILE AND DIRECTORY CONSTANTS
@@ -155,7 +155,8 @@ date_default_timezone_set( CONF_TIMEZONE );
 if ( !defined('ENV_RUNTIME') ) {
 
 	// API case
-	if ( strstr(substr(REQUEST_URI, strlen(BASE_URL)), 'api', TRUE) === '' ) {
+	if (strstr(substr(REQUEST_URI, strlen(BASE_URL)), 'api/', TRUE) === '' ||
+		strstr(substr(REQUEST_URI, strlen(BASE_URL)), 'api?WADL', TRUE) === '') {
 		define('ENV_RUNTIME', 'M2M');
 	}
 

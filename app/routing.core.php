@@ -244,7 +244,11 @@ Flight::route('GET|POST|PUT|DELETE (/@module(/@page)(/@id))', function( $module,
 
 			// Redirect to login form
 
-			$return = '/' . str_replace( BASE_URL, '', REQUEST_URI );
+			if ( BASE_URL != '/' ) {
+				$return = str_replace( BASE_URL, '', REQUEST_URI );
+			} else {
+				$return = substr(REQUEST_URI, 1);
+			}
 			$return = str_replace( 'index.php', 'dashboard', $return );
 			Flight::redirect( '/login?page=' . $return );
 		}
