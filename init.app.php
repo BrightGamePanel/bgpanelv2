@@ -84,7 +84,6 @@ define('CONF_DIR', BASE_DIR . '/conf');
 
 define('GUI_DIR', BASE_DIR . '/gui');
 define('LOGS_DIR', BASE_DIR . '/logs');
-define('PYDIO_DIR', BASE_DIR . '/pydio');
 define('INSTALL_DIR', BASE_DIR . '/install');
 
 

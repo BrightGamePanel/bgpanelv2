@@ -12,6 +12,7 @@ This Project Is WORK IN PROGRESS everything here is still being coded goto www.b
 
 
 Notes :
+    // RSA
 	chmod 400 /path/my-key-pair.pem
 	
 	// api cli + cron
@@ -19,3 +20,5 @@ Notes :
 	// normal
 	set_time_limit ( 45 )
 
+	// Servers with Server API set to CGI/FCGI
+	// Will not populate PHP_AUTH vars

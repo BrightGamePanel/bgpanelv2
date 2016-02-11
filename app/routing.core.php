@@ -96,22 +96,16 @@ Flight::route('GET|POST|PUT|DELETE /api/*', function() {
 	// Credentials
 
 	$headers = array_change_key_case(apache_request_headers(), CASE_UPPER);
-	if (!isset($headers['X-API-KEY'])) {
-		$headers['X-API-KEY'] = NULL;
-	}
-	if (!isset($headers['X-API-USER'])) {
-		$headers['X-API-USER'] = NULL;
-	}
-	if (!isset($headers['X-API-PASS'])) {
-		$headers['X-API-PASS'] = NULL;
-	}
 
-	if (!isset($_SERVER['PHP_AUTH_USER'])) {
-		$_SERVER['PHP_AUTH_USER'] = NULL;
-	}
-	if (!isset($_SERVER['PHP_AUTH_PW'])) {
-		$_SERVER['PHP_AUTH_PW'] = NULL;
-	}
+	$headers['X-API-KEY'] = (isset($headers['X-API-KEY'])) ? filter_var($headers['X-API-KEY'], FILTER_SANITIZE_STRING, FILTER_FLAG_STRIP_HIGH|FILTER_FLAG_STRIP_LOW) : NULL;
+	$headers['X-API-USER'] = (isset($headers['X-API-USER'])) ? filter_var($headers['X-API-USER'], FILTER_SANITIZE_STRING, FILTER_FLAG_STRIP_HIGH|FILTER_FLAG_STRIP_LOW) : NULL;
+	$headers['X-API-PASS'] = (isset($headers['X-API-PASS'])) ? filter_var($headers['X-API-PASS'], FILTER_SANITIZE_STRING, FILTER_FLAG_STRIP_HIGH|FILTER_FLAG_STRIP_LOW) : NULL;
+
+	// Servers with Server API set to CGI/FCGI
+	// Will not populate PHP_AUTH vars
+
+	$_SERVER['PHP_AUTH_USER'] = (isset($_SERVER['PHP_AUTH_USER'])) ? filter_var($_SERVER['PHP_AUTH_USER'], FILTER_SANITIZE_STRING, FILTER_FLAG_STRIP_HIGH|FILTER_FLAG_STRIP_LOW) : NULL;
+	$_SERVER['PHP_AUTH_PW'] = (isset($_SERVER['PHP_AUTH_PW'])) ? filter_var($_SERVER['PHP_AUTH_PW'], FILTER_SANITIZE_STRING, FILTER_FLAG_STRIP_HIGH|FILTER_FLAG_STRIP_LOW) : NULL;
 
 	if (empty($headers['X-API-KEY']) AND empty($headers['X-API-USER']) AND empty($headers['X-API-PASS']) AND empty($_SERVER['PHP_AUTH_USER']) AND empty($_SERVER['PHP_AUTH_PW'])) {
 
