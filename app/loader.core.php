@@ -124,10 +124,9 @@ switch (ENV_RUNTIME)
 		
 			// Foreach modules
 			while (false !== ($module = readdir($handle))) {
-		
+
 				// Dump specific directories
-				if ($module != "." && $module != "..")
-				{
+				if ($module != "." && $module != ".." && file_exists( MODS_DIR . '/' . $module . '/' . $module . '.controller.class.php' )) {
 					require( MODS_DIR . '/' . $module . '/' . $module . '.controller.class.php'  );
 				}
 			}

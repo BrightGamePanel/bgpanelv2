@@ -55,9 +55,7 @@ Flight::route('/@http:[0-9]{3}', function( $http ) {
 Flight::route('/logout/', function() {
 	$authService = Core_AuthService::getAuthService();
 
-	if ($authService->getSessionValidity() == TRUE) {
-		Core_AuthService::logout();
-	}
+	Core_AuthService::logout();
 
 	Flight::redirect('/login/');
 });

@@ -248,24 +248,16 @@ if ( ENV_RUNTIME != 'INSTALL_WIZARD' ) {
 
 if ( ENV_RUNTIME != 'INSTALL_WIZARD' ) {
 
-	/* NOT IMPLEMENTED
+	/**
+	 * SESSION HANDLER
+	 */
 
-	if ( ENV_RUNTIME == 'H2M' ) {
+	require( APP_DIR . '/core/session.class.php' );
 
-		// SESSION HANDLER
+	// Start new or resume existing session
+	$coreSessionHandler = new Core_SessionHandler();
+	session_set_save_handler($coreSessionHandler, TRUE);
 
-		require( APP_DIR . '/core/session.class.php' );
-
-		// Start new or resume existing session
-		$coreSessionHandler = new Core_SessionHandler();
-		session_set_save_handler($coreSessionHandler, TRUE);
-		session_start();
-		$_SESSION['TIMESTAMP'] = time();
-	}
-
-	*/
-
-	// SESSION HANDLER
 	session_start();
 	$_SESSION['TIMESTAMP'] = time();
 
