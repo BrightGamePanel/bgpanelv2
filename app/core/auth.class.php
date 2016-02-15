@@ -362,6 +362,7 @@ class Core_AuthService
 
 	/**
 	 * Create A New Legit Session
+	 * With all perms
 	 *
 	 * Note: should be called after Core_AuthService->setSessionInfo()
 	 *
@@ -379,6 +380,9 @@ class Core_AuthService
 				'salt' => md5(time())
 				)
 			);
+
+			$perms = Core_AuthService_Perms::getUserPermissions();
+			$this->session['PERMISSIONS'] = $perms;
 
 			switch ( CONF_SEC_SESSION_METHOD )
 			{
@@ -406,6 +410,7 @@ class Core_AuthService
 	public function rmSessionPerms() {
 		if ( array_key_exists('CREDENTIALS', $this->session) ) {
 			unset ( $this->session['CREDENTIALS'] );
+			unset ( $this->session['PERMISSIONS'] );
 		}
 
 		$_SESSION = $this->session;

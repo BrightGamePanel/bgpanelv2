@@ -53,8 +53,6 @@ Flight::route('/@http:[0-9]{3}', function( $http ) {
 
 // LOGOUT METHOD
 Flight::route('/logout/', function() {
-	$authService = Core_AuthService::getAuthService();
-
 	Core_AuthService::logout();
 
 	Flight::redirect('/login/');
@@ -73,12 +71,16 @@ Flight::route('GET|POST|PUT|DELETE /api/*', function() {
 
 	// API Process
 
+	// Is enable ?
+
 	if (boolval(APP_API_ENABLE) === FALSE) {
 
 		// Service Unavailable
 		header( Core_Http_Status_Codes::httpHeaderFor( 503 ) );
 		exit( 0 );
 	}
+
+	// Is over HTTPS or explicitly allow unsecure HTTP ?
 
 	if ( (Flight::request()->secure === FALSE) AND (boolval(APP_API_ALLOW_UNSECURE) === FALSE) ) {
 
@@ -120,7 +122,7 @@ Flight::route('GET|POST|PUT|DELETE /api/*', function() {
 	// X-HTTP-HEADERS AUTH (default)
 
 	if ((boolval(APP_API_ALLOW_BASIC_AUTH) === TRUE) && !empty($_SERVER['PHP_AUTH_USER']) && !empty($_SERVER['PHP_AUTH_PW'])) {
-		if (Core_API::checkRemoteHost( Flight::request()->ip, $_SERVER['PHP_AUTH_USER'], $_SERVER['PHP_AUTH_PW'], '', 'auth-basic' ) === FALSE) {
+		if (Core_AuthService_API::checkRemoteHost( Flight::request()->ip, $_SERVER['PHP_AUTH_USER'], $_SERVER['PHP_AUTH_PW'], '', 'auth-basic' ) === FALSE) {
 
 			// Unauthorized
 			header( Core_Http_Status_Codes::httpHeaderFor( 401 ) );
@@ -128,7 +130,7 @@ Flight::route('GET|POST|PUT|DELETE /api/*', function() {
 		}
 	}
 	else {
-		if (Core_API::checkRemoteHost( Flight::request()->ip, $headers['X-API-USER'], $headers['X-API-PASS'], $headers['X-API-KEY'], 'x-http-headers' ) === FALSE) {
+		if (Core_AuthService_API::checkRemoteHost( Flight::request()->ip, $headers['X-API-USER'], $headers['X-API-PASS'], $headers['X-API-KEY'], 'x-http-headers' ) === FALSE) {
 
 			// Unauthorized
 			header( Core_Http_Status_Codes::httpHeaderFor( 401 ) );
@@ -181,8 +183,11 @@ Flight::route('GET|POST|PUT|DELETE /api/*', function() {
 		// Verify Authorizations
 
 		$rbac = new PhpRbac\Rbac();
+		$uid = Core_AuthService::getSessionInfo('ID');
 
-		if ( $rbac->Users->hasRole( 'root', $_SERVER['PHP_AUTH_USER'] ) || $rbac->check( $resourcePerm, $_SERVER['PHP_AUTH_USER'] ) ) {
+		// Are you root or do you have explicitly rights on this resource ?
+
+		if ( $rbac->Users->hasRole( 'root', $uid ) || $rbac->check( $resourcePerm, $uid ) ) {
 
 			// Call The Method
 			// And Return The Media Response

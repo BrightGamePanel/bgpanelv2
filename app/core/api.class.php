@@ -29,139 +29,11 @@
 
 class Core_API
 {
-	public static $restricted_modules = array('login', 'myaccount');
-
-	public static function checkRemoteAPIUser( $remote_ip, $api_user, $api_user_pass )
-	{
-		$username = $api_user;
-		$password = Core_AuthService::getHash($api_user_pass);
-
-		$dbh = Core_DBH::getDBH();
-
-		try {
-			$sth = $dbh->prepare("
-				SELECT user_id
-				FROM " . DB_PREFIX . "user
-				WHERE
-					username = :username AND
-					password = :password AND
-					status = 'Active'
-				;");
-
-			$sth->bindParam(':username', $username);
-			$sth->bindParam(':password', $password);
-
-			$sth->execute();
-
-			$result = $sth->fetchAll(PDO::FETCH_ASSOC);
-		}
-		catch (PDOException $e) {
-			echo $e->getMessage().' in '.$e->getFile().' on line '.$e->getLine();
-			die();
-		}
-
-		if (!empty($result)) {
-			$user_id = $result[0]['user_id'];
-
-			// NIST Level 2 Standard Role Based Access Control Library
-
-			$rbac = new PhpRbac\Rbac();
-
-			// Verify API Role
-
-			if ( $rbac->Users->hasRole( 'api', $user_id ) ) {
-
-				// Update User Activity
-
-				try {
-					$sth = $dbh->prepare("
-						UPDATE " . DB_PREFIX . "user
-						SET
-							last_login		= :last_login,
-							last_activity	= :last_activity,
-							last_ip 		= :last_ip,
-							last_host		= :last_host
-						WHERE
-							user_id			= :user_id
-						;");
-
-					$last_login = date('Y-m-d H:i:s');
-					$last_activity = date('Y-m-d H:i:s');
-					$last_host = gethostbyaddr($remote_ip);
-
-					$sth->bindParam(':last_login', $last_login);
-					$sth->bindParam(':last_activity', $last_activity);
-					$sth->bindParam(':last_ip', $remote_ip);
-					$sth->bindParam(':last_host', $last_host);
-					$sth->bindParam(':user_id', $user_id);
-
-					$sth->execute();
-				}
-				catch (PDOException $e) {
-					echo $e->getMessage().' in '.$e->getFile().' on line '.$e->getLine();
-					die();
-				}
-
-				// Update $_SERVER
-				$_SERVER['PHP_AUTH_USER'] = $user_id;
-
-				return TRUE;
-			}
-		}
-
-		return FALSE;
-	}
-
-	public static function checkRemoteHost( $remote_ip, $api_user, $api_user_pass, $api_key = '', $auth_method = 'x-http-headers' )
-	{
-		// Get IPs Whitelist
-
-		$trustedIps = parse_ini_file( CONF_API_WHITELIST_INI, TRUE );
-
-		if (!empty($trustedIps) && isset($trustedIps['IPv4'])) {
-			$trustedIps = array_values( $trustedIps['IPv4'] );
-
-			// Verify IP
-
-			if (in_array($remote_ip, $trustedIps)) {
-
-				// Get API Key
-
-				$apiMasterKey = parse_ini_file( CONF_API_KEY_INI );
-
-				if (!empty($apiMasterKey) && isset($apiMasterKey['APP_API_KEY'])) {
-					$apiMasterKey = $apiMasterKey['APP_API_KEY'];
-
-					switch ($auth_method) {
-
-						case 'auth-basic' :
-
-							// Verify API User
-
-							return self::checkRemoteAPIUser( $remote_ip, $api_user, $api_user_pass );
-
-							break;
-
-						case 'x-http-headers' :
-						default :
-
-							if ($api_key == $apiMasterKey) {
-
-								return self::checkRemoteAPIUser( $remote_ip, $api_user, $api_user_pass );
-							}
-
-							break;
-					}
-				}
-			}
-		}
-
-		return FALSE;
-	}
-
 	public static function getWADL( )
 	{
-		$applicationDoc = "BrightGamePanel REST API (build " . BGP_API_VERSION . ")";
+		$user = Core_AuthService::getSessionInfo( 'USERNAME' );
+
+		$applicationDoc = "BrightGamePanel REST API @" . $user . " (build " . BGP_API_VERSION . ")";
 
 		$resourcesBaseUrl = get_url($_SERVER);
 		$resourcesBaseUrl = str_replace('?WADL', '/', $resourcesBaseUrl);
@@ -183,7 +55,7 @@ class Core_API
 
 		$rbac = new PhpRbac\Rbac();
 
-		$authorizations = self::getAPIUserPermissions();
+		$authorizations = Core_AuthService::getSessionInfo( 'PERMISSIONS' );
 
 		$body = '';
 
@@ -195,6 +67,7 @@ class Core_API
 
 			foreach ($methods as $method) {
 				$reflectedMethod = Core_Reflection::getControllerMethod( $module, $method );
+
 				$method = self::buildAPIMethodXML( $reflectedMethod );
 
 				$path = $reflectedMethod['resource'];
@@ -284,99 +157,11 @@ class Core_API
 		return $body;
 	}
 
-	public static function getAPIUserPermissions( ) {
-
-		$rbac = new PhpRbac\Rbac();
-
-		$authorizations = array();
-
-		// Notice:
-		// root+api users access all methods and resources
-
-		if ($rbac->Users->hasRole( 'root', $_SERVER['PHP_AUTH_USER'] )) {
-
-			// Parse all modules
-
-			$handle = opendir( MODS_DIR );
-
-			if ($handle) {
-			
-				// Foreach modules
-				while (false !== ($entry = readdir($handle))) {
-			
-					// Dump specific directories
-					if ($entry != "." && $entry != "..")
-					{
-						$module = $entry;
-
-						// Exceptions
-						if (!in_array($module, Core_API::$restricted_modules))
-						{
-							// Get Public Methods
-							$methods = Core_Reflection::getControllerPublicMethods( $module );
-
-							if (!empty($methods)) {
-
-								foreach ($methods as $key => $value) {
-									list($module, $method) = explode(".", $value['method']);
-									$module = strtolower($module);
-
-									$authorizations[$module][] = $method;
-								}
-							}
-						}
-					}
-				}
-			
-				closedir($handle);
-			}
-
-			return $authorizations;
-		}
-
-		// fetch all allowed resources and methods
-
-		$roles = $rbac->Users->allRoles( $_SERVER['PHP_AUTH_USER'] );
-		$perms = array();
-		
-
-		foreach ($roles as $role) {
-			$perms[] = $rbac->Roles->permissions( $role['ID'], false );
-		}
-
-		foreach ($perms as $perm) {
-
-			foreach ($perm as $p) {
-
-				// filter pages and get only modules and methods
-				if (substr_count($p['Title'], '/') === intval(1)) {
-					$module = $p['Title'];
-					$module = substr(strtolower($module), 0, -1);
-
-					if (!isset($authorizations[$module]) && !in_array($module, Core_API::$restricted_modules)) {
-						$authorizations[$module] = array();
-					}
-				}
-				else if (preg_match("#(^[A-Z])*(\.)#", $p['Title'])) {
-					list($module, $method) = explode(".", $p['Title']);
-					$module = strtolower($module);
-
-					// append method only if the module was allowed
-					if (isset($authorizations[$module])) {
-						$authorizations[$module][] = $method;
-					}
-				}
-			}
-		}
-
-		return $authorizations;
-	}
-
 	public static function resolveAPIRequest( $module, $url, $http_method ) {
 
 		$request_method = array();
 
-		if (!in_array($module, Core_API::$restricted_modules))
+		if (!in_array($module, Core_AuthService_Perms::$restricted_modules))
 		{
 			// Get Public Methods
 			$methods = Core_Reflection::getControllerPublicMethods( $module );

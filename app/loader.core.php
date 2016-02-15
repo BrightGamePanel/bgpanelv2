@@ -96,6 +96,8 @@ switch (ENV_RUNTIME)
 
 		// Authentication Service
 		require( APP_DIR	. '/core/auth.class.php' );
+		require( APP_DIR	. '/core/auth.perms.class.php' );
+		require( APP_DIR	. '/core/auth.api.class.php' );
 
 		// HTTP Status Codes Class
 		require( APP_DIR	. '/core/http.status.class.php' );

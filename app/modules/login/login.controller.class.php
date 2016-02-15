@@ -113,6 +113,8 @@ class BGP_Controller_Login extends BGP_Controller
 
 			if (!empty($result)) {
 
+				session_regenerate_id( TRUE );
+
 				// Give User Privilege
 
 				$authService = Core_AuthService::getAuthService();
@@ -128,8 +130,6 @@ class BGP_Controller_Login extends BGP_Controller
 					$result[0]['lang'],
 					$result[0]['template']
 					);
-
-				session_regenerate_id( TRUE );
 
 				$authService->setSessionPerms();
 
