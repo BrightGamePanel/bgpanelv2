@@ -22,3 +22,5 @@ Notes :
 
 	// Servers with Server API set to CGI/FCGI
 	// Will not populate PHP_AUTH vars
+
+	// Clean sessions with cronjob
