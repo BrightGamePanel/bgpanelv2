@@ -37,14 +37,14 @@ switch (ENV_RUNTIME)
 		// PHPSeclib
 		require( LIBS_DIR	. '/phpseclib/RSA.php' );
 
-		// PHP DOC Parser
-		require( LIBS_DIR	. '/docblockparser/doc_block.php' );
-
 		// Module Class Definition
 		require( APP_DIR	. '/core/module.class.php' );
 
 		// Controller Class Definition
 		require( APP_DIR	. '/core/controller.module.class.php' );
+
+		// PHP DOC Parser
+		require( LIBS_DIR	. '/docblockparser/doc_block.php' );
 
 		// Module Reflection Class
 		require( APP_DIR	. '/core/reflection.class.php' );
@@ -97,13 +97,9 @@ switch (ENV_RUNTIME)
 		// Authentication Service
 		require( APP_DIR	. '/core/auth.class.php' );
 		require( APP_DIR	. '/core/auth.perms.class.php' );
-		require( APP_DIR	. '/core/auth.api.class.php' );
 
 		// HTTP Status Codes Class
 		require( APP_DIR	. '/core/http.status.class.php' );
-
-		// PHP DOC Parser
-		require( LIBS_DIR	. '/docblockparser/doc_block.php' );
 
 		// Module Class Definition
 		require( APP_DIR	. '/core/module.class.php' );
@@ -111,32 +107,39 @@ switch (ENV_RUNTIME)
 		// Controller Class Definition
 		require( APP_DIR	. '/core/controller.module.class.php' );
 
+		// PHP DOC Parser
+		require( LIBS_DIR	. '/docblockparser/doc_block.php' );
+
 		// Module Reflection Class
 		require( APP_DIR	. '/core/reflection.class.php' );
 
-		// API Service
-		require( APP_DIR	. '/core/api.class.php' );
+		// API Service Autoloader
+		function bgp_api_autoloader ($className) {
+
+			switch ($className) {
+				case 'Core_AuthService_API':
+					require( APP_DIR	. '/core/auth.api.class.php' );
+					break;
+				
+				case 'Core_API':
+					require( APP_DIR	. '/core/api.class.php' );
+					break;
+			}
+		};
+		spl_autoload_register('bgp_api_autoloader');
 
 		/**
-		 * Load Module Controllers
+		 * Module Controllers Autoloader
 		 */
-		$handle = opendir( MODS_DIR );
 
-		if ($handle) {
-		
-			// Foreach modules
-			while (false !== ($module = readdir($handle))) {
+		function bgp_mod_controllers_autoloader ($className) {
 
-				// Dump specific directories
-				if ($module != "." && $module != ".." && file_exists( MODS_DIR . '/' . $module . '/' . $module . '.controller.class.php' )) {
-					require( MODS_DIR . '/' . $module . '/' . $module . '.controller.class.php'  );
-				}
+			$module = strtolower(str_replace('BGP_Controller_', '', $className));
+			if ( file_exists( MODS_DIR . '/' . $module . '/' . $module . '.controller.class.php' ) ) {
+				require( MODS_DIR . '/' . $module . '/' . $module . '.controller.class.php'  );
 			}
-		
-			closedir($handle);
-		}
-
-		unset($handle, $module);
+		};
+		spl_autoload_register('bgp_mod_controllers_autoloader');
 
 		// Exit
 		break;
