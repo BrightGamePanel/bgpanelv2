@@ -131,9 +131,7 @@ switch (ENV_RUNTIME)
 		};
 		spl_autoload_register('bgp_api_autoloader');
 
-		/**
-		 * Module Controllers Autoloader
-		 */
+		// Module Controllers Autoloader
 
 		function bgp_mod_controllers_autoloader ($className) {
 

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- GUI Manifest -->
+<bgp_module>
+	<module_tabs></module_tabs>
+
+	<module_sidebar>
+		<rank>97</rank>
+		<txt>User Management</txt>
+		<href>#</href>
+		<icon>fa fa-user fa-fw</icon>
+
+		<sub_menu></sub_menu>
+	</module_sidebar>
+</bgp_module>

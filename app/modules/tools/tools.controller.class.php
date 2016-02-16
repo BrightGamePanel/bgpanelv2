@@ -42,7 +42,7 @@ class BGP_Controller_Tools extends BGP_Controller {
 	}
 
 	/**
-	 * Web Application Description Language
+	 * Generate WADL
 	 *
 	 * @http_method GET
 	 * @resource tools/wadlGenerator

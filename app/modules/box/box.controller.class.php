@@ -42,7 +42,7 @@ class BGP_Controller_Box extends BGP_Controller {
 	}
 
 	/**
-	 * Add a New Box To The Collection
+	 * Add A New Box To The Collection
 	 *
 	 * @http_method POST
 	 * @resource box/
@@ -469,7 +469,7 @@ class BGP_Controller_Box extends BGP_Controller {
 	}
 
 	/**
-	 * Remove an existing Box from the collection
+	 * Remove An Existing Box From The Collection
 	 *
 	 * @http_method DELETE
 	 * @resource box/
