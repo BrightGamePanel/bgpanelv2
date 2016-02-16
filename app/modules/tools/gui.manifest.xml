@@ -12,6 +12,10 @@
 
 		<sub_menu>
 			<tools>
+				<web-application-description-language>
+					<href>./tools/wadl</href>
+					<icon>fa fa-code fa-fw</icon>
+				</web-application-description-language>
 				<optimize-database>
 					<href>./tools/opdb</href>
 					<icon>fa fa-flash fa-fw</icon>

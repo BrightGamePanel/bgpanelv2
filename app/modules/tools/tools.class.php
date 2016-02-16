@@ -45,6 +45,24 @@ class BGP_Module_Tools extends BGP_Module {
 
 /**
  * Tools Module
+ * Page: WADL
+ * Title: Web Application Description Language
+ */
+
+class BGP_Module_Tools_Wadl extends BGP_Module_Tools {
+
+	function __construct( $page = '' )	{
+
+		// Call parent constructor
+		parent::__construct( );
+
+		self::setModulePageTitle( $page );
+	}
+}
+
+
+/**
+ * Tools Module
  * Page: Phpinfo
  * Title: Php Info
  */

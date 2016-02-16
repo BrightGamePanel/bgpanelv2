@@ -180,6 +180,7 @@ class Core_GUI
 			<script src="./gui/angularjs/js/angular.min.js"></script>
 			<script src="./gui/angularjs/js/angular-animate.min.js"></script>
 			<script src="./gui/angularjs/js/angular-sanitize.min.js"></script>
+			<script src="./gui/angularjs/js/angular.file-saver.bundle.min.js"></script>
 			<script src="./gui/jquery/js/jquery.min.js"></script>
 			<script src="./gui/bootstrap3/js/bootstrap.min.js"></script>
 			<!-- Angular Busy -->

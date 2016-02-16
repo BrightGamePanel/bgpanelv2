@@ -17,6 +17,10 @@
 
 	<module_pages>
 		<page>
+			<name>wadl</name>
+			<description>Web Application Description Language</description>
+		</page>
+		<page>
 			<name>opdb</name>
 			<description>Optimize Database</description>
 		</page>

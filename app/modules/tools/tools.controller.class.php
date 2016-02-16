@@ -42,6 +42,34 @@ class BGP_Controller_Tools extends BGP_Controller {
 	}
 
 	/**
+	 * Web Application Description Language
+	 *
+	 * @http_method GET
+	 * @resource tools/
+	 *
+	 * @return application/xml
+	 *
+	 * @author Nikita Rousseau
+	 */
+	public function getWADL( )
+	{
+		// Apply =======================================================================
+
+		$wadl =  Core_API::getWADL( );
+
+		// return a response and log ===================================================
+
+		$logger = self::getLogger();
+	
+		$logger->info('Downloaded WADL File.');
+
+		return array(
+			'response' => 'application/xml',
+			'data' => $wadl
+		);
+	}
+
+	/**
 	 * Optimize Database
 	 *
 	 * @http_method GET

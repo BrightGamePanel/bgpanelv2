@@ -73,7 +73,7 @@ Flight::route('GET|POST|PUT|DELETE /api/*', function() {
 
 	// Is enable ?
 
-	if (boolval(APP_API_ENABLE) === FALSE) {
+	if (boolval(APP_API_ENABLE) === FALSE ||  boolval(BGP_MAINTENANCE_MODE) === TRUE) {
 
 		// Service Unavailable
 		header( Core_Http_Status_Codes::httpHeaderFor( 503 ) );
@@ -319,7 +319,7 @@ Flight::route('GET|POST|PUT|DELETE (/@module(/@page)(/@id))', function( $module,
 
 			// MAINTENANCE CHECK
 
-			if ( BGP_MAINTENANCE_MODE == 1 && ($rbac->Users->hasRole( 'root', $authService->getSessionInfo('ID') ) === FALSE) ) {
+			if ( boolval(BGP_MAINTENANCE_MODE) === TRUE && ($rbac->Users->hasRole( 'root', $authService->getSessionInfo('ID') ) === FALSE) ) {
 				Core_AuthService::logout();
 				Flight::redirect('/503');
 			}

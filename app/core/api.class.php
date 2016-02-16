@@ -33,7 +33,7 @@ class Core_API
 	{
 		$user = Core_AuthService::getSessionInfo( 'USERNAME' );
 
-		$applicationDoc = "BrightGamePanel REST API @" . $user . " (build " . BGP_API_VERSION . ")";
+		$applicationDoc = "BrightGamePanel REST API @" . $user . " [build: " . BGP_API_VERSION . "] [date: " . date('r') . "]";
 
 		$resourcesBaseUrl = get_url($_SERVER);
 		$resourcesBaseUrl = str_replace('?WADL', '/', $resourcesBaseUrl);

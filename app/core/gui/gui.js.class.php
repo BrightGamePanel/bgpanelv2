@@ -91,111 +91,133 @@ class Core_GUI_JS
 
 						angular.module('bgpApp', [
 							'schemaForm',
-							'cgBusy'
-							]).controller('bgpCtrl', function($scope, $http)
-						{
-							// Schema
-							$scope.schema = <?php echo $scopeSchema; ?>;
-
-							// Form
-							$scope.form = <?php echo $scopeForm; ?>;
-
-							// Model
-							$scope.task = {'task': <?php echo "'$task'"; ?>};
-							$scope.model = <?php echo $scopeModel; ?>;
-							angular.extend($scope.model, $scope.task);
-
-							// Errors repository
-							$scope.formErrors = {};
-
-							// Submit Function
-
-							$scope.onSubmit = function(form)
+							'cgBusy',
+							'ngFileSaver'
+							]).controller('bgpCtrl', [
+							'$scope',
+							'$http',
+							'FileSaver',
+							'Blob',
+							function($scope, $http, FileSaver, Blob)
 							{
-								// Reset backend validation (if any) because of its async state
-								//
-								//  * Fake validation
-								//  * Refresh model
-								//  * Refresh form validation
+								// Schema
+								$scope.schema = <?php echo $scopeSchema; ?>;
 
-								if ($scope.formErrors)
+								// Form
+								$scope.form = <?php echo $scopeForm; ?>;
+
+								// Model
+								$scope.task = {'task': <?php echo "'$task'"; ?>};
+								$scope.model = <?php echo $scopeModel; ?>;
+								angular.extend($scope.model, $scope.task);
+
+								// Errors repository
+								$scope.formErrors = {};
+
+								// Submit Function
+
+								$scope.onSubmit = function(form)
 								{
-									angular.forEach($scope.formErrors, function(value, key) {
-										angular.forEach(value, function(subValue, subKey) {
-											if (subKey != 0) {
-												// Reset the previous error
+									// Reset backend validation (if any) because of its async state
+									//
+									//  * Fake validation
+									//  * Refresh model
+									//  * Refresh form validation
 
-												$scope.$broadcast('schemaForm.error.' + key, subValue.toCamel(), true); 
-
-												// Refresh model
-
-												$scope.model[key] = form[key].$$lastCommittedViewValue; 
-
-												// Validate the new form entry
-
-												form[key].$$parseAndValidate(); 
-											}
-										});
-									});
-								}
-
-								// Client side validation
-
-								$scope.$broadcast('schemaFormValidate');
-
-								// Backend side validation
-
-								if (form.$valid) {
-
-									// Post form to process page
-
-									$scope.bgpPromise = $http({
-										method  : 'POST',
-										url     : <?php echo "'./$module/process'"; ?>,
-										data    : $.param($scope.model),
-										headers : { 'Content-Type': 'application/x-www-form-urlencoded' }
-									})
-
-									.success(function(data)
+									if ($scope.formErrors)
 									{
-										if (!data.success || (data.success == false))
-										{
-											// Reset errors repository
+										angular.forEach($scope.formErrors, function(value, key) {
+											angular.forEach(value, function(subValue, subKey) {
+												if (subKey != 0) {
+													// Reset the previous error
 
-											$scope.formErrors = {};
+													$scope.$broadcast('schemaForm.error.' + key, subValue.toCamel(), true); 
 
-											// If not successful, bind errors to error variables
+													// Refresh model
 
-											angular.forEach(data.errors, function(value, key) {
+													$scope.model[key] = form[key].$$lastCommittedViewValue; 
 
-												// Bind validation messages
+													// Validate the new form entry
 
-												// Multiple errors case
-
-												if (angular.isArray(value)) {
-
-													var tmp   = value;
-													var value = '';
-													angular.forEach(tmp, function(subValue, subKey) {
-														value = value + subValue + '. ';
-													});
+													form[key].$$parseAndValidate(); 
 												}
-
-												$scope.$broadcast('schemaForm.error.' + key, value.toCamel(), value);
-
-												// Copy errors to another repository
-												// Useful for hybrid forms
-
-												$scope.formErrors[key] = {};
-												$scope.formErrors[key][value.toCamel()] = value;
-												$scope.formErrors[key][0] = value;
 											});
+										});
+									}
 
-											// Bind notification message to message
+									// Client side validation
 
-											$scope.msgType = data.msgType;
-											$scope.msg = data.msg;
-										}
+									$scope.$broadcast('schemaFormValidate');
+
+									// Backend side validation
+
+									if (form.$valid) {
+
+										// Post form to process page
+
+										$scope.bgpPromise = $http({
+											method  : 'POST',
+											url     : <?php echo "'./$module/process'"; ?>,
+											data    : $.param($scope.model),
+											headers : { 'Content-Type': 'application/x-www-form-urlencoded' }
+										})
+
+										.success(function(data, status, headers)
+										{
+											// Check media-type
+
+											// Download resource if it is not JSON
+
+											if ( headers()['content-type'].indexOf('application/json') == -1 ) {
+
+												var fileContents = new Blob([ data ], { type : headers()['content-type'] });
+												var fileName = headers()['content-disposition'].replace('attachment; filename=\"', '').slice(0, -1);
+
+												FileSaver.saveAs(fileContents, fileName);
+
+												return;
+											}
+
+											// JSON Processing
+
+											if (!data.success || (data.success == false))
+											{
+												// Reset errors repository
+
+												$scope.formErrors = {};
+
+												// If not successful, bind errors to error variables
+
+												angular.forEach(data.errors, function(value, key) {
+
+													// Bind validation messages
+
+													// Multiple errors case
+
+													if (angular.isArray(value)) {
+
+														var tmp   = value;
+														var value = '';
+														angular.forEach(tmp, function(subValue, subKey) {
+															value = value + subValue + '. ';
+														});
+													}
+
+													$scope.$broadcast('schemaForm.error.' + key, value.toCamel(), value);
+
+													// Copy errors to another repository
+													// Useful for hybrid forms
+
+													$scope.formErrors[key] = {};
+													$scope.formErrors[key][value.toCamel()] = value;
+													$scope.formErrors[key][0] = value;
+												});
+
+												// Bind notification message to message
+
+												$scope.msgType = data.msgType;
+												$scope.msg = data.msg;
+											}
 
 <?php
 //------------------------------------------------------------------------------------------------------------+
@@ -204,41 +226,41 @@ class Core_GUI_JS
 		if (!empty($redirect))
 		{
 ?>
-										if (data.success && (data.success == true))
-										{
-											// If successful, we redirect the user to the resource
+											if (data.success && (data.success == true))
+											{
+												// If successful, we redirect the user to the resource
 
-											window.location = ( <?php echo "'$redirect'"; ?> );
-										}
+												window.location = ( <?php echo "'$redirect'"; ?> );
+											}
 <?php
 		}
 		// Display notification message when no redirection is specified
 		else
 		{
 ?>
-										// Bind notification message to message
+											// Bind notification message to message
 
-										$scope.msgType = data.msgType;
-										$scope.msg = data.msg;
+											$scope.msgType = data.msgType;
+											$scope.msg = data.msg;
 <?php
 		}
 
 //------------------------------------------------------------------------------------------------------------+
 ?>
-									})
+										})
 
-									.error(function(data)
-									{
-										// An error has been triggered while submitting the form
+										.error(function(data)
+										{
+											// An error has been triggered while submitting the form
 
-										// Bind notification message to message
+											// Bind notification message to message
 
-										$scope.msgType = 'danger';
-										$scope.msg = data;
-									});
+											$scope.msgType = 'danger';
+											$scope.msg = data;
+										});
+									}
 								}
-							}
-						});
+							}]);
 
 					</script>
 <?php

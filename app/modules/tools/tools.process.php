@@ -87,6 +87,21 @@ switch ($task)
 
 		exit( 0 );
 
+	case 'getWADL':
+
+		// Call method ===========================================================================
+
+		$return = $controller->getWADL( );
+		$return = $return['data'];
+
+		// Return ================================================================================
+
+		header('Content-Type: application/xml; charset=utf-8');
+		header('Content-disposition: attachment; filename="' . $_SERVER['SERVER_NAME'] . '-bgpanel.wadl"'); 
+		echo $return;
+
+		exit( 0 );
+
 	default:
 		Flight::redirect('/400');
 }
