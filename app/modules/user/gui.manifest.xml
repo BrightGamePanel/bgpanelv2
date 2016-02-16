@@ -6,7 +6,7 @@
 	<module_sidebar>
 		<rank>97</rank>
 		<txt>User Management</txt>
-		<href>#</href>
+		<href>./user</href>
 		<icon>fa fa-user fa-fw</icon>
 
 		<sub_menu></sub_menu>

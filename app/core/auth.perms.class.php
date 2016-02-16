@@ -103,6 +103,10 @@ class Core_AuthService_Perms
 
 		foreach ($perms as $perm) {
 
+			if (empty($perm)) {
+				continue;
+			}
+
 			foreach ($perm as $p) {
 
 				// filter pages and get only modules and methods
