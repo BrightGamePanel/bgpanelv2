@@ -34,6 +34,9 @@ if (!defined('LICENSE'))
 switch (ENV_RUNTIME)
 {
 	case 'INSTALL_WIZARD':
+		// BrightGamePanel Functions
+		require( APP_DIR	. '/core/inc/func.inc.php');
+
 		// PHPSeclib
 		require( LIBS_DIR	. '/phpseclib/RSA.php' );
 

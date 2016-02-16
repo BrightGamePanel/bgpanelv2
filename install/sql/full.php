@@ -154,7 +154,7 @@ try {
 	INSERT INTO ".DB_PREFIX."config (setting, value)
 	VALUES
 	  ('panel_name',		'BrightGamePanel V2'),
-	  ('system_url',		'http://localhost/'),
+	  ('system_url',		'".SYSTEMURL."'),
 	  ('panel_version',		'".LASTBGPVERSION."'),
 	  ('api_version',		'".LASTAPIVERSION."'),
 	  ('maintenance_mode',	'0'),

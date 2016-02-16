@@ -60,7 +60,7 @@ $gui->getHeader();
 							<div class="panel panel-default">
 
 								<div class="panel-heading">
-									<h3 class="panel-title"><?php echo T_('Download WADL File'); ?></h3>
+									<h3 class="panel-title"><?php echo T_('Download Web Application Description Language (WADL) File'); ?></h3>
 								</div>
 
 								<div class="panel-body">

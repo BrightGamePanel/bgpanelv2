@@ -345,17 +345,7 @@ else if ($_GET['step'] == 'one')
 
 	// HTACCESS + MOD_REWRITE
 
-	$pageURL = 'http';
-	if (isset($_SERVER["HTTPS"]) && $_SERVER["HTTPS"] == 'on') {
-		$pageURL .= "s";
-	}
-	$pageURL .= "://";
-	if ($_SERVER["SERVER_PORT"] != "80") {
-		$pageURL .= $_SERVER["SERVER_NAME"].":".$_SERVER["SERVER_PORT"].$_SERVER["REQUEST_URI"];
-	}
-	else {
-		$pageURL .= $_SERVER["SERVER_NAME"].$_SERVER["REQUEST_URI"];
-	}
+	$pageURL = get_url($_SERVER);
 	$pageURL = str_replace('install/index.php?step=one', '', $pageURL) . 'root/';
 
 	$htaccessCheck = get_headers($pageURL);
@@ -1190,6 +1180,11 @@ APP_API_KEY 		= \"".$APP_API_KEY."\"
 			else {
 				exit('Critical error while installing ! Unable to write to ' . RSA_KEYS_DIR . ' !');
 			}
+
+			//---------------------------------------------------------+
+			// DEFINE SYSTEM URL
+
+			define('SYSTEMURL', str_replace('install/index.php?step=three&version=full', '', filter_var(get_url($_SERVER), FILTER_SANITIZE_URL)));
 
 			//---------------------------------------------------------+
 			// Creating Database Schema
