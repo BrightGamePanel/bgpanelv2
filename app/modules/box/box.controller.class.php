@@ -472,7 +472,7 @@ class BGP_Controller_Box extends BGP_Controller {
 	 * Remove an existing Box from the collection
 	 *
 	 * @http_method DELETE
-	 * @resource box/del
+	 * @resource box/
 	 *
 	 * @param int $box_id query
 	 *

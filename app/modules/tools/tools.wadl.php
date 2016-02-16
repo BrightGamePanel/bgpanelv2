@@ -50,6 +50,7 @@ $gui->getHeader();
 
 
 // Local vars
+
 $system_url = BGP_SYSTEM_URL;
 $resourcesBaseUrl = ($system_url[strlen($system_url)-1] != '/') ? BGP_SYSTEM_URL . '/api/' : BGP_SYSTEM_URL . 'api/';
 
@@ -71,14 +72,13 @@ $resourcesBaseUrl = ($system_url[strlen($system_url)-1] != '/') ? BGP_SYSTEM_URL
 								<div class="panel-body">
 									<div class="alert alert-info" role="alert">
 										<strong><?php echo T_('Tip'); ?></strong><br />
-										<?php echo T_('This file will describe all the methods you can access through the REST API with your account.'); ?><br />
+										<?php echo T_('This file describes all the methods you can access through the REST API with your account.'); ?><br />
 										<?php echo T_('You can use SoapUI by SmartBear to import the WADL file in a REST project.'); ?>
 										<a target="_blank" href="https://www.soapui.org/">SoapUI.org</a>
 									</div>
 
 									<div class="alert alert-info" role="alert">
-										<strong><?php echo T_('REST API URI'); ?></strong><br />
-										<code><?php echo $resourcesBaseUrl; ?></code>
+										<strong><?php echo T_('REST API URI'); ?></strong> : <code><?php echo $resourcesBaseUrl; ?></code>
 									</div>
 
 									<div class="well" style="max-width: 400px; margin: 0 auto 10px; padding-left: 35px; padding-right: 35px;">

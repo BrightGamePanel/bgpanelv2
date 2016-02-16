@@ -45,7 +45,7 @@ class BGP_Controller_Tools extends BGP_Controller {
 	 * Web Application Description Language
 	 *
 	 * @http_method GET
-	 * @resource tools/
+	 * @resource tools/wadlGenerator
 	 *
 	 * @return application/xml
 	 *
@@ -73,7 +73,7 @@ class BGP_Controller_Tools extends BGP_Controller {
 	 * Optimize Database
 	 *
 	 * @http_method GET
-	 * @resource tools/
+	 * @resource tools/databaseOptimizer
 	 *
 	 * @return application/json
 	 *

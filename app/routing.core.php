@@ -160,12 +160,16 @@ Flight::route('GET|POST|PUT|DELETE /api/*', function() {
 		// Extract Module Name
 
 		$module = strstr($url, '/api/');
+		$module = str_replace('/api/', '', $module);
 
 		if (strpos($module, '?') !== FALSE) {
 			$module = strstr($module, '?', TRUE);
 		}
 
-		$module = str_replace('/api/', '', $module);
+		if (strpos($module, '/') !== FALSE) {
+			$module = explode('/', $module);
+			$module = $module[0];
+		}
 
 		if (empty($module))
 		{

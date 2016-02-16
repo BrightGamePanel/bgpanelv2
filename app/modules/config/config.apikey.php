@@ -53,6 +53,11 @@ $gui->getHeader();
 $apiMasterKey = parse_ini_file( CONF_API_KEY_INI );
 $apiMasterKey = $apiMasterKey['APP_API_KEY'];
 
+// Local vars
+
+$system_url = BGP_SYSTEM_URL;
+$resourcesBaseUrl = ($system_url[strlen($system_url)-1] != '/') ? BGP_SYSTEM_URL . '/api/' : BGP_SYSTEM_URL . 'api/';
+
 /**
  * PAGE BODY
  */
@@ -66,9 +71,26 @@ $apiMasterKey = $apiMasterKey['APP_API_KEY'];
 
 									<div class="alert alert-info" role="alert">
 										<strong><?php echo T_('Tip'); ?></strong><br />
-										<?php echo T_('Use this key to authenticate your application, in order to remotely access BGPanel components.'); ?><br />
+										<?php echo T_('Use this key to authenticate your application, in order to remotely access BGPanel components.'); ?><br /><br />
+										<strong><?php echo T_('REST API URI'); ?></strong> : <code><?php echo $resourcesBaseUrl; ?></code>
 									</div>
+
+<?php
+//------------------------------------------------------------------------------------------------------------+
+
+if (boolval(APP_API_ALLOW_BASIC_AUTH) === TRUE) {
+?>
+									<div class="alert alert-warning" role="alert">
+										<strong><?php echo T_('Basic HTTP Authentication Allowed'); ?></strong><br />
+										<?php echo T_('This may be a security issue (this authentication method doesn\'t require the API Key and is usually enabled for development purposes).'); ?>
+									</div>
+<?php
+}
+
+//------------------------------------------------------------------------------------------------------------+
+?>
 									<legend><?php echo T_('API Key'); ?>:</legend>
+
 									<div>
 										<pre class="text-center"><?php
 //------------------------------------------------------------------------------------------------------------+
