@@ -27,6 +27,12 @@
 
 
 
+/**
+ * Authentication Service
+ *
+ * This class manages the session validity inside the application
+ * Loads also the permissions as well as the user information in the current session
+ */
 class Core_AuthService
 {
 	// Handle
