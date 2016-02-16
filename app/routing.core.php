@@ -66,6 +66,7 @@ Flight::route('GET|POST|PUT|DELETE /api/*', function() {
 
 	if (ENV_RUNTIME != 'M2M') {
 		header( Core_Http_Status_Codes::httpHeaderFor( 403 ) );
+		session_destroy();
 		exit( 1 );
 	}
 
@@ -77,6 +78,7 @@ Flight::route('GET|POST|PUT|DELETE /api/*', function() {
 
 		// Service Unavailable
 		header( Core_Http_Status_Codes::httpHeaderFor( 503 ) );
+		session_destroy();
 		exit( 0 );
 	}
 
@@ -86,6 +88,7 @@ Flight::route('GET|POST|PUT|DELETE /api/*', function() {
 
 		// Unsecure
 		header( Core_Http_Status_Codes::httpHeaderFor( 418 ) );
+		session_destroy();
 		exit( 0 );
 	}
 
@@ -112,6 +115,7 @@ Flight::route('GET|POST|PUT|DELETE /api/*', function() {
 		// Unauthorized
 		// No credentials
 		header( Core_Http_Status_Codes::httpHeaderFor( 401 ) );
+		session_destroy();
 		exit( 0 );
 	}
 
@@ -126,6 +130,7 @@ Flight::route('GET|POST|PUT|DELETE /api/*', function() {
 
 			// Unauthorized
 			header( Core_Http_Status_Codes::httpHeaderFor( 401 ) );
+			session_destroy();
 			exit( 0 );
 		}
 	}
@@ -134,6 +139,7 @@ Flight::route('GET|POST|PUT|DELETE /api/*', function() {
 
 			// Unauthorized
 			header( Core_Http_Status_Codes::httpHeaderFor( 401 ) );
+			session_destroy();
 			exit( 0 );
 		}
 	}
@@ -146,6 +152,7 @@ Flight::route('GET|POST|PUT|DELETE /api/*', function() {
 
 		header('Content-Type: application/xml; charset=utf-8');
 		echo Core_API::getWADL( );
+		session_destroy();
 		exit( 0 );
 	}
 	else if (strpos($url, '/api/') !== FALSE)
@@ -164,6 +171,7 @@ Flight::route('GET|POST|PUT|DELETE /api/*', function() {
 		{
 			// Bad Request
 			header( Core_Http_Status_Codes::httpHeaderFor( 400 ) );
+			session_destroy();
 			exit( 0 );
 		}
 
@@ -175,6 +183,7 @@ Flight::route('GET|POST|PUT|DELETE /api/*', function() {
 		{
 			// Bad Request
 			header( Core_Http_Status_Codes::httpHeaderFor( 400 ) );
+			session_destroy();
 			exit( 0 );
 		}
 
@@ -196,12 +205,14 @@ Flight::route('GET|POST|PUT|DELETE /api/*', function() {
 
 			header('Content-Type: ' . $media['response'] . '; charset=utf-8');
 			echo $media['data'];
+			session_destroy();
 			exit( 0 );
 		}
 	}
 
 	// Forbidden as default response
 	header( Core_Http_Status_Codes::httpHeaderFor( 403 ) );
+	session_destroy();
 	exit( 0 );
 });
 
@@ -242,6 +253,8 @@ Flight::route('GET|POST|PUT|DELETE (/@module(/@page)(/@id))', function( $module,
 	if ($authService->getSessionValidity() == FALSE) {
 
 		// The user is not logged in
+
+		Core_AuthService::logout(); // Force logout
 
 		if (!empty($module) && $module != 'login') {
 

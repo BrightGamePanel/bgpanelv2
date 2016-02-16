@@ -160,6 +160,8 @@ class Core_AuthService_API
 
 				if ($authService->getSessionValidity() == FALSE) {
 
+					session_regenerate_id( TRUE );
+
 					$authService->setSessionInfo(
 						$result[0]['user_id'],
 						$result[0]['username'],

@@ -286,6 +286,7 @@ class Core_AuthService
 					return TRUE;
 				}
 				else {
+
 					return FALSE;
 				}
 			}
