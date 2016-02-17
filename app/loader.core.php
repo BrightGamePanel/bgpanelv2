@@ -46,6 +46,16 @@ switch (ENV_RUNTIME)
 		// Controller Class Definition
 		require( APP_DIR	. '/core/controller.module.class.php' );
 
+		// Module Controllers Autoloader
+		function bgp_mod_controllers_autoloader ($className) {
+
+			$module = strtolower(str_replace('BGP_Controller_', '', $className));
+			if ( file_exists( MODS_DIR . '/' . $module . '/' . $module . '.controller.class.php' ) ) {
+				require( MODS_DIR . '/' . $module . '/' . $module . '.controller.class.php'  );
+			}
+		};
+		spl_autoload_register('bgp_mod_controllers_autoloader');
+
 		// PHP DOC Parser
 		require( LIBS_DIR	. '/docblockparser/doc_block.php' );
 

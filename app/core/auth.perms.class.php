@@ -62,27 +62,26 @@ class Core_AuthService_Perms
 				// Foreach modules
 				while (false !== ($entry = readdir($handle))) {
 			
-					// Dump specific directories
-					if ($entry != "." && $entry != "..")
-					{
-						$module = $entry;
+					// Dump specific directories and exceptions
+					if ($entry == "." || $entry == ".." || in_array($entry, self::$restricted_modules)) {
 
-						// Exceptions
-						if (!in_array($module, self::$restricted_modules))
-						{
-							// Get Public Methods
-							$methods = Core_Reflection::getControllerPublicMethods( $module );
+						continue;
+					}
 
-							if (!empty($methods)) {
+					$module = $entry;
 
-								foreach ($methods as $key => $value) {
-									list($module, $method) = explode(".", $value['method']);
-									$module = strtolower($module);
+					// Get Public Methods
+					$methods = Core_Reflection::getControllerPublicMethods( $module );
 
-									$authorizations[$module][] = $method;
-								}
-							}
-						}
+					if (empty($methods)) {
+						continue;
+					}
+
+					foreach ($methods as $key => $value) {
+						list($module, $method) = explode(".", $value['method']);
+						$module = strtolower($module);
+
+						$authorizations[$module][] = $method;
 					}
 				}
 			
@@ -98,12 +97,14 @@ class Core_AuthService_Perms
 		$perms = array();
 
 		foreach ($roles as $role) {
+
 			$perms[] = $rbac->Roles->permissions( $role['ID'], false );
 		}
 
 		foreach ($perms as $perm) {
 
 			if (empty($perm)) {
+
 				continue;
 			}
 

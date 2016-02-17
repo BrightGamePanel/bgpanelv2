@@ -70,6 +70,158 @@ class BGP_Controller_Tools extends BGP_Controller {
 	}
 
 	/**
+	 * Refresh Modules Permissions Table
+	 *
+	 * @http_method GET
+	 * @resource tools/refreshModsPerms
+	 *
+	 * @return application/json
+	 *
+	 * @author Nikita Rousseau
+	 */
+	public function refreshModsPerms( )
+	{
+		$permissions 		= array();
+		$parsedPermissions	= array();
+
+		$errors				= array();  	// array to hold validation errors
+		$data 				= array(); 		// array to pass back data
+		$data['add']		= array();
+		$data['remove']		= array();
+
+		$dbh = Core_DBH::getDBH(); // Get Database Handle
+
+		// Apply =======================================================================
+
+		// Fetch existing permissions
+
+		try {
+			$sth = $dbh->prepare("
+				SELECT Title
+				FROM " . DB_PREFIX . "permissions
+				;");
+
+			$sth->execute();
+
+			$tmp = $sth->fetchAll( PDO::FETCH_ASSOC );
+
+			foreach ($tmp as $key => $value) {
+				$permissions[] = $value['Title'];
+			}
+
+			unset($tmp);
+		}
+		catch (PDOException $e) {
+			echo $e->getMessage().' in '.$e->getFile().' on line '.$e->getLine();
+			die();
+		}
+
+		// Add new permissions
+
+		$rbac = new PhpRbac\Rbac();
+		
+		$handle = opendir( MODS_DIR );
+
+		if ($handle) {
+		
+			// Foreach modules
+			while (false !== ($entry = readdir($handle))) {
+		
+				// Dump specific directories
+				if ($entry == "." || $entry == "..") {
+					continue;
+				}
+
+				// Exceptions
+				if ($entry == 'login') {
+					continue;
+				}
+
+				$module = $entry;
+
+				// Get Module Pages
+
+				$pages = Core_Reflection::getModulePublicPages( $module );
+
+				if (empty($pages)) {
+					continue;
+				}
+
+				// Create Page Access Permission
+
+				foreach ($pages as $value) {
+
+					$parsedPermissions[] = $value['page'];
+
+					if (in_array($value['page'], $permissions)) {
+						continue;
+					}
+
+					$id = $rbac->Permissions->add($value['page'], $value['description']);
+
+					$data['add'][ $id ] = $value['page'];
+				}
+				
+				// Get Public Methods
+
+				$methods = Core_Reflection::getControllerPublicMethods( $module );
+
+				if (empty($methods)) {
+					continue;
+				}
+
+				// Create Method Permission
+
+				foreach ($methods as $key => $value) {
+
+					$parsedPermissions[] = $value['method'];
+
+					if (in_array($value['method'], $permissions)) {
+						continue;
+					}
+
+					$id = $rbac->Permissions->add($value['method'], $value['description']);
+
+					$data['add'][ $id ] = $value['method'];
+				}
+			}
+
+			closedir($handle);
+		}
+
+		// Remove obsolete permissions
+
+		$removal = array_diff($permissions, $parsedPermissions);
+
+		foreach ($removal as $value) {
+
+			// Exeptions
+			if ($value == 'root') {
+				continue; 
+			}
+
+			$id = $rbac->Permissions->returnId($value);
+			$rbac->Permissions->remove($id, TRUE);
+
+			$data['remove'][ $id ] = $value;
+		}
+
+		// return a response and log ===================================================
+
+		$logger = self::getLogger();
+
+		$data['success'] = true;
+		$data['errors'] = null;
+
+		$logger->info('Reloaded Modules Rights.');
+
+		return array(
+			'response' => 'application/json',
+			'data' => json_encode($data)
+		);
+	}
+
+	/**
 	 * Optimize Database
 	 *
 	 * @http_method GET
