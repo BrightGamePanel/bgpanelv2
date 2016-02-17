@@ -1208,38 +1208,42 @@ APP_API_KEY 		= \"".$APP_API_KEY."\"
 				while (false !== ($entry = readdir($handle))) {
 			
 					// Dump specific directories
-					if ($entry != "." && $entry != "..")
-					{
-						$module = $entry;
+					if ($entry == "." || $entry == "..") {
 
-						// Exceptions
-						if ($module != 'login')
-						{
-							// Get Module Pages
-							$pages = Core_Reflection::getModulePublicPages( $module );
+						continue;
+					}
 
-							if (!empty($pages)) {
+					$module = $entry;
 
-								// Create Page Access Permission
+					// Exceptions
+					if ($module == 'login') {
 
-								foreach ($pages as $value) {
-									$id = $rbac->Permissions->add($value['page'], $value['description']);
-									$perms[$module][] = $id;
-								}
-							}
+						continue;
+					}
 
-							// Get Public Methods
-							$methods = Core_Reflection::getControllerPublicMethods( $module );
+					// Get Module Pages
+					$pages = Core_Reflection::getModulePublicPages( $module );
 
-							if (!empty($methods)) {
+					if (!empty($pages)) {
 
-								// Create Method Permission
+						// Create Page Access Permission
 
-								foreach ($methods as $key => $value) {
-									$id = $rbac->Permissions->add($value['method'], $value['description']);
-									$perms[$module][] = $id;
-								}
-							}
+						foreach ($pages as $value) {
+							$id = $rbac->Permissions->add($value['page'], $value['description']);
+							$perms[$module][] = $id;
+						}
+					}
+
+					// Get Public Methods
+					$methods = Core_Reflection::getControllerPublicMethods( $module );
+
+					if (!empty($methods)) {
+
+						// Create Method Permission
+
+						foreach ($methods as $key => $value) {
+							$id = $rbac->Permissions->add($value['method'], $value['description']);
+							$perms[$module][] = $id;
 						}
 					}
 				}
@@ -1258,6 +1262,7 @@ APP_API_KEY 		= \"".$APP_API_KEY."\"
 			foreach ($perms as $module => $ids) {
 				switch ($module) {
 					case 'box':
+					case 'user':
 					case 'config':
 					case 'tools':
 
