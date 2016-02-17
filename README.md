@@ -24,3 +24,5 @@ Notes :
 	// Will not populate PHP_AUTH vars
 
 	// Clean sessions with cronjob
+
+	// Optimize Database Access (Perms)
