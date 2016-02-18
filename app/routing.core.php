@@ -92,10 +92,6 @@ Flight::route('GET|POST|PUT|DELETE /api/*', function() {
 		exit( 0 );
 	}
 
-	$url = Flight::request()->url;
-	$http_method = Flight::request()->method;
-	$params = explode('&', parse_url($url, PHP_URL_QUERY));
-
 	// Credentials
 
 	$headers = array_change_key_case(apache_request_headers(), CASE_UPPER);
@@ -145,6 +141,10 @@ Flight::route('GET|POST|PUT|DELETE /api/*', function() {
 	}
 
 	// Resource Access
+
+	$url = Flight::request()->url;
+	$http_method = Flight::request()->method;
+	$params = explode('&', parse_url($url, PHP_URL_QUERY));
 
 	if ($http_method === 'GET' && $url === '/api?WADL') 
 	{

@@ -51,7 +51,7 @@ $gui->getHeader();
 /**
  * Build Page Tabs
  */
-$gui->getTabs( 'users' );
+$gui->getTabs( 'permissions' );
 
 
 // DB
@@ -61,14 +61,11 @@ $rows = array();
 
 $sth = $dbh->prepare("
 	SELECT
-		user_id,
-		username,
-		firstname,
-		lastname,
-		email,
-		status
-	FROM " . DB_PREFIX . "user
-	ORDER BY status
+		ID,
+		Title,
+		Description
+	FROM " . DB_PREFIX . "permissions
+	ORDER BY Title
 	;");
 
 $sth->execute();
@@ -82,16 +79,6 @@ $rows = $sth->fetchAll( PDO::FETCH_ASSOC );
 //------------------------------------------------------------------------------------------------------------+
 ?>
 					<!-- CONTENTS -->
-
-					<div style="max-width: 400px; margin: 0 auto 10px; padding-left: 35px; padding-right: 35px;">
-						<div class="row">
-							<div class="text-center">
-								<a class="btn btn-primary btn-lg btn-block" href="./user/add">
-									<i class="fa fa-plus"></i>&nbsp;<?php echo T_('Add A New User'); ?>
-								</a>
-							</div>
-						</div>
-					</div>
 
 					<div class="row">
 						<div class="col-md-12">
@@ -107,12 +94,8 @@ $rows = $sth->fetchAll( PDO::FETCH_ASSOC );
 										<table class="table table-striped table-bordered table-hover" id="overview">
 											<thead>
 												<tr>
-													<th><?php echo T_('Username'); ?></th>
-													<th><?php echo T_('First name'); ?></th>
-													<th><?php echo T_('Last name'); ?></th>
-													<th><?php echo T_('Email'); ?></th>
-													<th><?php echo T_('Status'); ?></th>
-													<th></th>
+													<th><?php echo T_('Title'); ?></th>
+													<th><?php echo T_('Description'); ?></th>
 												</tr>
 											</thead>
 											<tbody>
@@ -123,24 +106,8 @@ foreach($rows as $key => $value)
 {
 ?>
 												<tr>
-													<td><?php echo htmlspecialchars( $value['username'], ENT_QUOTES); ?></td>
-													<td><?php echo htmlspecialchars( $value['firstname'], ENT_QUOTES); ?></td>
-													<td><?php echo htmlspecialchars( $value['lastname'], ENT_QUOTES); ?></td>
-													<td><?php echo htmlspecialchars( $value['email'], ENT_QUOTES); ?></td>
-													<td><?php echo htmlspecialchars( $value['status'], ENT_QUOTES); ?></td>
-													<td>
-														<div class="text-center">
-															<a class="btn btn-default" href="./user/edit/<?php echo htmlspecialchars( $value['user_id'], ENT_QUOTES); ?>">
-																<i class="fa fa-edit"></i>
-															</a>&nbsp;
-															<a class="btn btn-primary" href="./user/view/<?php echo htmlspecialchars( $value['user_id'], ENT_QUOTES); ?>">
-																<i class="fa fa-info-circle"></i>
-															</a>&nbsp;
-															<a class="btn btn-danger" href="./user/del/<?php echo htmlspecialchars( $value['user_id'], ENT_QUOTES); ?>">
-																<i class="fa fa-trash"></i>
-															</a>
-														</div>
-													</td>
+													<td><?php echo htmlspecialchars( $value['Title'], ENT_QUOTES); ?></td>
+													<td><?php echo htmlspecialchars( $value['Description'], ENT_QUOTES); ?></td>
 												</tr>
 <?php
 }

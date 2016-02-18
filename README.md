@@ -12,6 +12,7 @@ This Project Is WORK IN PROGRESS everything here is still being coded goto www.b
 
 
 Notes :
+
     // RSA
 	chmod 400 /path/my-key-pair.pem
 	
@@ -26,3 +27,11 @@ Notes :
 	// Clean sessions with cronjob
 
 	// Optimize Database Access (Perms)
+
+	// Task Scheduling
+
+	// Queues
+
+	// Events - Notifications top corner
+
+	// Cache

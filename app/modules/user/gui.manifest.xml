@@ -1,7 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- GUI Manifest -->
 <bgp_module>
-	<module_tabs></module_tabs>
+	<module_tabs>
+		<users>
+			<href>./user</href>
+			<icon>fa fa-users fa-fw</icon>
+		</users>
+		<roles>
+			<href>./user/role</href>
+			<icon>fa fa-cubes fa-fw</icon>
+		</roles>
+		<permissions>
+			<href>./user/perm</href>
+			<icon>fa fa-star fa-fw</icon>
+		</permissions>
+	</module_tabs>
 
 	<module_sidebar>
 		<rank>97</rank>

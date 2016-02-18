@@ -42,3 +42,20 @@ class BGP_Module_User extends BGP_Module {
 	}
 
 }
+
+/**
+ * User Management Module
+ * Page: Role
+ * Title: Roles
+ */
+
+class BGP_Module_User_Role extends BGP_Module_User {
+
+	function __construct( $page = '' )	{
+
+		// Call parent constructor
+		parent::__construct( );
+
+		self::setModulePageTitle( $page );
+	}
+}
