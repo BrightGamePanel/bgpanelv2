@@ -6,7 +6,7 @@ Bright Game Panel V2
 
 Bright Game Panel V2 is a complete rewrite of the original Bright Game Panel with many improvements and updates.
 
-This project is not dead! Thanks to community support and the benefits of open source anyone can contribute/fork the project and help maeke it better!!
+This project is not dead! Thanks to community support and the benefits of open source anyone can contribute/fork the project and help make it better!!
 
 This Project Is WORK IN PROGRESS everything here is still being coded go to http://www.bgpanel.net to get the Currently working version until this is ready for release.
 
