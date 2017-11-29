@@ -30,15 +30,15 @@ define('LICENSE', 'GNU GENERAL PUBLIC LICENSE - Version 3, 29 June 2007');
 /**
  * Install Wizard Version
  */
-define('WIZARDVERSION', 'v2.5.0');
-define('ENV_RUNTIME', 'INSTALL_WIZARD');
+define('WIZARDVERSION', 'v2.5.1');
+define('INSTALL_WIZARD', 'INSTALL_WIZARD');
 
 //---------------------------------------------------------+
 
 /**
  * BGP INIT
  */
-require( '../init.app.php' );
+require('../init.php');
 
 /**
  * INSTALL WIZARD FUNCTIONS

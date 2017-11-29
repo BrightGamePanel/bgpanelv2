@@ -62,13 +62,7 @@ Flight::route('/logout/', function() {
 /**
  * MACHINE 2 MACHINE
  */
-Flight::route('GET|POST|PUT|DELETE /api/*', function() {
-
-	if (ENV_RUNTIME != 'M2M') {
-		header( Core_Http_Status_Codes::httpHeaderFor( 403 ) );
-		session_destroy();
-		exit( 1 );
-	}
+function api() {
 
 	// API Process
 
@@ -218,7 +212,7 @@ Flight::route('GET|POST|PUT|DELETE /api/*', function() {
 	header( Core_Http_Status_Codes::httpHeaderFor( 403 ) );
 	session_destroy();
 	exit( 0 );
-});
+};
 
 
 /**
@@ -226,11 +220,6 @@ Flight::route('GET|POST|PUT|DELETE /api/*', function() {
  * DEFAULT BEHAVIOUR
  */
 Flight::route('GET|POST|PUT|DELETE (/@module(/@page)(/@id))', function( $module, $page, $id ) {
-
-	if (ENV_RUNTIME != 'H2M') {
-		Flight::redirect('/403');
-		exit( 1 );
-	}
 
 	// Vars Init
 
@@ -418,7 +407,7 @@ Flight::route('GET|POST|PUT|DELETE (/@module(/@page)(/@id))', function( $module,
 
 
 /**
- * Start the FW
+ * Start the Application <3
  */
 
 

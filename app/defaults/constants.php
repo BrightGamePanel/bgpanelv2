@@ -19,39 +19,40 @@
  * @package		Bright Game Panel V2
  * @version		0.1
  * @category	Systems Administration
- * @author		warhawk3407 <warhawk3407@gmail.com> @NOSPAM
+ * @author		warhawk3407 <warhawk3407@gmail.com>
  * @copyright	Copyleft 2015, Nikita Rousseau
  * @license		GNU General Public License version 3.0 (GPLv3)
  * @link		http://www.bgpanel.net/
  */
 
-
-
-/**
- * Base CLASS for each BGP controllers
- */
-
-class BGP_Controller extends BGP_Module
+// Prevent direct access
+if (!defined('LICENSE'))
 {
-	// Controller Definition
-
-	// None
-
-	function __construct( $module_name )	{
-
-		// Call module constructor
-		parent::__construct( $module_name );
-	}
-
-	//public static function getLogger( $isApi = FALSE ) {
-    public static function getLogger( $isApi ) {
-
-		if ($isApi) {
-            Logger::configure(bgp_log4php_api_conf());
-            return Logger::getLogger('api');
-        } else {
-            Logger::configure( bgp_log4php_def_conf() );
-            return Logger::getLogger( self::getModuleName() );
-		}
-	}
+    exit('Access Denied');
 }
+
+// DB
+if (!defined ('DB_PREFIX')) {
+    define('DB_PREFIX', 'bgp_');
+}
+
+// GENERAL
+if (!defined ('CONF_CRONDELAY')) {
+
+}
+if (!defined ('CONF_TIMEZONE')) {
+    define('CONF_TIMEZONE', 'Europe/London');
+}
+if (!defined ('CONF_DEFAULT_LOCALE')) {
+    define('CONF_DEFAULT_LOCALE', 'en_EN');
+}
+if (!defined ('CONF_SEC_LOGIN_ATTEMPTS')) {
+    // 600
+}
+if (!defined('CONF_SEC_BAN_DURATION')) {
+
+}
+if (!defined('CONF_SEC_SESSION_METHOD')) {
+
+}
+

@@ -30,24 +30,9 @@ define('LICENSE', 'GNU GENERAL PUBLIC LICENSE - Version 3, 29 June 2007');
 /**
  * Bright Game Panel Init
  */
-require( 'init.app.php' );
-
-/**
- * Define Display Language
- */
-if ( isset($_SESSION['LANG']) ) {
-	Core_Lang::setLanguage( $_SESSION['LANG'] );
-}
-else if ( isset($_COOKIE['LANG']) ) {
-	Core_Lang::setLanguage( $_COOKIE['LANG'] );
-}
-else {
-	Core_Lang::setLanguage( CONF_DEFAULT_LOCALE );
-}
+require('init.php');
 
 /**
  * Load System Routing Definitions
  */
-require( APP_DIR . '/routing.core.php' );
-
-?>
+require( CORE_DIR . '/routing.php' );
