@@ -5,6 +5,6 @@
 	<package>bgp_r0-devel-beta1</package>
 	<branch>devel</branch>
 	<version>0.1.0</version>
-	<api_version>100</api_version>
+	<api_version>v1</api_version>
 	<date>2015-07-28</date>
 </coreinfo>

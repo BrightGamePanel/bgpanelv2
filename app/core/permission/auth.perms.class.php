@@ -29,11 +29,9 @@
 
 class Core_AuthService_Perms
 {
-	// Modules that are not callable by the API service
-	public static $restricted_modules = array(
-		'login',
-		'myaccount'
-	);
+    public static function buildPermissionPath($module, $method) {
+        return ucfirst($module) . '/' . $method;
+    }
 
 	public static function getUserPermissions( ) {
 

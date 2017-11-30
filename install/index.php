@@ -1215,12 +1215,6 @@ APP_API_KEY 		= \"".$APP_API_KEY."\"
 
 					$module = $entry;
 
-					// Exceptions
-					if ($module == 'login') {
-
-						continue;
-					}
-
 					// Get Module Pages
 					$pages = Core_Reflection::getModulePublicPages( $module );
 

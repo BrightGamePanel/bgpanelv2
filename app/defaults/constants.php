@@ -47,7 +47,7 @@ if (!defined ('CONF_DEFAULT_LOCALE')) {
     define('CONF_DEFAULT_LOCALE', 'en_EN');
 }
 if (!defined ('CONF_SEC_LOGIN_ATTEMPTS')) {
-    // 600
+
 }
 if (!defined('CONF_SEC_BAN_DURATION')) {
 

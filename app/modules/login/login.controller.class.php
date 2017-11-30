@@ -42,16 +42,31 @@ class BGP_Controller_Login extends BGP_Controller
 		parent::__construct( basename(__DIR__) );
 	}
 
-	/**
-	 * Authentication
-	 *
-	 * @param string $username query
-	 * @param string $password query
-	 * @param bool $rememberMe query
-	 *
-	 * @author Nikita Rousseau
-	 */
-	public function authenticateUser( $username, $password, $rememberMe ) {
+
+    /**
+     * @api {post} /login Creates a new session for a user.
+     * @author Nikita Rousseau
+     * @apiVersion v1
+     * @apiName PostLogin
+     * @apiGroup Login
+     *
+     * @apiDescription Creates a new session for a user in Bright Game Panel. Once a session has been successfully
+     * created it can be used to access any of Bright Game Panel's remote APIs and also the web UI by passing the
+     * appropriate HTTP Cookie header.
+     * Note that it is generally preferable to use HTTP BASIC / API-KEY authentication with the REST API.
+     *
+     * @apiParam {String} username Name of the User.
+     * @apiParam {String} password Password of the User.
+     * @apiParam {Boolean} rememberMe Saving info preference of the User.
+     *
+     * @apiSuccess {String} id The Users-ID of the User.
+     *
+     * @param $username
+     * @param $password
+     * @param $rememberMe
+     * @return array
+     */
+	public function login( $username, $password, $rememberMe ) {
 		$form = array (
 			'username' => $username,
 			'password' => $password,
@@ -234,28 +249,46 @@ class BGP_Controller_Login extends BGP_Controller
 		return $data;
 	}
 
-	private function setRememberMeCookie( $username ) {
-		setcookie('USERNAME', htmlentities($username, ENT_QUOTES), time() + (86400 * 7 * 2), BASE_URL); // 86400 = 1 day
-	}
+    /**
+     * @api {get} /login Returns information about the currently authenticated user.
+     * @author Nikita Rousseau
+     * @apiVersion v1
+     * @apiName GetLogin
+     * @apiGroup Login
+     *
+     * @apiDescription Returns information about the currently authenticated user.
+     * If the caller is not authenticated they will get a 401 Unauthorized status code.
+     *
+     * @apiSuccess {String[]} information The User information.
+     *
+     * @return array
+     */
+	public function getUser() {
+	    // TODO: to be implemented
+        return array();
+    }
 
-	private function setLangCookie( $lang ) {
-		setcookie('LANG', htmlentities($lang, ENT_QUOTES), time() + (86400 * 7 * 2), BASE_URL);
-	}
-
-	private function rmCookie( $cookie ) {
-		setcookie($cookie, '', time() - 3600, BASE_URL);
-	}
-
-	/**
-	 * User Password Renewal
-	 *
-	 * @param string $username query
-	 * @param string $email query
-	 * @param optional bool $captcha_validation query
-	 *
-	 * @author Nikita Rousseau
-	 */
-	public function sendNewPassword( $username, $email, $captcha_validation = TRUE ) {
+    /**
+     * @api {get} /login/newPassword Regenerates a password for a user.
+     * @author Nikita Rousseau
+     * @apiVersion v1
+     * @apiName GetNewPassword
+     * @apiGroup Login
+     * @apiPrivate
+     *
+     * @apiDescription Creates a new random password for a user.
+     *
+     * @apiParam {String} username Name of the User.
+     * @apiParam {String} email Email address of the User.
+     * @apiParam {Boolean} captcha_validation Is captcha valid ?
+     *
+     * @apiSuccess
+     * @param $username
+     * @param $email
+     * @param bool $captcha_validation
+     * @return array
+     */
+	public function newPassword( $username, $email, $captcha_validation = TRUE ) {
 		$form = array (
 			'username' => $username,
 			'email'    => $email
@@ -427,4 +460,32 @@ class BGP_Controller_Login extends BGP_Controller
 		// return all our data to an AJAX call
 		return $data;
 	}
+
+    /**
+     * @api {delete} /login Logs the current user out of the application.
+     * @author Nikita Rousseau
+     * @apiVersion v1
+     * @apiName DeleteLogout
+     * @apiGroup Login
+     *
+     * @apiDescription Logs the current user out of Bright Game Panel, destroying the existing session, if any.
+     *
+     * @return array
+     */
+	public function logout() {
+	    // TODO : to be implemented
+        return array();
+    }
+
+    private function setRememberMeCookie( $username ) {
+        setcookie('USERNAME', htmlentities($username, ENT_QUOTES), time() + (86400 * 7 * 2), BASE_URL); // 86400 = 1 day
+    }
+
+    private function setLangCookie( $lang ) {
+        setcookie('LANG', htmlentities($lang, ENT_QUOTES), time() + (86400 * 7 * 2), BASE_URL);
+    }
+
+    private function rmCookie( $cookie ) {
+        setcookie($cookie, '', time() - 3600, BASE_URL);
+    }
 }

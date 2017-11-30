@@ -99,7 +99,7 @@ switch ($task)
 				// Good captcha
 
 				if ( isset($_POST['username']) && isset($_POST['email']) ) {
-					$json = $loginController->sendNewPassword( $_POST['username'], $_POST['email'], TRUE );
+					$json = $loginController->newPassword( $_POST['username'], $_POST['email'], TRUE );
 
 					if ($json['success'] === TRUE) {
 						// Notification

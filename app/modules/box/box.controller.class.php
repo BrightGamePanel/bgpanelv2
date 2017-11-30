@@ -41,27 +41,39 @@ class BGP_Controller_Box extends BGP_Controller {
 		parent::__construct( basename(__DIR__) );
 	}
 
-	/**
-	 * Add A New Box To The Collection
-	 *
-	 * @http_method POST
-	 * @resource box/
-	 *
-	 * @param string $name query
-	 * @param string $os query
-	 * @param string $ip query
-	 * @param string $port query
-	 * @param string $login query
-	 * @param optional string $password query
-	 * @param optional string $privatekey query
-	 * @param optional string $userPath query
-	 * @param optional string $steamPath query
-	 * @param optional string $notes query
-	 *
-	 * @return application/json
-	 *
-	 * @author Nikita Rousseau
-	 */
+    /**
+     * @api {post} /box Creates a new box.
+     * @author Nikita Rousseau
+     * @apiVersion v1
+     * @apiName PostBox
+     * @apiGroup Box
+     *
+     * @apiDescription Creates a new dedicated server for Bright Game Panel.
+     *
+     * @apiParam {String} name
+     * @apiParam {String} os
+     * @apiParam {String} ip
+     * @apiParam {String} port
+     * @apiParam {String} login
+     * @apiParam {String} [password]
+     * @apiParam {String} [privatekey]
+     * @apiParam {String} [userPath]
+     * @apiParam {String} [steamPath]
+     * @apiParam {String} [notes]
+     *
+     * @apiSuccess {String} id The Box-ID of the Box.
+     * @param $name
+     * @param $os
+     * @param $ip
+     * @param $port
+     * @param $login
+     * @param string $password
+     * @param string $privatekey
+     * @param string $userPath
+     * @param string $steamPath
+     * @param string $notes
+     * @return array
+     */
 	function postBox( $name, $os, $ip, $port, $login, $password = '', $privatekey = 'bgp_rsa', $userPath = '', $steamPath = '', $notes = '' )
 	{
 		$args = array (
@@ -468,20 +480,23 @@ class BGP_Controller_Box extends BGP_Controller {
 		);
 	}
 
-	/**
-	 * Remove An Existing Box From The Collection
-	 *
-	 * @http_method DELETE
-	 * @resource box/
-	 *
-	 * @param int $box_id query
-	 *
-	 * @return application/json
-	 *
-	 * @author Nikita Rousseau
-	 */
+    /**
+     * @api {delete} /box/:id Deletes a box.
+     * @author Nikita Rousseau
+     * @apiVersion v1
+     * @apiName DeleteBox
+     * @apiGroup Box
+     *
+     * @apiDescription Removes a dedicated server from Bright Game Panel.
+     *
+     * @apiParam {String} box_id The Box-ID identifier.
+     *
+     * @param $box_id
+     * @return array
+     */
 	function deleteBox( $box_id )
 	{
-
+        // TODO : implement required method
+        return array();
 	}
 }

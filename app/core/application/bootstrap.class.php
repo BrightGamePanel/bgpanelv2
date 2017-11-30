@@ -25,40 +25,45 @@
  * @link		http://www.bgpanel.net/
  */
 
-// Prevent direct access
-if (!defined('LICENSE'))
+
+
+/**
+ * Application Wrapper
+ */
+
+class BGP_Bootstrap
 {
-	exit('Access Denied');
+    /**
+     * BGP_Application main
+     *
+     * @param $module
+     * @param $page
+     * @param $id
+     * @param $api_version
+     * @return int
+     */
+    public static function start($module, $page, $id, $api_version = BGP_API_VERSION)
+    {
+
+        // Read HTTP Headers
+        $http_headers = array_change_key_case(apache_request_headers(), CASE_UPPER);
+
+        if (!isset($http_headers['CONTENT-TYPE']) || $http_headers['CONTENT-TYPE'] == "text/html") {
+
+            // GUI
+            $bgpanel = new BGP_GUI_Application();
+        } else {
+
+            // API
+            $bgpanel = new BGP_API_Application();
+        }
+
+        // Execute
+        return $bgpanel->execute(
+            $module,
+            $page,
+            $id,
+            $api_version,
+            $http_headers);
+    }
 }
-
-if ( !class_exists('Flight')) {
-	trigger_error('Core -> Flight FW is missing !');
-}
-
-
-/**
- * Flight FW Routing Definitions
- */
-
-// HTTP status codes VIEW
-Flight::route('/@http:[0-9]{3}', function( $http ) {
-	header( Core_Http_Status_Codes::httpHeaderFor( $http ) );
-	echo Core_Http_Status_Codes::getMessageForCode( $http );
-	exit( 0 );
-});
-
-// RestAPI ENDPOINT
-Flight::route('GET|POST|PUT|DELETE /api/@api_version(/@module(/@page(/@id)))', function( $api_version, $module, $page, $id ) {
-    exit( BGP_Bootstrap::start($module, $page, $id, $api_version) );
-});
-
-// Default
-Flight::route('GET|POST|PUT|DELETE (/@module(/@page(/@id)))', function( $module, $page, $id ) {
-    exit( BGP_Bootstrap::start($module, $page, $id) );
-});
-
-/**
- * Start the APPLICATION
- */
-
-Flight::start();

@@ -37,14 +37,10 @@ if (!defined('LICENSE'))
  */
 function bgp_api_autoloader ($className) {
 
-    switch ($className) {
-        case 'Core_AuthService_API':
-            require( APP_DIR	. '/core/auth.api.class.php' );
-            break;
-
-        case 'Core_API':
-            require( APP_DIR	. '/core/api.class.php' );
-            break;
+    if ( $className == 'Core_API' ) {
+        require( CORE_DIR	. '/api/api.class.php' );
+    } else if ( $className == 'BGP_API_Application' ) {
+        require( CORE_DIR	. '/application/api.application.class.php' );
     }
 };
 spl_autoload_register('bgp_api_autoloader');
@@ -61,6 +57,21 @@ function bgp_mod_controllers_autoloader ($className) {
     }
 };
 spl_autoload_register('bgp_mod_controllers_autoloader');
+
+/**
+ * GUI Parts Autoloader
+ * Graphical User Interface Builder
+ * @param $className
+ */
+function bgp_gui_parts_autoloader ($className) {
+
+    if ( $className == 'Core_GUI' ) {
+        require( CORE_DIR	. '/gui/gui.class.php' );
+    } else if ( $className == 'Core_GUI_JS') {
+        require( CORE_DIR	. '/gui/gui.js.class.php' );
+    }
+};
+spl_autoload_register('bgp_gui_parts_autoloader');
 
 /**
  * INSTALL WIZARD LOADER
@@ -92,19 +103,18 @@ if (defined('INSTALL_WIZARD')) {
 /**
  * APPLICATION
  */
-// TODO : AUTOLOAD GUI PARTS
-// Graphical User Interface Builder
-require( APP_DIR	. '/core/gui/gui.class.php' );
-require( APP_DIR	. '/core/gui/gui.js.class.php' );
+// Main Application Wrapper
+require( CORE_DIR	. '/application/application.class.php' );
+require( CORE_DIR	. '/application/bootstrap.class.php' );
 
 // PHP 5.5 Functions Implementation
 require( LIBS_DIR	. '/php5.5/func.inc.php');
 
 // BrightGamePanel Functions
-require( APP_DIR	. '/core/inc/func.inc.php');
+require( CORE_DIR	. '/inc/func.inc.php');
 
 // Database Handler
-require( APP_DIR	. '/core/dbh.class.php' );
+require( CORE_DIR	. '/dbh.class.php' );
 
 // Valitron Framework
 require( LIBS_DIR	. '/valitron/Validator.php' );
@@ -117,7 +127,7 @@ require( LIBS_DIR	. '/flight/Flight.php' );
 
 // PHP-GetText Framework
 require( LIBS_DIR	. '/php-gettext/gettext.inc.php' );
-require( APP_DIR 	. '/core/lang.class.php' );
+require( CORE_DIR 	. '/lang.class.php' );
 
 // PHPSeclib
 require( LIBS_DIR	. '/phpseclib/AES.php' );
@@ -128,20 +138,20 @@ require( LIBS_DIR	. '/phpseclib/ANSI.php' );
 require( LIBS_DIR	. '/phprbac2.0/autoload.php' );
 
 // Authentication Service
-require( APP_DIR	. '/core/auth.class.php' );
-require( APP_DIR	. '/core/auth.perms.class.php' );
+require( CORE_DIR	. '/permissions/auth.class.php' );
+require( CORE_DIR	. '/permissions/auth.perms.class.php' );
 
 // HTTP Status Codes Class
-require( APP_DIR	. '/core/http.status.class.php' );
+require( CORE_DIR	. '/http.status.class.php' );
 
 // Module Class Definition
-require( APP_DIR	. '/core/module.class.php' );
+require( CORE_DIR	. '/module.class.php' );
 
 // Controller Class Definition
-require( APP_DIR	. '/core/controller.module.class.php' );
+require( CORE_DIR	. '/controller.module.class.php' );
 
 // PHP DOC Parser
 require( LIBS_DIR	. '/docblockparser/doc_block.php' );
 
 // Module Reflection Class
-require( APP_DIR	. '/core/reflection.class.php' );
+require( CORE_DIR	. '/api/reflection.class.php' );

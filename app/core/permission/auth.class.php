@@ -67,10 +67,8 @@ class Core_AuthService
 
 		$this->session = $_SESSION;
 
-
 		// SECRET KEYS
 		$CONFIG = parse_ini_file( CONF_SECRET_INI );
-
 
 		// LOGGED IN KEY
 		$this->auth_key = $CONFIG['APP_LOGGED_IN_KEY'];
@@ -448,4 +446,216 @@ class Core_AuthService
 		}
 		return array();
 	}
+
+
+
+
+
+
+
+
+	function checkApiUser() {
+        // Credentials
+
+        $headers = array_change_key_case(apache_request_headers(), CASE_UPPER);
+
+        $headers['X-API-KEY'] = (isset($headers['X-API-KEY'])) ? filter_var($headers['X-API-KEY'], FILTER_SANITIZE_STRING, FILTER_FLAG_STRIP_HIGH|FILTER_FLAG_STRIP_LOW) : NULL;
+        $headers['X-API-USER'] = (isset($headers['X-API-USER'])) ? filter_var($headers['X-API-USER'], FILTER_SANITIZE_STRING, FILTER_FLAG_STRIP_HIGH|FILTER_FLAG_STRIP_LOW) : NULL;
+        $headers['X-API-PASS'] = (isset($headers['X-API-PASS'])) ? filter_var($headers['X-API-PASS'], FILTER_SANITIZE_STRING, FILTER_FLAG_STRIP_HIGH|FILTER_FLAG_STRIP_LOW) : NULL;
+
+        // Servers with Server API set to CGI/FCGI
+        // Will not populate PHP_AUTH vars
+
+        $_SERVER['PHP_AUTH_USER'] = (isset($_SERVER['PHP_AUTH_USER'])) ? filter_var($_SERVER['PHP_AUTH_USER'], FILTER_SANITIZE_STRING, FILTER_FLAG_STRIP_HIGH|FILTER_FLAG_STRIP_LOW) : NULL;
+        $_SERVER['PHP_AUTH_PW'] = (isset($_SERVER['PHP_AUTH_PW'])) ? filter_var($_SERVER['PHP_AUTH_PW'], FILTER_SANITIZE_STRING, FILTER_FLAG_STRIP_HIGH|FILTER_FLAG_STRIP_LOW) : NULL;
+
+        if (empty($headers['X-API-KEY']) AND empty($headers['X-API-USER']) AND empty($headers['X-API-PASS']) AND empty($_SERVER['PHP_AUTH_USER']) AND empty($_SERVER['PHP_AUTH_PW'])) {
+
+            // Unauthorized
+            // No credentials
+            header( Core_Http_Status_Codes::httpHeaderFor( 401 ) );
+            session_destroy();
+            exit( 0 );
+        }
+
+        // Machine Authentication
+
+        // AUTH-BASIC (if allowed)
+        // OR
+        // X-HTTP-HEADERS AUTH (default)
+
+        if ((boolval(APP_API_ALLOW_BASIC_AUTH) === TRUE) && !empty($_SERVER['PHP_AUTH_USER']) && !empty($_SERVER['PHP_AUTH_PW'])) {
+            if (Core_AuthService_API::checkRemoteHost( Flight::request()->ip, $_SERVER['PHP_AUTH_USER'], $_SERVER['PHP_AUTH_PW'], '', 'auth-basic' ) === FALSE) {
+
+                // Unauthorized
+                header( Core_Http_Status_Codes::httpHeaderFor( 401 ) );
+                session_destroy();
+                exit( 0 );
+            }
+        }
+        else {
+            if (Core_AuthService_API::checkRemoteHost( Flight::request()->ip, $headers['X-API-USER'], $headers['X-API-PASS'], $headers['X-API-KEY'], 'x-http-headers' ) === FALSE) {
+
+                // Unauthorized
+                header( Core_Http_Status_Codes::httpHeaderFor( 401 ) );
+                session_destroy();
+                exit( 0 );
+            }
+        }
+    }
+
+// Verify that the remote machine can call the API service
+    public static function checkRemoteHost( $remote_ip, $api_user, $api_user_pass, $api_key = '', $auth_method = 'x-http-headers' )
+    {
+        // Get IPs Whitelist
+
+        $trustedIps = parse_ini_file( CONF_API_WHITELIST_INI, TRUE );
+
+        if (!empty($trustedIps) && isset($trustedIps['IPv4'])) {
+            $trustedIps = array_values( $trustedIps['IPv4'] );
+
+            // Verify IP
+
+            if (in_array($remote_ip, $trustedIps)) {
+
+                // Get API Key
+
+                $apiMasterKey = parse_ini_file( CONF_API_KEY_INI );
+
+                if (!empty($apiMasterKey) && isset($apiMasterKey['APP_API_KEY'])) {
+                    $apiMasterKey = $apiMasterKey['APP_API_KEY'];
+
+                    switch ($auth_method) {
+
+                        case 'auth-basic' :
+
+                            // Verify API User
+
+                            return self::checkRemoteAPIUser( $remote_ip, $api_user, $api_user_pass );
+
+                            break;
+
+                        case 'x-http-headers' :
+                        default :
+
+                            if ($api_key == $apiMasterKey) {
+
+                                return self::checkRemoteAPIUser( $remote_ip, $api_user, $api_user_pass );
+                            }
+
+                            break;
+                    }
+                }
+            }
+        }
+
+        return FALSE;
+    }
+
+// Once the machine has been authenticated, we verify the user
+    public static function checkRemoteAPIUser( $remote_ip, $api_user, $api_user_pass )
+    {
+        $username = $api_user;
+        $password = Core_AuthService::getHash($api_user_pass);
+
+        $dbh = Core_DBH::getDBH();
+
+        try {
+            $sth = $dbh->prepare("
+				SELECT user_id, username, firstname, lastname, lang, template
+				FROM " . DB_PREFIX . "user
+				WHERE
+					username = :username AND
+					password = :password AND
+					status = 'Active'
+				;");
+
+            $sth->bindParam(':username', $username);
+            $sth->bindParam(':password', $password);
+
+            $sth->execute();
+
+            $result = $sth->fetchAll(PDO::FETCH_ASSOC);
+        }
+        catch (PDOException $e) {
+            echo $e->getMessage().' in '.$e->getFile().' on line '.$e->getLine();
+            die();
+        }
+
+        if (!empty($result)) {
+            $user_id = $result[0]['user_id'];
+
+            // NIST Level 2 Standard Role Based Access Control Library
+
+            $rbac = new PhpRbac\Rbac();
+
+            // Verify API Role
+
+            if ( $rbac->Users->hasRole( 'api', $user_id ) ) {
+
+                // Update User Activity
+
+                try {
+                    $sth = $dbh->prepare("
+						UPDATE " . DB_PREFIX . "user
+						SET
+							last_login		= :last_login,
+							last_activity	= :last_activity,
+							last_ip 		= :last_ip,
+							last_host		= :last_host,
+							token 			= :token
+						WHERE
+							user_id			= :user_id
+						;");
+
+                    $last_login = date('Y-m-d H:i:s');
+                    $last_activity = date('Y-m-d H:i:s');
+                    $last_host = gethostbyaddr($remote_ip);
+                    $token = session_id();
+
+                    $sth->bindParam(':last_login', $last_login);
+                    $sth->bindParam(':last_activity', $last_activity);
+                    $sth->bindParam(':last_ip', $remote_ip);
+                    $sth->bindParam(':last_host', $last_host);
+                    $sth->bindParam(':token', $token);
+                    $sth->bindParam(':user_id', $user_id);
+
+                    $sth->execute();
+                }
+                catch (PDOException $e) {
+                    echo $e->getMessage().' in '.$e->getFile().' on line '.$e->getLine();
+                    die();
+                }
+
+                // Start the authentication service
+
+                $authService = Core_AuthService::getAuthService();
+
+                // Log in the user
+
+                if ($authService->getSessionValidity() == FALSE) {
+
+                    session_regenerate_id( TRUE );
+
+                    $authService->setSessionInfo(
+                        $result[0]['user_id'],
+                        $result[0]['username'],
+                        $result[0]['firstname'],
+                        $result[0]['lastname'],
+                        $result[0]['lang'],
+                        $result[0]['template']
+                    );
+
+                    $authService->setSessionPerms();
+                }
+
+                return TRUE;
+            }
+        }
+
+        return FALSE;
+    }
+
+
+
 }
