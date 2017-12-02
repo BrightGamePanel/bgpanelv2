@@ -27,145 +27,145 @@
 
 
 
-function displayWADL() {
-    // Display API WADL
-
-    if (empty($this->module) && $this->req_method == "GET") {
-
-        // Web Application Description Language (WADL)
-
-        header('Content-Type: application/xml; charset=utf-8');
-        echo Core_API::getWADL( );
-        return;
-    }
-}
-
-
-
-public static function getWADL( )
+class Core_API_WADL_Generator
 {
-    $user = Core_AuthService::getSessionInfo( 'USERNAME' );
-
-    $applicationDoc = "BrightGamePanel REST API @" . $user . " [build: " . BGP_API_VERSION . "] [date: " . date('r') . "]";
-
-    $system_url = BGP_SYSTEM_URL;
-    $resourcesBaseUrl = ($system_url[strlen($system_url)-1] != '/') ? BGP_SYSTEM_URL . '/api/' : BGP_SYSTEM_URL . 'api/';
-
-    $header  = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n";
-    $header .= "  <application xmlns=\"http://wadl.dev.java.net/2009/02\">\n";
-    $header .= "  <doc xml:lang=\"en\" title=\"BGPanel API\">" . $applicationDoc . "</doc>\n";
-    $header .= "  <resources base=\"" . $resourcesBaseUrl . "\">\n";
-
-    $body = self::getWADLResources();
-
-    $footer  = "   </resources>\n";
-    $footer .= "</application>\n";
-
-    return $header . $body . $footer;
-}
-
-public static function getWADLResources( ) {
-
-    $rbac = new PhpRbac\Rbac();
-
-    $authorizations = Core_AuthService::getSessionInfo( 'PERMISSIONS' );
-
-    $body = '';
-
-    foreach ($authorizations as $module => $methods)
+    function displayWADL()
     {
-        $body .= "      <resource path=\"" . $module . "\">\n";
+        // Display API WADL
 
-        $subResource = ''; // Tag closure helper for sub resources
+        if (empty($this->module) && $this->req_method == "GET") {
 
-        foreach ($methods as $method) {
-            $reflectedMethod = Core_Reflection::getControllerMethod( $module, $method );
+            // Web Application Description Language (WADL)
 
-            $method = self::buildAPIMethodXML( $reflectedMethod );
+            header('Content-Type: application/xml; charset=utf-8');
+            echo Core_API::getWADL();
+            return;
+        }
+    }
 
-            $path = $reflectedMethod['resource'];
-            $pathParts = explode('/', $path);
+    public static function getWADL()
+    {
+        $user = Core_AuthService::getSessionInfo('USERNAME');
 
-            // Sub-resource case (Element)
-            if (!empty($pathParts[1])) {
+        $applicationDoc = "BrightGamePanel REST API @" . $user . " [build: " . BGP_API_VERSION . "] [date: " . date('r') . "]";
 
-                $path = str_replace($pathParts[0] . '/', '', $path); // Remove parent resource
+        $system_url = BGP_SYSTEM_URL;
+        $resourcesBaseUrl = ($system_url[strlen($system_url) - 1] != '/') ? BGP_SYSTEM_URL . '/api/' : BGP_SYSTEM_URL . 'api/';
 
-                $body .= "         <resource path=\"" . $path . "\">\n";
+        $header = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n";
+        $header .= "  <application xmlns=\"http://wadl.dev.java.net/2009/02\">\n";
+        $header .= "  <doc xml:lang=\"en\" title=\"BGPanel API\">" . $applicationDoc . "</doc>\n";
+        $header .= "  <resources base=\"" . $resourcesBaseUrl . "\">\n";
 
-                $methodLines = explode("\n", $method);
+        $body = self::getWADLResources();
 
-                foreach ($methodLines as $line) {
-                    if (!empty($line)) {
-                        $body .= '   ' . $line . "\n"; // Pad
+        $footer = "   </resources>\n";
+        $footer .= "</application>\n";
+
+        return $header . $body . $footer;
+    }
+
+    public static function getWADLResources()
+    {
+
+        $rbac = new PhpRbac\Rbac();
+
+        $authorizations = Core_AuthService::getSessionInfo('PERMISSIONS');
+
+        $body = '';
+
+        foreach ($authorizations as $module => $methods) {
+            $body .= "      <resource path=\"" . $module . "\">\n";
+
+            $subResource = ''; // Tag closure helper for sub resources
+
+            foreach ($methods as $method) {
+                $reflectedMethod = Core_Reflection::getControllerMethod($module, $method);
+
+                $method = self::buildAPIMethodXML($reflectedMethod);
+
+                $path = $reflectedMethod['resource'];
+                $pathParts = explode('/', $path);
+
+                // Sub-resource case (Element)
+                if (!empty($pathParts[1])) {
+
+                    $path = str_replace($pathParts[0] . '/', '', $path); // Remove parent resource
+
+                    $body .= "         <resource path=\"" . $path . "\">\n";
+
+                    $methodLines = explode("\n", $method);
+
+                    foreach ($methodLines as $line) {
+                        if (!empty($line)) {
+                            $body .= '   ' . $line . "\n"; // Pad
+                        }
                     }
+
+                    $body .= "         </resource>\n";
+                } // Resource case (Collection)
+                else {
+
+                    $body .= $method;
                 }
-
-                $body .= "         </resource>\n";
             }
-            // Resource case (Collection)
-            else {
 
-                $body .= $method;
-            }
+            $body .= "      </resource>\n";
         }
 
-        $body .= "      </resource>\n";
+        return $body;
     }
 
-    return $body;
-}
+    public static function buildAPIMethodXML($reflectedMethod)
+    {
 
-public static function buildAPIMethodXML( $reflectedMethod ) {
+        $body = "         <method name=\"" . $reflectedMethod['name'] . "\" id=\"" . $reflectedMethod['id'] . "\">\n";
+        $body .= "            <doc xml:lang=\"en\" title=\"" . $reflectedMethod['description'] . "\"/>\n";
 
-    $body  = "         <method name=\"" . $reflectedMethod['name'] . "\" id=\"" . $reflectedMethod['id'] . "\">\n";
-    $body .= "            <doc xml:lang=\"en\" title=\"" . $reflectedMethod['description'] . "\"/>\n";
-
-    if (!empty($reflectedMethod['params'])) {
-        $body .= "            <request>\n";
-    }
-    else {
-        $body .= "            <request/>\n";
-    }
-
-    foreach ($reflectedMethod['params'] as $param) {
-
-        if (strpos($param, 'optional') === FALSE) {
-            $required = 'true';
+        if (!empty($reflectedMethod['params'])) {
+            $body .= "            <request>\n";
         } else {
-            $required = 'false';
-            $param = trim(str_replace('optional', '', $param));
+            $body .= "            <request/>\n";
         }
 
-        $paramParts = explode(' ', $param); // Get type and name
-        list($type, $name) = $paramParts; // Assign
+        foreach ($reflectedMethod['params'] as $param) {
 
-        $doc = trim(str_replace( $type . ' ' . $name, '', $param)); // Remove from original string type and name to get doc part
-        $name = substr($name, 1); // Remove $
+            if (strpos($param, 'optional') === FALSE) {
+                $required = 'true';
+            } else {
+                $required = 'false';
+                $param = trim(str_replace('optional', '', $param));
+            }
 
-        $docParts = explode(' ', $doc); // Get style
-        $style = $docParts[0];
+            $paramParts = explode(' ', $param); // Get type and name
+            list($type, $name) = $paramParts; // Assign
 
-        $doc = trim(str_replace( $style, '', $doc )); // Get real description
+            $doc = trim(str_replace($type . ' ' . $name, '', $param)); // Remove from original string type and name to get doc part
+            $name = substr($name, 1); // Remove $
 
-        if (!empty($doc)) {
-            $body .= "               <param name=\"" . $name . "\" type=\"xs:" . $type . "\" required=\"" . $required . "\" style=\"" . $style . "\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\">\n";
-            $body .= "                  <doc>" . $doc . "</doc>\n";
-            $body .= "               </param>\n";
+            $docParts = explode(' ', $doc); // Get style
+            $style = $docParts[0];
+
+            $doc = trim(str_replace($style, '', $doc)); // Get real description
+
+            if (!empty($doc)) {
+                $body .= "               <param name=\"" . $name . "\" type=\"xs:" . $type . "\" required=\"" . $required . "\" style=\"" . $style . "\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\">\n";
+                $body .= "                  <doc>" . $doc . "</doc>\n";
+                $body .= "               </param>\n";
+            } else {
+                $body .= "               <param name=\"" . $name . "\" type=\"xs:" . $type . "\" required=\"" . $required . "\" style=\"" . $style . "\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\"/>\n";
+            }
         }
-        else {
-            $body .= "               <param name=\"" . $name . "\" type=\"xs:" . $type . "\" required=\"" . $required . "\" style=\"" . $style . "\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\"/>\n";
+
+        if (!empty($reflectedMethod['params'])) {
+            $body .= "            </request>\n";
         }
+
+        $body .= "            <response>\n";
+        $body .= "               <representation mediaType=\"" . $reflectedMethod['response'] . "\"/>\n";
+        $body .= "            </response>\n";
+        $body .= "         </method>\n";
+
+        return $body;
     }
-
-    if (!empty($reflectedMethod['params'])) {
-        $body .= "            </request>\n";
-    }
-
-    $body .= "            <response>\n";
-    $body .= "               <representation mediaType=\"" . $reflectedMethod['response'] . "\"/>\n";
-    $body .= "            </response>\n";
-    $body .= "         </method>\n";
-
-    return $body;
 }

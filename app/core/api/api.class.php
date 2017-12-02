@@ -36,10 +36,9 @@ class Core_API
      * @param $module
      * @param $url
      * @param $http_method
-     * @param $api_version
      * @return array
      */
-    public static function resolveAPIRequest( $module, $url, $http_method, $api_version ) {
+    public static function resolveAPIRequest( $module, $url, $http_method ) {
 
         $request_method = array();
         $api_schema = array();

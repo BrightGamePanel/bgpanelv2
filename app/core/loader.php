@@ -139,7 +139,6 @@ require( LIBS_DIR	. '/phprbac2.0/autoload.php' );
 
 // Authentication Service
 require( CORE_DIR	. '/permissions/auth.class.php' );
-require( CORE_DIR	. '/permissions/auth.perms.class.php' );
 
 // HTTP Status Codes Class
 require( CORE_DIR	. '/http.status.class.php' );

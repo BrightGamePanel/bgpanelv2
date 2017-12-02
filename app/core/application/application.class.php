@@ -36,25 +36,45 @@ abstract class BGP_Abstract_Application
     protected $module = '';
     protected $page = '';
     protected $id = 0;
-    protected $api_version = '';
-    protected $http_headers = array();
 
-    // HTPP Request Attributes
+    // HTTP Request Attributes
     protected $req_url = '';
     protected $req_method = '';
+    protected $req_content_type = 'application/json';
     protected $req_params = array();
 
     // Core Services
     protected $authService = null;
-    protected $api = null;
 
     /**
      * BGP_Application constructor.
+     *
+     * @param $module
+     * @param $page
+     * @param $id
+     * @param $api_version
+     * @param $content_type
      */
-    protected function __construct()
+    public function __construct($module, $page, $id, $api_version, $content_type)
     {
-        // User Authentication Service
-        $this->authService = Core_AuthService::getAuthService();
+        // Initialization
+
+        if (isset($module) && preg_match("#\w#", $module)) {
+            $this->module = strtolower($module);
+        }
+        if (isset($page) && preg_match("#\w#", $page)) {
+            $this->page = strtolower($page);
+        }
+        if (isset($id) && is_numeric($id)) {
+            $this->id = $id;
+        }
+
+        // Sanitize Requested Content Type
+        $this->req_content_type = (!empty($content_type)) ?
+            filter_var($content_type,
+                FILTER_SANITIZE_STRING,
+                FILTER_FLAG_STRIP_HIGH|FILTER_FLAG_STRIP_LOW) :
+            'application/json';
 
         // Request Information
         $this->req_url = Flight::request()->url;
@@ -72,29 +92,9 @@ abstract class BGP_Abstract_Application
     }
 
     /**
-     * Execute Operation
+     * Execute the Query
      *
-     * @param $module
-     * @param $page
-     * @param $id
-     * @param $api_version
-     * @param $http_headers
+     * @return int
      */
-    public function execute($module, $page, $id, $api_version, $http_headers) {
-        if (isset($module) && preg_match("#\w#", $module)) {
-            $this->module = strtolower($module);
-        }
-        if (isset($page) && preg_match("#\w#", $page)) {
-            $this->page = strtolower($page);
-        }
-        if (isset($id) && is_numeric($id)) {
-            $this->id = $id;
-        }
-        if (isset($api_version) && preg_match("#\w#", $api_version)) {
-            $this->api_version = strtolower($api_version);
-        }
-
-        $content_type = (isset($http_headers['CONTENT-TYPE'])) ? filter_var($http_headers['CONTENT-TYPE'], FILTER_SANITIZE_STRING, FILTER_FLAG_STRIP_HIGH|FILTER_FLAG_STRIP_LOW) : 'application/json';
-        $this->http_headers['CONTENT-TYPE'] = $content_type;
-    }
+    public abstract function execute();
 }

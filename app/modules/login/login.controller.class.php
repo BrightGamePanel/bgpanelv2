@@ -135,9 +135,9 @@ class BGP_Controller_Login extends BGP_Controller
 				$authService = Core_AuthService::getAuthService();
 
 				// Reset Login Attempts
-				$authService->rsSecCount();
+				$authService->resetBanCounter();
 
-				$authService->setSessionInfo(
+				$authService->setSession(
 					$result[0]['user_id'],
 					$result[0]['username'],
 					$result[0]['firstname'],
@@ -207,7 +207,7 @@ class BGP_Controller_Login extends BGP_Controller
 
 				// Call security component
 				$authService = Core_AuthService::getAuthService();
-				$authService->incrementSecCount();
+				$authService->incrementBanCounter();
 
 				// Log Event
 				$logger = self::getLogger();
@@ -354,7 +354,7 @@ class BGP_Controller_Login extends BGP_Controller
 				$authService = Core_AuthService::getAuthService();
 
 				// Reset Login Attempts
-				$authService->rsSecCount();
+				$authService->resetBanCounter();
 
 				// Reset User Passwd
 				$plainTextPasswd = bgp_create_random_password( 13 );
@@ -404,7 +404,7 @@ class BGP_Controller_Login extends BGP_Controller
 			else {
 				// Call security component
 				$authService = Core_AuthService::getAuthService();
-				$authService->incrementSecCount();
+				$authService->incrementBanCounter();
 
 				// Log Event
 				$logger = self::getLogger();

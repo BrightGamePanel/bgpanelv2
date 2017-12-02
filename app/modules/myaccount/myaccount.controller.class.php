@@ -166,9 +166,9 @@ class BGP_Controller_Myaccount extends BGP_Controller {
 			}
 
 			// Reload Session
-			$authService->rmSessionInfo();
+			$authService->rmSession();
 
-			$authService->setSessionInfo(
+			$authService->setSession(
 				$uid,
 				$db_data['username'],
 				$db_data['firstname'],

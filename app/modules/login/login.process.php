@@ -73,7 +73,7 @@ switch ($task)
 			}
 		}
 		else {
-			$authService->incrementSecCount(); // Extend ban duration
+			$authService->incrementBanCounter(); // Extend ban duration
 
 			Flight::redirect('/401');
 		}
@@ -125,7 +125,7 @@ switch ($task)
 			}
 		}
 		else {
-			$authService->incrementSecCount(); // Extend ban duration
+			$authService->incrementBanCounter(); // Extend ban duration
 
 			Flight::redirect('/401');
 		}

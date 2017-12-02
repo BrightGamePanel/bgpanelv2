@@ -14,29 +14,28 @@ class BGP_GUI_Application extends BGP_Abstract_Application
 
     /**
      * BGP_GUI_Application constructor.
-     */
-    public function __construct()
-    {
-        parent::__construct();
-    }
-
-    /**
-     * Execute the Query
      *
      * @param $module
      * @param $page
      * @param $id
      * @param $api_version
-     * @param array $http_headers
+     * @param $content_type
+     */
+    public function __construct($module, $page, $id, $api_version, $content_type)
+    {
+        parent::__construct($module, $page, $id, $api_version, $content_type);
+
+        // User Authentication Service
+        $this->authService = Core_AuthService_GUI::getService();
+    }
+
+    /**
+     * Execute the Query
+     *
      * @return int
      */
-    public function execute($module, $page, $id, $api_version, $http_headers = array())
+    public function execute()
     {
-        // Initialize
-
-        parent::execute($module, $page, $id, $api_version, $http_headers);
-        unset($module, $page, $id, $api_version, $http_headers);
-
         // Verify Execution Context
 
         if (!$this->check() ) {
@@ -52,7 +51,7 @@ class BGP_GUI_Application extends BGP_Abstract_Application
     private function gui() {
         $authService = Core_AuthService::getAuthService();
 
-        if ($authService->getSessionValidity() == FALSE) {
+        if ($authService->isSignedIn() == FALSE) {
 
             // The user is not logged in
 

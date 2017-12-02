@@ -31,7 +31,7 @@
  * Application Wrapper
  */
 
-class BGP_Bootstrap
+final class BGP_Bootstrap
 {
     /**
      * BGP_Application main
@@ -44,26 +44,39 @@ class BGP_Bootstrap
      */
     public static function start($module, $page, $id, $api_version = BGP_API_VERSION)
     {
+        // Check API version
+
+        if ($api_version != BGP_API_VERSION) {
+
+            // Trigger error when the requested API version
+            // is not compatible with the current API version
+            // 301 MOVED PERMANENTLY
+            return 301;
+        }
 
         // Read HTTP Headers
         $http_headers = array_change_key_case(apache_request_headers(), CASE_UPPER);
 
-        if (!isset($http_headers['CONTENT-TYPE']) || $http_headers['CONTENT-TYPE'] == "text/html") {
+        if (!isset($http_headers['CONTENT-TYPE']) ||
+            (isset($http_headers['CONTENT-TYPE']) && $http_headers['CONTENT-TYPE'] == "text/html")) {
 
             // GUI
-            $bgpanel = new BGP_GUI_Application();
+            $app = new BGP_GUI_Application($module,
+                $page,
+                $id,
+                $api_version,
+                "text/html");
         } else {
 
-            // API
-            $bgpanel = new BGP_API_Application();
+            // RestAPI
+            $app = new BGP_API_Application($module,
+                $page,
+                $id,
+                $api_version,
+                $http_headers['CONTENT-TYPE']);
         }
 
         // Execute
-        return $bgpanel->execute(
-            $module,
-            $page,
-            $id,
-            $api_version,
-            $http_headers);
+        return $app->execute();
     }
 }
