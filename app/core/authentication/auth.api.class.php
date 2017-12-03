@@ -29,6 +29,9 @@
 
 /**
  * API Stateless Authentication Service
+ *
+ * Relies on X-API-HEADERS, or PHP_AUTH_USER otherwise
+ * Uses also IP whitelisting mechanism
  */
 final class Core_AuthService_API extends Core_AuthService
 {
@@ -53,6 +56,8 @@ final class Core_AuthService_API extends Core_AuthService
      */
     protected function __construct() {
         parent::__construct();
+
+        $_SESSION = array();
 
         // Credentials
 
@@ -202,7 +207,7 @@ final class Core_AuthService_API extends Core_AuthService
 
         try {
             $sth = $dbh->prepare("
-				SELECT user_id
+				SELECT user_id, username
 				FROM " . DB_PREFIX . "user
 				WHERE
 					username = :username AND
@@ -270,7 +275,7 @@ final class Core_AuthService_API extends Core_AuthService
 
             session_regenerate_id( TRUE );
             $this->uid = $result[0]['user_id'];
-            $_SESSION['UID'] = $this->uid;
+            $_SESSION['LOGGED_USER'] = $result[0]['username']; // Logging requirement
 
             return TRUE;
         }
@@ -303,17 +308,13 @@ final class Core_AuthService_API extends Core_AuthService
      */
     public function checkMethodAuthorization($module = '', $method = '')
     {
-        if ($this->isLoggedIn() === FALSE) {
-            return FALSE;
-        }
-
         if (empty($module) || empty($method)) {
             return FALSE;
         }
 
         // Are you root or do you have explicitly rights on this resource ?
 
-        $permissionPath = self::buildPermissionPath($module, $method);
+        $permissionPath = self::buildMethodPermissionPath($module, $method);
 
         if (self::$rbac->Users->hasRole('root', $this->uid) || self::$rbac->check($permissionPath, $this->uid)) {
             return TRUE;

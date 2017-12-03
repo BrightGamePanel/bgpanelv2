@@ -28,25 +28,47 @@
 
 
 /**
- * API Authentication Service
+ * Generic Authentication Service
+ *
+ * Relies on JWT tokens
  */
 final class Core_AuthService_Generic extends Core_AuthService
 {
+    // PUBLIC SESSION
+    // Logging requirement
+    private $logged_user = ''; // Username
+
+    // JWT Token
+    private $uid = 0;
+    private $firstname = '';
+    private $lastname = '';
+    private $lang = '';
+    private $template = '';
+
+    // Must implement
+    //| HS256        | HMAC using SHA-256                | Required       |
+    //| HS384        | HMAC using SHA-384                | Optional       |
+    //| HS512        | HMAC using SHA-512                | Optional       |
+
     protected function __construct() {
         parent::__construct();
 
-        if ( !empty($_SESSION['USERNAME']) && !empty($_SESSION['UID']) ) {
-            $this->uid      = $_SESSION['UID'];
-            $this->username = $_SESSION['USERNAME'];
-        }
+        // TODO : verify that the remote client has a valid token
+        // TODO : Check both session and request body
+
+
+        /**
+         *
+         * Exemple of token
+         */
+        $token = array (
+            'username' => $this->username,
+            'token' => session_id(),
+            'key' => $this->auth_key,
+            'salt' => md5(time())
+        );
     }
 
-    /**
-     * Service Handler
-     *
-     * @return Core_AuthService
-     * @access public
-     */
     public static function getAuthService() {
 
         if (empty(self::$authService) ||

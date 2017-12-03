@@ -71,7 +71,6 @@ class BGP_API_Application extends BGP_Abstract_Application
         // Check Authorizations
 
         if ($this->authService->login() === FALSE) {
-            $this->authService->logout();
             return 403; // Forbidden
         }
 

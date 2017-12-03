@@ -97,14 +97,25 @@ abstract class Core_AuthService
     }
 
     /**
-     * Build permission path from a given module name and method
+     * Build permission path from a given module name and a controller method
      *
      * @param $module
      * @param $method
      * @return string
      */
-    protected static function buildPermissionPath($module, $method) {
-        return ucfirst($module) . '/' . $method;
+    protected static function buildMethodPermissionPath($module, $method) {
+        return ucfirst(strtolower($module)) . '::' . $method;
+    }
+
+    /**
+     * Build permission path from a given module name and a page
+     *
+     * @param $module
+     * @param $page
+     * @return string
+     */
+    protected static function buildPagePermissionPath($module, $page) {
+        return ucfirst(strtolower($module)) . '/' . strtolower($page);
     }
 
     /**

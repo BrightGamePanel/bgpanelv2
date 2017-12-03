@@ -39,8 +39,6 @@ function bgp_api_autoloader ($className) {
 
     if ( $className == 'Core_API' ) {
         require( CORE_DIR	. '/api/api.class.php' );
-    } else if ( $className == 'BGP_API_Application' ) {
-        require( CORE_DIR	. '/application/api.application.class.php' );
     }
 };
 spl_autoload_register('bgp_api_autoloader');
@@ -57,21 +55,6 @@ function bgp_mod_controllers_autoloader ($className) {
     }
 };
 spl_autoload_register('bgp_mod_controllers_autoloader');
-
-/**
- * GUI Parts Autoloader
- * Graphical User Interface Builder
- * @param $className
- */
-function bgp_gui_parts_autoloader ($className) {
-
-    if ( $className == 'Core_GUI' ) {
-        require( CORE_DIR	. '/gui/gui.class.php' );
-    } else if ( $className == 'Core_GUI_JS') {
-        require( CORE_DIR	. '/gui/gui.js.class.php' );
-    }
-};
-spl_autoload_register('bgp_gui_parts_autoloader');
 
 /**
  * INSTALL WIZARD LOADER
@@ -103,9 +86,21 @@ if (defined('INSTALL_WIZARD')) {
 /**
  * APPLICATION
  */
-// Main Application Wrapper
+// Main Application Wrappers
 require( CORE_DIR	. '/application/application.class.php' );
 require( CORE_DIR	. '/application/bootstrap.class.php' );
+function bgp_app_autoloader ($className) {
+
+    if ( $className == 'BGP_API_Application' ) {
+        require( CORE_DIR	. '/application/api.application.class.php' );
+    } else if ( $className == 'BGP_GUI_Application') {
+        require( CORE_DIR	. '/application/gui.application.class.php' );
+        // GUI Parts
+        require( CORE_DIR	. '/gui/gui.class.php' );
+        require( CORE_DIR	. '/gui/gui.js.class.php' );
+    }
+};
+spl_autoload_register('bgp_app_autoloader');
 
 // PHP 5.5 Functions Implementation
 require( LIBS_DIR	. '/php5.5/func.inc.php');
@@ -138,7 +133,21 @@ require( LIBS_DIR	. '/phpseclib/ANSI.php' );
 require( LIBS_DIR	. '/phprbac2.0/autoload.php' );
 
 // Authentication Service
-require( CORE_DIR	. '/permissions/auth.class.php' );
+require( CORE_DIR	. '/authentication/auth.class.php' );
+function bgp_auth_autoloader ($className) {
+
+    if ( $className == 'Core_AuthService_API' ) {
+        require( CORE_DIR	. '/authentication/auth.api.class.php' );
+    } else if ( $className == 'Core_AuthService_Generic') {
+        // JWT
+        require( LIBS_DIR   . '/jwt/JWT.php');
+        require( LIBS_DIR   . '/jwt/BeforeValidException.php');
+        require( LIBS_DIR   . '/jwt/ExpiredException.php');
+        require( LIBS_DIR   . '/jwt/SignatureInvalidException.php');
+        require( CORE_DIR	. '/authentication/auth.generic.class.php' );
+    }
+};
+spl_autoload_register('bgp_auth_autoloader');
 
 // HTTP Status Codes Class
 require( CORE_DIR	. '/http.status.class.php' );
