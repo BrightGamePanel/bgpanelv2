@@ -57,8 +57,6 @@ final class Core_AuthService_API extends Core_AuthService
     protected function __construct() {
         parent::__construct();
 
-        $_SESSION = array();
-
         // Credentials
 
         $headers = array_change_key_case(apache_request_headers(), CASE_UPPER);
@@ -275,7 +273,6 @@ final class Core_AuthService_API extends Core_AuthService
 
             session_regenerate_id( TRUE );
             $this->uid = $result[0]['user_id'];
-            $_SESSION['LOGGED_USER'] = $result[0]['username']; // Logging requirement
 
             return TRUE;
         }

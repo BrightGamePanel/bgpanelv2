@@ -53,6 +53,9 @@ final class Core_AuthService_Generic extends Core_AuthService
     protected function __construct() {
         parent::__construct();
 
+        session_start();
+        $_SESSION['TIMESTAMP'] = time();
+
         // TODO : verify that the remote client has a valid token
         // TODO : Check both session and request body
 
@@ -80,7 +83,12 @@ final class Core_AuthService_Generic extends Core_AuthService
         return self::$authService;
     }
 
+    public function logout()
+    {
+        $_SESSION = array(); // Destroy session variables
 
+        parent::logout();
+    }
 
 
     /**

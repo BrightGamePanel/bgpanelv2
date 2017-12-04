@@ -143,9 +143,7 @@ abstract class Core_AuthService
      */
     public function logout() {
 
-        $_SESSION = array(); // Destroy session variables
-
-        session_regenerate_id(TRUE);
+        session_destroy();
 
         self::$authService = null;
     }

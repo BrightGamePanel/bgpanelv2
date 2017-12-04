@@ -43,15 +43,46 @@ class BGP_Controller extends BGP_Module
 		parent::__construct( $module_name );
 	}
 
-	//public static function getLogger( $isApi = FALSE ) {
-    public static function getLogger( $isApi ) {
+    /**
+     * LOGGING Configuration
+     * Apache Log4php configuration
+     *
+     * @link http://logging.apache.org/log4php/docs/configuration.html
+     */
+    public static function getLogger() {
 
-		if ($isApi) {
-            Logger::configure(bgp_log4php_api_conf());
-            return Logger::getLogger('api');
-        } else {
-            Logger::configure( bgp_log4php_def_conf() );
-            return Logger::getLogger( self::getModuleName() );
-		}
+        // TODO : implement UID resolution
+        $logged_user = str_pad(666, 8);
+
+	    // Configure logging
+        Logger::configure(
+            array(
+                'rootLogger' => array(
+                    'appenders' => array('default')
+                ),
+                'loggers' => array(
+                    'core' => array(
+                        'additivity' => false,
+                        'appenders' => array('coreAppender')
+                    )
+                ),
+                'appenders' => array(
+                    'default' => array(
+                        'class' => 'LoggerAppenderFile',
+                        'layout' => array(
+                            'class' => 'LoggerLayoutPattern',
+                            'params' => array(
+                                'conversionPattern' => '[%date{Y-m-d H:i:s,u}] %-5level %-10.10logger ' . $logged_user . ' %-15.15server{REMOTE_ADDR} %-35server{REQUEST_URI} "%msg" %-30class %-30method %request%n'
+                            )
+                        ),
+                        'params' => array(
+                            'file' => REAL_LOGGING_DIR . '/' . date('Y-m-d') . '.txt',
+                            'append' => true
+                        )
+                    )
+                )
+            )
+        );
+        return Logger::getLogger( self::getModuleName() );
 	}
 }
