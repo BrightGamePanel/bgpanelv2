@@ -31,7 +31,7 @@
  * API Stateless Authentication Service
  *
  * Relies on X-API-HEADERS, or PHP_AUTH_USER otherwise
- * Uses also IP whitelisting mechanism
+ * Uses also an IP whitelisting mechanism to prevent unknown hosts
  */
 final class Core_AuthService_API extends Core_AuthService
 {
@@ -76,14 +76,6 @@ final class Core_AuthService_API extends Core_AuthService
             FILTER_SANITIZE_STRING, FILTER_FLAG_STRIP_HIGH|FILTER_FLAG_STRIP_LOW) : NULL;
     }
 
-    /**
-     * On stateless connections we destroy the session at the end of the application process
-     */
-    public function __destruct()
-    {
-       $this->logout();
-    }
-
     public static function getService() {
 
         if (empty(self::$authService) ||
@@ -95,6 +87,16 @@ final class Core_AuthService_API extends Core_AuthService
         return self::$authService;
     }
 
+    /**
+     * Login Method
+     *
+     * Fetches authentication information
+     * Checks that those information are valid or not
+     *
+     * Returns TRUE on SUCCESS, FALSE otherwise
+     *
+     * @return boolean
+     */
     public function login() {
 
         if ($this->isLoggedIn() === TRUE) {
@@ -293,44 +295,31 @@ final class Core_AuthService_API extends Core_AuthService
     }
 
     /**
-     * Check Authorization Method
-     * dedicated to Module Methods
+     * Check Authorization dedicated to Module Methods
      *
      * TRUE if the access is granted, FALSE otherwise
      *
      * @param string $module
      * @param string $method
      *
-     * @return boolean
+     * @return bool
      */
-    public function checkMethodAuthorization($module = '', $method = '')
+    function checkMethodAuthorization($module = '', $method = '')
     {
-        if (empty($module) || empty($method)) {
-            return FALSE;
-        }
-
-        // Are you root or do you have explicitly rights on this resource ?
-
-        $permissionPath = self::buildMethodPermissionPath($module, $method);
-
-        if (self::$rbac->Users->hasRole('root', $this->uid) || self::$rbac->check($permissionPath, $this->uid)) {
-            return TRUE;
-        }
-
-        return FALSE;
+        return parent::_checkMethodAuthorization($module, $method, $this->uid);
     }
 
     /**
-     * Check Authorization Method
-     * dedicated to Module Pages
+     * Check Authorization dedicated to Module Pages
      *
      * TRUE if the access is granted, FALSE otherwise
      *
      * @param string $module
      * @param string $page
-     * @return boolean
+     *
+     * @return bool
      */
-    public function checkPageAuthorization($module = '', $page = '')
+    function checkPageAuthorization($module = '', $page = '')
     {
         return FALSE;
     }

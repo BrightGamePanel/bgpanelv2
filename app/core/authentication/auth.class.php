@@ -61,14 +61,8 @@ abstract class Core_AuthService
 		// SECRET KEYS
 		$CONFIG = parse_ini_file( CONF_SECRET_INI );
 
-		// LOGGED IN KEY
-		self::$auth_key = $CONFIG['APP_LOGGED_IN_KEY'];
-		if ( empty($this->auth_key) ) {
-			trigger_error("Core_AuthService -> Auth key is missing !", E_USER_ERROR);
-		}
-
 		// SESSION KEY
-		self::$session_key = $CONFIG['APP_SESSION_KEY'];
+		self::$session_key = $CONFIG['APP_TOKEN_KEY'];
 		if ( empty($this->session_key) ) {
 			trigger_error("Core_AuthService -> Session key is missing !", E_USER_ERROR);
 		}
@@ -121,12 +115,11 @@ abstract class Core_AuthService
     /**
      * Service Handler
      */
-    public static function getService() { return null; }
+    public static function getService(){}
 
     /**
      * Login Method
      *
-     * Initiates or Resumes a valid session
      * Fetches authentication information
      * Checks that those information are valid or not
      *
@@ -142,9 +135,6 @@ abstract class Core_AuthService
      * Destroys the session
      */
     public function logout() {
-
-        session_destroy();
-
         self::$authService = null;
     }
 
@@ -158,27 +148,276 @@ abstract class Core_AuthService
     public abstract function isLoggedIn();
 
     /**
-     * Check Authorization Method
-     * dedicated to Module Methods
+     * Check Authorization dedicated to Module Methods
      *
      * TRUE if the access is granted, FALSE otherwise
      *
      * @param string $module
      * @param string $method
      *
-     * @return boolean
+     * @return bool
      */
-    public abstract function checkMethodAuthorization($module = '', $method = '');
+    abstract function checkMethodAuthorization($module = '', $method = '');
 
     /**
-     * Check Authorization Method
-     * dedicated to Module Pages
+     * Default implementation of checkMethodAuthorization()
+     *
+     * @param string $module
+     * @param string $method
+     * @param int $uid
+     *
+     * @return bool
+     */
+    protected function _checkMethodAuthorization($module = '', $method = '', $uid = 0) {
+
+        if (empty($module) || empty($method) || !is_numeric($uid)) {
+            return FALSE;
+        }
+
+        // Are you root or do you have explicitly rights on this resource ?
+
+        $permissionPath = self::buildMethodPermissionPath($module, $method);
+
+        if ($uid === 0) {
+            return self::$rbac->check($permissionPath, 'guest');
+        }
+
+        if (self::$rbac->Users->hasRole('root', $uid) || self::$rbac->check($permissionPath, $uid)) {
+            return TRUE;
+        }
+
+        return FALSE;
+    }
+
+    /**
+     * Check Authorization dedicated to Module Pages
      *
      * TRUE if the access is granted, FALSE otherwise
      *
      * @param string $module
      * @param string $page
-     * @return boolean
+     *
+     * @return bool
      */
-    public abstract function checkPageAuthorization($module = '', $page = '');
+    abstract function checkPageAuthorization($module = '', $page = '');
+
+    /**
+     * Default implementation of checkPageAuthorization()
+     *
+     * @param string $module
+     * @param string $page
+     * @param int $uid
+     *
+     * @return bool
+     */
+    protected function _checkPageAuthorization($module = '', $page = '', $uid = 0) {
+
+        if (empty($module) || empty($page) || !is_numeric($uid)) {
+            return FALSE;
+        }
+
+        // Are you root or do you have explicitly rights on this resource ?
+
+        $permissionPath = self::buildPagePermissionPath($module, $page);
+
+        if ($uid === 0) {
+            return self::$rbac->check($permissionPath, 'guest');
+        }
+
+        if (self::$rbac->Users->hasRole('root', $uid) || self::$rbac->check($permissionPath, $uid)) {
+            return TRUE;
+        }
+
+        return FALSE;
+    }
+
+    // Todo : clean that shit
+
+    /*
+    public function getUserPermissions($uid) {
+
+        $authorizations = array();
+
+        if (empty($uid)) {
+            return $authorizations;
+        }
+
+        // Notice:
+        // root users access all methods and resources
+
+        if ($this->rbac->Users->hasRole( 'root', $uid )) {
+
+            // Parse all modules
+
+            $handle = opendir( MODS_DIR );
+
+            if ($handle) {
+
+                // Foreach modules
+                while (false !== ($entry = readdir($handle))) {
+
+                    // Dump specific directories
+                    if ($entry == "." || $entry == "..") {
+
+                        continue;
+                    }
+
+                    $module = $entry;
+
+                    // Get Public Methods
+                    $methods = Core_Reflection::getControllerPublicMethods( $module );
+
+                    if (empty($methods)) {
+                        continue;
+                    }
+
+                    foreach ($methods as $key => $value) {
+                        list($module, $method) = explode(".", $value['method']);
+                        $module = strtolower($module);
+
+                        $authorizations[$module][] = $method;
+                    }
+                }
+
+                closedir($handle);
+            }
+
+            return $authorizations;
+        }
+
+        // fetch all allowed resources and methods
+
+        $roles = $rbac->Users->allRoles( $uid );
+        $perms = array();
+
+        foreach ($roles as $role) {
+
+            $perms[] = $rbac->Roles->permissions( $role['ID'], false );
+        }
+
+        foreach ($perms as $perm) {
+
+            if (empty($perm)) {
+
+                continue;
+            }
+
+            foreach ($perm as $p) {
+
+                // filter pages and get only modules and methods
+                if (substr_count($p['Title'], '/') === intval(1)) {
+                    $module = $p['Title'];
+                    $module = substr(strtolower($module), 0, -1);
+
+                    if (!isset($authorizations[$module]) && !in_array($module, self::$restricted_modules)) {
+                        $authorizations[$module] = array();
+                    }
+                }
+                else if (preg_match("#(^[A-Z])*(\.)#", $p['Title'])) {
+                    list($module, $method) = explode(".", $p['Title']);
+                    $module = strtolower($module);
+
+                    // append method only if the module was allowed
+                    if (isset($authorizations[$module])) {
+                        $authorizations[$module][] = $method;
+                    }
+                }
+            }
+        }
+
+        return $authorizations;
+    }
+    */
+
+    /*
+    private function updateUserActivity() {
+
+        $dbh = Core_DBH::getDBH();
+
+        // Update User Activity on page request
+
+        $last_activity = date('Y-m-d H:i:s');
+
+        $sth = $dbh->prepare("
+                    UPDATE " . DB_PREFIX . "user
+                    SET
+                        last_activity	= :last_activity
+                    WHERE
+                        user_id			= :user_id
+                    ;");
+
+        $uid = Core_AuthService::getSessionInfo('ID');
+        $sth->bindParam(':last_activity', $last_activity);
+        $sth->bindParam(':user_id', $uid);
+
+        $sth->execute();
+    }
+    */
+
+
+
+    /*
+    protected function isBanned() {
+
+        // No ban registered for this session
+        if ( empty($this->session['SEC_BAN']) ) {
+            return FALSE;
+        }
+
+        // Reset the ban if this one has expired
+        if ( $this->session['SEC_BAN'] < time() ) {
+            $this->resetBanCounter();
+            return FALSE;
+        }
+
+        return TRUE;
+    }
+
+    protected function incrementBanCounter() {
+
+        // Increment security counter
+        if ( empty($this->session['SEC_COUNT']) ) {
+            $this->session['SEC_COUNT'] = 1;
+        }
+        else {
+            $this->session['SEC_COUNT'] += 1;
+        }
+
+        // Push to global $_SESSION
+        $_SESSION = $this->session;
+    }
+
+    protected function resetBanCounter() {
+
+        if ( !empty($this->session['SEC_COUNT']) ) {
+            // Reset counter
+            unset($this->session['SEC_COUNT']);
+        }
+
+        // Push to global $_SESSION
+        $_SESSION = $this->session;
+    }
+
+    protected function ban() {
+
+        if ($this->session['SEC_COUNT'] <= CONF_SEC_LOGIN_ATTEMPTS) {
+            return;
+        }
+
+        // Ban the user if too many attempts have been done
+        // or the user is already banned but keeps trying
+
+        // Set ban
+        $this->session['SEC_BAN'] = time() + CONF_SEC_BAN_DURATION; // Mark the end of the ban
+
+        // Push to global $_SESSION
+        $_SESSION = $this->session;
+
+        // Log Event
+        Logger::configure( bgp_log4php_def_conf() );
+        $logger = Logger::getLogger( 'core.auth' );
+        $logger->info('Session banned.');
+    }
+    */
+
 }

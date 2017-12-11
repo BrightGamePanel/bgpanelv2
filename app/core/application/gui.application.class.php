@@ -26,7 +26,7 @@ class BGP_GUI_Application extends BGP_Abstract_Application
         parent::__construct($module, $page, $id, $api_version, $content_type);
 
         // User Authentication Service
-        $this->authService = Core_AuthService_Generic::getService();
+        $this->authService = Core_AuthService_Session::getService();
     }
 
     /**

@@ -134,17 +134,18 @@ require( LIBS_DIR	. '/phprbac2.0/autoload.php' );
 
 // Authentication Service
 require( CORE_DIR	. '/authentication/auth.class.php' );
+// JWT
+require( LIBS_DIR   . '/jwt/JWT.php');
+require( LIBS_DIR   . '/jwt/BeforeValidException.php');
+require( LIBS_DIR   . '/jwt/ExpiredException.php');
+require( LIBS_DIR   . '/jwt/SignatureInvalidException.php');
+require( CORE_DIR	. '/authentication/auth.jwt.class.php' );
 function bgp_auth_autoloader ($className) {
 
     if ( $className == 'Core_AuthService_API' ) {
         require( CORE_DIR	. '/authentication/auth.api.class.php' );
-    } else if ( $className == 'Core_AuthService_Generic') {
-        // JWT
-        require( LIBS_DIR   . '/jwt/JWT.php');
-        require( LIBS_DIR   . '/jwt/BeforeValidException.php');
-        require( LIBS_DIR   . '/jwt/ExpiredException.php');
-        require( LIBS_DIR   . '/jwt/SignatureInvalidException.php');
-        require( CORE_DIR	. '/authentication/auth.generic.class.php' );
+    } else if ( $className == 'Core_AuthService_Session') {
+        require( CORE_DIR	. '/authentication/auth.session.class.php' );
     }
 };
 spl_autoload_register('bgp_auth_autoloader');

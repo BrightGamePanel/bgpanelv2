@@ -25,16 +25,15 @@ class BGP_API_Application extends BGP_Abstract_Application
     {
         parent::__construct($module, $page, $id, $api_version, $content_type);
 
-        // User Authentication Service
+        // User Authentication Services
         $apiAuthService = Core_AuthService_API::getService();
-        $genericAuthService = Core_AuthService_API::getService();
+        $jwtAuthService = Core_AuthService_JWT::getService();
 
-        // Stateful connections are relying on another service
-        if ($genericAuthService->isLoggedIn() === TRUE) {
-            // Stateful
-            $this->authService = $genericAuthService;
+        // JWT connections are relying on another service
+        if ($jwtAuthService->isLoggedIn() === TRUE) {
+            // JWT Auth
+            $this->authService = $jwtAuthService;
         } else {
-            // Stateless
             $this->authService = $apiAuthService;
         }
     }
