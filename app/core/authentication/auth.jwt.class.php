@@ -270,8 +270,10 @@ final class Core_AuthService_JWT extends Core_AuthService
 
         $dbh = Core_DBH::getDBH();
 
-        // Fetch information from the database
-        $sth = $dbh->prepare("
+        try {
+            // Fetch information from the database
+
+            $sth = $dbh->prepare("
                 SELECT username, last_ip
                 FROM " . DB_PREFIX . "user
                 WHERE
@@ -279,11 +281,16 @@ final class Core_AuthService_JWT extends Core_AuthService
                     status = 'Active'
                 ;");
 
-        $sth->bindParam( ':user_id', $decoded_token['uid'] );
+            $sth->bindParam( ':user_id', $decoded_token['uid'] );
 
-        $sth->execute();
+            $sth->execute();
 
-        $userResult = $sth->fetchAll(PDO::FETCH_ASSOC);
+            $userResult = $sth->fetchAll(PDO::FETCH_ASSOC);
+        }
+        catch (PDOException $e) {
+            echo $e->getMessage().' in '.$e->getFile().' on line '.$e->getLine();
+            die();
+        }
 
         if ($userResult[0]['username'] == $decoded_token['logged_user'] &&
             $userResult[0]['last_ip'] == $decoded_token['ip'] &&

@@ -92,9 +92,44 @@ abstract class BGP_Abstract_Application
     }
 
     /**
-     * Execute the Query
+     * Execute the Query and Update User Activity
      *
      * @return int
      */
     public abstract function execute();
+
+
+    /**
+     * Update User Activity by User-Id
+     * Must be added to any execute() stub of child classes
+     *
+     * @return void
+     */
+    protected function updateUserActivity() {
+
+        if ($this->authService == null || $this->authService->isLoggedIn() === FALSE) {
+            return;
+        }
+
+        $dbh = Core_DBH::getDBH();
+
+        try {
+            $sth = $dbh->prepare("
+                        UPDATE " . DB_PREFIX . "user
+                        SET
+                            last_activity	= :last_activity
+                        WHERE
+                            user_id			= :user_id
+                        ;");
+
+            $sth->bindParam(':last_activity', date('Y-m-d H:i:s'));
+            $sth->bindParam(':user_id', $this->authService->getUid());
+
+            $sth->execute();
+        }
+        catch (PDOException $e) {
+            echo $e->getMessage().' in '.$e->getFile().' on line '.$e->getLine();
+            die();
+        }
+    }
 }

@@ -323,4 +323,14 @@ final class Core_AuthService_API extends Core_AuthService
     {
         return FALSE;
     }
+
+    /**
+     * Gets the User-Id of the current user
+     *
+     * @return int
+     */
+    public function getUid()
+    {
+        return $this->uid;
+    }
 }

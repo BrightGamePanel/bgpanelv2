@@ -49,12 +49,6 @@ final class Core_AuthService_Session extends Core_AuthService {
         $this->wrapped_jwt_service = Core_AuthService_JWT::getService();
     }
 
-    function __destruct() {
-
-        // Force Logout
-        $this->logout();
-    }
-
     public static function getService() {
 
         if (empty(self::$authService) ||
