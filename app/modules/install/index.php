@@ -30,8 +30,7 @@ define('LICENSE', 'GNU GENERAL PUBLIC LICENSE - Version 3, 29 June 2007');
 /**
  * Install Wizard Version
  */
-define('WIZARDVERSION', 'v2.5.1');
-define('INSTALL_WIZARD', 'INSTALL_WIZARD');
+define('BGP_WIZARD_VERSION', 'v3.0.0');
 
 //---------------------------------------------------------+
 
@@ -98,20 +97,20 @@ switch (@$task)
 			<script src="./bootstrap/js/jquery.js"></script>
 			<script src="./bootstrap/js/bootstrap.js"></script>
 		<!-- Style -->
-			<link href="./bootstrap/css/bootstrap.css" rel="stylesheet">
+			<link href="bootstrap/css/bootstrap.css" rel="stylesheet">
 			<style type="text/css">
 			body {
 				padding-top: 60px;
 				padding-bottom: 40px;
 			}
 			</style>
-			<link href="./bootstrap/css/bootstrap-responsive.css" rel="stylesheet">
+			<link href="bootstrap/css/bootstrap-responsive.css" rel="stylesheet">
 		<!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
 			<!--[if lt IE 9]>
 			  <script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script>
 			<![endif]-->
 		<!-- Favicon -->
-			<link rel="shortcut icon" href="./bootstrap/img/favicon.ico">
+			<link rel="shortcut icon" href="bootstrap/img/favicon.ico">
 	</head>
 
 	<body>
@@ -1121,7 +1120,6 @@ CRYPT_RSA_MODE						= " . $CRYPT_RSA_MODE . "
 			$APP_SSH_KEY 		= hash('sha512', md5(str_shuffle(time()))); usleep( rand(1, 1000) );
 			$APP_STEAM_KEY		= hash('sha512', md5(str_shuffle(time()))); usleep( rand(1, 1000) );
 			$APP_AUTH_SALT		= hash('sha512', md5(str_shuffle(time()))); usleep( rand(1, 1000) );
-			$APP_LOGGED_IN_KEY 	= hash('sha512', md5(str_shuffle(time()))); usleep( rand(1, 1000) );
 			$APP_SESSION_KEY	= hash('sha512', md5(str_shuffle(time())));
 
 			if (is_writable( CONF_SECRET_INI )) {
@@ -1130,8 +1128,7 @@ CRYPT_RSA_MODE						= " . $CRYPT_RSA_MODE . "
 APP_SSH_KEY 		= \"".$APP_SSH_KEY."\"
 APP_STEAM_KEY		= \"".$APP_STEAM_KEY."\"
 APP_AUTH_SALT		= \"".$APP_AUTH_SALT."\"
-APP_LOGGED_IN_KEY 	= \"".$APP_LOGGED_IN_KEY."\"
-APP_SESSION_KEY 	= \"".$APP_SESSION_KEY."\"
+APP_TOKEN_KEY 	= \"".$APP_SESSION_KEY."\"
 ";
 				fwrite($handle, $data);
 				fclose($handle);
@@ -1404,7 +1401,7 @@ APP_API_KEY 		= \"".$APP_API_KEY."\"
 ?>
 				</div>
 				<hr>
-				<i class="icon-share-alt"></i>&nbsp;<a href="../">Login</a>
+				<i class="icon-share-alt"></i>&nbsp;<a href="../../../">Login</a>
 <?php
 	}
 ?>

@@ -57,33 +57,6 @@ function bgp_mod_controllers_autoloader ($className) {
 spl_autoload_register('bgp_mod_controllers_autoloader');
 
 /**
- * INSTALL WIZARD LOADER
- */
-if (defined('INSTALL_WIZARD')) {
-
-    // BrightGamePanel Functions
-    require(APP_DIR . '/core/inc/func.inc.php');
-
-    // PHPSeclib
-    require(LIBS_DIR . '/phpseclib/RSA.php');
-
-    // Module Class Definition
-    require(APP_DIR . '/core/module.class.php');
-
-    // Controller Class Definition
-    require(APP_DIR . '/core/controller.module.class.php');
-
-    // PHP DOC Parser
-    require(LIBS_DIR . '/docblockparser/doc_block.php');
-
-    // Module Reflection Class
-    require(APP_DIR . '/core/reflection.class.php');
-
-    // Exit
-    return;
-}
-
-/**
  * APPLICATION
  */
 // Main Application Wrappers
@@ -91,7 +64,10 @@ require( CORE_DIR	. '/application/application.class.php' );
 require( CORE_DIR	. '/application/bootstrap.class.php' );
 function bgp_app_autoloader ($className) {
 
-    if ( $className == 'BGP_API_Application' ) {
+    if ( $className == 'BGP_Installer_Application') {
+        require( CORE_DIR	. '/application/installer.application.class.php' );
+    }
+    else if ( $className == 'BGP_API_Application' ) {
         require( CORE_DIR	. '/application/api.application.class.php' );
     } else if ( $className == 'BGP_GUI_Application') {
         require( CORE_DIR	. '/application/gui.application.class.php' );
@@ -116,9 +92,6 @@ require( LIBS_DIR	. '/valitron/Validator.php' );
 
 // Apache log4php
 require( LIBS_DIR	. '/log4php/Logger.php' );
-
-// Flight Framework
-require( LIBS_DIR	. '/flight/Flight.php' );
 
 // PHP-GetText Framework
 require( LIBS_DIR	. '/php-gettext/gettext.inc.php' );

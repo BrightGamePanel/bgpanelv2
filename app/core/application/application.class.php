@@ -52,10 +52,9 @@ abstract class BGP_Abstract_Application
      * @param $module
      * @param $page
      * @param $id
-     * @param $api_version
      * @param $content_type
      */
-    public function __construct($module, $page, $id, $api_version, $content_type)
+    public function __construct($module, $page, $id, $content_type)
     {
         // Initialization
 

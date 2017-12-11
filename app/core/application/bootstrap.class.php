@@ -42,12 +42,12 @@ final class BGP_Bootstrap
      * @param $api_version
      * @return int
      */
-    public static function start($module, $page, $id, $api_version = BGP_API_VERSION)
+    public static function start($module, $page, $id, $api_version = null)
     {
-        // Check API version
 
-        if ($api_version != BGP_API_VERSION) {
+        if (!empty($api_version) && $api_version != self::getFWVersion()['API_VERSION']) {
 
+            // Check API version
             // Trigger error when the requested API version
             // is not compatible with the current API version
             // 301 MOVED PERMANENTLY
@@ -60,23 +60,182 @@ final class BGP_Bootstrap
         if (!isset($http_headers['CONTENT-TYPE']) ||
             (isset($http_headers['CONTENT-TYPE']) && $http_headers['CONTENT-TYPE'] == "text/html")) {
 
-            // GUI
-            $app = new BGP_GUI_Application($module,
-                $page,
-                $id,
-                $api_version,
-                "text/html");
+            if ($module == 'install') {
+
+                // INSTALL WIZARD
+                $app = new BGP_Installer_Application(
+                    'install',
+                    $page,
+                    $id,
+                    "text/html"
+                );
+            } else {
+
+                // GUI
+                self::extendedInit();
+                $app = new BGP_GUI_Application(
+                    $module,
+                    $page,
+                    $id,
+                    "text/html"
+                );
+            }
         } else {
 
             // RestAPI
-            $app = new BGP_API_Application($module,
+            self::extendedInit();
+            $app = new BGP_API_Application(
+                $module,
                 $page,
                 $id,
-                $api_version,
-                $http_headers['CONTENT-TYPE']);
+                $http_headers['CONTENT-TYPE']
+            );
         }
 
         // Execute
         return $app->execute();
+    }
+
+    /**
+     * Extended Initialization Procedure
+     *
+     * @return void
+     */
+    private static function extendedInit() {
+
+        // INSTALL WIZARD CHECK
+
+        if ( is_dir( INSTALL_DIR ) ) {
+            ?>
+            <!DOCTYPE html>
+            <html lang="en">
+            <head>
+                <meta charset="utf-8">
+            </head>
+            <body>
+            <h1>Install Directory Detected !</h1><br />
+            <h3>FOR SECURITY REASONS PLEASE REMOVE THE `install` DIRECTORY.</h3>
+            <p>You will not be able to proceed beyond this point until the installation directory has been removed.</p>
+            </body>
+            </html>
+            <?php
+            die();
+        }
+
+        // DEFINE BGP CONSTANTS FROM THE DATABASE
+        // Syntax: BGP_{$SETTING}
+
+        try {
+            $dbh = Core_DBH::getDBH();
+
+            $sth = $dbh->prepare("
+            SELECT setting, value
+            FROM " . DB_PREFIX . "config
+            ;");
+
+            $sth->execute();
+
+            $CONFIG = $sth->fetchAll(PDO::FETCH_ASSOC);
+
+            foreach ($CONFIG as $row) {
+                define( strtoupper( 'BGP_' . $row['setting'] ), $row['value'] );
+            }
+        }
+        catch (PDOException $e) {
+            echo $e->getMessage().' in '.$e->getFile().' on line '.$e->getLine();
+            die();
+        }
+
+        // VERSION CONTROL
+        // Check that core files are compatible with the current BrightGamePanel Database
+
+        if ( !defined('BGP_PANEL_VERSION') || !defined('BGP_API_VERSION')) {
+            ?>
+            <!DOCTYPE html>
+            <html lang="en">
+            <head>
+                <meta charset="utf-8">
+            </head>
+            <body>
+            <h1>Undefined Panel Version</h1><br />
+            <h3>&nbsp;</h3>
+            <p>Unable to read panel version from the database.</p>
+            </body>
+            </html>
+            <?php
+            die();
+        }
+
+        $fwVersion = self::getFWVersion();
+        if ( (BGP_PANEL_VERSION != $fwVersion['CORE_VERSION']) || (BGP_API_VERSION != $fwVersion['API_VERSION']) ) {
+            ?>
+            <!DOCTYPE html>
+            <html lang="en">
+            <head>
+                <meta charset="utf-8">
+            </head>
+            <body>
+            <h1>Wrong Database Version Detected</h1><br />
+            <h3>&nbsp;</h3>
+            <p>Make sure you have followed the instructions to install/update the database and check that you are running a compatible MySQL Server</p>
+            </body>
+            </html>
+            <?php
+            die();
+        }
+
+        // SESSION HANDLER
+
+        require( APP_DIR . '/core/session.class.php' );
+        $coreSessionHandler = new Core_SessionHandler();
+        session_set_save_handler($coreSessionHandler, TRUE);
+
+        // DISPLAY LANGUAGE
+
+        $lang = CONF_DEFAULT_LOCALE;
+        if ( isset($_COOKIE['LANG']) ) {
+            $lang = $_COOKIE['LANG'];
+        }
+        Core_Lang::setLanguage( $lang );
+
+        // VALITRON Configuration
+        // Valitron is a simple, minimal and elegant stand-alone validation library with NO dependencies
+        //
+        // https://github.com/vlucas/valitron#usage
+
+        $lang = substr($lang, 0, 2);
+        Valitron\Validator::langDir( LIBS_DIR . '/valitron/lang' );
+        Valitron\Validator::lang( $lang );
+
+        /**
+         * ROUTING Configuration
+         * FlightPHP configuration
+         *
+         * flight.base_url - Override the base url of the request. (default: null)
+         * flight.handle_errors - Allow Flight to handle all errors internally. (default: true)
+         * flight.log_errors - Log errors to the web server's error log file. (default: false)
+         * flight.views.path - Directory containing view template files (default: ./views)
+         *
+         * @link http://flightphp.com/learn#configuration
+         */
+
+        Flight::set('flight.handle_errors', TRUE);
+        Flight::set('flight.log_errors', FALSE);
+    }
+
+    /**
+     * Reads framework version from files
+     * Loads `version.xml` (app/version/version.xml)
+     *
+     * @return array
+     */
+    private static function getFWVersion() {
+
+        $bgpCoreInfo = simplexml_load_file( CORE_VERSION_FILE );
+
+        return array(
+            'API_VERSION' => $bgpCoreInfo->{'api_version'},
+            'CORE_VERSION' => $bgpCoreInfo->{'version'}
+        );
     }
 }
