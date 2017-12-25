@@ -64,8 +64,8 @@ require( CORE_DIR	. '/application/application.class.php' );
 require( CORE_DIR	. '/application/bootstrap.class.php' );
 function bgp_app_autoloader ($className) {
 
-    if ( $className == 'BGP_Installer_Application') {
-        require( CORE_DIR	. '/application/installer.application.class.php' );
+    if ( $className == 'BGP_Wizard_Application') {
+        require( CORE_DIR	. '/application/wizard.application.class.php' );
     }
     else if ( $className == 'BGP_API_Application' ) {
         require( CORE_DIR	. '/application/api.application.class.php' );

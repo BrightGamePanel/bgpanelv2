@@ -44,10 +44,9 @@ final class BGP_Bootstrap
      */
     public static function start($module, $page, $id, $api_version = null)
     {
-
+        // Check API version
         if (!empty($api_version) && $api_version != self::getFWVersion()['API_VERSION']) {
 
-            // Check API version
             // Trigger error when the requested API version
             // is not compatible with the current API version
             // 301 MOVED PERMANENTLY
@@ -63,16 +62,16 @@ final class BGP_Bootstrap
             if ($module == 'install') {
 
                 // INSTALL WIZARD
-                $app = new BGP_Installer_Application(
+                $app = new BGP_Wizard_Application(
                     'install',
                     $page,
                     $id,
                     "text/html"
                 );
+                return $app->execute();
             } else {
 
                 // GUI
-                self::extendedInit();
                 $app = new BGP_GUI_Application(
                     $module,
                     $page,
@@ -83,7 +82,6 @@ final class BGP_Bootstrap
         } else {
 
             // RestAPI
-            self::extendedInit();
             $app = new BGP_API_Application(
                 $module,
                 $page,
@@ -91,6 +89,9 @@ final class BGP_Bootstrap
                 $http_headers['CONTENT-TYPE']
             );
         }
+
+        // Init
+        self::init();
 
         // Execute
         return $app->execute();
@@ -101,7 +102,7 @@ final class BGP_Bootstrap
      *
      * @return void
      */
-    private static function extendedInit() {
+    private static function init() {
 
         // INSTALL WIZARD CHECK
 

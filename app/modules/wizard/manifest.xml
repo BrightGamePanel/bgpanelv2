@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Module Manifest -->
+<bgp_module>
+	<module_info>
+		<author>Rousseau Nikita</author>
+		<version>1.0</version>
+	</module_info>
+
+	<module_settings>
+	</module_settings>
+
+	<module_options>
+	</module_options>
+
+	<module_pages>
+		<page>
+			<name>view</name>
+			<description>Box Summary</description>
+		</page>
+		<page>
+			<name>add</name>
+			<description>New Box Form</description>
+		</page>
+		<page>
+			<name>edit</name>
+			<description>Edition Form</description>
+		</page>
+	</module_pages>
+
+	<module_dependencies>
+	</module_dependencies>
+
+	<class_definition filename="app/modules/wizard/wizard.class.php" classname="BGP_Module_Wizard"/>
+	<controller_class_definition filename="app/modules/wizard/wizard.controller.class.php" classname="BGP_Controller_Wizard"/>
+</bgp_module>

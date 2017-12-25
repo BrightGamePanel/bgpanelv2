@@ -19,40 +19,26 @@
  * @package		Bright Game Panel V2
  * @version		0.1
  * @category	Systems Administration
- * @author		warhawk3407 <warhawk3407@gmail.com>
+ * @author		warhawk3407 <warhawk3407@gmail.com> @NOSPAM
  * @copyright	Copyleft 2015, Nikita Rousseau
  * @license		GNU General Public License version 3.0 (GPLv3)
  * @link		http://www.bgpanel.net/
  */
 
-// Prevent direct access
-if (!defined('LICENSE'))
-{
-    exit('Access Denied');
+if ( !class_exists('BGP_Module')) {
+	trigger_error('Module_Box -> BGP_Module is missing !');
 }
 
-// DB
-if (!defined ('DB_PREFIX')) {
-    define('DB_PREFIX', 'bgp_');
-}
+/**
+ * Install Wizard Module
+ */
 
-// GENERAL
-if (!defined ('CONF_CRONDELAY')) {
+class BGP_Module_Wizard extends BGP_Module {
 
-}
-if (!defined ('CONF_TIMEZONE')) {
-    define('CONF_TIMEZONE', 'Europe/London');
-}
-if (!defined ('CONF_DEFAULT_LOCALE')) {
-    define('CONF_DEFAULT_LOCALE', 'en_EN');
-}
-if (!defined ('CONF_SEC_LOGIN_ATTEMPTS')) {
+	function __construct( )	{
+
+		// Call parent constructor
+		parent::__construct( basename(__DIR__) );
+	}
 
 }
-if (!defined('CONF_SEC_BAN_DURATION')) {
-
-}
-if (!defined('CONF_SEC_SESSION_METHOD')) {
-
-}
-
