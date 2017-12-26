@@ -144,7 +144,7 @@ class BGP_Controller_Box extends BGP_Controller {
 			try {
 				$sth = $dbh->prepare("
 					SELECT operating_system
-					FROM " . DB_PREFIX . "os
+					FROM os
 					WHERE
 						os_id = :os_id
 					;");
@@ -258,7 +258,7 @@ class BGP_Controller_Box extends BGP_Controller {
 
 			try {
 				$sth = $dbh->prepare("
-					INSERT INTO " . DB_PREFIX . "box
+					INSERT INTO box
 					SET
 						os_id 			= :os,
 						name 			= :name,
@@ -284,7 +284,7 @@ class BGP_Controller_Box extends BGP_Controller {
 
 			try {
 				$sth = $dbh->prepare("
-					INSERT INTO " . DB_PREFIX . "box_ip
+					INSERT INTO box_ip
 					SET
 						box_id = :box_id,
 						ip = :ip,
@@ -377,7 +377,7 @@ class BGP_Controller_Box extends BGP_Controller {
 			{
 				try {
 					$sth = $dbh->prepare("
-						INSERT INTO " . DB_PREFIX . "box_credential
+						INSERT INTO box_credential
 						SET
 							login = :login,
 							privatekey = :privatekey,
@@ -406,7 +406,7 @@ class BGP_Controller_Box extends BGP_Controller {
 			{
 				try {
 					$sth = $dbh->prepare("
-						INSERT INTO " . DB_PREFIX . "box_credential
+						INSERT INTO box_credential
 						SET
 							login = :login,
 							password = :password,
@@ -439,7 +439,7 @@ class BGP_Controller_Box extends BGP_Controller {
 
 			try {
 				$sth = $dbh->prepare( "
-					UPDATE " . DB_PREFIX . "box
+					UPDATE box
 					SET
 						box_credential_id = :box_credential_id
 					WHERE box_id = :box_id

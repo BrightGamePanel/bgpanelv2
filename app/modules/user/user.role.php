@@ -64,7 +64,7 @@ $sth = $dbh->prepare("
 		ID,
 		Title,
 		Description
-	FROM " . DB_PREFIX . "roles
+	FROM roles
 	ORDER BY Title
 	;");
 

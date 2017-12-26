@@ -46,9 +46,10 @@ abstract class Core_AuthService
     // Session Passphrase
     protected static $session_key = '';
 
-	/**
-	 * Default Constructor
-	 */
+    /**
+     * Default Constructor
+     * @throws Core_AuthService_Exception
+     */
 	protected function __construct()
 	{
 		// RBAC
@@ -64,7 +65,7 @@ abstract class Core_AuthService
 		// SESSION KEY
 		self::$session_key = $CONFIG['APP_TOKEN_KEY'];
 		if ( empty($this->session_key) ) {
-			trigger_error("Core_AuthService -> Session key is missing !", E_USER_ERROR);
+		    throw new Core_AuthService_Exception("Session key is missing !");
 		}
 	}
 
@@ -75,6 +76,7 @@ abstract class Core_AuthService
      * @param String $data
      * @return String
      * @access public
+     * @throws Core_AuthService_Exception
      */
     public static function getHash( $data ) {
 
@@ -84,7 +86,7 @@ abstract class Core_AuthService
         // AUTH SALT
         $auth_salt = $CONFIG['APP_AUTH_SALT'];
         if ( empty($auth_salt) ) {
-            trigger_error("Core_AuthService -> Auth salt is missing !", E_USER_ERROR);
+            throw new Core_AuthService_Exception("Auth salt is missing !");
         }
 
         return hash( 'sha512', $auth_salt . $data );

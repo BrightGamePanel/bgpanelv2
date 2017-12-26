@@ -42,47 +42,4 @@ class BGP_Controller extends BGP_Module
 		// Call module constructor
 		parent::__construct( $module_name );
 	}
-
-    /**
-     * LOGGING Configuration
-     * Apache Log4php configuration
-     *
-     * @link http://logging.apache.org/log4php/docs/configuration.html
-     */
-    public static function getLogger() {
-
-        // TODO : implement UID resolution
-        $logged_user = str_pad(666, 8);
-
-	    // Configure logging
-        Logger::configure(
-            array(
-                'rootLogger' => array(
-                    'appenders' => array('default')
-                ),
-                'loggers' => array(
-                    'core' => array(
-                        'additivity' => false,
-                        'appenders' => array('coreAppender')
-                    )
-                ),
-                'appenders' => array(
-                    'default' => array(
-                        'class' => 'LoggerAppenderFile',
-                        'layout' => array(
-                            'class' => 'LoggerLayoutPattern',
-                            'params' => array(
-                                'conversionPattern' => '[%date{Y-m-d H:i:s,u}] %-5level %-10.10logger ' . $logged_user . ' %-15.15server{REMOTE_ADDR} %-35server{REQUEST_URI} "%msg" %-30class %-30method %request%n'
-                            )
-                        ),
-                        'params' => array(
-                            'file' => REAL_LOGGING_DIR . '/' . date('Y-m-d') . '.txt',
-                            'append' => true
-                        )
-                    )
-                )
-            )
-        );
-        return Logger::getLogger( self::getModuleName() );
-	}
 }

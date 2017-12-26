@@ -63,7 +63,7 @@ class BGP_Controller_Config extends BGP_Controller {
 		try {
 			$sth = $dbh->prepare("
 				SELECT setting, value
-				FROM " . DB_PREFIX . "config
+				FROM config
 				;");
 
 			$sth->execute();
@@ -207,7 +207,7 @@ class BGP_Controller_Config extends BGP_Controller {
 			try {
 				$sth = $dbh->prepare("
 					SELECT setting, value
-					FROM " . DB_PREFIX . "config
+					FROM config
 					WHERE
 						setting = :setting
 					;");
@@ -336,7 +336,7 @@ class BGP_Controller_Config extends BGP_Controller {
 			foreach ($db_data as $key => $value) {
 
 				try {
-					$sth = $dbh->prepare( "UPDATE " . DB_PREFIX . "config SET value = :" . $key . " WHERE setting = '" . $key . "';" );
+					$sth = $dbh->prepare( "UPDATE config SET value = :" . $key . " WHERE setting = '" . $key . "';" );
 					$sth->bindParam( ':' . $key, $value );
 					$sth->execute();
 				}

@@ -208,7 +208,7 @@ final class Core_AuthService_API extends Core_AuthService
         try {
             $sth = $dbh->prepare("
 				SELECT user_id, username
-				FROM " . DB_PREFIX . "user
+				FROM user
 				WHERE
 					username = :username AND
 					password = :password AND
@@ -241,7 +241,7 @@ final class Core_AuthService_API extends Core_AuthService
 
             try {
                 $sth = $dbh->prepare("
-                    UPDATE " . DB_PREFIX . "user
+                    UPDATE user
                     SET
                         last_login		= :last_login,
                         last_activity	= :last_activity,

@@ -99,6 +99,8 @@ final class Core_AuthService_JWT extends Core_AuthService
 
     /**
      * Core_AuthService_JWT constructor.
+     * @throws Core_AuthService_Exception
+     * @throws Core_Core_AuthService_JWT_Exception
      */
     protected function __construct() {
         parent::__construct();
@@ -106,11 +108,11 @@ final class Core_AuthService_JWT extends Core_AuthService
         // Check Config
 
         if ( !defined('CONF_SEC_SESSION_METHOD') ) {
-            trigger_error("Core_AuthService_JWT -> Session security policy is missing !", E_USER_ERROR);
+            throw new Core_Core_AuthService_JWT_Exception('Session security policy is missing !');
         }
 
         if ( !defined('APP_TOKEN_KEY') || empty(APP_TOKEN_KEY)) {
-            trigger_error("Core_AuthService_JWT -> Token key is missing or empty !", E_USER_ERROR);
+            throw new Core_Core_AuthService_JWT_Exception('Token key is missing or empty !');
         }
 
         // Fetch Token
@@ -169,7 +171,7 @@ final class Core_AuthService_JWT extends Core_AuthService
         try {
             $sth = $dbh->prepare("
 					SELECT user_id, username, firstname, lastname, lang, template
-					FROM " . DB_PREFIX . "user
+					FROM user
 					WHERE
 						username = :username AND
 						password = :password AND
@@ -275,7 +277,7 @@ final class Core_AuthService_JWT extends Core_AuthService
 
             $sth = $dbh->prepare("
                 SELECT username, last_ip
-                FROM " . DB_PREFIX . "user
+                FROM user
                 WHERE
                     user_id = :user_id AND
                     status = 'Active'

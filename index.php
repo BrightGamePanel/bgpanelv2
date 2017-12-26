@@ -28,7 +28,7 @@
 define('LICENSE', 'GNU GENERAL PUBLIC LICENSE - Version 3, 29 June 2007');
 
 /**
- * Bright Game Panel Init
+ * Bright Game Panel Initialization
  */
 require('init.php');
 
@@ -61,54 +61,81 @@ Flight::route('/@http:[0-9]{3}', function( $http ) {
 });
 
 // Install Wizard Route
-Flight::route('GET|POST /wizard(/@page(/@id))', function( $page, $id ) {
-    $return_code = BGP_Bootstrap::start('install', $page, $id);
-    if ($return_code === 0 || $return_code === 200) {
-        header(Core_Http_Status_Codes::httpHeaderFor(200)); // 200 OK
-    } else if ($return_code === 1 || $return_code === 500) {
-        header(Core_Http_Status_Codes::httpHeaderFor(500)); // 500 Internal Server Error
-        echo Core_Http_Status_Codes::getMessageForCode(500);
-    } else {
-        header(Core_Http_Status_Codes::httpHeaderFor($return_code));
-        echo Core_Http_Status_Codes::getMessageForCode($return_code);
+Flight::route('GET|POST /wizard(/@page)', function( $page ) {
+
+    ob_start();
+
+    try {
+        BGP_Launcher::start('wizard', $page, 0);
     }
-    exit($return_code);
+    catch (Exception $e) {
+        ob_end_clean();
+        $code = ($e->getCode() == 1) ? 500 : $e->getCode(); // 500 Internal Server Error
+
+        header(Core_Http_Status_Codes::httpHeaderFor($code));
+
+        if ((int)ini_get('display_errors') === 1) {
+            Flight::error($e);
+        } else {
+            echo Core_Http_Status_Codes::getMessageForCode($code);
+        }
+
+        exit($e->getCode());
+    }
+
+    header(Core_Http_Status_Codes::httpHeaderFor(200)); // 200 OK
+    ob_end_flush();
+    exit(0);
 });
 
 // RestAPI ENDPOINT Route
 Flight::route('GET|POST|PUT|DELETE /api/@api_version(/@module(/@page(/@id)))', function( $api_version, $module, $page, $id ) {
+
     ob_start();
-    $return_code = BGP_Bootstrap::start($module, $page, $id, $api_version);
-    if ($return_code === 0 || $return_code === 200) {
-        header(Core_Http_Status_Codes::httpHeaderFor(200)); // 200 OK
-        ob_end_flush();
-    } else if ($return_code === 1 || $return_code === 500) {
-        ob_end_clean();
-        header(Core_Http_Status_Codes::httpHeaderFor(500)); // 500 Internal Server Error
-    } else {
-        ob_end_clean();
-        header(Core_Http_Status_Codes::httpHeaderFor($return_code));
+
+    try {
+        BGP_Launcher::start($module, $page, $id, $api_version);
     }
-    exit($return_code);
+    catch (Exception $e) {
+        ob_end_clean();
+        $code = ($e->getCode() == 1) ? 500 : $e->getCode(); // 500 Internal Server Error
+
+        header(Core_Http_Status_Codes::httpHeaderFor($code));
+
+        exit($e->getCode());
+    }
+
+    header(Core_Http_Status_Codes::httpHeaderFor(200)); // 200 OK
+    ob_end_flush();
+    exit(0);
 });
 
 // Default Route
 Flight::route('GET|POST|PUT|DELETE (/@module(/@page(/@id)))', function( $module, $page, $id ) {
+
     ob_start();
-    $return_code = BGP_Bootstrap::start($module, $page, $id);
-    if ($return_code === 0 || $return_code === 200) {
-        header(Core_Http_Status_Codes::httpHeaderFor(200)); // 200 OK
-        ob_end_flush();
-    } else if ($return_code === 1 || $return_code === 500) {
-        ob_end_clean();
-        header(Core_Http_Status_Codes::httpHeaderFor(500)); // 500 Internal Server Error
-        echo Core_Http_Status_Codes::getMessageForCode(500);
-    } else {
-        ob_end_clean();
-        header(Core_Http_Status_Codes::httpHeaderFor($return_code));
-        echo Core_Http_Status_Codes::getMessageForCode($return_code);
+
+    try {
+        BGP_Launcher::start($module, $page, $id);
     }
-    exit($return_code);
+    catch (Exception $e) {
+        ob_end_clean();
+        $code = ($e->getCode() == 1) ? 500 : $e->getCode(); // 500 Internal Server Error
+
+        header(Core_Http_Status_Codes::httpHeaderFor($code));
+
+        if ((int)ini_get('display_errors') === 1) {
+            Flight::error($e);
+        } else {
+            echo Core_Http_Status_Codes::getMessageForCode($code);
+        }
+
+        exit($e->getCode());
+    }
+
+    header(Core_Http_Status_Codes::httpHeaderFor(200)); // 200 OK
+    ob_end_flush();
+    exit(0);
 });
 
 /**

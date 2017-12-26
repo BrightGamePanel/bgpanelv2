@@ -74,8 +74,8 @@ $sth = $dbh->prepare("
 		box.name,
 		box.notes,
 		box.steam_lib_path
-	FROM " . DB_PREFIX . "box AS box
-	JOIN " . DB_PREFIX . "os AS os
+	FROM box AS box
+	JOIN os AS os
 		ON box.os_id = os.os_id
 	WHERE
 		box.box_id = :resId
@@ -94,7 +94,7 @@ $resModel = $resModel[0];
 
 $sth = $dbh->prepare("
 	SELECT *
-	FROM " . DB_PREFIX . "os
+	FROM os
 	;");
 
 $sth->execute();

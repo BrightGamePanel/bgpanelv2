@@ -37,11 +37,16 @@ class BGP_Module
 	public static $module_definition = array();
 	public static $module_name = '';
 
-	function __construct( $module_name ) {
+    /**
+     * BGP_Module constructor.
+     * @param $module_name
+     * @throws Core_BGP_Module_Exception
+     */
+    function __construct($module_name ) {
 
 		// Test Manifest File
 		if ( !file_exists(MODS_DIR . '/' . $module_name . '/manifest.xml' ) ) {
-			trigger_error("BGP_Module -> Missing manifest file !", E_USER_ERROR);
+		    throw new Core_BGP_Module_Exception('Missing manifest file !') ;
 		}
 
 		// Load Plugin Manifest

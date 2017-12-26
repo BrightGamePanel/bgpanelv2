@@ -88,6 +88,126 @@ abstract class BGP_Abstract_Application
             // Query parameters
             $this->req_params = Flight::request()->query;
         }
+
+        // Extended initialization
+        $this->init();
+    }
+
+    /**
+     * Initialize the Application
+     * Acts like an extended constructor
+     *
+     * @return void
+     */
+    public abstract function init();
+
+    /**
+     * Default init() implementation
+     */
+    protected function _init() {
+
+        // INSTALL WIZARD CHECK
+
+        if ( is_dir( INSTALL_DIR ) ) {
+            ?>
+            <!DOCTYPE html>
+            <html lang="en">
+            <head>
+                <meta charset="utf-8">
+            </head>
+            <body>
+            <h1>Install Directory Detected !</h1><br />
+            <h3>FOR SECURITY REASONS PLEASE REMOVE THE `install` DIRECTORY.</h3>
+            <p>You will not be able to proceed beyond this point until the installation directory has been removed.</p>
+            </body>
+            </html>
+            <?php
+            die();
+        }
+
+        // DEFINE BGP CONSTANTS FROM THE DATABASE
+        // Syntax: BGP_{$SETTING}
+
+        $CONFIG = self::getDBConfig();
+        foreach ($CONFIG as $row) {
+            define( strtoupper( 'BGP_' . $row['setting'] ), $row['value'] );
+        }
+
+        // VERSION CONTROL
+        // Check that core files are compatible with the current BrightGamePanel Database
+
+        if ( !defined('BGP_PANEL_VERSION') || !defined('BGP_API_VERSION')) {
+            ?>
+            <!DOCTYPE html>
+            <html lang="en">
+            <head>
+                <meta charset="utf-8">
+            </head>
+            <body>
+            <h1>Undefined Panel Version</h1><br />
+            <h3>&nbsp;</h3>
+            <p>Unable to read panel version from the database.</p>
+            </body>
+            </html>
+            <?php
+            die();
+        }
+
+        $fwVersion = self::getFilesVersion();
+        if ( (BGP_PANEL_VERSION != $fwVersion['CORE_VERSION']) || (BGP_API_VERSION != $fwVersion['API_VERSION']) ) {
+            ?>
+            <!DOCTYPE html>
+            <html lang="en">
+            <head>
+                <meta charset="utf-8">
+            </head>
+            <body>
+            <h1>Wrong Database Version Detected</h1><br />
+            <h3>&nbsp;</h3>
+            <p>Make sure you have followed the instructions to install/update the database and check that you are running a compatible MySQL Server</p>
+            </body>
+            </html>
+            <?php
+            die();
+        }
+
+        // SESSION HANDLER
+
+        require( APP_DIR . '/core/session.class.php' );
+        $coreSessionHandler = new Core_SessionHandler();
+        session_set_save_handler($coreSessionHandler, TRUE);
+
+        // DISPLAY LANGUAGE
+
+        $lang = CONF_DEFAULT_LOCALE;
+        if ( isset($_COOKIE['LANG']) ) {
+            $lang = $_COOKIE['LANG'];
+        }
+        Core_Lang::setLanguage( $lang );
+
+        // VALITRON Configuration
+        // Valitron is a simple, minimal and elegant stand-alone validation library with NO dependencies
+        //
+        // https://github.com/vlucas/valitron#usage
+
+        $lang = substr($lang, 0, 2);
+        Valitron\Validator::langDir( LIBS_DIR . '/valitron/lang' );
+        Valitron\Validator::lang( $lang );
+
+        /**
+         * ROUTING Configuration
+         * FlightPHP configuration
+         *
+         * flight.base_url - Override the base url of the request. (default: null)
+         * flight.handle_errors - Allow Flight to handle all errors internally. (default: true)
+         * flight.log_errors - Log errors to the web server's error log file. (default: false)
+         * flight.views.path - Directory containing view template files (default: ./views)
+         *
+         * @link http://flightphp.com/learn#configuration
+         */
+
+        Flight::set('flight.handle_errors', TRUE);
+        Flight::set('flight.log_errors', FALSE);
     }
 
     /**
@@ -96,7 +216,6 @@ abstract class BGP_Abstract_Application
      * @return int
      */
     public abstract function execute();
-
 
     /**
      * Update User Activity by User-Id
@@ -114,7 +233,7 @@ abstract class BGP_Abstract_Application
 
         try {
             $sth = $dbh->prepare("
-                        UPDATE " . DB_PREFIX . "user
+                        UPDATE user
                         SET
                             last_activity	= :last_activity
                         WHERE
@@ -130,5 +249,47 @@ abstract class BGP_Abstract_Application
             echo $e->getMessage().' in '.$e->getFile().' on line '.$e->getLine();
             die();
         }
+    }
+
+    /**
+     * Reads framework version from files
+     * Loads `version.xml` (app/version/version.xml)
+     *
+     * @return array
+     */
+    public static function getFilesVersion() {
+
+        $bgpCoreInfo = simplexml_load_file( CORE_VERSION_FILE );
+
+        return array(
+            'API_VERSION' => $bgpCoreInfo->{'api_version'},
+            'CORE_VERSION' => $bgpCoreInfo->{'version'}
+        );
+    }
+
+    /**
+     * Reads framework configuration from the database
+     *
+     * @return array
+     */
+    private static function getDBConfig() {
+
+        $dbh = Core_DBH::getDBH();
+        $ret = array();
+
+        try {
+            $sth = $dbh->prepare("
+            SELECT setting, value
+            FROM config
+            ;");
+
+            $sth->execute();
+
+            $ret = $sth->fetchAll(PDO::FETCH_ASSOC);
+        }
+        catch (PDOException $e) {
+        }
+
+        return $ret;
     }
 }

@@ -98,7 +98,7 @@ class BGP_Controller_Tools extends BGP_Controller {
 		try {
 			$sth = $dbh->prepare("
 				SELECT Title
-				FROM " . DB_PREFIX . "permissions
+				FROM permissions
 				;");
 
 			$sth->execute();

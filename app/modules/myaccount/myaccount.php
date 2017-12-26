@@ -70,7 +70,7 @@ $uid = Core_AuthService::getSessionInfo('ID'); // Get user id
 
 $sth = $dbh->prepare("
 	SELECT *
-	FROM " . DB_PREFIX . "user
+	FROM user
 	WHERE user_id = :uid
 ;");
 

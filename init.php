@@ -147,9 +147,6 @@ foreach ($CONFIG as $setting => $value) {
 }
 unset($CONFIG, $setting, $value);
 
-// FIX IF MISSING CONSTANTS
-require ( DEFAULTS_CONSTANTS_DIR . '/constants.php');
-
 /**
  * DATE Configuration
  * Sets the default timezone used by all date/time functions

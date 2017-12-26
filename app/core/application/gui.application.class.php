@@ -29,6 +29,17 @@ class BGP_GUI_Application extends BGP_Abstract_Application
     }
 
     /**
+     * Initialize the Application
+     * Acts like an extended constructor
+     *
+     * @return void
+     */
+    public function init()
+    {
+        parent::_init();
+    }
+
+    /**
      * Execute the Query
      *
      * @return int

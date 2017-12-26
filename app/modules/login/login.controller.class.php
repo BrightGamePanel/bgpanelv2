@@ -107,7 +107,7 @@ class BGP_Controller_Login extends BGP_Controller
 			try {
 				$sth = $dbh->prepare("
 					SELECT user_id, username, firstname, lastname, lang, template
-					FROM " . DB_PREFIX . "user
+					FROM user
 					WHERE
 						username = :username AND
 						password = :password AND
@@ -152,7 +152,7 @@ class BGP_Controller_Login extends BGP_Controller
 
 				try {
 					$sth = $dbh->prepare("
-						UPDATE " . DB_PREFIX . "user
+						UPDATE user
 						SET
 							last_login		= :last_login,
 							last_activity	= :last_activity,
@@ -331,7 +331,7 @@ class BGP_Controller_Login extends BGP_Controller
 			try {
 				$sth = $dbh->prepare("
 					SELECT user_id, email
-					FROM " . DB_PREFIX . "user
+					FROM user
 					WHERE
 						username = :username AND
 						email 	 = :email AND
@@ -363,7 +363,7 @@ class BGP_Controller_Login extends BGP_Controller
 				try {
 					// Update User Passwd
 					$sth = $dbh->prepare("
-						UPDATE " . DB_PREFIX . "user
+						UPDATE user
 						SET
 							password 	= :password
 						WHERE

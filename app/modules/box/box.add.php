@@ -56,7 +56,7 @@ $dbh = Core_DBH::getDBH(); // Get Database Handle
 
 $sth = $dbh->prepare("
 	SELECT *
-	FROM " . DB_PREFIX . "os
+	FROM os
 	;");
 
 $sth->execute();

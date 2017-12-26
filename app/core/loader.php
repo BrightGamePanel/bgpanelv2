@@ -59,9 +59,12 @@ spl_autoload_register('bgp_mod_controllers_autoloader');
 /**
  * APPLICATION
  */
+// Core Exceptions
+require( CORE_DIR	. '/exception/core.exceptions.php' );
+
 // Main Application Wrappers
 require( CORE_DIR	. '/application/application.class.php' );
-require( CORE_DIR	. '/application/bootstrap.class.php' );
+require( CORE_DIR	. '/application/launcher.class.php' );
 function bgp_app_autoloader ($className) {
 
     if ( $className == 'BGP_Wizard_Application') {

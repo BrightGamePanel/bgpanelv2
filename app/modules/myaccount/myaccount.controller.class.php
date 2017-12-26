@@ -152,7 +152,7 @@ class BGP_Controller_Myaccount extends BGP_Controller {
 			foreach ($db_data as $key => $value) {
 
 				try {
-					$sth = $dbh->prepare( "	UPDATE " . DB_PREFIX . "user
+					$sth = $dbh->prepare( "	UPDATE user
 											SET " . $key . " = :" . $key . "
 											WHERE user_id = '" . $uid . "';" );
 

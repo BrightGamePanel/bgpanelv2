@@ -63,7 +63,7 @@ $dbh = Core_DBH::getDBH(); // Get Database Handle
 
 $sth = $dbh->prepare("
 	SELECT setting, value
-	FROM " . DB_PREFIX . "config
+	FROM config
 	;");
 
 $sth->execute();

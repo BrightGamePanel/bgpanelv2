@@ -86,7 +86,7 @@ class Core_SessionHandler implements SessionHandlerInterface
 		try {
 			$sth = $this->dbh->prepare("
 				SELECT session_data
-				FROM " . DB_PREFIX . "session
+				FROM session
 				WHERE
 					session_id = :session_id
 				;");
@@ -155,7 +155,7 @@ class Core_SessionHandler implements SessionHandlerInterface
 	{
 		try {
 			$sth = $this->dbh->prepare("
-				DELETE FROM " . DB_PREFIX . "session
+				DELETE FROM session
 				WHERE
 					session_id = :session_id
 				;");
@@ -185,7 +185,7 @@ class Core_SessionHandler implements SessionHandlerInterface
 	{
 		try {
 			$sth = $this->dbh->prepare("
-				DELETE FROM " . DB_PREFIX . "session
+				DELETE FROM session
 				WHERE
 					expires	<= " . time() . "
 				;");

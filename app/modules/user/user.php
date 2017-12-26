@@ -67,7 +67,7 @@ $sth = $dbh->prepare("
 		lastname,
 		email,
 		status
-	FROM " . DB_PREFIX . "user
+	FROM user
 	ORDER BY status
 	;");
 

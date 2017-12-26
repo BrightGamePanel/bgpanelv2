@@ -406,6 +406,17 @@ class BGP_Wizard_Application extends BGP_Abstract_Application
         $this->last_bgp_version = end($this->bgp_db_versions);
     }
 
+    /**
+     * Initialize the Application
+     * Acts like an extended constructor
+     *
+     * @return void
+     */
+    public function init()
+    {
+        return;
+    }
+
     public function execute()
     {
         exit('install mode');

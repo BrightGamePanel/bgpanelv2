@@ -59,8 +59,8 @@ $sth = $dbh->prepare("
 		box.box_id,
 		box.name,
 		ip.ip
-	FROM " . DB_PREFIX . "box AS box
-	JOIN " . DB_PREFIX . "box_ip AS ip
+	FROM box AS box
+	JOIN box_ip AS ip
 		ON box.box_id = ip.box_id
 	WHERE
 		ip.is_default = '1'
