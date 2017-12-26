@@ -53,7 +53,7 @@ if (PHP_SAPI == "cli") {
  */
 require( LIBS_DIR	. '/flight/Flight.php' );
 
-// HTTP status codes VIEW
+// HTTP status codes
 Flight::route('/@http:[0-9]{3}', function( $http ) {
     header(Core_Http_Status_Codes::httpHeaderFor($http));
     echo Core_Http_Status_Codes::getMessageForCode($http);
@@ -66,7 +66,7 @@ Flight::route('GET|POST /wizard(/@page)', function( $page ) {
     ob_start();
 
     try {
-        BGP_Launcher::start('wizard', $page, 0);
+        $return_code = BGP_Launcher::start('wizard', $page, 0);
     }
     catch (Exception $e) {
         ob_end_clean();
@@ -83,9 +83,19 @@ Flight::route('GET|POST /wizard(/@page)', function( $page ) {
         exit($e->getCode());
     }
 
-    header(Core_Http_Status_Codes::httpHeaderFor(200)); // 200 OK
-    ob_end_flush();
-    exit(0);
+    if ($return_code === 0 || $return_code === 200) {
+        // 200 OK
+        header(Core_Http_Status_Codes::httpHeaderFor(200));
+        ob_end_flush();
+    }
+    else {
+        ob_end_clean();
+        // GENERIC HTTP ERROR
+        header(Core_Http_Status_Codes::httpHeaderFor($return_code));
+        echo Core_Http_Status_Codes::getMessageForCode($return_code);
+    }
+
+    exit($return_code);
 });
 
 // RestAPI ENDPOINT Route
@@ -94,7 +104,7 @@ Flight::route('GET|POST|PUT|DELETE /api/@api_version(/@module(/@page(/@id)))', f
     ob_start();
 
     try {
-        BGP_Launcher::start($module, $page, $id, $api_version);
+        $return_code = BGP_Launcher::start($module, $page, $id, $api_version);
     }
     catch (Exception $e) {
         ob_end_clean();
@@ -105,9 +115,18 @@ Flight::route('GET|POST|PUT|DELETE /api/@api_version(/@module(/@page(/@id)))', f
         exit($e->getCode());
     }
 
-    header(Core_Http_Status_Codes::httpHeaderFor(200)); // 200 OK
-    ob_end_flush();
-    exit(0);
+    if ($return_code === 0 || $return_code === 200) {
+        // 200 OK
+        header(Core_Http_Status_Codes::httpHeaderFor(200));
+        ob_end_flush();
+    }
+    else {
+        ob_end_clean();
+        // GENERIC HTTP ERROR
+        header(Core_Http_Status_Codes::httpHeaderFor($return_code));
+    }
+
+    exit($return_code);
 });
 
 // Default Route
@@ -116,7 +135,7 @@ Flight::route('GET|POST|PUT|DELETE (/@module(/@page(/@id)))', function( $module,
     ob_start();
 
     try {
-        BGP_Launcher::start($module, $page, $id);
+        $return_code = BGP_Launcher::start($module, $page, $id);
     }
     catch (Exception $e) {
         ob_end_clean();
@@ -133,12 +152,22 @@ Flight::route('GET|POST|PUT|DELETE (/@module(/@page(/@id)))', function( $module,
         exit($e->getCode());
     }
 
-    header(Core_Http_Status_Codes::httpHeaderFor(200)); // 200 OK
-    ob_end_flush();
-    exit(0);
+    if ($return_code === 0 || $return_code === 200) {
+        // 200 OK
+        header(Core_Http_Status_Codes::httpHeaderFor(200));
+        ob_end_flush();
+    }
+    else {
+        ob_end_clean();
+        // GENERIC HTTP ERROR
+        header(Core_Http_Status_Codes::httpHeaderFor($return_code));
+        echo Core_Http_Status_Codes::getMessageForCode($return_code);
+    }
+
+    exit($return_code);
 });
 
 /**
- * Start Bright Game Panel
+ * Bright Game Panel Startup
  */
 Flight::start();

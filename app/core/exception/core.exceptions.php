@@ -16,7 +16,7 @@ class BGP_Exception extends Exception
 
         $obj = new $class();
         if (is_a($obj, 'BGP_Module')) {
-            // User module
+            // Module
             $this->getErrorLogger($obj->getModuleName(), $class, $method, $uid)->error($message);
         } else {
             // Core framework
