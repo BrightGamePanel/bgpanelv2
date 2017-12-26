@@ -60,44 +60,6 @@ Flight::route('/@http:[0-9]{3}', function( $http ) {
     exit(0);
 });
 
-// Install Wizard Route
-Flight::route('GET|POST /wizard(/@page)', function( $page ) {
-
-    ob_start();
-
-    try {
-        $return_code = BGP_Launcher::start('wizard', $page, 0);
-    }
-    catch (Exception $e) {
-        ob_end_clean();
-        $code = ($e->getCode() == 1) ? 500 : $e->getCode(); // 500 Internal Server Error
-
-        header(Core_Http_Status_Codes::httpHeaderFor($code));
-
-        if ((int)ini_get('display_errors') === 1) {
-            Flight::error($e);
-        } else {
-            echo Core_Http_Status_Codes::getMessageForCode($code);
-        }
-
-        exit($e->getCode());
-    }
-
-    if ($return_code === 0 || $return_code === 200) {
-        // 200 OK
-        header(Core_Http_Status_Codes::httpHeaderFor(200));
-        ob_end_flush();
-    }
-    else {
-        ob_end_clean();
-        // GENERIC HTTP ERROR
-        header(Core_Http_Status_Codes::httpHeaderFor($return_code));
-        echo Core_Http_Status_Codes::getMessageForCode($return_code);
-    }
-
-    exit($return_code);
-});
-
 // RestAPI ENDPOINT Route
 Flight::route('GET|POST|PUT|DELETE /api/@api_version(/@module(/@page(/@id)))', function( $api_version, $module, $page, $id ) {
 

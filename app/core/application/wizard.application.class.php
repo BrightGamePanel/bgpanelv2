@@ -61,12 +61,11 @@ class BGP_Wizard_Application extends BGP_Abstract_Application
      *
      * @param $module
      * @param $page
-     * @param $id
      * @param $content_type
      */
-    public function __construct($module, $page, $id, $content_type)
+    public function __construct($module, $page, $content_type)
     {
-        parent::__construct($module, $page, $id, $content_type);
+        parent::__construct($module, $page, 0, $content_type);
 
         if ( !is_dir( INSTALL_DIR ) ) {
             ?>

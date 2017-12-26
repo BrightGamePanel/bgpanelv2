@@ -36,14 +36,14 @@ final class BGP_Launcher
     /**
      * BGP_Launcher main
      *
-     * @param $module
-     * @param $page
-     * @param $id
-     * @param $api_version
-     * @return int
+     * @param string $module
+     * @param string $page
+     * @param int $id
+     * @param string $api_version
+     * @return int return code
      * @throws Core_ApplicationNotInstalled_Exception
      */
-    public static function start($module, $page, $id, $api_version = null)
+    public static function start($module, $page, $id = 0, $api_version = null)
     {
         // Check API version
         if (!empty($api_version) && $api_version != BGP_Abstract_Application::getFilesVersion()['API_VERSION']) {
@@ -66,25 +66,25 @@ final class BGP_Launcher
                 $app = new BGP_Wizard_Application(
                     'wizard',
                     $page,
+                    "text/html"
+                );
+            }
+            else {
+
+                // CHECK INSTALL
+                if (!self::testDBConfig()) {
+                    throw new Core_ApplicationNotInstalled_Exception(
+                        "Please configure and install the application (refer to the documentation).");
+                }
+
+                // GUI
+                $app = new BGP_GUI_Application(
+                    $module,
+                    $page,
                     $id,
                     "text/html"
                 );
-                return $app->execute();
             }
-
-            // Check install
-            if (!self::testDBConfig()) {
-                throw new Core_ApplicationNotInstalled_Exception(
-                    "Please configure and install the application (refer to the documentation).");
-            }
-
-            // GUI
-            $app = new BGP_GUI_Application(
-                $module,
-                $page,
-                $id,
-                "text/html"
-            );
         }
         else {
 
