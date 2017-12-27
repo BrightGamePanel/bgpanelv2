@@ -40,8 +40,8 @@ final class BGP_Launcher
      * @param string $page
      * @param int $id
      * @param string $api_version
-     * @return int return code
-     * @throws Core_ApplicationNotInstalled_Exception
+     * @return int exit code
+     * @throws BGP_Exception
      */
     public static function start($module, $page, $id = 0, $api_version = null)
     {
@@ -51,7 +51,7 @@ final class BGP_Launcher
             // Trigger error when the requested API version
             // is not compatible with the current API version
             // 301 MOVED PERMANENTLY
-            return 301;
+            throw new BGP_Exception(301);
         }
 
         // Read HTTP Headers
@@ -65,32 +65,36 @@ final class BGP_Launcher
                 // INSTALL WIZARD
                 $app = new BGP_Wizard_Application(
                     'wizard',
-                    $page,
-                    "text/html"
+                    $page
                 );
             }
             else {
 
                 // CHECK INSTALL
                 if (!self::testDBConfig()) {
-                    throw new Core_ApplicationNotInstalled_Exception(
-                        "Please configure and install the application (refer to the documentation).");
+                    throw new BGP_Launch_Exception(
+                        'System not configured',
+                        '',
+                        "Please configure and install the application"
+                    );
                 }
 
                 // GUI
                 $app = new BGP_GUI_Application(
                     $module,
                     $page,
-                    $id,
-                    "text/html"
+                    $id
                 );
             }
         }
         else {
 
             if (!self::testDBConfig()) {
-                throw new Core_ApplicationNotInstalled_Exception(
-                    "Please configure and install the application (refer to the documentation).");
+                throw new BGP_Launch_Exception(
+                    'System not configured',
+                    '',
+                    "Please configure and install the application"
+                );
             }
 
             // RestAPI
@@ -103,7 +107,7 @@ final class BGP_Launcher
         }
 
         // Execute
-        return $app->execute();
+        return $app->execute(); // Runtime
     }
 
     /**

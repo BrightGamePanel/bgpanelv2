@@ -20,7 +20,7 @@ class BGP_GUI_Application extends BGP_Abstract_Application
      * @param $id
      * @param $content_type
      */
-    public function __construct($module, $page, $id, $content_type)
+    public function __construct($module, $page, $id, $content_type = "text/html")
     {
         parent::__construct($module, $page, $id, $content_type);
 

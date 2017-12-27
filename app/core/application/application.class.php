@@ -103,26 +103,20 @@ abstract class BGP_Abstract_Application
 
     /**
      * Default init() implementation
+     *
+     * @throws BGP_Launch_Exception
      */
     protected function _init() {
 
         // INSTALL WIZARD CHECK
 
         if ( is_dir( INSTALL_DIR ) ) {
-            ?>
-            <!DOCTYPE html>
-            <html lang="en">
-            <head>
-                <meta charset="utf-8">
-            </head>
-            <body>
-            <h1>Install Directory Detected !</h1><br />
-            <h3>FOR SECURITY REASONS PLEASE REMOVE THE `install` DIRECTORY.</h3>
-            <p>You will not be able to proceed beyond this point until the installation directory has been removed.</p>
-            </body>
-            </html>
-            <?php
-            die();
+
+            throw new BGP_Launch_Exception(
+                    'Install Directory Detected !',
+                    'FOR SECURITY REASONS PLEASE REMOVE THE `install` DIRECTORY.',
+                    'You will not be able to proceed beyond this point until the installation directory has been removed.'
+            );
         }
 
         // DEFINE BGP CONSTANTS FROM THE DATABASE
@@ -137,38 +131,22 @@ abstract class BGP_Abstract_Application
         // Check that core files are compatible with the current BrightGamePanel Database
 
         if ( !defined('BGP_PANEL_VERSION') || !defined('BGP_API_VERSION')) {
-            ?>
-            <!DOCTYPE html>
-            <html lang="en">
-            <head>
-                <meta charset="utf-8">
-            </head>
-            <body>
-            <h1>Undefined Panel Version</h1><br />
-            <h3>&nbsp;</h3>
-            <p>Unable to read panel version from the database.</p>
-            </body>
-            </html>
-            <?php
-            die();
+
+            throw new BGP_Launch_Exception(
+                'Undefined Panel Version',
+                '',
+                'Unable to read panel version from the database.'
+            );
         }
 
         $fwVersion = self::getFilesVersion();
         if ( (BGP_PANEL_VERSION != $fwVersion['CORE_VERSION']) || (BGP_API_VERSION != $fwVersion['API_VERSION']) ) {
-            ?>
-            <!DOCTYPE html>
-            <html lang="en">
-            <head>
-                <meta charset="utf-8">
-            </head>
-            <body>
-            <h1>Wrong Database Version Detected</h1><br />
-            <h3>&nbsp;</h3>
-            <p>Make sure you have followed the instructions to install/update the database and check that you are running a compatible MySQL Server</p>
-            </body>
-            </html>
-            <?php
-            die();
+
+            throw new BGP_Launch_Exception(
+                'Wrong Database Version Detected',
+                '',
+                'Make sure you have followed the instructions to install/update the database and check that you are running a compatible MySQL Server.'
+            );
         }
 
         // SESSION HANDLER

@@ -40,13 +40,13 @@ class BGP_Module
     /**
      * BGP_Module constructor.
      * @param $module_name
-     * @throws Core_BGP_Module_Exception
+     * @throws BGP_Module_Exception
      */
     function __construct($module_name ) {
 
 		// Test Manifest File
 		if ( !file_exists(MODS_DIR . '/' . $module_name . '/manifest.xml' ) ) {
-		    throw new Core_BGP_Module_Exception('Missing manifest file !') ;
+		    throw new BGP_Module_Exception('Missing manifest file !') ;
 		}
 
 		// Load Plugin Manifest

@@ -1,9 +1,15 @@
 <?php
 
-class BGP_Exception extends Exception
+/**
+ * Class BGP_Application_Exception
+ * Handle exceptions that occur DURING the application runtime
+ * Write events in the log file with Log4php
+ */
+class BGP_Application_Exception extends BGP_Exception
 {
     /**
-     * Core_Exception constructor.
+     * BGP_Exception constructor.
+     *
      * @param string $message Error message
      * @param int $uid User-Id that triggered the error, 0 by default (anonymous)
      * @param int $code Exception code, 0 by default
@@ -23,7 +29,7 @@ class BGP_Exception extends Exception
             $this->getErrorLogger('core', $class, $method, $uid)->error($message);
         }
 
-        parent::__construct($message, $code, $previous);
+        parent::__construct($code, $message, $previous);
     }
 
     /**
@@ -72,20 +78,4 @@ class BGP_Exception extends Exception
 
         return Logger::getLogger( $logger );
     }
-}
-
-class Core_ApplicationNotInstalled_Exception extends BGP_Exception {
-
-}
-
-class Core_AuthService_Exception extends BGP_Exception {
-
-}
-
-class Core_Core_AuthService_JWT_Exception extends Core_AuthService_Exception {
-
-}
-
-class Core_BGP_Module_Exception extends BGP_Exception {
-
 }

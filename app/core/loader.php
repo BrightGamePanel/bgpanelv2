@@ -60,7 +60,9 @@ spl_autoload_register('bgp_mod_controllers_autoloader');
  * APPLICATION
  */
 // Core Exceptions
-require( CORE_DIR	. '/exception/core.exceptions.php' );
+require( CORE_DIR	. '/exception/BGP_Exception.php' );
+require( CORE_DIR	. '/exception/BGP_Launch_Exception.php' );
+require( CORE_DIR	. '/exception/BGP_Application_Exception.php' );
 
 // Main Application Wrappers
 require( CORE_DIR	. '/application/application.class.php' );
@@ -125,9 +127,6 @@ function bgp_auth_autoloader ($className) {
     }
 };
 spl_autoload_register('bgp_auth_autoloader');
-
-// HTTP Status Codes Class
-require( CORE_DIR	. '/http.status.class.php' );
 
 // Module Class Definition
 require( CORE_DIR	. '/module.class.php' );

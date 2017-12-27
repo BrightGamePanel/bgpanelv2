@@ -62,26 +62,19 @@ class BGP_Wizard_Application extends BGP_Abstract_Application
      * @param $module
      * @param $page
      * @param $content_type
+     * @throws BGP_Launch_Exception
+     * @throws BGP_Exception
      */
-    public function __construct($module, $page, $content_type)
+    public function __construct($module, $page, $content_type = "text/html")
     {
         parent::__construct($module, $page, 0, $content_type);
 
         if ( !is_dir( INSTALL_DIR ) ) {
-            ?>
-            <!DOCTYPE html>
-            <html lang="en">
-            <head>
-                <meta charset="utf-8">
-            </head>
-            <body>
-            <h1>Install Wizard Disabled !</h1><br />
-            <h3>FOR SECURITY REASONS, THE INSTALL WIZARD IS NOT AVAILABLE WITHOUT THE `install` DIRECTORY AT THE ROOT OF THE APPLICATION.</h3>
-            <p>You will not be able to proceed beyond this point until the installation directory is being created.</p>
-            </body>
-            </html>
-            <?php
-            die();
+            throw new BGP_Launch_Exception(
+                'Install Wizard Disabled !',
+                'FOR SECURITY REASONS, THE INSTALL WIZARD IS NOT AVAILABLE WITHOUT THE `install` DIRECTORY AT THE ROOT OF THE APPLICATION.',
+            'You will not be able to proceed beyond this point until the installation directory is being created.'
+            );
         }
 
         $this->game_db = Array
