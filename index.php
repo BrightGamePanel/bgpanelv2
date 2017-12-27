@@ -30,11 +30,13 @@ define('LICENSE', 'GNU GENERAL PUBLIC LICENSE - Version 3, 29 June 2007');
 /**
  * Bright Game Panel Initialization
  */
+
 require('init.php');
 
 /**
  * CLI Mode
  */
+
 if (PHP_SAPI == "cli") {
 
     // Todo : must be implemented
@@ -51,14 +53,6 @@ if (PHP_SAPI == "cli") {
  * HTTP Mode
  * Flight FW Routing Definitions
  */
-require( LIBS_DIR	. '/flight/Flight.php' );
-
-// HTTP status codes
-Flight::route('/@http:[0-9]{3}', function( $http ) {
-    header(Core_Http_Status_Codes::httpHeaderFor($http));
-    echo Core_Http_Status_Codes::getMessageForCode($http);
-    exit(0);
-});
 
 // RestAPI ENDPOINT Route
 Flight::route('GET|POST|PUT|DELETE /api/@api_version(/@module(/@page(/@id)))', function( $api_version, $module, $page, $id ) {
@@ -66,27 +60,22 @@ Flight::route('GET|POST|PUT|DELETE /api/@api_version(/@module(/@page(/@id)))', f
     ob_start();
 
     try {
-        $return_code = BGP_Launcher::start($module, $page, $id, $api_version);
+        $return_code = Core_Launcher::start($module, $page, $id, $api_version);
+    }
+    catch (BGP_Exception $e) {
+        ob_end_clean();
+        $e->sendHeader();
+        exit($e->getCode());
     }
     catch (Exception $e) {
         ob_end_clean();
-        $code = ($e->getCode() == 1) ? 500 : $e->getCode(); // 500 Internal Server Error
-
-        header(Core_Http_Status_Codes::httpHeaderFor($code));
-
-        exit($e->getCode());
+        header('500 Internal Server Error');
+        exit(1);
     }
 
-    if ($return_code === 0 || $return_code === 200) {
-        // 200 OK
-        header(Core_Http_Status_Codes::httpHeaderFor(200));
-        ob_end_flush();
-    }
-    else {
-        ob_end_clean();
-        // GENERIC HTTP ERROR
-        header(Core_Http_Status_Codes::httpHeaderFor($return_code));
-    }
+    // 200 OK
+    header('200 OK');
+    ob_end_flush();
 
     exit($return_code);
 });
@@ -97,34 +86,33 @@ Flight::route('GET|POST|PUT|DELETE (/@module(/@page(/@id)))', function( $module,
     ob_start();
 
     try {
-        $return_code = BGP_Launcher::start($module, $page, $id);
+        $return_code = Core_Launcher::start($module, $page, $id);
     }
-    catch (Exception $e) {
+    catch (BGP_Exception $e) {
         ob_end_clean();
-        $code = ($e->getCode() == 1) ? 500 : $e->getCode(); // 500 Internal Server Error
 
-        header(Core_Http_Status_Codes::httpHeaderFor($code));
-
+        $e->sendHeader();
         if ((int)ini_get('display_errors') === 1) {
-            Flight::error($e);
-        } else {
-            echo Core_Http_Status_Codes::getMessageForCode($code);
+            echo $e;
         }
 
         exit($e->getCode());
     }
-
-    if ($return_code === 0 || $return_code === 200) {
-        // 200 OK
-        header(Core_Http_Status_Codes::httpHeaderFor(200));
-        ob_end_flush();
-    }
-    else {
+    catch (Exception $e) {
         ob_end_clean();
-        // GENERIC HTTP ERROR
-        header(Core_Http_Status_Codes::httpHeaderFor($return_code));
-        echo Core_Http_Status_Codes::getMessageForCode($return_code);
+
+        if ((int)ini_get('display_errors') === 1) {
+            Flight::error($e);
+        } else {
+            header('500 Internal Server Error');
+        }
+
+        exit(1);
     }
+
+    // 200 OK
+    header('200 OK');
+    ob_end_flush();
 
     exit($return_code);
 });
@@ -132,4 +120,5 @@ Flight::route('GET|POST|PUT|DELETE (/@module(/@page(/@id)))', function( $module,
 /**
  * Bright Game Panel Startup
  */
+
 Flight::start();

@@ -43,9 +43,6 @@ if (!defined('LICENSE'))
  * Report all PHP errors:
  * error_reporting(E_ALL);
  * ini_set('display_errors', 1);
- *
- * !IMPORTANT: More options below
- * !IMPORTANT: See [FlightPHP configuration]
  */
 
 error_reporting(E_ALL);
@@ -159,7 +156,9 @@ date_default_timezone_set( CONF_TIMEZONE );
  * LOAD CORE FILES
  */
 
-require( CORE_DIR . '/loader.php' );
+require( CORE_DIR . '/Autoloader.php' );
+spl_autoload_register('Autoloader::loader');
+Autoloader::load();
 
 /**
  * LOGGING Configuration
