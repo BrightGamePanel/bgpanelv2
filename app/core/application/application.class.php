@@ -98,6 +98,7 @@ abstract class BGP_Abstract_Application
      * Acts like an extended constructor
      *
      * @return void
+     * @throws BGP_Exception
      */
     public abstract function init();
 

@@ -83,9 +83,6 @@ function bgp_app_autoloader ($className) {
 };
 spl_autoload_register('bgp_app_autoloader');
 
-// PHP 5.5 Functions Implementation
-require( LIBS_DIR	. '/php5.5/func.inc.php');
-
 // BrightGamePanel Functions
 require( CORE_DIR	. '/inc/func.inc.php');
 

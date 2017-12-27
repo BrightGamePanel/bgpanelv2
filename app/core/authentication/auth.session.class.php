@@ -38,6 +38,7 @@ final class Core_AuthService_Session extends Core_AuthService {
 
     /**
      * Core_AuthService_Session constructor.
+     * @throws BGP_Application_Exception
      */
     protected function __construct() {
         parent::__construct();
@@ -84,6 +85,7 @@ final class Core_AuthService_Session extends Core_AuthService {
      * @param string $logged_user
      * @param string $password
      * @return bool
+     * @throws BGP_Application_Exception
      */
     public function login($logged_user = '', $password = '') {
 

@@ -53,6 +53,7 @@ final class Core_AuthService_API extends Core_AuthService
 
     /**
      * Core_AuthService_API constructor.
+     * @throws BGP_Application_Exception
      */
     protected function __construct() {
         parent::__construct();
@@ -96,6 +97,7 @@ final class Core_AuthService_API extends Core_AuthService
      * Returns TRUE on SUCCESS, FALSE otherwise
      *
      * @return boolean
+     * @throws BGP_Application_Exception
      */
     public function login() {
 
@@ -181,6 +183,7 @@ final class Core_AuthService_API extends Core_AuthService
      * @param string $api_key
      * @param $auth_method
      * @return bool
+     * @throws BGP_Application_Exception
      */
     private function checkRemoteAPIUser( $remote_ip, $api_user, $api_user_pass, $api_key = '', $auth_method )
     {
@@ -235,51 +238,54 @@ final class Core_AuthService_API extends Core_AuthService
 
         $user_id = $result[0]['user_id'];
 
-        if ( self::$rbac->Users->hasRole( 'api', $user_id ) ) {
-
-            // Update User Activity
-
-            try {
-                $sth = $dbh->prepare("
-                    UPDATE user
-                    SET
-                        last_login		= :last_login,
-                        last_activity	= :last_activity,
-                        last_ip 		= :last_ip,
-                        last_host		= :last_host,
-                        token 			= :token
-                    WHERE
-                        user_id			= :user_id
-                    ;");
-
-                $last_login = date('Y-m-d H:i:s');
-                $last_activity = date('Y-m-d H:i:s');
-                $last_host = gethostbyaddr($remote_ip);
-                $token = session_id();
-
-                $sth->bindParam(':last_login', $last_login);
-                $sth->bindParam(':last_activity', $last_activity);
-                $sth->bindParam(':last_ip', $remote_ip);
-                $sth->bindParam(':last_host', $last_host);
-                $sth->bindParam(':token', $token);
-                $sth->bindParam(':user_id', $user_id);
-
-                $sth->execute();
+        try {
+            if (!self::$rbac->Users->hasRole('api', $user_id)) {
+                return FALSE;
             }
-            catch (PDOException $e) {
-                echo $e->getMessage().' in '.$e->getFile().' on line '.$e->getLine();
-                die();
-            }
-
-            // Set Session Information
-
-            session_regenerate_id( TRUE );
-            $this->uid = $result[0]['user_id'];
-
-            return TRUE;
+        } catch (RbacUserNotProvidedException $e) {
+            return FALSE;
         }
 
-        return FALSE;
+        // Update User Activity
+
+        try {
+            $sth = $dbh->prepare("
+                UPDATE user
+                SET
+                    last_login		= :last_login,
+                    last_activity	= :last_activity,
+                    last_ip 		= :last_ip,
+                    last_host		= :last_host,
+                    token 			= :token
+                WHERE
+                    user_id			= :user_id
+                ;");
+
+            $last_login = date('Y-m-d H:i:s');
+            $last_activity = date('Y-m-d H:i:s');
+            $last_host = gethostbyaddr($remote_ip);
+            $token = session_id();
+
+            $sth->bindParam(':last_login', $last_login);
+            $sth->bindParam(':last_activity', $last_activity);
+            $sth->bindParam(':last_ip', $remote_ip);
+            $sth->bindParam(':last_host', $last_host);
+            $sth->bindParam(':token', $token);
+            $sth->bindParam(':user_id', $user_id);
+
+            $sth->execute();
+        }
+        catch (PDOException $e) {
+            echo $e->getMessage().' in '.$e->getFile().' on line '.$e->getLine();
+            die();
+        }
+
+        // Set Session Information
+
+        session_regenerate_id( TRUE );
+        $this->uid = $result[0]['user_id'];
+
+        return TRUE;
     }
 
     /**

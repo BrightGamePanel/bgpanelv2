@@ -10,17 +10,17 @@ class BGP_Application_Exception extends BGP_Exception
     /**
      * BGP_Exception constructor.
      *
+     * @param object Calling object (pass to the constructor using $this)
      * @param string $message Error message
      * @param int $uid User-Id that triggered the error, 0 by default (anonymous)
      * @param int $code Exception code, 0 by default
      * @param Exception|null $previous Previous exception if nested exception
      */
-    public function __construct($message, $uid = 0, $code = 0, Exception $previous = null)
+    public function __construct($obj, $message, $uid = 0, $code = 0, Exception $previous = null)
     {
-        $class  = debug_backtrace()[1]['class'];
         $method = debug_backtrace()[1]['function'];
+        $class = get_class($obj);
 
-        $obj = new $class();
         if (is_a($obj, 'BGP_Module')) {
             // Module
             $this->getErrorLogger($obj->getModuleName(), $class, $method, $uid)->error($message);

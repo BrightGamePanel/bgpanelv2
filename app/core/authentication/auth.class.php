@@ -48,7 +48,7 @@ abstract class Core_AuthService
 
     /**
      * Default Constructor
-     * @throws Core_AuthService_Exception
+     * @throws BGP_Application_Exception
      */
 	protected function __construct()
 	{
@@ -65,7 +65,7 @@ abstract class Core_AuthService
 		// SESSION KEY
 		self::$session_key = $CONFIG['APP_TOKEN_KEY'];
 		if ( empty($this->session_key) ) {
-		    throw new Core_AuthService_Exception("Session key is missing !");
+		    throw new BGP_Application_Exception($this, "Session key is missing !");
 		}
 	}
 
@@ -76,7 +76,7 @@ abstract class Core_AuthService
      * @param String $data
      * @return String
      * @access public
-     * @throws Core_AuthService_Exception
+     * @throws BGP_Application_Exception
      */
     public static function getHash( $data ) {
 
@@ -86,7 +86,7 @@ abstract class Core_AuthService
         // AUTH SALT
         $auth_salt = $CONFIG['APP_AUTH_SALT'];
         if ( empty($auth_salt) ) {
-            throw new Core_AuthService_Exception("Auth salt is missing !");
+            throw new BGP_Application_Exception(self::class, "Auth salt is missing !");
         }
 
         return hash( 'sha512', $auth_salt . $data );
@@ -184,8 +184,11 @@ abstract class Core_AuthService
             return self::$rbac->check($permissionPath, 'guest');
         }
 
-        if (self::$rbac->Users->hasRole('root', $uid) || self::$rbac->check($permissionPath, $uid)) {
-            return TRUE;
+        try {
+            if (self::$rbac->Users->hasRole('root', $uid) || self::$rbac->check($permissionPath, $uid)) {
+                return TRUE;
+            }
+        } catch (RbacUserNotProvidedException $e) {
         }
 
         return FALSE;
@@ -226,8 +229,11 @@ abstract class Core_AuthService
             return self::$rbac->check($permissionPath, 'guest');
         }
 
-        if (self::$rbac->Users->hasRole('root', $uid) || self::$rbac->check($permissionPath, $uid)) {
-            return TRUE;
+        try {
+            if (self::$rbac->Users->hasRole('root', $uid) || self::$rbac->check($permissionPath, $uid)) {
+                return TRUE;
+            }
+        } catch (RbacUserNotProvidedException $e) {
         }
 
         return FALSE;

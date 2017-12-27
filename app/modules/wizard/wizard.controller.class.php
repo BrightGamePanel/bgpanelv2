@@ -71,7 +71,7 @@ class BGP_Controller_Wizard extends BGP_Controller {
 
 	    $ret = array();
 
-        $version_cmp = version_compare(PHP_VERSION, '5.4.0');
+        $version_cmp = version_compare(PHP_VERSION, '5.6.0');
         if ($version_cmp == -1) {
             $ret[self::PHP_VERSION] = FALSE;
         } else {

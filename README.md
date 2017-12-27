@@ -11,7 +11,13 @@ This Project Is WORK IN PROGRESS everything here is still being coded goto www.b
 
 
 
+TODO :
+
+ * Limit Exceptions poisoning (Core classes)
+
+
 Notes :
+
 
     // RSA
 	chmod 400 /path/my-key-pair.pem
