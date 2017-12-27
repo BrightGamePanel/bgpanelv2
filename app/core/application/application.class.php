@@ -192,6 +192,7 @@ abstract class BGP_Abstract_Application
      * Execute the Query and Update User Activity
      *
      * @return int
+     * @throws BGP_Exception
      */
     public abstract function execute();
 
@@ -266,6 +267,8 @@ abstract class BGP_Abstract_Application
             $ret = $sth->fetchAll(PDO::FETCH_ASSOC);
         }
         catch (PDOException $e) {
+            echo $e->getMessage().' in '.$e->getFile().' on line '.$e->getLine();
+            die();
         }
 
         return $ret;

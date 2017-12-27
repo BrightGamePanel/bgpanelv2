@@ -62,7 +62,6 @@ class BGP_Wizard_Application extends BGP_Abstract_Application
      * @param $module
      * @param $page
      * @param $content_type
-     * @throws BGP_Launch_Exception
      * @throws BGP_Exception
      */
     public function __construct($module, $page, $content_type = "text/html")

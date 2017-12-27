@@ -29,10 +29,7 @@ class BGP_GUI_Application extends BGP_Abstract_Application
     }
 
     /**
-     * Initialize the Application
-     * Acts like an extended constructor
-     *
-     * @return void
+     * @throws BGP_Launch_Exception
      */
     public function init()
     {

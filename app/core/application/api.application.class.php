@@ -59,10 +59,7 @@ class BGP_API_Application extends BGP_Abstract_Application
     }
 
     /**
-     * Initialize the Application
-     * Acts like an extended constructor
-     *
-     * @return void
+     * @throws BGP_Launch_Exception
      */
     public function init()
     {
@@ -73,19 +70,20 @@ class BGP_API_Application extends BGP_Abstract_Application
      * Execute the Query
      *
      * @return int
+     * @throws BGP_Exception
      */
     public function execute()
     {
         // Is enable ?
 
         if (boolval(APP_API_ENABLE) === FALSE || boolval(BGP_MAINTENANCE_MODE) === TRUE) {
-            return 503; // Service Unavailable
+            throw new BGP_Exception(503); // Service Unavailable
         }
 
         // Is over HTTPS enable or explicitly allow unsecured HTTP ?
 
         if ((Flight::request()->secure === FALSE) AND (boolval(APP_API_ALLOW_UNSECURE) === FALSE)) {
-            return 418; // Unsecured
+            throw new BGP_Exception(418); // Unsecured
         }
 
         // Resolve Request
@@ -95,20 +93,24 @@ class BGP_API_Application extends BGP_Abstract_Application
             $this->req_method);
 
         if (empty($controller_method_array)) {
-            return 400; // Bad Request
+            throw new BGP_Exception(400); // Bad Request
         }
 
         // Check Authorizations
 
         if ($this->authService->login() === FALSE) {
-            return 403; // Forbidden
+            throw new BGP_Exception(403); // Forbidden
         }
+
+        // Update User Activity
+        $this->updateUserActivity();
 
         if ($this->authService->checkMethodAuthorization($this->module, $controller_method_array['method']) === TRUE) {
             return $this->invoke($controller_method_array, $this->req_content_type); // Invoke
         }
 
-        return 403;  // Forbidden as default response
+        // Forbidden as default response
+        throw new BGP_Exception(403);
     }
 
     /**
@@ -122,6 +124,8 @@ class BGP_API_Application extends BGP_Abstract_Application
     {
         // Call The Method
         // And Return The Media Response
+
+        // TODO : format given a content type
 
         $media = Core_API::callAPIControllerMethod($this->module, $controller_method_array, $this->req_params);
 
