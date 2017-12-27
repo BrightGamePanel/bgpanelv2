@@ -30,7 +30,7 @@
  */
 
 // Init Controller
-$loginController = new BGP_Controller_Login();
+$loginController = new BGP_Module_Controller_Login();
 
 
 // Get the method

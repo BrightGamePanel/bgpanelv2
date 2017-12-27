@@ -27,7 +27,7 @@
 
 
 
-class Core_Reflection
+class Core_Reflection_Helper
 {
 	public static function getControllerPublicMethods( $bgp_module_name )
 	{
@@ -37,7 +37,7 @@ class Core_Reflection
 		{
 			$bgp_controller_name = 'BGP_Controller_' . ucfirst( strtolower( $bgp_module_name ) );
 
-			if (is_subclass_of($bgp_controller_name, 'BGP_Controller'))
+			if (is_subclass_of($bgp_controller_name, 'BGP_Abstract_Module_Controller'))
 			{
 				// Reflection
 				$reflector = new ReflectionClass( $bgp_controller_name );
@@ -81,7 +81,7 @@ class Core_Reflection
 		{
 			$bgp_controller_name = 'BGP_Controller_' . ucfirst( strtolower( $bgp_module_name ) );
 
-			if (is_subclass_of($bgp_controller_name, 'BGP_Controller'))
+			if (is_subclass_of($bgp_controller_name, 'BGP_Abstract_Module_Controller'))
 			{
 				// Reflection
 				$reflector = new ReflectionClass( $bgp_controller_name );
@@ -141,8 +141,8 @@ class Core_Reflection
 			$json = json_encode($xml);
 			$module_definition = json_decode($json, TRUE);
 
-			BGP_Module::$module_definition = $module_definition;
-			$module_pages = BGP_Module::getModulePages();
+			BGP_Abstract_Module::$module_definition = $module_definition;
+			$module_pages = BGP_Abstract_Module::getModulePages();
 
 			if (!empty($module_pages)) {
 				if (!empty($module_pages['page'])) {

@@ -28,18 +28,41 @@
 
 
 /**
- * Base CLASS for each BGP controllers
+ * Install Wizard
  */
-
-class BGP_Controller extends BGP_Module
+class Core_Wizard_Application extends Core_Abstract_Application
 {
-	// Controller Definition
 
-	// None
+    /**
+     * BGP_Installer_Application constructor.
+     *
+     * @param $module
+     * @param $page
+     * @param $content_type
+     * @throws BGP_Exception
+     */
+    public function __construct($module, $page, $content_type = "text/html")
+    {
+        parent::__construct($module, $page, 0, $content_type);
 
-	function __construct( $module_name )	{
+        if ( !is_dir( INSTALL_DIR ) ) {
+            throw new Core_Exception(
+                'Install Wizard Disabled !',
+                'FOR SECURITY REASONS, THE INSTALL WIZARD IS NOT AVAILABLE WITHOUT THE `install` DIRECTORY AT THE ROOT OF THE APPLICATION.',
+            'You will not be able to proceed beyond this point until the installation directory is being created.'
+            );
+        }
+    }
 
-		// Call module constructor
-		parent::__construct( $module_name );
-	}
+    public function init()
+    {
+        return;
+    }
+
+    public function execute()
+    {
+        $wizard = new Wizard();
+
+        exit(var_dump($wizard));
+    }
 }

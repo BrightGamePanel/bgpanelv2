@@ -25,20 +25,19 @@
  * @link		http://www.bgpanel.net/
  */
 
-if ( !class_exists('BGP_Module')) {
-	trigger_error('Module_Box -> BGP_Module is missing !');
-}
-
 /**
  * Install Wizard Module
  */
 
-class BGP_Module_Wizard extends BGP_Module {
+class Wizard extends BGP_Abstract_Module {
 
-	function __construct( )	{
+    /**
+     * Wizard constructor.
+     * @throws Core_Exception
+     */
+    function __construct()	{
 
 		// Call parent constructor
-		parent::__construct( basename(__DIR__) );
+		parent::__construct();
 	}
-
 }

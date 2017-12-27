@@ -25,7 +25,7 @@
  * @link		http://www.bgpanel.net/
  */
 
-if ( !class_exists('BGP_Controller')) {
+if ( !class_exists('BGP_Abstract_Module_Controller')) {
 	trigger_error('Controller_Login -> BGP_Controller is missing !');
 }
 
@@ -33,7 +33,7 @@ if ( !class_exists('BGP_Controller')) {
  * Login Controller
  */
 
-class BGP_Controller_Login extends BGP_Controller
+class BGP_Module_Controller_Login extends BGP_Abstract_Module_Controller
 {
 
 	function __construct( )	{

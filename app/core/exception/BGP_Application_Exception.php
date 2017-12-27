@@ -21,7 +21,7 @@ class BGP_Application_Exception extends BGP_Exception
         $method = debug_backtrace()[1]['function'];
         $class = get_class($obj);
 
-        if (is_a($obj, 'BGP_Module')) {
+        if (is_a($obj, 'BGP_Abstract_Module')) {
             // Module
             $this->getErrorLogger($obj->getModuleName(), $class, $method, $uid)->error($message);
         } else {

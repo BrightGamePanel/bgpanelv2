@@ -25,15 +25,15 @@
  * @link		http://www.bgpanel.net/
  */
 
-if ( !class_exists('BGP_Module')) {
-	trigger_error('Module_Box -> BGP_Module is missing !');
+if ( !class_exists('BGP_Abstract_Module')) {
+	trigger_error('Module_Box -> BGP_Abstract_Module is missing !');
 }
 
 /**
  * Box Module
  */
 
-class BGP_Module_Box extends BGP_Module {
+class BGP_Abstract_Module_Box extends BGP_Abstract_Module {
 
 	function __construct( )	{
 
@@ -49,7 +49,7 @@ class BGP_Module_Box extends BGP_Module {
  * Title: Box Summary
  */
 
-class BGP_Module_Box_View extends BGP_Module_Box {
+class BGP_Module_Box_View extends BGP_Abstract_Module_Box {
 
 	function __construct( $page = '' )	{
 
@@ -66,7 +66,7 @@ class BGP_Module_Box_View extends BGP_Module_Box {
  * Title: Box Add
  */
 
-class BGP_Module_Box_Add extends BGP_Module_Box {
+class BGP_Module_Box_Add extends BGP_Abstract_Module_Box {
 
 	function __construct( $page = '' )	{
 
@@ -83,7 +83,7 @@ class BGP_Module_Box_Add extends BGP_Module_Box {
  * Title: Box Edition
  */
 
-class BGP_Module_Box_Edit extends BGP_Module_Box {
+class BGP_Module_Box_Edit extends BGP_Abstract_Module_Box {
 
 	function __construct( $page = '' )	{
 

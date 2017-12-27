@@ -31,7 +31,7 @@
 
 require( MODS_DIR . '/' . basename(__DIR__) . '/dashboard.class.php' );
 
-$module = new BGP_Module_Dashboard();
+$module = new BGP_Abstract_Module_Dashboard();
 
 /**
  * Call GUI Builder

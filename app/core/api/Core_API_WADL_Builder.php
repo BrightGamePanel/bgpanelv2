@@ -27,7 +27,7 @@
 
 
 
-class Core_API_WADL_Generator
+class Core_API_WADL_Builder
 {
     function displayWADL()
     {
@@ -80,7 +80,7 @@ class Core_API_WADL_Generator
             $subResource = ''; // Tag closure helper for sub resources
 
             foreach ($methods as $method) {
-                $reflectedMethod = Core_Reflection::getControllerMethod($module, $method);
+                $reflectedMethod = Core_Reflection_Helper::getControllerMethod($module, $method);
 
                 $method = self::buildAPIMethodXML($reflectedMethod);
 

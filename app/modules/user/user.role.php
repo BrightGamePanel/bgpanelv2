@@ -31,7 +31,7 @@
 
 require( MODS_DIR . '/' . basename(__DIR__) . '/user.class.php' );
 
-$module = new BGP_Module_User();
+$module = new BGP_Abstract_Module_User();
 
 /**
  * Call GUI Builder

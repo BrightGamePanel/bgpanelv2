@@ -30,7 +30,7 @@
  */
 
 // Init Controller
-$controller = new BGP_Controller_Box();
+$controller = new BGP_Module_Controller_Box();
 
 
 // Get the method

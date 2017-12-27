@@ -30,7 +30,7 @@
 /**
  * Abstract Application Wrapper
  */
-abstract class BGP_Abstract_Application
+abstract class Core_Abstract_Application
 {
     // Request Attributes
     protected $module = '';
@@ -53,6 +53,7 @@ abstract class BGP_Abstract_Application
      * @param $page
      * @param $id
      * @param $content_type
+     * @throws BGP_Exception
      */
     public function __construct($module, $page, $id, $content_type)
     {
@@ -105,7 +106,7 @@ abstract class BGP_Abstract_Application
     /**
      * Default init() implementation
      *
-     * @throws BGP_Launch_Exception
+     * @throws Core_Exception
      */
     protected function _init() {
 
@@ -113,7 +114,7 @@ abstract class BGP_Abstract_Application
 
         if ( is_dir( INSTALL_DIR ) ) {
 
-            throw new BGP_Launch_Exception(
+            throw new Core_Exception(
                     'Install Directory Detected !',
                     'FOR SECURITY REASONS PLEASE REMOVE THE `install` DIRECTORY.',
                     'You will not be able to proceed beyond this point until the installation directory has been removed.'
@@ -133,7 +134,7 @@ abstract class BGP_Abstract_Application
 
         if ( !defined('BGP_PANEL_VERSION') || !defined('BGP_API_VERSION')) {
 
-            throw new BGP_Launch_Exception(
+            throw new Core_Exception(
                 'Undefined Panel Version',
                 '',
                 'Unable to read panel version from the database.'
@@ -143,7 +144,7 @@ abstract class BGP_Abstract_Application
         $fwVersion = self::getFilesVersion();
         if ( (BGP_PANEL_VERSION != $fwVersion['CORE_VERSION']) || (BGP_API_VERSION != $fwVersion['API_VERSION']) ) {
 
-            throw new BGP_Launch_Exception(
+            throw new Core_Exception(
                 'Wrong Database Version Detected',
                 '',
                 'Make sure you have followed the instructions to install/update the database and check that you are running a compatible MySQL Server.'
@@ -152,7 +153,7 @@ abstract class BGP_Abstract_Application
 
         // SESSION HANDLER
 
-        require( APP_DIR . '/core/session.class.php' );
+        require( APP_DIR . '/core/session/Core_SessionHandler.php' );
         $coreSessionHandler = new Core_SessionHandler();
         session_set_save_handler($coreSessionHandler, TRUE);
 

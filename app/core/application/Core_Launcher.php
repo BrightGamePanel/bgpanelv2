@@ -31,7 +31,7 @@
  * Application Wrapper
  */
 
-final class BGP_Launcher
+final class Core_Launcher
 {
     /**
      * BGP_Launcher main
@@ -46,7 +46,7 @@ final class BGP_Launcher
     public static function start($module, $page, $id = 0, $api_version = null)
     {
         // Check API version
-        if (!empty($api_version) && $api_version != BGP_Abstract_Application::getFilesVersion()['API_VERSION']) {
+        if (!empty($api_version) && $api_version != Core_Abstract_Application::getFilesVersion()['API_VERSION']) {
 
             // Trigger error when the requested API version
             // is not compatible with the current API version
@@ -63,7 +63,7 @@ final class BGP_Launcher
             if ($module == 'wizard') {
 
                 // INSTALL WIZARD
-                $app = new BGP_Wizard_Application(
+                $app = new Core_Wizard_Application(
                     'wizard',
                     $page
                 );
@@ -72,7 +72,7 @@ final class BGP_Launcher
 
                 // CHECK INSTALL
                 if (!self::testDBConfig()) {
-                    throw new BGP_Launch_Exception(
+                    throw new Core_Exception(
                         'System not configured',
                         '',
                         "Please configure and install the application"
@@ -80,7 +80,7 @@ final class BGP_Launcher
                 }
 
                 // GUI
-                $app = new BGP_GUI_Application(
+                $app = new Core_GUI_Application(
                     $module,
                     $page,
                     $id
@@ -90,7 +90,7 @@ final class BGP_Launcher
         else {
 
             if (!self::testDBConfig()) {
-                throw new BGP_Launch_Exception(
+                throw new Core_Exception(
                     'System not configured',
                     '',
                     "Please configure and install the application"
@@ -98,7 +98,7 @@ final class BGP_Launcher
             }
 
             // RestAPI
-            $app = new BGP_API_Application(
+            $app = new Core_API_Application(
                 $module,
                 $page,
                 $id,

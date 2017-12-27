@@ -56,7 +56,7 @@ class Core_GUI
 	 */
 	function __construct( $bgp_module )
 	{
-		if ( !empty($bgp_module) && is_object($bgp_module) && is_subclass_of($bgp_module, 'BGP_Module') ) {
+		if ( !empty($bgp_module) && is_object($bgp_module) && is_subclass_of($bgp_module, 'BGP_Abstract_Module') ) {
 
 			$this->module_name = $bgp_module::getModuleName( );
 			$this->module_title = $bgp_module::getModuleSetting( 'title' );
@@ -97,6 +97,34 @@ class Core_GUI
 		}
 	}
 
+
+
+    public static function setModulePageTitle( $page = '' ) {
+
+        $title = self::$module_name;
+
+        if (!empty($page)) {
+            $module_pages = BGP_Abstract_Module::getModulePages();
+
+            if (!empty($module_pages)) {
+                $module_pages = $module_pages['page'];
+
+                if (isset($module_pages[0])) {
+                    foreach ($module_pages as $key => $value) {
+                        if ($value['name'] == $page) {
+                            $title = $value['description'];
+                            break;
+                        }
+                    }
+                }
+                else {
+                    $title = $module_pages['description'];
+                }
+            }
+        }
+
+        self::$module_definition['module_settings']['title'] = $title;
+    }
 
 
 	/**

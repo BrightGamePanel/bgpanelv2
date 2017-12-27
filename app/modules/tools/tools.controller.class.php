@@ -25,7 +25,7 @@
  * @link		http://www.bgpanel.net/
  */
 
-if ( !class_exists('BGP_Controller')) {
+if ( !class_exists('BGP_Abstract_Module_Controller')) {
 	trigger_error('Controller_Tools -> BGP_Controller is missing !');
 }
 
@@ -33,7 +33,7 @@ if ( !class_exists('BGP_Controller')) {
  * Tools Controller
  */
 
-class BGP_Controller_Tools extends BGP_Controller {
+class BGP_Module_Controller_Tools extends BGP_Abstract_Module_Controller {
 
 	function __construct( )	{
 	
@@ -141,7 +141,7 @@ class BGP_Controller_Tools extends BGP_Controller {
 
 				// Get Module Pages
 
-				$pages = Core_Reflection::getModulePublicPages( $module );
+				$pages = Core_Reflection_Helper::getModulePublicPages( $module );
 
 				if (empty($pages)) {
 					continue;
@@ -164,7 +164,7 @@ class BGP_Controller_Tools extends BGP_Controller {
 				
 				// Get Public Methods
 
-				$methods = Core_Reflection::getControllerPublicMethods( $module );
+				$methods = Core_Reflection_Helper::getControllerPublicMethods( $module );
 
 				if (empty($methods)) {
 					continue;

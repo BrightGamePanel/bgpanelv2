@@ -31,7 +31,7 @@
 
 require( MODS_DIR . '/' . basename(__DIR__) . '/login.class.php' );
 
-$module = new BGP_Module_Login();
+$module = new BGP_Abstract_Module_Login();
 
 /**
  * Call GUI Builder

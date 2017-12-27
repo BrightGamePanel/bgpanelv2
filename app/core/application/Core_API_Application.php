@@ -30,11 +30,11 @@
 /**
  * Application Wrapper
  */
-class BGP_API_Application extends BGP_Abstract_Application
+class Core_API_Application extends Core_Abstract_Application
 {
 
     /**
-     * BGP_API_Application constructor.
+     * Core_API_Application constructor.
      *
      * @param $module
      * @param $page
@@ -59,7 +59,7 @@ class BGP_API_Application extends BGP_Abstract_Application
     }
 
     /**
-     * @throws BGP_Launch_Exception
+     * @throws Core_Exception
      */
     public function init()
     {
@@ -88,9 +88,11 @@ class BGP_API_Application extends BGP_Abstract_Application
 
         // Resolve Request
 
-        $controller_method_array = Core_API::resolveAPIRequest($this->module,
+        $controller_method_array = Core_API::resolveAPIRequest(
+            $this->module,
             $this->req_url,
-            $this->req_method);
+            $this->req_method
+        );
 
         if (empty($controller_method_array)) {
             throw new BGP_Exception(400); // Bad Request
@@ -132,5 +134,65 @@ class BGP_API_Application extends BGP_Abstract_Application
         header('Content-Type: ' . $media['content-type'] . '; charset=utf-8');
         echo $media['data'];
         return 0;
+    }
+
+    /**
+     * Given a Module, URL and an HTTP Method
+     * Returns the Method with its associated Controller
+     *
+     * @param $module
+     * @param $url
+     * @param $http_method
+     * @return array
+     */
+    public static function resolveAPIRequest( $module, $url, $http_method ) {
+
+        $request_method = array();
+        $api_schema = array();
+
+        // Get Public Methods
+        $methods = Core_Reflection_Helper::getControllerPublicMethods( $module );
+
+        if (!empty($methods)) {
+
+            foreach ($methods as $key => $value) {
+
+                list($module, $method) = explode(".", $value['method']);
+                $module = strtolower($module);
+
+                $reflectedMethod = Core_Reflection_Helper::getControllerMethod($module, $method);
+
+                // The ending slash of a collection is always omitted
+                // when the resource is called.
+                // We delete the ending slash if any in order to avoid bad resolution
+                // in the next step (#Resolve).
+
+                if (substr($reflectedMethod['resource'], -1) == '/') {
+                    $reflectedMethod['resource'] = substr($reflectedMethod['resource'], 0, -1);
+                }
+
+                $api_schema[$reflectedMethod['resource']][$reflectedMethod['name']] = array(
+                    $reflectedMethod['id'] => $reflectedMethod['params']
+                );
+            }
+        }
+
+        // Get Resource
+        $path = parse_url($url, PHP_URL_PATH);
+        $resource = str_replace('/api/' . $api_version . '/', '', $path);
+
+        // #Resolve
+        if (!empty($api_schema[$resource][$http_method])) {
+
+            $resource = $api_schema[$resource][$http_method];
+
+            foreach ($resource as $key => $value) {
+
+                $request_method['method'] = $key;
+                $request_method['args'] = $value;
+            }
+        }
+
+        return $request_method;
     }
 }

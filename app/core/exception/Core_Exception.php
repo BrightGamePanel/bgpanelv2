@@ -1,17 +1,17 @@
 <?php
 
 /**
- * Class BGP_Launch_Exception
+ * Class Core_Exception
  * Handle exceptions that occur BEFORE the application runtime
  * Display the error with a minimalistic style
  */
-class BGP_Launch_Exception extends BGP_Exception {
+class Core_Exception extends BGP_Exception {
 
     protected $h1;
     protected $h3;
 
     /**
-     * BGP_Launch_Exception constructor.
+     * Core_Exception constructor.
      *
      * @param string $h1
      * @param string $h3

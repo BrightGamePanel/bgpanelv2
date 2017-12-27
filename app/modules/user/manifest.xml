@@ -24,7 +24,4 @@
 
 	<module_dependencies>
 	</module_dependencies>
-
-	<class_definition filename="app/modules/user/user.class.php" classname="BGP_Module_User"/>
-	<controller_class_definition filename="app/modules/user/user.controller.class.php" classname="BGP_Controller_User"/>
 </bgp_module>

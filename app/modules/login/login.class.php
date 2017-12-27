@@ -25,15 +25,15 @@
  * @link		http://www.bgpanel.net/
  */
 
-if ( !class_exists('BGP_Module')) {
-	trigger_error('Module_Login -> BGP_Module is missing !');
+if ( !class_exists('BGP_Abstract_Module')) {
+	trigger_error('Module_Login -> BGP_Abstract_Module is missing !');
 }
 
 /**
  * Login Module
  */
 
-class BGP_Module_Login extends BGP_Module {
+class BGP_Abstract_Module_Login extends BGP_Abstract_Module {
 
 	function __construct( )	{
 
