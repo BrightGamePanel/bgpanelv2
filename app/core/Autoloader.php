@@ -38,11 +38,6 @@ class Autoloader
      */
     public static function load() {
 
-        // Exceptions
-        require( CORE_DIR	. '/exception/BGP_Exception.php' );
-        require( CORE_DIR	. '/exception/BGP_Application_Exception.php' );
-        require( CORE_DIR	. '/exception/Core_Exception.php' );
-
         // BrightGamePanel Functions
         require( CORE_DIR	. '/inc/func.inc.php');
 
@@ -58,8 +53,10 @@ class Autoloader
         require( CORE_DIR	. '/database/Core_DBH.php' );
 
         // Base Module Classes
-        require( CORE_DIR	. '/module/BGP_Abstract_Module.php' );
-        require( CORE_DIR	. '/module/BGP_Abstract_Module_Controller.php' );
+        require( CORE_DIR   . '/module/Core_Module_Interface.php');
+        require( CORE_DIR   . '/module/Core_Controller_Interface.php');
+        require( CORE_DIR	. '/module/Core_Abstract_Module.php' );
+        require( CORE_DIR	. '/module/Core_Abstract_Module_Controller.php' );
     }
 
     /**
@@ -86,10 +83,19 @@ class Autoloader
                 case 'Core_AuthService_Session':
                     require( CORE_DIR	. '/authentication/' . $class . '.php' );
                     return;
+                // GUI
+                case 'Core_Page_Builder':
+                    require( CORE_DIR	. '/gui/' . $class . '.php' );
+                    return;
                 // Lang Package
                 case 'Core_Lang':
                     require( CORE_DIR 	. '/lang/' . $class . '.php' );
                     require( LIBS_DIR	. '/php-gettext/gettext.inc.php' );
+                    return;
+                    // Module
+                case 'Core_Page_Interface':
+                case 'Core_Abstract_Page':
+                    require( CORE_DIR   . '/module/' . $class . '.php');
                     return;
                 default:
                     // Unknown injection
@@ -140,10 +146,21 @@ class Autoloader
         $module = strtolower($class);
         $class_file = MODS_DIR . '/' . $module . '/' . $class . '.class.php';
         $controller_file = MODS_DIR . '/' . $module . '/' . $class . '.controller.class.php';
+        $page_file = MODS_DIR . '/' . $module . '/' . $module . '.page.class.php';
 
         if (file_exists($class_file)) {
             require( $controller_file );
             require( $class_file );
+            require( $page_file ); // Default page
+            return;
+        }
+
+        // Module specific page
+        $page = str_replace('_' . $module, '', strtolower($class));
+        $page = str_replace('_page', '', $page);
+        $page_file = MODS_DIR . '/' . $module . '/' . $module . '.' . $page .  'page.class.php';
+        if (file_exists($page_file)) {
+            require( $page_file );
             return;
         }
     }

@@ -41,7 +41,7 @@ final class Core_Launcher
      * @param int $id
      * @param string $api_version
      * @return int exit code
-     * @throws BGP_Exception
+     * @throws Core_Exception
      */
     public static function start($module, $page, $id = 0, $api_version = null)
     {
@@ -51,7 +51,16 @@ final class Core_Launcher
             // Trigger error when the requested API version
             // is not compatible with the current API version
             // 301 MOVED PERMANENTLY
-            throw new BGP_Exception(301);
+            throw new Core_Exception(301);
+        }
+
+        // CHECK INSTALL
+        if (!self::testDBConfig() && $module != 'wizard') {
+            throw new Core_Verbose_Exception(
+                'System not configured',
+                '',
+                "Please configure and install the application"
+            );
         }
 
         // Read HTTP Headers
@@ -62,22 +71,14 @@ final class Core_Launcher
 
             if ($module == 'wizard') {
 
-                // INSTALL WIZARD
+                // INSTALL WIZARD (HTML)
                 $app = new Core_Wizard_Application(
-                    'wizard',
                     $page
                 );
             }
             else {
 
-                // CHECK INSTALL
-                if (!self::testDBConfig()) {
-                    throw new Core_Exception(
-                        'System not configured',
-                        '',
-                        "Please configure and install the application"
-                    );
-                }
+                // TODO : check that the wizard module is not enabled
 
                 // GUI
                 $app = new Core_GUI_Application(
@@ -89,21 +90,26 @@ final class Core_Launcher
         }
         else {
 
-            if (!self::testDBConfig()) {
-                throw new Core_Exception(
-                    'System not configured',
-                    '',
-                    "Please configure and install the application"
+            if ($module == 'wizard') {
+
+                // INSTALL WIZARD (script)
+                $app = new Core_Wizard_Application(
+                    $page,
+                    'text/plain'
                 );
             }
+            else {
 
-            // RestAPI
-            $app = new Core_API_Application(
-                $module,
-                $page,
-                $id,
-                $http_headers['CONTENT-TYPE']
-            );
+                // TODO : check that the wizard module is not enabled
+
+                // RestAPI
+                $app = new Core_API_Application(
+                    $module,
+                    $page,
+                    $id,
+                    $http_headers['CONTENT-TYPE']
+                );
+            }
         }
 
         // Execute

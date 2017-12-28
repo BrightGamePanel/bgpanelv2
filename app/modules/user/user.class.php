@@ -25,7 +25,7 @@
  * @link		http://www.bgpanel.net/
  */
 
-if ( !class_exists('BGP_Abstract_Module')) {
+if ( !class_exists('Core_Abstract_Module')) {
 	trigger_error('Module_Config -> BGP_Abstract_Module is missing !');
 }
 
@@ -33,7 +33,7 @@ if ( !class_exists('BGP_Abstract_Module')) {
  * User Management Module
  */
 
-class BGP_Abstract_Module_User extends BGP_Abstract_Module {
+class Core_Abstract_Module_User extends Core_Abstract_Module {
 
 	function __construct( )	{
 
@@ -49,7 +49,7 @@ class BGP_Abstract_Module_User extends BGP_Abstract_Module {
  * Title: Roles
  */
 
-class BGP_Module_User_Role extends BGP_Abstract_Module_User {
+class BGP_Module_User_Role extends Core_Abstract_Module_User {
 
 	function __construct( $page = '' )	{
 

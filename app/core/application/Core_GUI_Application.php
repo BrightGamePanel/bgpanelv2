@@ -29,7 +29,7 @@ class Core_GUI_Application extends Core_Abstract_Application
     }
 
     /**
-     * @throws Core_Exception
+     * @throws Core_Verbose_Exception
      */
     public function init()
     {

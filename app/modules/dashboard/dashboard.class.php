@@ -25,7 +25,7 @@
  * @link		http://www.bgpanel.net/
  */
 
-if ( !class_exists('BGP_Abstract_Module')) {
+if ( !class_exists('Core_Abstract_Module')) {
 	trigger_error('Module_Dashboard -> BGP_Abstract_Module is missing !');
 }
 
@@ -33,7 +33,7 @@ if ( !class_exists('BGP_Abstract_Module')) {
  * Admin Dashboard Module
  */
 
-class BGP_Abstract_Module_Dashboard extends BGP_Abstract_Module {
+class Core_Abstract_Module_Dashboard extends Core_Abstract_Module {
 
 	function __construct( )	{
 

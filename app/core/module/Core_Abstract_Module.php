@@ -31,20 +31,23 @@
  * Base CLASS for each BGP modules
  */
 
-abstract class BGP_Abstract_Module
+abstract class Core_Abstract_Module implements Core_Module_Interface
 {
-	// Module Definition
+	// Module Attributes
+    protected $is_enable = TRUE;
 	protected $info = array();
 	protected $settings = array();
 	protected $options = array();
-	protected $pages = array();
 
 	// Module Controller
     public $controller = null;
 
+    // Module Pages
+    protected $pages = array();
+
     /**
      * BGP_Abstract_Module constructor.
-     * @throws Core_Exception
+     * @throws Core_Verbose_Exception
      */
     function __construct() {
 
@@ -53,7 +56,7 @@ abstract class BGP_Abstract_Module
 
 		// Test Manifest File
 		if ( !file_exists($manifest_file) ) {
-		    throw new Core_Exception(
+		    throw new Core_Verbose_Exception(
 		        'Missing manifest file !',
                 'Module : ' . $module_name,
                 'Unable to load : ' . $manifest_file
@@ -69,7 +72,20 @@ abstract class BGP_Abstract_Module
 		$this->info = $module_definition['module_info'];
 		$this->settings = $module_definition['module_settings'];
 		$this->options = $module_definition['module_options'];
-		$this->pages = $module_definition['module_pages'];
+
+		foreach ($module_definition['module_pages'] as $pageTag => $pages) {
+		    foreach ($pages as $key => $value) {
+		        if (empty($value['name'])) {
+		            // Malformed
+                    continue;
+                }
+		        $this->pages[$value['name']] = $value;
+            }
+        }
+
+		if (isset($this->options['enable'])) {
+            $this->is_enable = boolval($this->options['enable']);
+		}
 
 		// Load Module Dependencies
         $this->autoload($module_definition['module_dependencies']);
@@ -78,7 +94,7 @@ abstract class BGP_Abstract_Module
         $controller_class = get_class($this) . '_Controller';
         spl_autoload_call($controller_class);
         if (!class_exists($controller_class)) {
-            throw new Core_Exception(
+            throw new Core_Verbose_Exception(
                 'Missing controller class !',
                 'Module : ' . $module_name,
                 'Unable to load controller class: ' . $controller_class
@@ -90,7 +106,7 @@ abstract class BGP_Abstract_Module
     /**
      * Call autoloader for module required libraries
      * @param array $dependencies
-     * @throws Core_Exception
+     * @throws Core_Verbose_Exception
      */
 	private function autoload($dependencies = array()) {
 
@@ -101,12 +117,56 @@ abstract class BGP_Abstract_Module
         foreach ($dependencies['php_libs'] as $depend) {
             spl_autoload_call($depend);
             if (!class_exists($depend)) {
-                throw new Core_Exception(
+                throw new Core_Verbose_Exception(
                     'Dependency injection failed !',
                     'Module : ' . get_class($this),
                     'Unable to load class: ' . $depend
                 );
             }
         }
+    }
+
+    public function isEnable()
+    {
+        return $this->is_enable;
+    }
+
+    public function render($page, $query_args = array())
+    {
+        if (!empty($page)) {
+
+            // Check composition property
+            if (!in_array($page, $this->pages, TRUE)) {
+                throw new Core_Verbose_Exception(
+                    '404 Not Found',
+                    'In module : ' . get_class($this),
+                    'Page `' . $page . '` not found.'
+                );
+            }
+
+            // Resolve page
+            $page_class = get_class($this) . '_' . $page . '_Page';
+            spl_autoload_call($page_class);
+        }
+        else {
+
+            // Default page
+            $page_class = get_class($this) . '_Page';
+            spl_autoload_call($page_class);
+        }
+
+        if (!class_exists($page_class)) {
+            throw new Core_Verbose_Exception(
+                '404 Not Found',
+                'In module : ' . get_class($this),
+                'Page `' . $page . '` (' . $page_class . ') not found.'
+            );
+        }
+
+        // Instantiate page
+        $page = new $page_class($query_args);
+
+        // Render page
+        $page->render();
     }
 }

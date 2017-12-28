@@ -36,22 +36,13 @@ class Core_Wizard_Application extends Core_Abstract_Application
     /**
      * BGP_Installer_Application constructor.
      *
-     * @param $module
      * @param $page
      * @param $content_type
-     * @throws BGP_Exception
+     * @throws Core_Exception
      */
-    public function __construct($module, $page, $content_type = "text/html")
+    public function __construct($page, $content_type = "text/html")
     {
-        parent::__construct($module, $page, 0, $content_type);
-
-        if ( !is_dir( INSTALL_DIR ) ) {
-            throw new Core_Exception(
-                'Install Wizard Disabled !',
-                'FOR SECURITY REASONS, THE INSTALL WIZARD IS NOT AVAILABLE WITHOUT THE `install` DIRECTORY AT THE ROOT OF THE APPLICATION.',
-            'You will not be able to proceed beyond this point until the installation directory is being created.'
-            );
-        }
+        parent::__construct('wizard', $page, 0, $content_type);
     }
 
     public function init()
@@ -63,6 +54,10 @@ class Core_Wizard_Application extends Core_Abstract_Application
     {
         $wizard = new Wizard();
 
-        exit(var_dump($wizard));
+        if ($this->req_content_type == 'text/html') {
+            $wizard->render($this->page);
+        } else {
+            $wizard->controller->invoke();
+        }
     }
 }

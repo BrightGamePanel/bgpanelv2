@@ -62,7 +62,7 @@ Flight::route('GET|POST|PUT|DELETE /api/@api_version(/@module(/@page(/@id)))', f
     try {
         $return_code = Core_Launcher::start($module, $page, $id, $api_version);
     }
-    catch (BGP_Exception $e) {
+    catch (Core_Exception $e) {
         ob_end_clean();
         $e->sendHeader();
         exit($e->getCode());
@@ -88,7 +88,7 @@ Flight::route('GET|POST|PUT|DELETE (/@module(/@page(/@id)))', function( $module,
     try {
         $return_code = Core_Launcher::start($module, $page, $id);
     }
-    catch (BGP_Exception $e) {
+    catch (Core_Exception $e) {
         ob_end_clean();
 
         $e->sendHeader();

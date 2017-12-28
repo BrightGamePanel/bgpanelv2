@@ -53,7 +53,7 @@ abstract class Core_Abstract_Application
      * @param $page
      * @param $id
      * @param $content_type
-     * @throws BGP_Exception
+     * @throws Core_Exception
      */
     public function __construct($module, $page, $id, $content_type)
     {
@@ -99,27 +99,16 @@ abstract class Core_Abstract_Application
      * Acts like an extended constructor
      *
      * @return void
-     * @throws BGP_Exception
+     * @throws Core_Exception
      */
     public abstract function init();
 
     /**
      * Default init() implementation
      *
-     * @throws Core_Exception
+     * @throws Core_Verbose_Exception
      */
     protected function _init() {
-
-        // INSTALL WIZARD CHECK
-
-        if ( is_dir( INSTALL_DIR ) ) {
-
-            throw new Core_Exception(
-                    'Install Directory Detected !',
-                    'FOR SECURITY REASONS PLEASE REMOVE THE `install` DIRECTORY.',
-                    'You will not be able to proceed beyond this point until the installation directory has been removed.'
-            );
-        }
 
         // DEFINE BGP CONSTANTS FROM THE DATABASE
         // Syntax: BGP_{$SETTING}
@@ -134,7 +123,7 @@ abstract class Core_Abstract_Application
 
         if ( !defined('BGP_PANEL_VERSION') || !defined('BGP_API_VERSION')) {
 
-            throw new Core_Exception(
+            throw new Core_Verbose_Exception(
                 'Undefined Panel Version',
                 '',
                 'Unable to read panel version from the database.'
@@ -144,7 +133,7 @@ abstract class Core_Abstract_Application
         $fwVersion = self::getFilesVersion();
         if ( (BGP_PANEL_VERSION != $fwVersion['CORE_VERSION']) || (BGP_API_VERSION != $fwVersion['API_VERSION']) ) {
 
-            throw new Core_Exception(
+            throw new Core_Verbose_Exception(
                 'Wrong Database Version Detected',
                 '',
                 'Make sure you have followed the instructions to install/update the database and check that you are running a compatible MySQL Server.'
@@ -194,7 +183,7 @@ abstract class Core_Abstract_Application
      * Execute the Query and Update User Activity
      *
      * @return int
-     * @throws BGP_Exception
+     * @throws Core_Exception
      */
     public abstract function execute();
 

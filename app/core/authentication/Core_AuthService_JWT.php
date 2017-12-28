@@ -99,7 +99,7 @@ final class Core_AuthService_JWT extends Core_AuthService
 
     /**
      * Core_AuthService_JWT constructor.
-     * @throws BGP_Application_Exception
+     * @throws Core_Application_Exception
      */
     protected function __construct() {
         parent::__construct();
@@ -107,11 +107,11 @@ final class Core_AuthService_JWT extends Core_AuthService
         // Check Config
 
         if ( !defined('CONF_SEC_SESSION_METHOD') ) {
-            throw new BGP_Application_Exception($this, 'Session security policy is missing !');
+            throw new Core_Application_Exception($this, 'Session security policy is missing !');
         }
 
         if ( !defined('APP_TOKEN_KEY') || empty(APP_TOKEN_KEY)) {
-            throw new BGP_Application_Exception($this, 'Token key is missing or empty !');
+            throw new Core_Application_Exception($this, 'Token key is missing or empty !');
         }
 
         // Fetch Token
@@ -161,7 +161,7 @@ final class Core_AuthService_JWT extends Core_AuthService
      * @param string $logged_user
      * @param string $password
      * @return string
-     * @throws BGP_Application_Exception
+     * @throws Core_Application_Exception
      */
     public static function forgeToken($logged_user = '', $password = '') {
 

@@ -25,7 +25,7 @@
  * @link		http://www.bgpanel.net/
  */
 
-if ( !class_exists('BGP_Abstract_Module_Controller')) {
+if ( !class_exists('Core_Abstract_Module_Controller')) {
 	trigger_error('Controller_Tools -> BGP_Controller is missing !');
 }
 
@@ -33,7 +33,7 @@ if ( !class_exists('BGP_Abstract_Module_Controller')) {
  * Tools Controller
  */
 
-class BGP_Module_Controller_Tools extends BGP_Abstract_Module_Controller {
+class Core_Module_Controller_Tools extends Core_Abstract_Module_Controller {
 
 	function __construct( )	{
 	

@@ -5,12 +5,12 @@
  * Handle exceptions that occur DURING the application runtime
  * Write events in the log file with Log4php
  */
-class BGP_Application_Exception extends BGP_Exception
+class Core_Application_Exception extends Core_Exception
 {
     /**
      * BGP_Exception constructor.
      *
-     * @param object Calling object (pass to the constructor using $this)
+     * @param object $obj Calling object (pass to the constructor using $this)
      * @param string $message Error message
      * @param int $uid User-Id that triggered the error, 0 by default (anonymous)
      * @param int $code Exception code, 0 by default
@@ -21,7 +21,7 @@ class BGP_Application_Exception extends BGP_Exception
         $method = debug_backtrace()[1]['function'];
         $class = get_class($obj);
 
-        if (is_a($obj, 'BGP_Abstract_Module')) {
+        if (is_a($obj, 'Core_Abstract_Module')) {
             // Module
             $this->getErrorLogger($obj->getModuleName(), $class, $method, $uid)->error($message);
         } else {

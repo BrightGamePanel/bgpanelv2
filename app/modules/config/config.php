@@ -31,7 +31,7 @@
 
 require( MODS_DIR . '/' . basename(__DIR__) . '/config.class.php' );
 
-$module = new BGP_Abstract_Module_Config();
+$module = new Core_Abstract_Module_Config();
 
 /**
  * Call GUI Builder

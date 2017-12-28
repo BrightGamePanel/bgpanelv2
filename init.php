@@ -89,43 +89,33 @@ define('CONF_DIR', BASE_DIR . '/conf');
 
 define('GUI_DIR', BASE_DIR . '/gui');
 define('LOGS_DIR', BASE_DIR . '/logs');
-define('INSTALL_DIR', BASE_DIR . '/install');
 
+/**
+ * CORE EXCEPTIONS
+ */
+
+require( CORE_DIR	. '/exception/Core_Exception.php' );
+require( CORE_DIR	. '/exception/Core_Verbose_Exception.php' );
+require( CORE_DIR	. '/exception/Core_Application_Exception.php' );
 
 // VERIFY CONFIGURATION DIRECTORY
 if ( !is_dir( CONF_DIR ) ) {
-?>
-<!DOCTYPE html>
-<html lang="en">
-	<head>
-		<meta charset="utf-8">
-	</head>
-	<body>
-		<h1>Unable to find configuration directory (conf).</h1><br />
-		<h3>&nbsp;</h3>
-		<p>Make sure you have renamed the configuration directory from "conf-dist" to "conf" then retry.</p>
-	</body>
-</html>
-<?php
-	die();
+
+    throw new Core_Verbose_Exception(
+            'Unable to find configuration directory (conf).',
+            '',
+            'Make sure you have renamed the configuration directory from "conf-dist" to "conf" then retry.'
+    );
 }
 
 // VERIFY HTACCESS
 if ( !is_file( BASE_DIR . '/.htaccess' ) ) {
-?>
-<!DOCTYPE html>
-<html lang="en">
-	<head>
-		<meta charset="utf-8">
-	</head>
-	<body>
-		<h1>Unable to find .htaccess.</h1><br />
-		<h3>&nbsp;</h3>
-		<p>Make sure you have uploaded the ".htaccess" file at the root of the application directory then retry.</p>
-	</body>
-</html>
-<?php
-	die();
+
+    throw new Core_Verbose_Exception(
+        'Unable to find .htaccess.',
+        '',
+        'Make sure you have uploaded the ".htaccess" file at the root of the application directory then retry.'
+    );
 }
 
 /**

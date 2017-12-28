@@ -39,7 +39,7 @@ class Core_GUI_JS
 	 */
 	function __construct( $bgp_module )
 	{
-		if ( !empty($bgp_module) && is_object($bgp_module) && is_subclass_of($bgp_module, 'BGP_Abstract_Module') ) {
+		if ( !empty($bgp_module) && is_object($bgp_module) && is_subclass_of($bgp_module, 'Core_Abstract_Module') ) {
 			$this->module_name = $bgp_module::getModuleName( );
 		}
 	}

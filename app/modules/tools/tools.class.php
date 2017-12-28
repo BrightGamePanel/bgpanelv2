@@ -25,7 +25,7 @@
  * @link		http://www.bgpanel.net/
  */
 
-if ( !class_exists('BGP_Abstract_Module')) {
+if ( !class_exists('Core_Abstract_Module')) {
 	trigger_error('Module_Tools -> BGP_Abstract_Module is missing !');
 }
 
@@ -33,7 +33,7 @@ if ( !class_exists('BGP_Abstract_Module')) {
  * Tools Module
  */
 
-class BGP_Abstract_Module_Tools extends BGP_Abstract_Module {
+class Core_Abstract_Module_Tools extends Core_Abstract_Module {
 
 	function __construct( )	{
 
@@ -49,7 +49,7 @@ class BGP_Abstract_Module_Tools extends BGP_Abstract_Module {
  * Title: Web Application Description Language
  */
 
-class BGP_Module_Tools_Wadl extends BGP_Abstract_Module_Tools {
+class BGP_Module_Tools_Wadl extends Core_Abstract_Module_Tools {
 
 	function __construct( $page = '' )	{
 
@@ -67,7 +67,7 @@ class BGP_Module_Tools_Wadl extends BGP_Abstract_Module_Tools {
  * Title: Php Info
  */
 
-class BGP_Module_Tools_Phpinfo extends BGP_Abstract_Module_Tools {
+class BGP_Module_Tools_Phpinfo extends Core_Abstract_Module_Tools {
 
 	function __construct( $page = '' )	{
 
@@ -84,7 +84,7 @@ class BGP_Module_Tools_Phpinfo extends BGP_Abstract_Module_Tools {
  * Title: Optimize Database
  */
 
-class BGP_Module_Tools_Opdb extends BGP_Abstract_Module_Tools {
+class BGP_Module_Tools_Opdb extends Core_Abstract_Module_Tools {
 
 	function __construct( $page = '' )	{
 

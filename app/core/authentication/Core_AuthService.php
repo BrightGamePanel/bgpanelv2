@@ -48,7 +48,7 @@ abstract class Core_AuthService
 
     /**
      * Default Constructor
-     * @throws BGP_Application_Exception
+     * @throws Core_Application_Exception
      */
 	protected function __construct()
 	{
@@ -65,7 +65,7 @@ abstract class Core_AuthService
 		// SESSION KEY
 		self::$session_key = $CONFIG['APP_TOKEN_KEY'];
 		if ( empty($this->session_key) ) {
-		    throw new BGP_Application_Exception($this, "Session key is missing !");
+		    throw new Core_Application_Exception($this, "Session key is missing !");
 		}
 	}
 
@@ -76,7 +76,7 @@ abstract class Core_AuthService
      * @param String $data
      * @return String
      * @access public
-     * @throws BGP_Application_Exception
+     * @throws Core_Application_Exception
      */
     public static function getHash( $data ) {
 
@@ -86,7 +86,7 @@ abstract class Core_AuthService
         // AUTH SALT
         $auth_salt = $CONFIG['APP_AUTH_SALT'];
         if ( empty($auth_salt) ) {
-            throw new BGP_Application_Exception(self::class, "Auth salt is missing !");
+            throw new Core_Application_Exception(self::class, "Auth salt is missing !");
         }
 
         return hash( 'sha512', $auth_salt . $data );

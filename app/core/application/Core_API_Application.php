@@ -59,7 +59,7 @@ class Core_API_Application extends Core_Abstract_Application
     }
 
     /**
-     * @throws Core_Exception
+     * @throws Core_Verbose_Exception
      */
     public function init()
     {
@@ -70,20 +70,20 @@ class Core_API_Application extends Core_Abstract_Application
      * Execute the Query
      *
      * @return int
-     * @throws BGP_Exception
+     * @throws Core_Exception
      */
     public function execute()
     {
         // Is enable ?
 
         if (boolval(APP_API_ENABLE) === FALSE || boolval(BGP_MAINTENANCE_MODE) === TRUE) {
-            throw new BGP_Exception(503); // Service Unavailable
+            throw new Core_Exception(503); // Service Unavailable
         }
 
         // Is over HTTPS enable or explicitly allow unsecured HTTP ?
 
         if ((Flight::request()->secure === FALSE) AND (boolval(APP_API_ALLOW_UNSECURE) === FALSE)) {
-            throw new BGP_Exception(418); // Unsecured
+            throw new Core_Exception(418); // Unsecured
         }
 
         // Resolve Request
@@ -95,13 +95,13 @@ class Core_API_Application extends Core_Abstract_Application
         );
 
         if (empty($controller_method_array)) {
-            throw new BGP_Exception(400); // Bad Request
+            throw new Core_Exception(400); // Bad Request
         }
 
         // Check Authorizations
 
         if ($this->authService->login() === FALSE) {
-            throw new BGP_Exception(403); // Forbidden
+            throw new Core_Exception(403); // Forbidden
         }
 
         // Update User Activity
@@ -112,7 +112,7 @@ class Core_API_Application extends Core_Abstract_Application
         }
 
         // Forbidden as default response
-        throw new BGP_Exception(403);
+        throw new Core_Exception(403);
     }
 
     /**

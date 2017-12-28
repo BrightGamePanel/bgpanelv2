@@ -25,7 +25,7 @@
  * @link		http://www.bgpanel.net/
  */
 
-if ( !class_exists('BGP_Abstract_Module')) {
+if ( !class_exists('Core_Abstract_Module')) {
 	trigger_error('Module_Config -> BGP_Abstract_Module is missing !');
 }
 
@@ -33,7 +33,7 @@ if ( !class_exists('BGP_Abstract_Module')) {
  * Configuration Module
  */
 
-class BGP_Abstract_Module_Config extends BGP_Abstract_Module {
+class Core_Abstract_Module_Config extends Core_Abstract_Module {
 
 	function __construct( )	{
 
@@ -49,7 +49,7 @@ class BGP_Abstract_Module_Config extends BGP_Abstract_Module {
  * Title: Api Key
  */
 
-class BGP_Module_Config_Apikey extends BGP_Abstract_Module_Config {
+class BGP_Module_Config_Apikey extends Core_Abstract_Module_Config {
 
 	function __construct( $page = '' )	{
 
@@ -66,7 +66,7 @@ class BGP_Module_Config_Apikey extends BGP_Abstract_Module_Config {
  * Title: Cron Settings
  */
 
-class BGP_Module_Config_Cron extends BGP_Abstract_Module_Config {
+class BGP_Module_Config_Cron extends Core_Abstract_Module_Config {
 
 	function __construct( $page = '' )	{
 
@@ -83,7 +83,7 @@ class BGP_Module_Config_Cron extends BGP_Abstract_Module_Config {
  * Title: System License
  */
 
-class BGP_Module_Config_License extends BGP_Abstract_Module_Config {
+class BGP_Module_Config_License extends Core_Abstract_Module_Config {
 
 	function __construct( $page = '' )	{
 

@@ -31,7 +31,7 @@
 
 require( MODS_DIR . '/' . basename(__DIR__) . '/box.class.php' );
 
-$module = new BGP_Abstract_Module_Box();
+$module = new Core_Abstract_Module_Box();
 
 /**
  * Call GUI Builder

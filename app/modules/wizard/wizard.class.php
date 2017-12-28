@@ -28,13 +28,8 @@
 /**
  * Install Wizard Module
  */
+class Wizard extends Core_Abstract_Module {
 
-class Wizard extends BGP_Abstract_Module {
-
-    /**
-     * Wizard constructor.
-     * @throws Core_Exception
-     */
     function __construct()	{
 
 		// Call parent constructor

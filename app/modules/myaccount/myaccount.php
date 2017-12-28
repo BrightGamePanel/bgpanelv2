@@ -31,7 +31,7 @@
 
 require( MODS_DIR . '/' . basename(__DIR__) . '/myaccount.class.php' );
 
-$module = new BGP_Abstract_Module_Myaccount();
+$module = new Core_Abstract_Module_Myaccount();
 
 /**
  * Call GUI Builder
