@@ -163,10 +163,19 @@ abstract class Core_Abstract_Module implements Core_Module_Interface
             );
         }
 
-        // Instantiate page
-        $page = new $page_class($query_args);
+        /**
+         * Instantiate page
+         *
+         * @var Core_Page_Interface $page
+         */
+        $page = new $page_class($this, $query_args);
 
         // Render page
         $page->render();
+    }
+
+    public function getTitle()
+    {
+        return ucfirst(strtolower(get_class($this)));
     }
 }

@@ -18,4 +18,9 @@ interface Core_Page_Interface
      * This method is called by render()
      */
     public function body();
+
+    /**
+     * Get parent module title
+     */
+    public function getModuleTitle();
 }

@@ -41,6 +41,9 @@ class Autoloader
         // BrightGamePanel Functions
         require( CORE_DIR	. '/inc/func.inc.php');
 
+        // Defaults
+        require( CORE_DIR	. '/defaults/Core_Defaults.php' );
+
         // Applications
         require( CORE_DIR	. '/application/Core_Abstract_Application.php' );
         require( CORE_DIR	. '/application/Core_Launcher.php' );
@@ -89,7 +92,7 @@ class Autoloader
                     return;
                 // Lang Package
                 case 'Core_Lang':
-                    require( CORE_DIR 	. '/lang/' . $class . '.php' );
+                    require( CORE_DIR 	. '/language/' . $class . '.php' );
                     require( LIBS_DIR	. '/php-gettext/gettext.inc.php' );
                     return;
                     // Module

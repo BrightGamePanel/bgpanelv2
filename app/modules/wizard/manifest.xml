@@ -14,23 +14,24 @@
 	</module_options>
 
 	<module_pages>
+		<default>
+			<name>license</name>
+			<description>License Agreement</description>
+		</default>
 		<page>
-			<name>view</name>
-			<description>Box Summary</description>
+			<name>step1</name>
+			<description></description>
 		</page>
 		<page>
-			<name>add</name>
-			<description>New Box Form</description>
+			<name>step2</name>
+			<description></description>
 		</page>
 		<page>
-			<name>edit</name>
-			<description>Edition Form</description>
+			<name>step3</name>
+			<description></description>
 		</page>
 	</module_pages>
 
 	<module_dependencies>
-		<php_libs>
-			<require>Securimage</require>
-		</php_libs>
 	</module_dependencies>
 </bgp_module>

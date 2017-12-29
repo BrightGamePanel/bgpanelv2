@@ -47,7 +47,7 @@ class Core_Wizard_Application extends Core_Abstract_Application
 
     public function init()
     {
-        return;
+        Core_Defaults::initialize();
     }
 
     public function execute()

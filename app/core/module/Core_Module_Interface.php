@@ -20,4 +20,9 @@ interface Core_Module_Interface
      * @param array $query_args Query arguments to render the requested page
      */
     public function render($page, $query_args = array());
+
+    /**
+     * Get module title
+     */
+    public function getTitle();
 }

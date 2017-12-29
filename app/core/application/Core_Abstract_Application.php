@@ -117,6 +117,8 @@ abstract class Core_Abstract_Application
         foreach ($CONFIG as $row) {
             define( strtoupper( 'BGP_' . $row['setting'] ), $row['value'] );
         }
+        // Complete missing constants (if any)
+        Core_Defaults::initialize();
 
         // VERSION CONTROL
         // Check that core files are compatible with the current BrightGamePanel Database

@@ -27,13 +27,28 @@
 
 
 
-class Core_DBH {
-	// The Database Handle ($dbh)
-	public static $dbh;
+final class Core_DBH {
 
-	// Creates a PDO instance representing a connection to a database
+	// The Database Handle
+	private static $dbh = null;
+
+    /**
+     * Hidden Core_DBH constructor.
+     */
+	private function __construct()
+    {
+    }
+
+    /**
+     * Creates a PDO instance representing a connection to a database
+     *
+     * @return PDO
+     */
 	public static function getDBH() {
-		if ( empty(self::$dbh) || !is_object(self::$dbh) || (get_class(self::$dbh) != 'PDO') ) {
+
+	    if (empty(self::$dbh) ||
+            !is_object(self::$dbh) ||
+            (get_class(self::$dbh) != 'PDO')) {
 			try {
 				// Connect to the SQL server
 				if (DB_DRIVER == 'sqlite') {

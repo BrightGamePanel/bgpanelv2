@@ -26,33 +26,16 @@
  */
 
 
+/**
+ * Class Core_Defaults
+ * Load default constants value (if missing)
+ */
+final class Core_Defaults {
 
-class Core_Lang {
+    public static function initialize() {
 
-	/**
-	 * Define language for get-text translator
-	 *
-	 * Directory structure for the translation must be:
-	 *		./app/locale/Lang/LC_MESSAGES/messages.mo
-	 * Example (French):
-	 *		./app/locale/fr_FR/LC_MESSAGES/messages.mo
-	 */
-	public static function setLanguage( $lang = 'en_EN' ) {
-		$encoding = 'UTF-8';
-		$languages = parse_ini_file( CONF_LANG_INI );
-
-		if ( isset($lang) && in_array($lang, $languages) ) {
-			$locale = $lang;
-		} else {
-			$locale = CONF_DEFAULT_LOCALE;
-		}
-
-		// gettext setup
-		T_setlocale(LC_MESSAGES, $locale);
-		// Set the text domain as 'messages'
-		$domain = 'messages';
-		T_bindtextdomain($domain, LOCALE_DIR);
-		T_bind_textdomain_codeset($domain, $encoding);
-		T_textdomain($domain);
-	}
+        if (!defined('BGP_PANEL_NAME')) {
+            define('BGP_PANEL_NAME', 'BrightGamePanel V2');
+        }
+    }
 }
