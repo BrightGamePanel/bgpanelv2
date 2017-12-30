@@ -18,9 +18,9 @@ abstract class Core_Abstract_Page implements Core_Page_Interface {
     protected $builder = null;
 
     /**
-     * @var string Name
+     * @var string Title
      */
-    protected $name = '';
+    protected $title = '';
 
     /**
      * Core_Abstract_Module_Page constructor.
@@ -32,7 +32,9 @@ abstract class Core_Abstract_Page implements Core_Page_Interface {
         $this->parent_module = $parent_module;
         $this->request = $query_args;
         $this->builder = new Core_Page_Builder($this);
-        $this->name = get_class($this);
+
+        $this->title = str_replace('_Page', '', get_class($this));
+        $this->title = str_replace('_', ' ', $this->title);
     }
 
     public function render() {
@@ -47,8 +49,22 @@ abstract class Core_Abstract_Page implements Core_Page_Interface {
         $this->builder->buildFooter();
     }
 
+    public function getTitle() {
+        return $this->title;
+    }
+
     public function getModuleTitle()
     {
         return $this->parent_module->getTitle();
+    }
+
+    public function getStylesheets()
+    {
+        return $this->parent_module->getStylesheets();
+    }
+
+    public function getJavascript()
+    {
+        return $this->parent_module->getJavascript();
     }
 }

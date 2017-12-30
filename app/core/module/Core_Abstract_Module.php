@@ -45,6 +45,9 @@ abstract class Core_Abstract_Module implements Core_Module_Interface
     // Module Pages
     protected $pages = array();
 
+    // Module Dependencies
+    protected $resources = array();
+
     /**
      * BGP_Abstract_Module constructor.
      * @throws Core_Verbose_Exception
@@ -87,10 +90,14 @@ abstract class Core_Abstract_Module implements Core_Module_Interface
             $this->is_enable = boolval($this->options['enable']);
 		}
 
-		// Load Module Dependencies
+		// Load Module PHP Dependencies
         $this->autoload($module_definition['module_dependencies']);
 
-        // Attach controller
+		// Set UI dependencies
+        unset($module_definition['module_dependencies']['php_libs']);
+        $this->resources = $module_definition['module_dependencies'];
+
+            // Attach controller
         $controller_class = get_class($this) . '_Controller';
         spl_autoload_call($controller_class);
         if (!class_exists($controller_class)) {
@@ -177,5 +184,20 @@ abstract class Core_Abstract_Module implements Core_Module_Interface
     public function getTitle()
     {
         return ucfirst(strtolower(get_class($this)));
+    }
+
+    public function getStylesheets() {
+	    if (!isset($this->resources['stylesheets'])) {
+	        return array();
+        }
+	    return $this->resources['stylesheets'];
+    }
+
+    public function getJavascript()
+    {
+        if (!isset($this->resources['javascript'])) {
+            return array();
+        }
+        return $this->resources['javascript'];
     }
 }

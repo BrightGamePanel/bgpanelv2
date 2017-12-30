@@ -66,15 +66,22 @@ class Core_Page_Builder {
             <!-- DataTables -->
             <link href="./res/datatables/css/dataTables.bootstrap.min.css" rel="stylesheet">
             <!-- SB Admin 2 -->
-            <link href="./res/bootstrap3/css/dashboard.css" rel="stylesheet">
-            <?php
-            //------------------------------------------------------------------------------------------------------------+
+            <link href="./res/bootstrap3/css/dashboard.css" rel="stylesheet"><?php
 
             // Load CSS Dependencies
-            echo $this->getCSSDepends();
+            $stylesheets = $this->page->getStylesheets();
+            if ( !empty($stylesheets) ) {
+                foreach ($stylesheets as $depend)
+                {
+                    echo "\n";
+                    ?>
+            <!-- <?php echo $depend['comment']; ?> -->
+            <link href="<?php echo $depend['href']; ?>" rel="stylesheet"><?php
+                }
+            }
 
-            //------------------------------------------------------------------------------------------------------------+
             ?>
+
             <!-- Javascript -->
             <script src="./res/angularjs/js/angular.min.js"></script>
             <script src="./res/angularjs/js/angular-animate.min.js"></script>
@@ -98,15 +105,22 @@ class Core_Page_Builder {
             <!-- SB Admin 2 -->
             <script src="./res/bootstrap3/js/sb-admin-2.js"></script>
             <!-- Javascript Functions -->
-            <script src="./res/libs/js/toCamel.func.js"></script>
-            <?php
-            //------------------------------------------------------------------------------------------------------------+
+            <script src="./res/libs/js/toCamel.func.js"></script><?php
 
-            // Load JS Dependencies
-            echo $this->getJSDepends();
+            // Load Javascript Dependencies
+            $js = $this->page->getJavascript();
+            if ( !empty($js) ) {
+                foreach ($js as $depend)
+                {
+                    echo "\n";
+                    ?>
+            <!-- <?php echo $depend['comment']; ?> -->
+            <script src="<?php echo $depend['src']; ?>"></script><?php
+                }
+            }
 
-            //------------------------------------------------------------------------------------------------------------+
             ?>
+
             <!-- Favicon -->
             <link rel="icon" href="./res/img/favicon.ico">
             <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->

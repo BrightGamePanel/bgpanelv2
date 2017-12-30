@@ -25,4 +25,14 @@ interface Core_Module_Interface
      * Get module title
      */
     public function getTitle();
+
+    /**
+     * Get module stylesheets dependencies
+     */
+    public function getStylesheets();
+
+    /**
+     * Get module javascript dependencies
+     */
+    public function getJavascript();
 }

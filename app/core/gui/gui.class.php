@@ -127,53 +127,6 @@ class Core_GUI
     }
 
 
-	/**
-	 * Retrieves from the manifest file
-	 * required CSS stylesheets
-	 *
-	 * @param none
-	 * @return String
-	 * @access private
-	 */
-	private function getCSSDepends() {
-
-		if ( !empty($this->module_dependencies) && !empty($this->module_dependencies['stylesheets']) ) {
-			foreach ($this->module_dependencies['stylesheets'] as $depend)
-			{
-//------------------------------------------------------------------------------------------------------------+
-?>
-			<!-- <?php echo $depend['comment']; ?> -->
-			<link href="<?php echo $depend['href']; ?>" rel="stylesheet">
-<?php
-//------------------------------------------------------------------------------------------------------------+
-			}
-		}
-	}
-
-
-
-	/**
-	 * Retrieves from the manifest file
-	 * required JS scripts
-	 *
-	 * @param none
-	 * @return String
-	 * @access private
-	 */
-	private function getJSDepends() {
-
-		if ( !empty($this->module_dependencies) && !empty($this->module_dependencies['javascripts']) ) {
-			foreach ($this->module_dependencies['javascripts'] as $depend)
-			{
-//------------------------------------------------------------------------------------------------------------+
-?>
-			<!-- <?php echo $depend['comment']; ?> -->
-			<script src="<?php echo $depend['src']; ?>"></script>
-<?php
-//------------------------------------------------------------------------------------------------------------+
-			}
-		}
-	}
 
 
 

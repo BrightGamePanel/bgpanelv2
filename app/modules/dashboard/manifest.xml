@@ -19,14 +19,13 @@
 	</module_pages>
 
 	<module_dependencies>
-		<!--
 		<stylesheets>
 			<datatables>
 				<comment>DataTables</comment>
 				<href>./gui/datatables/css/dataTables.bootstrap.min.css</href>
 			</datatables>
 		</stylesheets>
-		<javascripts>
+		<javascript>
 			<jquery-datatables>
 				<comment>DataTables jQuery Plugin</comment>
 				<src>./gui/datatables/js/jquery.dataTables.min.js</src>
@@ -35,7 +34,6 @@
 				<comment>DataTables BS3 Plugin</comment>
 				<src>./gui/datatables/js/dataTables.bootstrap.min.js</src>
 			</bootstrap-datatables>
-		</javascripts>
-		-->
+		</javascript>
 	</module_dependencies>
 </bgp_module>
