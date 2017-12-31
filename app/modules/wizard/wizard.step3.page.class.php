@@ -6,7 +6,7 @@
  * Time: 22:09
  */
 
-class Wizard_Step1_Page extends Core_Abstract_Page
+class Wizard_Step3_Page extends Core_Abstract_Page
 {
 
     /**
@@ -15,6 +15,6 @@ class Wizard_Step1_Page extends Core_Abstract_Page
      */
     public function body()
     {
-        echo 'Step1';
+        echo 'Step3';
     }
 }

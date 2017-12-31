@@ -42,7 +42,27 @@ abstract class Core_Abstract_Module implements Core_Module_Interface
 	// Module Controller
     public $controller = null;
 
-    // Module Pages
+    /**
+     * Default page array :
+     *   'class' => Page class name
+     *   'title' => Page header title
+     *   'description' => Page header subtitle
+     *
+     * @var array
+     */
+    protected $default_page = array();
+
+    /**
+     * Module pages array :
+     * 'pageId' => array(
+     *   'class' => Page class name
+     *   'parent' => Parent page identifier
+     *   'title' => Page header title
+     *   'description' => Page header subtitle
+     * )
+     *
+     * @var array
+     */
     protected $pages = array();
 
     // Module Dependencies
@@ -76,13 +96,38 @@ abstract class Core_Abstract_Module implements Core_Module_Interface
 		$this->settings = $module_definition['module_settings'];
 		$this->options = $module_definition['module_options'];
 
+		// Pages
 		foreach ($module_definition['module_pages'] as $pageTag => $pages) {
+
+		    // Default page
+		    if ($pageTag == 'default') {
+
+                $page = array();
+                $page['class'] = get_class($this) . '_Page';
+                $page['title'] = !empty($pages['title']) ? $pages['title'] : get_class($this);
+                $page['description'] = !empty($pages['description']) ? $pages['description'] : '';
+
+		        $this->default_page = $page;
+                continue;
+            }
+
+		    // Regular pages
 		    foreach ($pages as $key => $value) {
-		        if (empty($value['name'])) {
+
+		        if (empty($value['@attributes']['name'])) {
 		            // Malformed
                     continue;
                 }
-		        $this->pages[$value['name']] = $value;
+
+                $page_name = $value['@attributes']['name'];
+
+		        $page = array();
+		        $page['class'] = get_class($this) . '_' . ucfirst(strtolower($page_name)) . '_Page';
+                $page['parent'] = !empty($value['parent']) ? $value['parent'] : '';
+                $page['title'] = !empty($value['title']) ? $value['title'] : get_class($this);
+                $page['description'] = !empty($value['description']) ? $value['description'] : '';
+
+		        $this->pages[$page_name] = $page;
             }
         }
 
@@ -97,7 +142,7 @@ abstract class Core_Abstract_Module implements Core_Module_Interface
         unset($module_definition['module_dependencies']['php_libs']);
         $this->resources = $module_definition['module_dependencies'];
 
-            // Attach controller
+        // Attach controller
         $controller_class = get_class($this) . '_Controller';
         spl_autoload_call($controller_class);
         if (!class_exists($controller_class)) {
@@ -140,29 +185,34 @@ abstract class Core_Abstract_Module implements Core_Module_Interface
 
     public function render($page, $query_args = array())
     {
-        if (!empty($page)) {
+        // No parent page by default
+        $parent_page = '';
+        $parent = null;
+
+        if (empty($page)) {
+
+            // Default page
+            $page_class = $this->default_page['class'];
+        }
+        else {
 
             // Check composition property
-            if (!in_array($page, $this->pages, TRUE)) {
+            if (!isset($this->pages[$page])) {
+
                 throw new Core_Verbose_Exception(
                     '404 Not Found',
                     'In module : ' . get_class($this),
                     'Page `' . $page . '` not found.'
                 );
             }
-
-            // Resolve page
-            $page_class = get_class($this) . '_' . $page . '_Page';
-            spl_autoload_call($page_class);
+            $page_class = $this->pages[$page]['class'];
+            $parent_page = $this->pages[$page]['parent'];
         }
-        else {
 
-            // Default page
-            $page_class = get_class($this) . '_Page';
-            spl_autoload_call($page_class);
-        }
+        spl_autoload_call($page_class);
 
         if (!class_exists($page_class)) {
+
             throw new Core_Verbose_Exception(
                 '404 Not Found',
                 'In module : ' . get_class($this),
@@ -170,20 +220,32 @@ abstract class Core_Abstract_Module implements Core_Module_Interface
             );
         }
 
+        if (!empty($parent_page)) {
+
+            /**
+             * Instantiate parent page
+             *
+             * @var Core_Page_Interface $page
+             */
+            $parent = new $parent_page($this);
+        }
+
         /**
          * Instantiate page
          *
          * @var Core_Page_Interface $page
          */
-        $page = new $page_class($this, $query_args);
+        $page = new $page_class($this, $parent, $query_args);
 
         // Render page
         $page->renderPage();
     }
 
-    public function getModuleTitle()
-    {
-        return ucfirst(strtolower(get_class($this)));
+    public function getModuleTitle() {
+        if (empty($this->settings['title'])) {
+            return ucfirst(strtolower(get_class($this)));
+        }
+        return $this->settings['title'];
     }
 
     public function getStylesheets() {
@@ -193,19 +255,24 @@ abstract class Core_Abstract_Module implements Core_Module_Interface
 	    return $this->resources['stylesheets'];
     }
 
-    public function getJavascript()
-    {
+    public function getJavascript() {
         if (!isset($this->resources['javascript'])) {
             return array();
         }
         return $this->resources['javascript'];
     }
 
-    public function getOptions()
-    {
+    public function getOptions() {
         if (empty($this->options)) {
             return array();
         }
         return $this->options;
+    }
+
+    public function getIcon() {
+        if (empty($this->settings['icon'])) {
+            return 'fa fa-bug';
+        }
+        return $this->settings['icon'];
     }
 }

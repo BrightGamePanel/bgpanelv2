@@ -8,6 +8,11 @@ abstract class Core_Abstract_Page implements Core_Page_Interface {
     protected $parent_module = null;
 
     /**
+     * @var Core_Page_Interface Parent page
+     */
+    protected $parent_page = null;
+
+    /**
      * @var array Query parameters
      */
     protected $request = array();
@@ -25,11 +30,14 @@ abstract class Core_Abstract_Page implements Core_Page_Interface {
     /**
      * Core_Abstract_Module_Page constructor.
      * @param Core_Module_Interface $parent_module Attached parent module
+     * @param Core_Page_Interface $parent_page Parent page (if any)
      * @param array $query_args Query arguments necessary to page rendering
      */
-    public function __construct($parent_module, $query_args = array())
+    public function __construct($parent_module, $parent_page = null, $query_args = array())
     {
         $this->parent_module = $parent_module;
+        $this->parent_page = $parent_page;
+
         $this->request = $query_args;
         $this->builder = new Core_Page_Builder($this);
 
@@ -53,6 +61,11 @@ abstract class Core_Abstract_Page implements Core_Page_Interface {
         return $this->title;
     }
 
+    public function getParentPage()
+    {
+        return $this->parent_page;
+    }
+
     public function getModuleTitle()
     {
         return $this->parent_module->getModuleTitle();
@@ -71,5 +84,10 @@ abstract class Core_Abstract_Page implements Core_Page_Interface {
     public function getOptions()
     {
         return $this->parent_module->getOptions();
+    }
+
+    public function getIcon()
+    {
+        return $this->parent_module->getIcon();
     }
 }

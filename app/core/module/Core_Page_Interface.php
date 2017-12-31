@@ -28,4 +28,9 @@ interface Core_Page_Interface extends Core_Module_Shared_Interface
      * Get parent module title
      */
     public function getModuleTitle();
+
+    /**
+     * Get parent page
+     */
+    public function getParentPage();
 }

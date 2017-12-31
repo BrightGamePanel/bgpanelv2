@@ -3,17 +3,22 @@
 interface Core_Module_Shared_Interface {
 
     /**
-     * Get module stylesheets dependencies
+     * Get stylesheets dependencies
      */
     public function getStylesheets();
 
     /**
-     * Get module javascript dependencies
+     * Get javascript dependencies
      */
     public function getJavascript();
 
     /**
-     * Get module options
+     * Get options
      */
     public function getOptions();
+
+    /**
+     * Get icon
+     */
+    public function getIcon();
 }

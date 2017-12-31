@@ -7,30 +7,31 @@
 	</module_info>
 
 	<module_settings>
+		<title>Wizard</title>
+		<href>./wizard</href>
+		<icon>fa fa-magic fa-fw</icon>
 	</module_settings>
 
 	<module_options>
 		<enable>1</enable>
-		<empty_navbar>1</empty_navbar>
 		<no_sidebar>1</no_sidebar>
 	</module_options>
 
 	<module_pages>
 		<default>
-			<name>license</name>
+			<title>Install and Update Script</title>
 			<description>License Agreement</description>
 		</default>
-		<page>
-			<name>step1</name>
-			<description></description>
+		<page name="step1">
+			<title>Check Requirements</title>
 		</page>
-		<page>
-			<name>step2</name>
-			<description></description>
+		<page name="step2">
+			<parent>step1</parent>
+			<title>Select Database Update Mode</title>
 		</page>
-		<page>
-			<name>step3</name>
-			<description></description>
+		<page name="step3">
+			<parent>step2</parent>
+			<title>Install Database</title>
 		</page>
 	</module_pages>
 

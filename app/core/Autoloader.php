@@ -145,26 +145,33 @@ class Autoloader
                 return;
         }
 
+        // MODULE PAGE
+        if (preg_match('/([a-zA-Z0-9]*)_([a-zA-Z0-9]*)_([a-zA-Z0-9]*)/', strtolower($class), $matches) === 1) {
+
+            list($class_tolower, $module, $page, $suffix) = $matches;
+            $page_file = MODS_DIR . '/' . $module . '/' . $module . '.' . $page .  '.page.class.php';
+            if (file_exists($page_file)) {
+                require( $page_file );
+                return;
+            }
+        }
+
         // MODULE
 
         $module = strtolower($class);
-        $class_file = MODS_DIR . '/' . $module . '/' . $class . '.class.php';
-        $controller_file = MODS_DIR . '/' . $module . '/' . $class . '.controller.class.php';
-        $page_file = MODS_DIR . '/' . $module . '/' . $module . '.page.class.php';
+        $module_class_file = MODS_DIR . '/' . $module . '/' . $class . '.class.php';
+        $controller_class_file = MODS_DIR . '/' . $module . '/' . $class . '.controller.class.php';
+        $default_page_class_file = MODS_DIR . '/' . $module . '/' . $module . '.page.class.php';
 
-        if (file_exists($class_file)) {
-            require( $controller_file );
-            require( $class_file );
-            require( $page_file ); // Default page
-            return;
-        }
+        if (file_exists($module_class_file) && file_exists($controller_class_file)) {
 
-        // Module specific page
-        $page = str_replace('_' . $module, '', strtolower($class));
-        $page = str_replace('_page', '', $page);
-        $page_file = MODS_DIR . '/' . $module . '/' . $module . '.' . $page .  'page.class.php';
-        if (file_exists($page_file)) {
-            require( $page_file );
+            require( $controller_class_file );
+            require( $module_class_file );
+
+            if (file_exists($default_page_class_file)) {
+                // Default page
+                require( $default_page_class_file );
+            }
             return;
         }
     }
