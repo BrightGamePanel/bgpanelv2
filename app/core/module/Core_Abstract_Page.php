@@ -37,7 +37,7 @@ abstract class Core_Abstract_Page implements Core_Page_Interface {
         $this->title = str_replace('_', ' ', $this->title);
     }
 
-    public function render() {
+    public function renderPage() {
 
         // Build Page Header
         $this->builder->buildHeader();
@@ -49,13 +49,13 @@ abstract class Core_Abstract_Page implements Core_Page_Interface {
         $this->builder->buildFooter();
     }
 
-    public function getTitle() {
+    public function getPageTitle() {
         return $this->title;
     }
 
     public function getModuleTitle()
     {
-        return $this->parent_module->getTitle();
+        return $this->parent_module->getModuleTitle();
     }
 
     public function getStylesheets()
@@ -66,5 +66,10 @@ abstract class Core_Abstract_Page implements Core_Page_Interface {
     public function getJavascript()
     {
         return $this->parent_module->getJavascript();
+    }
+
+    public function getOptions()
+    {
+        return $this->parent_module->getOptions();
     }
 }

@@ -43,12 +43,8 @@ abstract class Core_AuthService
     // Authentication Passphrase
     protected static $auth_key = '';
 
-    // Session Passphrase
-    protected static $session_key = '';
-
     /**
      * Default Constructor
-     * @throws Core_Application_Exception
      */
 	protected function __construct()
 	{
@@ -58,15 +54,6 @@ abstract class Core_AuthService
             !is_a(self::$rbac, 'Rbac')) {
             self::$rbac = new PhpRbac\Rbac();
         }
-
-		// SECRET KEYS
-		$CONFIG = parse_ini_file( CONF_SECRET_INI );
-
-		// SESSION KEY
-		self::$session_key = $CONFIG['APP_TOKEN_KEY'];
-		if ( empty($this->session_key) ) {
-		    throw new Core_Application_Exception($this, "Session key is missing !");
-		}
 	}
 
     /**
@@ -76,20 +63,19 @@ abstract class Core_AuthService
      * @param String $data
      * @return String
      * @access public
-     * @throws Core_Application_Exception
+     * @throws Core_Verbose_Exception
      */
     public static function getHash( $data ) {
 
-        // SECRET KEYS
-        $CONFIG = parse_ini_file( CONF_SECRET_INI );
-
-        // AUTH SALT
-        $auth_salt = $CONFIG['APP_AUTH_SALT'];
-        if ( empty($auth_salt) ) {
-            throw new Core_Application_Exception(self::class, "Auth salt is missing !");
+        if (empty(Core\Authentication\APP_TOKEN_KEY)) {
+            throw new Core_Verbose_Exception(
+                'Bad security configuration !',
+                'Authentication salt is missing !',
+                'The random string `salt` used by cryptographic components of the authentication service is missing or empty.'
+            );
         }
 
-        return hash( 'sha512', $auth_salt . $data );
+        return hash( 'sha512', Core\Authentication\APP_TOKEN_KEY . $data );
     }
 
     /**

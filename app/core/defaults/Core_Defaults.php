@@ -34,8 +34,24 @@ final class Core_Defaults {
 
     public static function initialize() {
 
+        /* GENERAL */
+
+        if (!defined('CONF_SEC_SESSION_METHOD')) {
+            define('CONF_SEC_SESSION_METHOD', 'HMAC_SHA_256');
+        }
+
         if (!defined('BGP_PANEL_NAME')) {
             define('BGP_PANEL_NAME', 'BrightGamePanel V2');
+        }
+
+        /* SECRETS */
+
+        if (!defined('Core\Authentication\APP_TOKEN_KEY')) {
+            define('Core\Authentication\APP_TOKEN_KEY', hash('sha256', $_SERVER['SERVER_ADDR']));
+        }
+
+        if (!defined('Core\Authentication\APP_AUTH_SALT')) {
+            define('Core\Authentication\APP_AUTH_SALT', hash('sha256', $_SERVER['SERVER_ADDR']));
         }
     }
 }

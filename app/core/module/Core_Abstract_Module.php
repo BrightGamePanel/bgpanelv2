@@ -178,10 +178,10 @@ abstract class Core_Abstract_Module implements Core_Module_Interface
         $page = new $page_class($this, $query_args);
 
         // Render page
-        $page->render();
+        $page->renderPage();
     }
 
-    public function getTitle()
+    public function getModuleTitle()
     {
         return ucfirst(strtolower(get_class($this)));
     }
@@ -199,5 +199,13 @@ abstract class Core_Abstract_Module implements Core_Module_Interface
             return array();
         }
         return $this->resources['javascript'];
+    }
+
+    public function getOptions()
+    {
+        if (empty($this->options)) {
+            return array();
+        }
+        return $this->options;
     }
 }

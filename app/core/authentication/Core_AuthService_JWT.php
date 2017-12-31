@@ -99,19 +99,27 @@ final class Core_AuthService_JWT extends Core_AuthService
 
     /**
      * Core_AuthService_JWT constructor.
-     * @throws Core_Application_Exception
+     * @throws Core_Verbose_Exception
      */
     protected function __construct() {
         parent::__construct();
 
         // Check Config
 
-        if ( !defined('CONF_SEC_SESSION_METHOD') ) {
-            throw new Core_Application_Exception($this, 'Session security policy is missing !');
+        if (!defined('CONF_SEC_SESSION_METHOD') || empty(CONF_SEC_SESSION_METHOD)) {
+            throw new Core_Verbose_Exception(
+                'Bad security configuration !',
+                'Session security algorithm is missing !',
+                'The session security algorithm used by cryptographic components of the authentication service is missing or empty.'
+            );
         }
 
-        if ( !defined('APP_TOKEN_KEY') || empty(APP_TOKEN_KEY)) {
-            throw new Core_Application_Exception($this, 'Token key is missing or empty !');
+        if (!defined('Core\Authentication\APP_TOKEN_KEY') || empty(Core\Authentication\APP_TOKEN_KEY)) {
+            throw new Core_Verbose_Exception(
+                'Bad security configuration !',
+                'Session token key is missing !',
+                'The token key used by cryptographic components of the authentication service is missing or empty.'
+            );
         }
 
         // Fetch Token
@@ -161,7 +169,6 @@ final class Core_AuthService_JWT extends Core_AuthService
      * @param string $logged_user
      * @param string $password
      * @return string
-     * @throws Core_Application_Exception
      */
     public static function forgeToken($logged_user = '', $password = '') {
 
@@ -202,7 +209,7 @@ final class Core_AuthService_JWT extends Core_AuthService
             'lastname'          => $result[0]['lastname'],
             'lang'              => $result[0]['lang'],
             'template'          => $result[0]['template']
-        ), APP_TOKEN_KEY);
+        ), Core\Authentication\APP_TOKEN_KEY);
     }
 
     /**
@@ -243,14 +250,14 @@ final class Core_AuthService_JWT extends Core_AuthService
                 case 'HMAC_SHA_384':
                     $decoded_token = (array)\Firebase\JWT\JWT::decode(
                         $this->req_token,
-                        APP_TOKEN_KEY,
+                        Core\Authentication\APP_TOKEN_KEY,
                         array(self::HMAC_SHA_384)
                     );
                     break;
                 case 'HMAC_SHA_512':
                     $decoded_token = (array)\Firebase\JWT\JWT::decode(
                         $this->req_token,
-                        APP_TOKEN_KEY,
+                        Core\Authentication\APP_TOKEN_KEY,
                         array(self::HMAC_SHA_512)
                     );
                     break;
@@ -258,7 +265,7 @@ final class Core_AuthService_JWT extends Core_AuthService
                 default:
                     $decoded_token = (array)\Firebase\JWT\JWT::decode(
                         $this->req_token,
-                        APP_TOKEN_KEY,
+                        Core\Authentication\APP_TOKEN_KEY,
                         array(self::HMAC_SHA_256)
                     );
                     break;

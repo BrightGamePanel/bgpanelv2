@@ -53,7 +53,6 @@ abstract class Core_Abstract_Application
      * @param $page
      * @param $id
      * @param $content_type
-     * @throws Core_Exception
      */
     public function __construct($module, $page, $id, $content_type)
     {
@@ -99,13 +98,13 @@ abstract class Core_Abstract_Application
      * Acts like an extended constructor
      *
      * @return void
-     * @throws Core_Exception
      */
     public abstract function init();
 
     /**
      * Default init() implementation
      *
+     * @return void
      * @throws Core_Verbose_Exception
      */
     protected function _init() {
@@ -185,7 +184,6 @@ abstract class Core_Abstract_Application
      * Execute the Query and Update User Activity
      *
      * @return int
-     * @throws Core_Exception
      */
     public abstract function execute();
 

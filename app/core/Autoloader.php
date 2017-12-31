@@ -32,7 +32,7 @@
 class Autoloader
 {
     /**
-     * Minimal requirements for the framework to start
+     * Load minimal requirements for the framework
      *
      * @return void
      */
@@ -56,6 +56,7 @@ class Autoloader
         require( CORE_DIR	. '/database/Core_DBH.php' );
 
         // Base Module Classes
+        require( CORE_DIR   . '/module/Core_Module_Shared_Interface.php');
         require( CORE_DIR   . '/module/Core_Module_Interface.php');
         require( CORE_DIR   . '/module/Core_Controller_Interface.php');
         require( CORE_DIR	. '/module/Core_Abstract_Module.php' );
@@ -124,7 +125,7 @@ class Autoloader
             case 'Logger':
                 require( LIBS_DIR	. '/log4php/Logger.php' );
                 return;
-            case 'Rbac':
+            case 'PhpRbac\Rbac':
                 require( LIBS_DIR	. '/phprbac2.0/autoload.php' );
                 return;
             case 'Crypt_AES':

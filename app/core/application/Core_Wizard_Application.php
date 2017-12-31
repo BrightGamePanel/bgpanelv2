@@ -38,7 +38,6 @@ class Core_Wizard_Application extends Core_Abstract_Application
      *
      * @param $page
      * @param $content_type
-     * @throws Core_Exception
      */
     public function __construct($page, $content_type = "text/html")
     {

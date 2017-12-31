@@ -8,9 +8,14 @@ class Core_Page_Builder {
     private $page = null;
 
     /**
-     * @var Core_Lang Language manager
+     * @var Core_Lang Language manager handle
      */
-    private $lang = null;
+    private $lang_manager = null;
+
+    /**
+     * @var Core_AuthService_Session manager handle
+     */
+    private $auth_manager = null;
 
     /**
      * @var string Bootstrap 3 Template Filename
@@ -25,7 +30,8 @@ class Core_Page_Builder {
     public function __construct($page, $template = CONF_DEFAULT_TEMPLATE)
     {
         $this->page = $page;
-        $this->lang = Core_Lang::getLangManager();
+        $this->lang_manager = Core_Lang::getLangManager();
+        $this->auth_manager = Core_AuthService_Session::getService();
         $this->template = $template;
     }
 
@@ -36,7 +42,7 @@ class Core_Page_Builder {
     <html ng-app="bgpApp" lang="<?php
 
     // Language
-    echo htmlspecialchars( substr($this->lang->getLanguage(), 0, 2), ENT_QUOTES );
+    echo htmlspecialchars( substr($this->lang_manager->getLanguage(), 0, 2), ENT_QUOTES );
 
     ?>">
         <head>
@@ -138,25 +144,9 @@ class Core_Page_Builder {
 
         <!-- NAVIGATION -->
         <nav class="navbar navbar-default navbar-static-top" role="navigation">
-            <?php
-            //------------------------------------------------------------------------------------------------------------+
+            <?php $this->buildNavigationBar(); ?>
 
-            // Display Navigation Bar
-            echo $this->getNavBar();
-
-            //------------------------------------------------------------------------------------------------------------+
-            ?>
-
-            <?php
-            //------------------------------------------------------------------------------------------------------------+
-
-            // Display Sidebar
-            if (!$this->no_sidebar) {
-                echo $this->getSideBar();
-            }
-
-            //------------------------------------------------------------------------------------------------------------+
-            ?>
+            <?php $this->buildSideBar(); ?>
         </nav>
         <!-- END: NAVIGATION -->
 
@@ -245,6 +235,104 @@ class Core_Page_Builder {
         <!-- END: ALERTS -->
 <?php
 //------------------------------------------------------------------------------------------------------------+
+    }
+
+    private function buildNavigationBar() {
+?>
+
+            <!-- TOP HEADER NAVBAR -->
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="#">Bright Game Panel V2</a>
+            </div>
+            <!-- END: TOP HEADER NAVBAR -->
+
+            <?php
+
+            // Breadcrumbs
+            $this->buildNavigationBarBreadcrumbs();
+
+            ?>
+
+            <!-- TOP NAVBAR -->
+            <ul class="nav navbar-top-links navbar-right">
+                <?php
+
+                if (!in_array('empty_navbar', $this->page->getOptions()))
+                {
+                    if ($this->auth_manager->isLoggedIn()) {
+                        ?>
+                        <li class="dropdown">
+                            <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                                <i class="fa fa-user fa-fw"></i> <i class="fa fa-caret-down"></i>
+                            </a>
+                            <ul class="dropdown-menu dropdown-user" role="menu">
+                                <li role="presentation" class="dropdown-header"><?php
+                                    echo htmlspecialchars(
+                                        $this->auth_manager->getFirstname() .
+                                        ' ' .
+                                        $this->auth_manager->getLastname() .
+                                        ' @' .
+                                        $this->auth_manager->getLoggedUser()
+                                        , ENT_QUOTES);
+                                    ?></li>
+                                <li class="divider"></li>
+                                <li>
+                                    <a href="./myaccount">
+                                        <i class="fa fa-gear fa-fw"></i>&nbsp;<?php echo T_('Settings'); ?>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                        <?php
+                    }
+
+                    ?>
+                    <li>
+                        <a href="./logout"><i class="fa fa-sign-out fa-fw"></i></a>
+                    </li>
+                    <?php
+                }
+
+                ?>
+            </ul>
+            <!-- END: TOP NAVBAR -->
+<?php
+    }
+
+    private function buildNavigationBarBreadcrumbs()
+    {
+?>
+            <!-- Breadcrumbs -->
+            <div class="nav navbar-left">
+                <?php
+
+                if (!in_array('empty_navbar', $this->page->getOptions()))
+                {
+                    ?>
+                    <ol class="navbar-breadcrumbs">
+                        <li><a href="#"><span class="fa fa-home fa-fw"></span><?php echo T_('Home'); ?></a></li>
+                        <li class="active"><a><?php echo htmlspecialchars( $this->page->getModuleTitle(), ENT_QUOTES ); ?></a></li>
+                    </ol>
+                    <?php
+                }
+
+                ?>
+            </div>
+            <!-- END: Breadcrumbs -->
+<?php
+    }
+
+    private function buildSideBar()
+    {
+        if (in_array('no_sidebar', $this->page->getOptions())) {
+            return;
+        }
     }
 
     public function buildFooter() {

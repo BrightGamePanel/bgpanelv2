@@ -6,7 +6,7 @@
  * Time: 20:13
  */
 
-interface Core_Module_Interface
+interface Core_Module_Interface extends Core_Module_Shared_Interface
 {
     /**
      * Returns the status of the module : enabled or not
@@ -24,15 +24,5 @@ interface Core_Module_Interface
     /**
      * Get module title
      */
-    public function getTitle();
-
-    /**
-     * Get module stylesheets dependencies
-     */
-    public function getStylesheets();
-
-    /**
-     * Get module javascript dependencies
-     */
-    public function getJavascript();
+    public function getModuleTitle();
 }

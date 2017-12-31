@@ -6,12 +6,12 @@
  * Time: 20:23
  */
 
-interface Core_Page_Interface
+interface Core_Page_Interface extends Core_Module_Shared_Interface
 {
     /**
-     * Render the given page
+     * Render the page
      */
-    public function render();
+    public function renderPage();
 
     /**
      * Body of this page
@@ -22,20 +22,10 @@ interface Core_Page_Interface
     /**
      * Get page title
      */
-    public function getTitle();
+    public function getPageTitle();
 
     /**
      * Get parent module title
      */
     public function getModuleTitle();
-
-    /**
-     * Get page stylesheets dependencies
-     */
-    public function getStylesheets();
-
-    /**
-     * Get page javascript dependencies
-     */
-    public function getJavascript();
 }

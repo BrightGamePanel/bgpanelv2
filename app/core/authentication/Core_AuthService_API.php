@@ -53,7 +53,6 @@ final class Core_AuthService_API extends Core_AuthService
 
     /**
      * Core_AuthService_API constructor.
-     * @throws Core_Application_Exception
      */
     protected function __construct() {
         parent::__construct();
@@ -97,7 +96,6 @@ final class Core_AuthService_API extends Core_AuthService
      * Returns TRUE on SUCCESS, FALSE otherwise
      *
      * @return boolean
-     * @throws Core_Application_Exception
      */
     public function login() {
 
@@ -183,7 +181,6 @@ final class Core_AuthService_API extends Core_AuthService
      * @param string $api_key
      * @param $auth_method
      * @return bool
-     * @throws Core_Application_Exception
      */
     private function checkRemoteAPIUser( $remote_ip, $api_user, $api_user_pass, $api_key = '', $auth_method )
     {
