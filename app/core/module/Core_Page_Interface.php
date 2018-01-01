@@ -14,7 +14,16 @@ interface Core_Page_Interface extends Core_Module_Shared_Interface
      * @param array $query_args Request parameters
      * @return void
      */
-    public function renderPage($query_args = array());
+    public function render($query_args = array());
+
+    /**
+     * Process the page
+     * This method is executed by default when a POST request is submitted with the page as the target
+     *
+     * @param array $query_args Request parameters
+     * @return int
+     */
+    public function process($query_args = array());
 
     /**
      * Body of this page

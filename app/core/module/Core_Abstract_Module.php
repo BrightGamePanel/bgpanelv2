@@ -40,7 +40,7 @@ abstract class Core_Abstract_Module implements Core_Module_Interface
 	protected $options = array();
 
 	// Module Controller
-    public $controller = null;
+    protected $controller = null;
 
     /**
      * Module pages handles
@@ -197,16 +197,28 @@ abstract class Core_Abstract_Module implements Core_Module_Interface
         }
     }
 
+    public function getController()
+    {
+        return $this->controller;
+    }
+
     public function isEnable()
     {
         return $this->is_enable;
     }
 
-    public function render($page, $query_args = array())
-    {
+    /**
+     * Returns the page handle given a page name
+     *
+     * @param string $page Page name
+     * @return Core_Page_Interface Resolved page instance
+     * @throws Core_Verbose_Exception
+     */
+    private function resolve($page) {
+
         if (empty($page)) {
             // Default page
-            $page = 'default';
+            return $this->pages['default'];
         }
 
         // Check composition property
@@ -218,8 +230,19 @@ abstract class Core_Abstract_Module implements Core_Module_Interface
             );
         }
 
-        // Render page
-        $this->pages[$page]->renderPage($query_args);
+        return $this->pages[$page];
+    }
+
+    public function render($page, $query_args = array())
+    {
+        $page = $this->resolve($page);
+        $page->render($query_args);
+    }
+
+    public function process($page, $query_args = array())
+    {
+        $page = $this->resolve($page);
+        $page->process($query_args);
     }
 
     public function getModuleTitle() {

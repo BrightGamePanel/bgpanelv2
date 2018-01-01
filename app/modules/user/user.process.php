@@ -30,7 +30,7 @@
  */
 
 // Init Controller
-$controller = new Core_Module_Controller_User();
+$controller = new Core__Controller_User();
 
 
 // Get the method

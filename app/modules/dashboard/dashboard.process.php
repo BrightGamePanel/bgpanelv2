@@ -30,7 +30,7 @@
  */
 
 // Init Controller
-$controller = new Core_Module_Controller_Dashboard();
+$controller = new Core__Controller_Dashboard();
 
 
 // Get the method

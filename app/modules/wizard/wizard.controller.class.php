@@ -29,7 +29,7 @@
  * Install Wizard Controller
  */
 
-class Wizard_Controller extends Core_Abstract_Module_Controller {
+class Wizard_Controller extends Core_Abstract__Controller {
 
     /**
      * Game Configuration Database
@@ -82,6 +82,8 @@ class Wizard_Controller extends Core_Abstract_Module_Controller {
     const PHP_SECLIB = 'w_mode_phpseclib';
 
     function __construct( )	{
+
+        parent::__construct();
 
         $this->game_db = Array
         (
@@ -403,6 +405,29 @@ class Wizard_Controller extends Core_Abstract_Module_Controller {
 
         $this->last_bgp_version = end($this->bgp_db_versions);
 	}
+
+    /**
+     * @api {post} /wizard Accepts software license.
+     * @author Nikita Rousseau
+     * @apiVersion v1
+     * @apiName AcceptLicense
+     * @apiGroup Wizard
+     *
+     * @apiDescription Accepts software license of Bright Game Panel.
+     *
+     * @apiParam {String} agreement
+     *
+     * @param string $agreement
+     * @return void
+     */
+	public function acceptLicense($agreement = '') {
+
+	    if (empty($agreement)) {
+	        return array('error' => true);
+        }
+        return array('error' => false);
+	    Flight::redirect('./wizard/step1');
+    }
 
 	function checkRequirements() {
 
@@ -833,7 +858,7 @@ APP_API_KEY 		= \"" . $APP_API_KEY . "\"
 
                 //---------------------------------------------------------+
 
-                foreach ($bgpVersions as $key => $value) {
+                foreach ($this->bgp_db_versions as $key => $value) {
                     if ($value == $currentVersion['value']) // Base version for the update
                     {
                         if ($key == end($bgpVersions)) {
@@ -880,6 +905,8 @@ APP_API_KEY 		= \"" . $APP_API_KEY . "\"
     }
 }
 
+/*
+
 function full() {
 
     $dbh = null;
@@ -905,11 +932,9 @@ function full() {
 
         //---------------------------------------------------------+
 
-        /*
-        -- BrightGamePanel V2 Database
-        -- Version 1.0.0
-        -- 20/12/2017
-        */
+        // BrightGamePanel V2 Database
+        // Version 1.0.0
+        // 20/12/2017
 
         //---------------------------------------------------------+
 
@@ -1408,3 +1433,5 @@ function full() {
         die();
     }
 }
+
+*/

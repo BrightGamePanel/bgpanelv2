@@ -25,7 +25,7 @@
  * @link		http://www.bgpanel.net/
  */
 
-if ( !class_exists('Core_Abstract_Module_Controller')) {
+if ( !class_exists('Core_Abstract__Controller')) {
 	trigger_error('Controller_Myaccount -> BGP_Controller is missing !');
 }
 
@@ -33,7 +33,7 @@ if ( !class_exists('Core_Abstract_Module_Controller')) {
  * My Account Controller
  */
 
-class Core_Module_Controller_Myaccount extends Core_Abstract_Module_Controller {
+class Core__Controller_Myaccount extends Core_Abstract__Controller {
 
 	function __construct( )	{
 	

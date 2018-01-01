@@ -30,7 +30,7 @@
  */
 
 // Init Controller
-$controller = new Core_Module_Controller_Myaccount();
+$controller = new Core__Controller_Myaccount();
 
 
 // Get the method

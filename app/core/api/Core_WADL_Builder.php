@@ -27,7 +27,7 @@
 
 
 
-class Core_API_WADL_Builder
+class Core__WADL_Builder
 {
     function displayWADL()
     {

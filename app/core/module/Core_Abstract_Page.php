@@ -58,7 +58,7 @@ abstract class Core_Abstract_Page implements Core_Page_Interface {
     /**
      * @param array $query_args Query arguments necessary to page rendering
      */
-    public function renderPage($query_args = array()) {
+    public function render($query_args = array()) {
 
         // Set request parameters
         $this->request = $query_args;

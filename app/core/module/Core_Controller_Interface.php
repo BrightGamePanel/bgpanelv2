@@ -11,9 +11,28 @@ interface Core_Controller_Interface
     /**
      * Invoke the Designated Method on this Controller with its Args
      *
-     * @param array $controller_method_prototype The method signature to call, including its name and args
-     * @param array $args The args to pass to the method
-     * @return mixed
+     * @param string $method_prototype_name The method name to call
+     * @param array $invocation_args The request args to pass
+     * @return array
      */
-    public function invoke($controller_method_prototype, $args);
+    public function invoke($method_prototype_name, $invocation_args);
+
+    /**
+     * Format the result of an Invocation
+     *
+     * @param array $return_array The method returned array to format
+     * @param string $content_type The response format
+     * @return string
+     */
+    public function format($return_array, $content_type = 'application/json');
+
+    /**
+     * Resolves the Method Signature with its associated Controller
+     * Returns the method name
+     *
+     * @param $http_method
+     * @param $url
+     * @return string
+     */
+    public function resolve($http_method, $url);
 }

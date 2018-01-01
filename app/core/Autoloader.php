@@ -60,7 +60,7 @@ class Autoloader
         require( CORE_DIR   . '/module/Core_Module_Interface.php');
         require( CORE_DIR   . '/module/Core_Controller_Interface.php');
         require( CORE_DIR	. '/module/Core_Abstract_Module.php' );
-        require( CORE_DIR	. '/module/Core_Abstract_Module_Controller.php' );
+        require( CORE_DIR	. '/module/Core_Abstract_Controller.php' );
     }
 
     /**

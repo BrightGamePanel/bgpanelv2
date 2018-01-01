@@ -30,7 +30,7 @@
  */
 
 // Init Controller
-$controller = new Core_Module_Controller_Box();
+$controller = new Core__Controller_Box();
 
 
 // Get the method

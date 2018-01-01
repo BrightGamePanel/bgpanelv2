@@ -53,10 +53,17 @@ class Core_Wizard_Application extends Core_Abstract_Application
     {
         $wizard = new Wizard();
 
-        if ($this->req_content_type == 'text/html') {
-            $wizard->render($this->page);
-        } else {
-            $wizard->controller->invoke();
+        if ($this->req_method == 'GET' && $this->req_content_type == 'text/html') {
+            return $wizard->render($this->page, $this->req_params);
         }
+        if ($this->req_method == 'POST' && $this->req_content_type == 'text/plain') {
+            return $wizard->process($this->page, $this->req_params);
+        }
+
+        $method =  $wizard->getController()->resolve($this->req_method, $this->req_url);
+        echo $wizard->getController()->format(
+            $wizard->getController()->invoke($method, $this->req_params), $this->req_content_type
+        );
+        return 0;
     }
 }

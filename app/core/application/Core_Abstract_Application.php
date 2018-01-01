@@ -80,13 +80,19 @@ abstract class Core_Abstract_Application
         $this->req_method = Flight::request()->method;
 
         // Request Parameters
-        $plain_body = Flight::request()->getBody();
-        if (!empty($plain_body)) {
-            // JSON parameters
-            $this->req_params = json_decode($plain_body, TRUE);
-        } else {
+
+        if ($this->req_method == 'GET') {
             // Query parameters
-            $this->req_params = Flight::request()->query;
+            $this->req_params = Flight::request()->query->getData();
+        }
+        else if ($this->req_method == 'POST') {
+            // Post parameters
+            $this->req_params = Flight::request()->data->getData();
+        }
+        else {
+            // Application parameters
+            $plain_body = Flight::request()->getBody();
+            $this->req_params = json_decode($plain_body, TRUE);
         }
 
         // Extended initialization

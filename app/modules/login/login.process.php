@@ -30,7 +30,7 @@
  */
 
 // Init Controller
-$loginController = new Core_Module_Controller_Login();
+$loginController = new Core__Controller_Login();
 
 
 // Get the method
