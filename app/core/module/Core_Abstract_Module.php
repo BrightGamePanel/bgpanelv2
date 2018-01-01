@@ -43,23 +43,7 @@ abstract class Core_Abstract_Module implements Core_Module_Interface
     public $controller = null;
 
     /**
-     * Default page array :
-     *   'class' => Page class name
-     *   'title' => Page header title
-     *   'description' => Page header subtitle
-     *
-     * @var array
-     */
-    protected $default_page = array();
-
-    /**
-     * Module pages array :
-     * 'pageId' => array(
-     *   'class' => Page class name
-     *   'parent' => Parent page identifier
-     *   'title' => Page header title
-     *   'description' => Page header subtitle
-     * )
+     * Module pages handles
      *
      * @var array
      */
@@ -96,18 +80,24 @@ abstract class Core_Abstract_Module implements Core_Module_Interface
 		$this->settings = $module_definition['module_settings'];
 		$this->options = $module_definition['module_options'];
 
-		// Pages
+		// Instantiate Pages
 		foreach ($module_definition['module_pages'] as $pageTag => $pages) {
 
-		    // Default page
 		    if ($pageTag == 'default') {
 
-                $page = array();
-                $page['class'] = get_class($this) . '_Page';
-                $page['title'] = !empty($pages['title']) ? $pages['title'] : get_class($this);
-                $page['description'] = !empty($pages['description']) ? $pages['description'] : '';
+                $page_class = get_class($this) . '_Page';
+                $title = !empty($pages['title']) ? $pages['title'] : get_class($this);
+                $description = !empty($pages['description']) ? $pages['description'] : '';
 
-		        $this->default_page = $page;
+                spl_autoload_call($page_class);
+                if (!class_exists($page_class)) {
+                    throw new Core_Verbose_Exception(
+                        '404 Not Found',
+                        'In module : ' . get_class($this),
+                        'Default page (' . $page_class . ') not found.'
+                    );
+                }
+		        $this->pages['default'] = new $page_class($this, '', $title, $description);
                 continue;
             }
 
@@ -120,17 +110,46 @@ abstract class Core_Abstract_Module implements Core_Module_Interface
                 }
 
                 $page_name = $value['@attributes']['name'];
+		        $page_class = get_class($this) . '_' . ucfirst(strtolower($page_name)) . '_Page';
+                $title = !empty($value['title']) ? $value['title'] : get_class($this);
+                $description = !empty($value['description']) ? $value['description'] : '';
 
-		        $page = array();
-		        $page['class'] = get_class($this) . '_' . ucfirst(strtolower($page_name)) . '_Page';
-                $page['parent'] = !empty($value['parent']) ? $value['parent'] : '';
-                $page['title'] = !empty($value['title']) ? $value['title'] : get_class($this);
-                $page['description'] = !empty($value['description']) ? $value['description'] : '';
-
-		        $this->pages[$page_name] = $page;
+                spl_autoload_call($page_class);
+                if (!class_exists($page_class)) {
+                    throw new Core_Verbose_Exception(
+                        '404 Not Found',
+                        'In module : ' . get_class($this),
+                        'Page `' . $page_name . '` (' . $page_class . ') not found.'
+                    );
+                }
+		        $this->pages[$page_name] = new $page_class($this, $page_name, $title, $description);
             }
         }
 
+        // Set Page Parents
+        foreach ($module_definition['module_pages'] as $pageTag => $pages) {
+
+            if ($pageTag == 'default') {
+                continue;
+            }
+
+            foreach ($pages as $key => $value) {
+
+                if (empty($value['@attributes']['name'])) {
+                    // Malformed
+                    continue;
+                }
+
+                $page_name = $value['@attributes']['name'];
+                $parent = !empty($value['parent']) ? $value['parent'] : '';
+
+                if (!empty($parent) && isset($this->pages[$parent])) {
+                    $this->pages[$page_name]->setParent($this->pages[$parent]);
+                }
+            }
+        }
+
+        // Is this module enabled ?
 		if (isset($this->options['enable'])) {
             $this->is_enable = boolval($this->options['enable']);
 		}
@@ -185,60 +204,22 @@ abstract class Core_Abstract_Module implements Core_Module_Interface
 
     public function render($page, $query_args = array())
     {
-        // No parent page by default
-        $parent_page = '';
-        $parent = null;
-
         if (empty($page)) {
-
             // Default page
-            $page_class = $this->default_page['class'];
-        }
-        else {
-
-            // Check composition property
-            if (!isset($this->pages[$page])) {
-
-                throw new Core_Verbose_Exception(
-                    '404 Not Found',
-                    'In module : ' . get_class($this),
-                    'Page `' . $page . '` not found.'
-                );
-            }
-            $page_class = $this->pages[$page]['class'];
-            $parent_page = $this->pages[$page]['parent'];
+            $page = 'default';
         }
 
-        spl_autoload_call($page_class);
-
-        if (!class_exists($page_class)) {
-
+        // Check composition property
+        if (!isset($this->pages[$page])) {
             throw new Core_Verbose_Exception(
                 '404 Not Found',
                 'In module : ' . get_class($this),
-                'Page `' . $page . '` (' . $page_class . ') not found.'
+                'Page `' . $page . '` not found.'
             );
         }
 
-        if (!empty($parent_page)) {
-
-            /**
-             * Instantiate parent page
-             *
-             * @var Core_Page_Interface $page
-             */
-            $parent = new $parent_page($this);
-        }
-
-        /**
-         * Instantiate page
-         *
-         * @var Core_Page_Interface $page
-         */
-        $page = new $page_class($this, $parent, $query_args);
-
         // Render page
-        $page->renderPage();
+        $this->pages[$page]->renderPage($query_args);
     }
 
     public function getModuleTitle() {
@@ -267,6 +248,14 @@ abstract class Core_Abstract_Module implements Core_Module_Interface
             return array();
         }
         return $this->options;
+    }
+
+    public function getHRef()
+    {
+        if (empty($this->settings['href'])) {
+            return './' . strtolower(get_class($this));
+        }
+        return $this->settings['href'];
     }
 
     public function getIcon() {

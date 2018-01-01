@@ -18,7 +18,12 @@ interface Core_Module_Shared_Interface {
     public function getOptions();
 
     /**
-     * Get icon
+     * Get module base address
+     */
+    public function getHRef();
+
+    /**
+     * Get module icon
      */
     public function getIcon();
 }

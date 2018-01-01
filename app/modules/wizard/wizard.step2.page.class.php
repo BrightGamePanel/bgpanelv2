@@ -15,6 +15,8 @@ class Wizard_Step2_Page extends Core_Abstract_Page
      */
     public function body()
     {
-        echo 'Step2';
+        ?>
+        <a href="http://localhost/bgpanelv2/wizard/step3">go to STEP3</a>
+        <?php
     }
 }

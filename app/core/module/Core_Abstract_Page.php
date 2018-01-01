@@ -23,29 +23,45 @@ abstract class Core_Abstract_Page implements Core_Page_Interface {
     protected $builder = null;
 
     /**
+     * @var string Page name
+     */
+    protected $name = '';
+
+    /**
      * @var string Title
      */
     protected $title = '';
 
     /**
+     * @var string Description
+     */
+    protected $description;
+
+    /**
      * Core_Abstract_Module_Page constructor.
      * @param Core_Module_Interface $parent_module Attached parent module
-     * @param Core_Page_Interface $parent_page Parent page (if any)
-     * @param array $query_args Query arguments necessary to page rendering
+     * @param string $name Page name
+     * @param string $title Page title
+     * @param string $description Page subtitle
      */
-    public function __construct($parent_module, $parent_page = null, $query_args = array())
+    public function __construct($parent_module, $name = '', $title = '', $description = '')
     {
         $this->parent_module = $parent_module;
-        $this->parent_page = $parent_page;
 
-        $this->request = $query_args;
+        $this->name = $name;
+        $this->title = $title;
+        $this->description = $description;
+
         $this->builder = new Core_Page_Builder($this);
-
-        $this->title = str_replace('_Page', '', get_class($this));
-        $this->title = str_replace('_', ' ', $this->title);
     }
 
-    public function renderPage() {
+    /**
+     * @param array $query_args Query arguments necessary to page rendering
+     */
+    public function renderPage($query_args = array()) {
+
+        // Set request parameters
+        $this->request = $query_args;
 
         // Build Page Header
         $this->builder->buildHeader();
@@ -61,9 +77,26 @@ abstract class Core_Abstract_Page implements Core_Page_Interface {
         return $this->title;
     }
 
-    public function getParentPage()
+    public function getPageDescription()
+    {
+        return $this->description;
+    }
+
+    public function getParent()
     {
         return $this->parent_page;
+    }
+
+    public function setParent($parent_page = null)
+    {
+        if ($parent_page != null && is_a($parent_page, 'Core_Page_Interface')) {
+            $this->parent_page = $parent_page;
+        }
+    }
+
+    public function getName()
+    {
+        return $this->name;
     }
 
     public function getModuleTitle()
@@ -84,6 +117,16 @@ abstract class Core_Abstract_Page implements Core_Page_Interface {
     public function getOptions()
     {
         return $this->parent_module->getOptions();
+    }
+
+    public function getModuleHRef()
+    {
+        return $this->parent_module->getHRef();
+    }
+
+    public function getHRef()
+    {
+        return $this->getModuleHRef() . '/' . $this->getName();
     }
 
     public function getIcon()

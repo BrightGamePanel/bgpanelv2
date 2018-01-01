@@ -163,6 +163,7 @@ class Core_Page_Builder {
                         <i class="<?php echo htmlspecialchars( $this->page->getIcon(), ENT_QUOTES ); ?>"></i>&nbsp;
                         <?php echo htmlspecialchars( $this->page->getPageTitle(), ENT_QUOTES ); ?>
 
+                        <small><?php echo htmlspecialchars( $this->page->getPageDescription(), ENT_QUOTES ); ?></small>
                     </h1>
 
                     <!-- ALERTS --><?php
@@ -236,15 +237,14 @@ class Core_Page_Builder {
             $this->buildNavigationBarBreadcrumbs();
 
             ?>
+
             <!-- END: Breadcrumbs -->
 
             <!-- TOP NAVBAR -->
             <ul class="nav navbar-top-links navbar-right"><?php
 
-            if (!array_key_exists('empty_navbar', $this->page->getOptions()))
-            {
-                if ($this->auth_manager->isLoggedIn())
-                {
+            if (!array_key_exists('empty_navbar', $this->page->getOptions())) {
+                if ($this->auth_manager->isLoggedIn()) {
                     ?>
                 <li class="dropdown">
                     <a class="dropdown-toggle" data-toggle="dropdown" href="#">
@@ -253,15 +253,15 @@ class Core_Page_Builder {
                     <ul class="dropdown-menu dropdown-user" role="menu">
                         <li role="presentation" class="dropdown-header"><?php
 
-                            echo htmlspecialchars(
-                                $this->auth_manager->getFirstname() .
-                                ' ' .
-                                $this->auth_manager->getLastname() .
-                                ' @' .
-                                $this->auth_manager->getLoggedUser()
-                                , ENT_QUOTES);
+                        echo htmlspecialchars(
+                            $this->auth_manager->getFirstname() .
+                            ' ' .
+                            $this->auth_manager->getLastname() .
+                            ' @' .
+                            $this->auth_manager->getLoggedUser()
+                            , ENT_QUOTES);
 
-                            ?></li>
+                        ?></li>
                         <li class="divider"></li>
                         <li>
                             <a href="./myaccount">
@@ -270,14 +270,11 @@ class Core_Page_Builder {
                         </li>
                     </ul>
                 </li>
-                    <?php
-                }
-
-                ?>
                 <li>
                     <a href="./logout"><i class="fa fa-sign-out fa-fw"></i></a>
                 </li>
                 <?php
+                }
             }
 
             ?></ul>
@@ -297,13 +294,54 @@ class Core_Page_Builder {
                 ?>
 
                 <ol class="navbar-breadcrumbs">
-                    <li><a href="#"><span class="fa fa-home fa-fw"></span><?php echo T_('Home'); ?></a></li>
-                    <li class="active"><a><?php echo htmlspecialchars( $this->page->getModuleTitle(), ENT_QUOTES ); ?></a></li>
+                    <li>
+                        <a href="#"><span class="fa fa-home fa-fw"></span><?php echo T_('Home'); ?></a>
+                    </li>
+                    <li>
+                        <a href="<?php echo $this->page->getModuleHRef(); ?>">
+                            <?php echo htmlspecialchars( $this->page->getModuleTitle(), ENT_QUOTES ); ?>
+
+                        </a>
+                    </li><?php
+
+                /**
+                 * Build page hierarchy
+                 *
+                 * @var Core_Page_Interface $parent
+                 */
+                $parents = array();
+                $parent = $this->page->getParent();
+                while (!empty($parent)) {
+                    $parents[] = $parent;
+                    $parent = $parent->getParent();
+                }
+                for($i = (count($parents) - 1); $i >= 0; $i--) {
+                    $parent = $parents[$i];
+                    ?>
+                    <li>
+                    <a href="<?php echo $parent->getHRef(); ?>">
+                        <?php echo htmlspecialchars( $parent->getPageTitle(), ENT_QUOTES ); ?>
+
+                    </a>
+                    </li><?php
+                }
+
+                if (!empty($this->page->getName())) {
+
+                    ?>
+                    <li class="active">
+                        <a><?php echo htmlspecialchars($this->page->getPageTitle(), ENT_QUOTES); ?></a>
+                    </li><?php
+                }
+
+                ?>
+
                 </ol><?php
             }
 
-            ?></div>
-<?php
+            ?>
+
+            </div><?php
     }
 
     private function buildSideBar()
