@@ -91,6 +91,10 @@ class Autoloader
                 case 'Core_Page_Builder':
                     require( CORE_DIR	. '/gui/' . $class . '.php' );
                     return;
+                // Notification Service
+                case 'Core_Notification_Service':
+                    require( CORE_DIR	. '/notification/' . $class . '.php' );
+                    return;
                 // Lang Package
                 case 'Core_Lang':
                     require( CORE_DIR 	. '/language/' . $class . '.php' );

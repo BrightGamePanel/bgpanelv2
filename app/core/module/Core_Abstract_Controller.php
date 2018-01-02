@@ -39,10 +39,25 @@ abstract class Core_Abstract__Controller implements Core_Controller_Interface
     protected $reflected_public_methods = array();
 
     /**
+     * @var
+     */
+    protected $validation_errors = array();
+
+    /**
+     * @var Logger Controller logger
+     */
+    protected $logger = null;
+
+    /**
      * Core_Abstract__Controller constructor.
      */
     public function __construct()
     {
+        // Logger
+        list($module, $suffix) = explode('_', get_class($this), 3);
+        $module = strtolower($module);
+        $this->logger = Logger::getLogger( $module );
+
         // Reflection
         $reflector = new ReflectionClass( get_class($this) );
         $methods = $reflector->getMethods( ReflectionMethod::IS_PUBLIC );
@@ -125,7 +140,7 @@ abstract class Core_Abstract__Controller implements Core_Controller_Interface
 
         // Delete unmatched arguments (useful for default arguments)
         foreach ($param_array as $arg => $value) {
-            if (empty($value)) {
+            if ($arg[0] == '[' && empty($value)) {
                 unset($param_array[$arg]);
             }
         }
@@ -135,12 +150,53 @@ abstract class Core_Abstract__Controller implements Core_Controller_Interface
 
     public function invoke($method_prototype_name, $invocation_args) {
 
-        if (empty($invocation_args)) {
-            return call_user_func(array($this, (string)$method_prototype_name));
-        } else {
-            $invocation_args = $this->sortArgs($method_prototype_name, $invocation_args);
-            return call_user_func_array(array($this, (string)$method_prototype_name), $invocation_args);
+        $method_prototype_name = (string)$method_prototype_name;
+
+        $invocation_args = $this->sortArgs($method_prototype_name, $invocation_args);
+        return $this->notifyInvocation(
+            $method_prototype_name,
+            call_user_func_array(array($this, $method_prototype_name), $invocation_args)
+        );
+    }
+
+    /**
+     * Format the returned array with errors
+     * Log to file
+     *
+     * @param string $method_prototype_name Invoked method
+     * @param array $return_array
+     * @return array
+     */
+    private function notifyInvocation($method_prototype_name, $return_array = array()) {
+
+        $uid = 0; // TODO : implement UID
+        $info = get_class($this) . '::' . $method_prototype_name . '() "';
+
+        if ($return_array == null) {
+            $return_array = array();
         }
+
+        $response = array(
+            'data' => $return_array
+        );
+
+        if (empty($this->validation_errors)) {
+
+            // No errors
+            $response['success'] = TRUE;
+            $info .= 'OK';
+            $info .= '"';
+            $this->logger->info($info);
+            return $response;
+        }
+
+        // Append errors
+        $response['success'] = FALSE;
+        $response['errors'] = $this->validation_errors;
+        $info .= 'KO';
+        $info .= '"';
+        $this->logger->info($info);
+        return $response;
     }
 
     public function format($return_array, $content_type = 'application/json') {
@@ -150,6 +206,7 @@ abstract class Core_Abstract__Controller implements Core_Controller_Interface
 
         switch ($content_type) {
             case 'application/xml':
+                // TODO : implement XML Encoder
                 return $return_array;
             case 'application/json':
             default:

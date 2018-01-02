@@ -420,13 +420,13 @@ class Wizard_Controller extends Core_Abstract__Controller {
      * @param string $agreement
      * @return void
      */
-	public function acceptLicense($agreement = '') {
-
-	    if (empty($agreement)) {
-	        return array('error' => true);
+	public function acceptLicense($agreement)
+    {
+        if (empty($agreement)) {
+            $this->validation_errors['agreement'] = 'You must accept the terms of the license agreement in order to use this software';
         }
-        return array('error' => false);
-	    Flight::redirect('./wizard/step1');
+
+        return; // void
     }
 
 	function checkRequirements() {

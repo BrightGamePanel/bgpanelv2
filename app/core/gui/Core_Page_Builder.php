@@ -166,11 +166,12 @@ class Core_Page_Builder {
                         <small><?php echo htmlspecialchars( $this->page->getPageDescription(), ENT_QUOTES ); ?></small>
                     </h1>
 
-                    <!-- ALERTS --><?php
-
-                    $this->buildAlert();
-
-                    ?><!-- END: ALERTS -->
+                    <!-- ALERTS -->
+                    <div id="msg" class="alert alert-dismissible" role="alert" ng-show="msg" ng-class="'alert-' + msgType">
+                        <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                        <strong ng-bind="msg"></strong>
+                    </div>
+                    <!-- END: ALERTS -->
 
                     <!-- PAGE BODY -->
 <?php
@@ -349,10 +350,5 @@ class Core_Page_Builder {
         if (array_key_exists('no_sidebar', $this->page->getOptions())) {
             return;
         }
-    }
-
-    private function buildAlert()
-    {
-        return;
     }
 }
