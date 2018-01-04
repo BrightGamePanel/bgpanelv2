@@ -30,50 +30,77 @@
 /**
  * Abstract Application Wrapper
  */
-abstract class Core_Abstract_Application
+abstract class Core_Abstract_Application implements Core_Application_Interface
 {
+    /**
+     * Module Handle
+     *
+     * @var Core_Module_Interface
+     */
+    protected $module_handle = null;
+
     // Request Attributes
-    protected $module = '';
     protected $page = '';
     protected $id = 0;
 
     // HTTP Request Attributes
     protected $req_url = '';
     protected $req_method = '';
-    protected $req_content_type = 'application/json';
+    protected $req_content_type = '';
     protected $req_params = array();
 
-    // Core Services
-    protected $authService = null;
+    /**
+     * Core Authentication Service Handle
+     *
+     * @var Core_Auth_Service_Interface
+     */
+    protected $authentication_service = null;
 
     /**
      * BGP_Application constructor.
      *
-     * @param $module
-     * @param $page
-     * @param $id
-     * @param $content_type
+     * @param string $module
+     * @param string $page
+     * @param integer $id
+     * @param string $http_accept
+     * @throws Core_Exception
+     * @throws Core_Verbose_Exception
      */
-    public function __construct($module, $page, $id, $content_type)
+    public function __construct($module, $page, $id, $http_accept = 'application/json')
     {
-        // Initialization
+        // Create Service
+        // for this application
+        Services::createServices($this);
 
-        if (isset($module) && preg_match("#\w#", $module)) {
-            $this->module = strtolower($module);
+        // Application Initialization
+
+        if (preg_match("#\w#", $module)) {
+
+            // Module object
+
+            $module_class = ucfirst(strtolower($module));
+            spl_autoload_call($module_class);
+            if (!class_exists($module_class)) {
+                throw new Core_Verbose_Exception(
+                    '404 Not Found',
+                    'Module not loaded : ' . $module,
+                    'Class `' . $module_class . '` not found.'
+                );
+            }
+
+            $this->module_handle = new $module_class();
         }
-        if (isset($page) && preg_match("#\w#", $page)) {
+
+        if (preg_match("#\w#", $page)) {
             $this->page = strtolower($page);
         }
-        if (isset($id) && is_numeric($id)) {
+
+        if (is_numeric($id)) {
             $this->id = $id;
         }
 
-        // Sanitize Requested Content Type
-        $this->req_content_type = (!empty($content_type)) ?
-            filter_var($content_type,
-                FILTER_SANITIZE_STRING,
-                FILTER_FLAG_STRIP_HIGH|FILTER_FLAG_STRIP_LOW) :
-            'application/json';
+        // Sanitized Requested Content Type
+        $this->req_content_type = $http_accept;
 
         // Request Information
         $this->req_url = Flight::request()->url;
@@ -82,38 +109,36 @@ abstract class Core_Abstract_Application
         // Request Parameters
 
         if ($this->req_method == 'GET') {
+
             // Query parameters
             $this->req_params = Flight::request()->query->getData();
         }
         else if ($this->req_method == 'POST') {
+
             // Post parameters
-            $this->req_params = Flight::request()->data->getData();
+            if ($this->req_content_type == 'application/json') {
+
+                $plain_body = Flight::request()->getBody();
+                $this->req_params = json_decode($plain_body, TRUE);
+            }
+            else {
+                $this->req_params = Flight::request()->data->getData();
+            }
         }
         else {
-            // Application parameters
-            $plain_body = Flight::request()->getBody();
-            $this->req_params = json_decode($plain_body, TRUE);
-        }
 
-        // Extended initialization
-        $this->init();
+            if ($this->req_content_type == 'application/json') {
+
+                $plain_body = Flight::request()->getBody();
+                $this->req_params = json_decode($plain_body, TRUE);
+            }
+            else {
+                throw new Core_Exception(415); // Unsupported Media Type
+            }
+        }
     }
 
-    /**
-     * Initialize the Application
-     * Acts like an extended constructor
-     *
-     * @return void
-     */
-    public abstract function init();
-
-    /**
-     * Default init() implementation
-     *
-     * @return void
-     * @throws Core_Verbose_Exception
-     */
-    protected function _init() {
+    public function init() {
 
         // DEFINE BGP CONSTANTS FROM THE DATABASE
         // Syntax: BGP_{$SETTING}
@@ -159,7 +184,7 @@ abstract class Core_Abstract_Application
         if ( isset($_COOKIE['LANG']) ) {
             $lang = $_COOKIE['LANG'];
         }
-        Core_Lang::setLanguage( $lang );
+        Services::getLanguageService()->setLanguage($lang);
 
         // VALITRON Configuration
         // Valitron is a simple, minimal and elegant stand-alone validation library with NO dependencies
@@ -186,26 +211,29 @@ abstract class Core_Abstract_Application
         Flight::set('flight.log_errors', FALSE);
     }
 
-    /**
-     * Execute the Query and Update User Activity
-     *
-     * @return int
-     */
-    public abstract function execute();
+    public function execute()
+    {
+        $this->updateUserActivity();
+    }
+
+    public function getAuthenticationService()
+    {
+        return $this->authentication_service;
+    }
 
     /**
-     * Update User Activity by User-Id
-     * Must be added to any execute() stub of child classes
+     * Update User Activity
+     * Must be added to any execute() method stub of child classes
      *
      * @return void
      */
-    protected function updateUserActivity() {
+    private function updateUserActivity() {
 
-        if ($this->authService == null || $this->authService->isLoggedIn() === FALSE) {
+        if ($this->authentication_service == null || $this->authentication_service->isLoggedIn() === FALSE) {
             return;
         }
 
-        $dbh = Core_DBH::getDBH();
+        $dbh = Core_Database_Service::getDBH();
 
         try {
             $sth = $dbh->prepare("
@@ -217,7 +245,7 @@ abstract class Core_Abstract_Application
                         ;");
 
             $sth->bindParam(':last_activity', date('Y-m-d H:i:s'));
-            $sth->bindParam(':user_id', $this->authService->getUid());
+            $sth->bindParam(':user_id', $this->authentication_service->getUid());
 
             $sth->execute();
         }
@@ -250,7 +278,7 @@ abstract class Core_Abstract_Application
      */
     private static function getDBConfig() {
 
-        $dbh = Core_DBH::getDBH();
+        $dbh = Core_Database_Service::getDBH();
         $ret = array();
 
         try {

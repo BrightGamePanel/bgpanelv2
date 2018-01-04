@@ -25,7 +25,7 @@
  * @link		http://www.bgpanel.net/
  */
 
-if ( !class_exists('Core_Abstract__Controller')) {
+if ( !class_exists('Core_Abstract_Controller')) {
 	trigger_error('Controller_Login -> BGP_Controller is missing !');
 }
 
@@ -33,7 +33,7 @@ if ( !class_exists('Core_Abstract__Controller')) {
  * Login Controller
  */
 
-class Core__Controller_Login extends Core_Abstract__Controller
+class Core__Controller_Login extends Core_Abstract_Controller
 {
 
 	function __construct( )	{
@@ -76,7 +76,7 @@ class Core__Controller_Login extends Core_Abstract__Controller
 		$errors			= array();  	// array to hold validation errors
 		$data 			= array(); 		// array to pass back data
 
-		$dbh = Core_DBH::getDBH();		// Get Database Handle
+		$dbh = Core_Database_Service::getDBH();		// Get Database Handle
 
 		// validate the variables ======================================================
 
@@ -102,7 +102,7 @@ class Core__Controller_Login extends Core_Abstract__Controller
 		if (empty($errors))
 		{
 			$username = $form['username'];
-			$password = Core_AuthService::getHash($form['password']);
+			$password = Core_Abstract_Auth_Service::getHash($form['password']);
 
 			try {
 				$sth = $dbh->prepare("
@@ -132,7 +132,7 @@ class Core__Controller_Login extends Core_Abstract__Controller
 
 				// Give User Privilege
 
-				$authService = Core_AuthService::getAuthService();
+				$authService = Core_Abstract_Auth_Service::getAuthService();
 
 				// Reset Login Attempts
 				$authService->resetBanCounter();
@@ -206,7 +206,7 @@ class Core__Controller_Login extends Core_Abstract__Controller
 				}
 
 				// Call security component
-				$authService = Core_AuthService::getAuthService();
+				$authService = Core_Abstract_Auth_Service::getAuthService();
 				$authService->incrementBanCounter();
 
 				// Log Event
@@ -229,7 +229,7 @@ class Core__Controller_Login extends Core_Abstract__Controller
 			$data['errors']  = $errors;
 
 			// notification
-			$authService = Core_AuthService::getAuthService();
+			$authService = Core_Abstract_Auth_Service::getAuthService();
 
 			if ( $authService->isBanned() ) {
 				$data['msgType'] = 'warning';
@@ -297,7 +297,7 @@ class Core__Controller_Login extends Core_Abstract__Controller
 		$errors			= array();  	// array to hold validation errors
 		$data 			= array(); 		// array to pass back data
 
-		$dbh = Core_DBH::getDBH();		// Get Database Handle
+		$dbh = Core_Database_Service::getDBH();		// Get Database Handle
 
 		// validate the variables ======================================================
 
@@ -351,14 +351,14 @@ class Core__Controller_Login extends Core_Abstract__Controller
 			}
 
 			if ( !empty($result) && ($captcha_validation == TRUE) ) {
-				$authService = Core_AuthService::getAuthService();
+				$authService = Core_Abstract_Auth_Service::getAuthService();
 
 				// Reset Login Attempts
 				$authService->resetBanCounter();
 
 				// Reset User Passwd
 				$plainTextPasswd = bgp_create_random_password( 13 );
-				$digestPasswd = Core_AuthService::getHash($plainTextPasswd);
+				$digestPasswd = Core_Abstract_Auth_Service::getHash($plainTextPasswd);
 
 				try {
 					// Update User Passwd
@@ -403,7 +403,7 @@ class Core__Controller_Login extends Core_Abstract__Controller
 			}
 			else {
 				// Call security component
-				$authService = Core_AuthService::getAuthService();
+				$authService = Core_Abstract_Auth_Service::getAuthService();
 				$authService->incrementBanCounter();
 
 				// Log Event
@@ -432,7 +432,7 @@ class Core__Controller_Login extends Core_Abstract__Controller
 			$data['errors']  = $errors;
 
 			// notification
-			$authService = Core_AuthService::getAuthService();
+			$authService = Core_Abstract_Auth_Service::getAuthService();
 
 			if ( $authService->isBanned() ) {
 				$data['msgType'] = 'warning';

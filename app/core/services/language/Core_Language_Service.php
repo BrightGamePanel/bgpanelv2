@@ -27,16 +27,15 @@
 
 
 
-final class Core_Lang {
+final class Core_Language_Service implements Core_Service_Interface {
 
-    // Language Manager
-    private static $lang_manager = null;
+    private static $service_handle = null;
 
     // Current Locale
     private $locale = '';
 
     /**
-     * Hidden Core_Lang constructor.
+     * Core_Lang constructor.
      */
     private function __construct()
     {
@@ -46,15 +45,15 @@ final class Core_Lang {
     /**
      * Creates a Language Manager
      */
-    public static function getLangManager() {
-        if (empty(self::$lang_manager) ||
-            !is_object(self::$lang_manager) ||
-            (get_class(self::$lang_manager) != 'Core_Lang')) {
+    public static function getService() {
+        if (empty(self::$service_handle) ||
+            !is_object(self::$service_handle) ||
+            (get_class(self::$service_handle) != 'Core_Language_Service')) {
 
-            self::$lang_manager = new Core_Lang();
+            self::$service_handle = new Core_Language_Service();
         }
 
-        return self::$lang_manager;
+        return self::$service_handle;
     }
 
     /**

@@ -20,7 +20,12 @@ abstract class Core_Abstract_Page implements Core_Page_Interface {
     /**
      * @var Core_Page_Builder GUI Builder
      */
-    protected $builder = null;
+    protected $gui_builder = null;
+
+    /**
+     * @var Core_Javascript_Builder AngularJS Builder
+     */
+    protected $js_builder = null;
 
     /**
      * @var string Page name
@@ -52,7 +57,8 @@ abstract class Core_Abstract_Page implements Core_Page_Interface {
         $this->title = $title;
         $this->description = $description;
 
-        $this->builder = new Core_Page_Builder($this);
+        $this->gui_builder = new Core_Page_Builder($this);
+        $this->js_builder = new Core_Javascript_Builder($this);
     }
 
     /**
@@ -64,13 +70,16 @@ abstract class Core_Abstract_Page implements Core_Page_Interface {
         $this->request = $query_args;
 
         // Build Page Header
-        $this->builder->buildHeader();
+        $this->gui_builder->buildHeader();
 
         // Render Page Body
         $this->body();
 
+        // Generate AngularJS Controller
+        $this->js_builder->buildNGController();
+
         // Build Page Footer
-        $this->builder->buildFooter();
+        $this->gui_builder->buildFooter();
     }
 
     public function getPageTitle() {

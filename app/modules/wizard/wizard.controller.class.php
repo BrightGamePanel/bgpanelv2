@@ -29,7 +29,7 @@
  * Install Wizard Controller
  */
 
-class Wizard_Controller extends Core_Abstract__Controller {
+class Wizard_Controller extends Core_Abstract_Controller {
 
     /**
      * Game Configuration Database

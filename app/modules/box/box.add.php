@@ -52,7 +52,7 @@ $gui->getHeader();
 
 // Os list as json
 
-$dbh = Core_DBH::getDBH(); // Get Database Handle
+$dbh = Core_Database_Service::getDBH(); // Get Database Handle
 
 $sth = $dbh->prepare("
 	SELECT *

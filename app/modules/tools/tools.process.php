@@ -97,7 +97,7 @@ switch ($task)
 		// Return ================================================================================
 
 		header('Content-Type: application/xml; charset=utf-8');
-		header('Content-disposition: attachment; filename="' . $_SERVER['SERVER_NAME'] . '-as-' . Core_AuthService::getSessionInfo('USERNAME') . '_' . date('Y-m-d') . '_bgpanel.wadl"'); 
+		header('Content-disposition: attachment; filename="' . $_SERVER['SERVER_NAME'] . '-as-' . Core_Abstract_Auth_Service::getSessionInfo('USERNAME') . '_' . date('Y-m-d') . '_bgpanel.wadl"');
 		echo $return;
 
 		exit( 0 );

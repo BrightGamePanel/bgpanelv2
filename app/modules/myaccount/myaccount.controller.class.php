@@ -25,7 +25,7 @@
  * @link		http://www.bgpanel.net/
  */
 
-if ( !class_exists('Core_Abstract__Controller')) {
+if ( !class_exists('Core_Abstract_Controller')) {
 	trigger_error('Controller_Myaccount -> BGP_Controller is missing !');
 }
 
@@ -33,7 +33,7 @@ if ( !class_exists('Core_Abstract__Controller')) {
  * My Account Controller
  */
 
-class Core__Controller_Myaccount extends Core_Abstract__Controller {
+class Core__Controller_Myaccount extends Core_Abstract_Controller {
 
 	function __construct( )	{
 	
@@ -69,7 +69,7 @@ class Core__Controller_Myaccount extends Core_Abstract__Controller {
 		$errors			= array();  	// array to hold validation errors
 		$data 			= array(); 		// array to pass back data
 
-		$dbh = Core_DBH::getDBH();		// Get Database Handle
+		$dbh = Core_Database_Service::getDBH();		// Get Database Handle
 
 		// Get languages
 		$languages = parse_ini_file( CONF_LANG_INI );
@@ -132,7 +132,7 @@ class Core__Controller_Myaccount extends Core_Abstract__Controller {
 			// Database update
 
 			$db_data['username']			= $form['username'];
-			$db_data['password']			= Core_AuthService::getHash($form['password0']);
+			$db_data['password']			= Core_Abstract_Auth_Service::getHash($form['password0']);
 			$db_data['email']				= $form['email'];
 			$db_data['lang']				= $form['language'];
 
@@ -146,8 +146,8 @@ class Core__Controller_Myaccount extends Core_Abstract__Controller {
 				$db_data['template'] = $template;
 			}
 
-			$authService = Core_AuthService::getAuthService();
-			$uid = Core_AuthService::getSessionInfo('ID');
+			$authService = Core_Abstract_Auth_Service::getAuthService();
+			$uid = Core_Abstract_Auth_Service::getSessionInfo('ID');
 
 			foreach ($db_data as $key => $value) {
 

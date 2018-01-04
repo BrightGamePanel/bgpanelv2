@@ -45,15 +45,18 @@ class Autoloader
         require( CORE_DIR	. '/defaults/Core_Defaults.php' );
 
         // Applications
+        require( CORE_DIR	. '/application/Core_Application_Interface.php' );
         require( CORE_DIR	. '/application/Core_Abstract_Application.php' );
-        require( CORE_DIR	. '/application/Core_Launcher.php' );
+
+        // Services
+        require( CORE_DIR   . '/services/Core_Service_Interface.php' );
 
         // Authentication
-        require( CORE_DIR	. '/authentication/Core_AuthService.php' );
-        require( CORE_DIR	. '/authentication/Core_AuthService_JWT.php' );
+        require( CORE_DIR	. '/services/auth/Core_Auth_Service_Interface.php' );
+        require( CORE_DIR	. '/services/auth/Core_Abstract_Auth_Service.php' );
 
         // Database Handler
-        require( CORE_DIR	. '/database/Core_DBH.php' );
+        require( CORE_DIR	. '/services/database/Core_Database_Service.php' );
 
         // Base Module Classes
         require( CORE_DIR   . '/module/Core_Module_Shared_Interface.php');
@@ -61,6 +64,8 @@ class Autoloader
         require( CORE_DIR   . '/module/Core_Controller_Interface.php');
         require( CORE_DIR	. '/module/Core_Abstract_Module.php' );
         require( CORE_DIR	. '/module/Core_Abstract_Controller.php' );
+
+        spl_autoload_register('Autoloader::loader');
     }
 
     /**
@@ -83,24 +88,23 @@ class Autoloader
                     require( CORE_DIR	. '/application/' . $class . '.php' );
                     return;
                 // Authentication Package
-                case 'Core_AuthService_API':
-                case 'Core_AuthService_Session':
-                    require( CORE_DIR	. '/authentication/' . $class . '.php' );
+                case 'Core_Auth_Service_Anonymous':
+                case 'Core_Auth_Service_JWT':
+                case 'Core_Auth_Service_API':
+                case 'Core_Auth_Service_Session':
+                    require( CORE_DIR	. '/services/auth/' . $class . '.php' );
                     return;
                 // GUI
                 case 'Core_Page_Builder':
+                case 'Core_Javascript_Builder':
                     require( CORE_DIR	. '/gui/' . $class . '.php' );
                     return;
-                // Notification Service
-                case 'Core_Notification_Service':
-                    require( CORE_DIR	. '/notification/' . $class . '.php' );
-                    return;
-                // Lang Package
-                case 'Core_Lang':
-                    require( CORE_DIR 	. '/language/' . $class . '.php' );
+                // Language Package
+                case 'Core_Language_Service':
+                    require( CORE_DIR 	. '/services/language/' . $class . '.php' );
                     require( LIBS_DIR	. '/php-gettext/gettext.inc.php' );
                     return;
-                    // Module
+                // Module
                 case 'Core_Page_Interface':
                 case 'Core_Abstract_Page':
                     require( CORE_DIR   . '/module/' . $class . '.php');

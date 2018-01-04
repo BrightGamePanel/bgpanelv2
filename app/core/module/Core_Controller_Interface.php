@@ -9,6 +9,11 @@
 interface Core_Controller_Interface
 {
     /**
+     * Core_Controller_Interface constructor.
+     */
+    public function __construct();
+
+    /**
      * Invoke the Designated Method on this Controller with its Args
      *
      * @param string $method_prototype_name The method name to call

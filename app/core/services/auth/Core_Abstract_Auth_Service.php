@@ -32,10 +32,10 @@
  *
  * This class manages the session validity inside the application and checks the permissions
  */
-abstract class Core_AuthService
+abstract class Core_Abstract_Auth_Service implements Core_Auth_Service_Interface
 {
 	// Service Handle
-	protected static $authService = null;
+	protected static $service_handle = null;
 
 	// RBAC Framework Handle
     protected static $rbac = null;
@@ -100,63 +100,11 @@ abstract class Core_AuthService
         return ucfirst(strtolower($module)) . '/' . strtolower($page);
     }
 
-    /**
-     * Service Handler
-     */
-    public static function getService(){}
-
-    /**
-     * Login Method
-     *
-     * Fetches authentication information
-     * Checks that those information are valid or not
-     *
-     * Returns TRUE on SUCCESS, FALSE otherwise
-     *
-     * @return boolean
-     */
-    public abstract function login();
-
-    /**
-     * Logout Method
-     *
-     * Destroys the session
-     */
     public function logout() {
-        self::$authService = null;
+        self::$service_handle = null;
     }
 
-    /**
-     * Checks the Validity Of the Current Session
-     *
-     * TRUE if the online user is authorized, FALSE otherwise
-     *
-     * @return boolean
-     */
-    public abstract function isLoggedIn();
-
-    /**
-     * Check Authorization dedicated to Module Methods
-     *
-     * TRUE if the access is granted, FALSE otherwise
-     *
-     * @param string $module
-     * @param string $method
-     *
-     * @return bool
-     */
-    abstract function checkMethodAuthorization($module = '', $method = '');
-
-    /**
-     * Default implementation of checkMethodAuthorization()
-     *
-     * @param string $module
-     * @param string $method
-     * @param int $uid
-     *
-     * @return bool
-     */
-    protected function _checkMethodAuthorization($module = '', $method = '', $uid = 0) {
+    public function checkMethodAuthorization($module = '', $method = '', $uid = 0) {
 
         if (empty($module) || empty($method) || !is_numeric($uid)) {
             return FALSE;
@@ -180,28 +128,7 @@ abstract class Core_AuthService
         return FALSE;
     }
 
-    /**
-     * Check Authorization dedicated to Module Pages
-     *
-     * TRUE if the access is granted, FALSE otherwise
-     *
-     * @param string $module
-     * @param string $page
-     *
-     * @return bool
-     */
-    abstract function checkPageAuthorization($module = '', $page = '');
-
-    /**
-     * Default implementation of checkPageAuthorization()
-     *
-     * @param string $module
-     * @param string $page
-     * @param int $uid
-     *
-     * @return bool
-     */
-    protected function _checkPageAuthorization($module = '', $page = '', $uid = 0) {
+    public function checkPageAuthorization($module = '', $page = '', $uid = 0) {
 
         if (empty($module) || empty($page) || !is_numeric($uid)) {
             return FALSE;
@@ -224,11 +151,4 @@ abstract class Core_AuthService
 
         return FALSE;
     }
-
-    /**
-     * Gets the User-Id of the current user
-     *
-     * @return int
-     */
-    public abstract function getUid();
 }

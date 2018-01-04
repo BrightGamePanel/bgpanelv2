@@ -96,7 +96,6 @@ class Init
 
         require(CORE_DIR . '/exception/Core_Exception.php');
         require(CORE_DIR . '/exception/Core_Verbose_Exception.php');
-        require(CORE_DIR . '/exception/Core_Application_Exception.php');
 
         // VERIFY CONFIGURATION DIRECTORY
         if (!is_dir(CONF_DIR)) {
@@ -155,12 +154,21 @@ class Init
          * LOAD CORE FILES
          */
 
-        require(CORE_DIR . '/Autoloader.php');
-        spl_autoload_register('Autoloader::loader');
+        // Autoloader
+        require( CORE_DIR . '/Autoloader.php' );
         Autoloader::load();
+
+        // Services
+        require( CORE_DIR	. '/Services.php');
+
+        // Application Launcher
+        require( APP_DIR . '/Launcher.php' );
 
         /**
          * LOGGING Configuration
+         * Apache Log4php configuration
+         *
+         * @link http://logging.apache.org/log4php/docs/configuration.html
          */
 
         if (defined('CONF_LOGS_DIR') && is_writable(CONF_LOGS_DIR)) {
@@ -170,5 +178,32 @@ class Init
             // Default configuration
             define('REAL_LOGGING_DIR', LOGS_DIR);
         }
+
+        Logger::configure(
+            array(
+                'rootLogger' => array(
+                    'appenders' => array('default')
+                ),
+                'appenders' => array(
+                    'default' => array(
+                        'class' => 'LoggerAppenderFile',
+                        'layout' => array(
+                            'class' => 'LoggerLayoutPattern',
+                            'params' => array(
+                                'conversionPattern' => '[%date{Y-m-d H:i:s,u}] %-5level %-10.10logger '
+                                    . '%-15.15server{REMOTE_ADDR} '
+                                    . '%-35server{REQUEST_URI} '
+                                    . '%msg'
+                                    . '%n'
+                            )
+                        ),
+                        'params' => array(
+                            'file' => REAL_LOGGING_DIR . '/' . date('Y-m-d') . '.txt',
+                            'append' => true
+                        )
+                    )
+                )
+            )
+        );
     }
 }

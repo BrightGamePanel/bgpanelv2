@@ -52,7 +52,7 @@ switch ($task)
 {
 	case 'authenticateUser':
 		// Verify that the user is not banned
-		$authService = Core_AuthService::getAuthService();
+		$authService = Core_Abstract_Auth_Service::getAuthService();
 
 		if ( $authService->isBanned() == FALSE ) {
 
@@ -89,7 +89,7 @@ switch ($task)
 		exit( 0 );
 
 	case 'sendNewPassword':
-		$authService = Core_AuthService::getAuthService();
+		$authService = Core_Abstract_Auth_Service::getAuthService();
 
 		if ( $authService->isBanned() == FALSE ) {
 

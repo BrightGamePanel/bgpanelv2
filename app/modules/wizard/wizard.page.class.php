@@ -28,7 +28,7 @@ class Wizard_Page extends Core_Abstract_Page
 
                         ?>
                     </pre>
-                    <form method="post" target="_self">
+                    <form name="thisForm" ng-submit="onSubmit(thisForm)">
                         <div class="checkbox">
                             <label>
                                 <input type="checkbox" name="agreement">&nbsp;I Accept the Terms of the License Agreement

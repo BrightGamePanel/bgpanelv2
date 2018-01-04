@@ -33,7 +33,7 @@
  * Relies on X-API-HEADERS, or PHP_AUTH_USER otherwise
  * Uses also an IP whitelisting mechanism to prevent unknown hosts
  */
-final class Core_AuthService_API extends Core_AuthService
+final class Core_Auth_Service_API extends Core_Abstract_Auth_Service
 {
     // USER
     private $uid = 0;
@@ -78,13 +78,13 @@ final class Core_AuthService_API extends Core_AuthService
 
     public static function getService() {
 
-        if (empty(self::$authService) ||
-            !is_object(self::$authService) ||
-            !is_a(self::$authService, 'Core_AuthService')) {
-            self::$authService = new Core_AuthService_API();
+        if (empty(self::$service_handle) ||
+            !is_object(self::$service_handle) ||
+            !is_a(self::$service_handle, 'Core_Abstract_Auth_Service')) {
+            self::$service_handle = new Core_Auth_Service_API();
         }
 
-        return self::$authService;
+        return self::$service_handle;
     }
 
     /**
@@ -119,7 +119,7 @@ final class Core_AuthService_API extends Core_AuthService
             if (!empty($this->php_auth_user) AND
                 !empty($this->php_auth_pw)) {
                 return (
-                    Core_AuthService_API::checkRemoteHost(
+                    Core_Auth_Service_API::checkRemoteHost(
                         Flight::request()->ip
                     ) AND
                     $this->checkRemoteAPIUser(
@@ -135,7 +135,7 @@ final class Core_AuthService_API extends Core_AuthService
 
         // X-HTTP-HEADERS (default)
         return (
-            Core_AuthService_API::checkRemoteHost(
+            Core_Auth_Service_API::checkRemoteHost(
                 Flight::request()->ip
             ) AND
             $this->checkRemoteAPIUser(
@@ -203,7 +203,7 @@ final class Core_AuthService_API extends Core_AuthService
         $username = $api_user;
         $password = self::getHash($api_user_pass);
 
-        $dbh = Core_DBH::getDBH();
+        $dbh = Core_Database_Service::getDBH();
 
         try {
             $sth = $dbh->prepare("
@@ -297,33 +297,7 @@ final class Core_AuthService_API extends Core_AuthService
         return ($this->uid === 0) ? FALSE : TRUE;
     }
 
-    /**
-     * Check Authorization dedicated to Module Methods
-     *
-     * TRUE if the access is granted, FALSE otherwise
-     *
-     * @param string $module
-     * @param string $method
-     *
-     * @return bool
-     */
-    function checkMethodAuthorization($module = '', $method = '')
-    {
-        return parent::_checkMethodAuthorization($module, $method, $this->uid);
-    }
-
-    /**
-     * Check Authorization dedicated to Module Pages
-     *
-     * TRUE if the access is granted, FALSE otherwise
-     *
-     * @param string $module
-     * @param string $page
-     *
-     * @return bool
-     */
-    function checkPageAuthorization($module = '', $page = '')
-    {
+    public function checkPageAuthorization($module = '', $page = '', $uid = 0) {
         return FALSE;
     }
 

@@ -25,7 +25,7 @@
  * @link		http://www.bgpanel.net/
  */
 
-if ( !class_exists('Core_Abstract__Controller')) {
+if ( !class_exists('Core_Abstract_Controller')) {
 	trigger_error('Controller_Config -> BGP_Controller is missing !');
 }
 
@@ -33,7 +33,7 @@ if ( !class_exists('Core_Abstract__Controller')) {
  * Configuration Controller
  */
 
-class Core__Controller_Config extends Core_Abstract__Controller {
+class Core__Controller_Config extends Core_Abstract_Controller {
 
 	function __construct( )	{
 	
@@ -56,7 +56,7 @@ class Core__Controller_Config extends Core_Abstract__Controller {
 		$errors			= array();  	// array to hold validation errors
 		$data 			= array(); 		// array to pass back data
 		
-		$dbh = Core_DBH::getDBH();		// Get Database Handle
+		$dbh = Core_Database_Service::getDBH();		// Get Database Handle
 
 		// Apply =======================================================================
 
@@ -183,7 +183,7 @@ class Core__Controller_Config extends Core_Abstract__Controller {
 		$errors			= array();  	// array to hold validation errors
 		$data 			= array(); 		// array to pass back data
 		
-		$dbh = Core_DBH::getDBH();		// Get Database Handle
+		$dbh = Core_Database_Service::getDBH();		// Get Database Handle
 		
 		// validate the variables ======================================================
 
@@ -276,7 +276,7 @@ class Core__Controller_Config extends Core_Abstract__Controller {
 		$errors			= array();  	// array to hold validation errors
 		$data 			= array(); 		// array to pass back data
 		
-		$dbh = Core_DBH::getDBH();		// Get Database Handle
+		$dbh = Core_Database_Service::getDBH();		// Get Database Handle
 
 		// Get templates
 		$templates = parse_ini_file( CONF_TEMPLATES_INI );

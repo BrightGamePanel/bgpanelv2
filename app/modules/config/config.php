@@ -59,7 +59,7 @@ $templates = parse_ini_file( CONF_TEMPLATES_INI );
 
 // Get current config from database
 
-$dbh = Core_DBH::getDBH(); // Get Database Handle
+$dbh = Core_Database_Service::getDBH(); // Get Database Handle
 
 $sth = $dbh->prepare("
 	SELECT setting, value

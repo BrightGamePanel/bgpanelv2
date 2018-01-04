@@ -9,6 +9,11 @@
 interface Core_Module_Interface extends Core_Module_Shared_Interface
 {
     /**
+     * Core_Module_Interface constructor.
+     */
+    public function __construct();
+
+    /**
      * Returns the attached module controller
      *
      * @return Core_Controller_Interface

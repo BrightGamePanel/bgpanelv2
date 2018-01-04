@@ -27,39 +27,36 @@
 
 
 
-final class Core_DBH {
+final class Core_Database_Service implements Core_Service_Interface {
 
-	// The Database Handle
-	private static $dbh = null;
+	private static $service_handle = null;
 
     /**
-     * Hidden Core_DBH constructor.
+     * Core_DBH constructor.
      */
 	private function __construct()
     {
     }
 
     /**
-     * Creates a PDO instance representing a connection to a database
-     *
      * @return PDO
      */
-	public static function getDBH() {
+	public static function getService() {
 
-	    if (empty(self::$dbh) ||
-            !is_object(self::$dbh) ||
-            (get_class(self::$dbh) != 'PDO')) {
+	    if (empty(self::$service_handle) ||
+            !is_object(self::$service_handle) ||
+            (get_class(self::$service_handle) != 'PDO')) {
 			try {
 				// Connect to the SQL server
 				if (DB_DRIVER == 'sqlite') {
-					self::$dbh = new PDO( DB_DRIVER.':'.DB_FILE );
+					self::$service_handle = new PDO( DB_DRIVER.':'.DB_FILE );
 				}
 				else {
-					self::$dbh = new PDO( DB_DRIVER.':host='.DB_HOST.';dbname='.DB_NAME, DB_USER, DB_PASSWORD );
+					self::$service_handle = new PDO( DB_DRIVER.':host='.DB_HOST.';dbname='.DB_NAME, DB_USER, DB_PASSWORD );
 				}
 
 				// Set ERRORMODE to exceptions
-				self::$dbh->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+				self::$service_handle->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 			}
 			catch (PDOException $e) {
 				echo $e->getMessage().' in '.$e->getFile().' on line '.$e->getLine();
@@ -67,6 +64,6 @@ final class Core_DBH {
 			}
 		}
 
-		return self::$dbh;
+		return self::$service_handle;
 	}
 }

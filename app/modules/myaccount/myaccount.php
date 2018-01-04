@@ -64,9 +64,9 @@ $templates = parse_ini_file( CONF_TEMPLATES_INI );
 
 // Get profile settings from database
 
-$dbh = Core_DBH::getDBH(); // Get Database Handle
+$dbh = Core_Database_Service::getDBH(); // Get Database Handle
 
-$uid = Core_AuthService::getSessionInfo('ID'); // Get user id
+$uid = Core_Abstract_Auth_Service::getSessionInfo('ID'); // Get user id
 
 $sth = $dbh->prepare("
 	SELECT *
@@ -245,7 +245,7 @@ $model = json_encode( array(
 		'firstname' 	=> htmlspecialchars( $profile['firstname'], ENT_QUOTES),
 		'lastname' 		=> htmlspecialchars( $profile['lastname'], ENT_QUOTES),
 		'email' 		=> htmlspecialchars( $profile['email'], ENT_QUOTES),
-		'language'		=> htmlspecialchars( Core_AuthService::getSessionInfo('LANG'), ENT_QUOTES),
+		'language'		=> htmlspecialchars( Core_Abstract_Auth_Service::getSessionInfo('LANG'), ENT_QUOTES),
 		'template'		=> htmlspecialchars( $profile['template'], ENT_QUOTES)
 	), JSON_FORCE_OBJECT );
 

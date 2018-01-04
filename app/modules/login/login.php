@@ -54,7 +54,7 @@ $gui->getHeader();
 //------------------------------------------------------------------------------------------------------------+
 
 // Call security component
-$authService = Core_AuthService::getAuthService();
+$authService = Core_Abstract_Auth_Service::getAuthService();
 
 if ( $authService->isBanned() ) {
 ?>

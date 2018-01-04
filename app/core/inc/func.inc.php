@@ -42,31 +42,6 @@ function bgp_create_random_password( $length )
 }
 
 /**
- * Set an Alert on the GUI via global $_SESSION
- */
-function bgp_set_alert( $strong, $body = '', $type = 'warning' )
-{
-	if ( !empty($strong) ) {
-
-		switch ($type) {
-			case 'success':
-			case 'info':
-			case 'warning':
-			case 'danger':
-				$_SESSION['ALERT']['MSG-TYPE'] = $type;
-				break;
-			
-			default:
-				$_SESSION['ALERT']['MSG-TYPE'] = 'warning';
-				break;
-		}
-
-		$_SESSION['ALERT']['MSG-STRONG'] = $strong;
-		$_SESSION['ALERT']['MSG-BODY'] = $body;
-	}
-}
-
-/**
  * bgp_get_net_status
  *
  * Test if the specified socket is Online or Offline.
@@ -98,7 +73,7 @@ function bgp_get_net_status($ip, $port)
  * @param integer bytes Size in bytes to convert
  * @return string
  */
-function bytesToSize($bytes, $precision = 2)
+function bgp_bytes_to_size($bytes, $precision = 2)
 {
 	$kilobyte = 1024;
 	$megabyte = $kilobyte * 1024;
@@ -141,29 +116,7 @@ function bgp_format_date( $timestamp )
 	}
 }
 
-/**
- * Get Full URL
- *
- * http://stackoverflow.com/a/8891890
- */
-function url_origin($s, $use_forwarded_host = false)
-{
-	$ssl = (!empty($s['HTTPS']) && $s['HTTPS'] == 'on') ? true:false;
-	$sp = strtolower($s['SERVER_PROTOCOL']);
-	$protocol = substr($sp, 0, strpos($sp, '/')) . (($ssl) ? 's' : '');
-	$port = $s['SERVER_PORT'];
-	$port = ((!$ssl && $port=='80') || ($ssl && $port=='443')) ? '' : ':'.$port;
-	$host = ($use_forwarded_host && isset($s['HTTP_X_FORWARDED_HOST'])) ? $s['HTTP_X_FORWARDED_HOST'] : (isset($s['HTTP_HOST']) ? $s['HTTP_HOST'] : null);
-	$host = isset($host) ? $host : $s['SERVER_NAME'] . $port;
-	return $protocol . '://' . $host;
-}
-
-function get_url($s, $use_forwarded_host = false)
-{
-	return url_origin($s, $use_forwarded_host) . $s['REQUEST_URI'];
-}
-
-function camelToUnderscore($str) {
+function bgp_camel_to_underscore($str) {
 	return strtolower(preg_replace('/([a-z])([A-Z])/', '$1_$2', $str));
 }
 
@@ -177,7 +130,7 @@ function camelToUnderscore($str) {
  * @return string
  *    The path, normalised.
  */
-function normalizePath($path, $separator = DIRECTORY_SEPARATOR, $encoding = "UTF-8") {
+function bgp_normalize_path($path, $separator = DIRECTORY_SEPARATOR, $encoding = "UTF-8") {
   
 	$path = iconv($encoding, "$encoding//IGNORE//TRANSLIT", $path);
 

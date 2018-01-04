@@ -31,10 +31,11 @@
  * Application Wrapper
  */
 
-final class Core_Launcher
+final class Launcher
 {
+    
     /**
-     * BGP_Launcher main
+     * Launcher
      *
      * @param string $module
      * @param string $page
@@ -43,7 +44,7 @@ final class Core_Launcher
      * @return int exit code
      * @throws Core_Exception
      */
-    public static function start($module, $page, $id = 0, $api_version = null)
+    public static function start($module, $page = '', $id = 0, $api_version = '')
     {
         // Check API version
         if (!empty($api_version) && $api_version != Core_Abstract_Application::getFilesVersion()['API_VERSION']) {
@@ -66,8 +67,21 @@ final class Core_Launcher
         // Read HTTP Headers
         $http_headers = array_change_key_case(apache_request_headers(), CASE_UPPER);
 
-        if (!isset($http_headers['CONTENT-TYPE']) ||
-            (isset($http_headers['CONTENT-TYPE']) && $http_headers['CONTENT-TYPE'] == "text/html")) {
+        // Determine output content type
+        $output_content_type = self::filterHTTPHeader(
+            $http_headers['ACCEPT'],
+            'application/json',
+            self::getAcceptHeaderWhitelist()
+        );
+
+        // Determine request content type
+        $request_content_type = self::filterHTTPHeader(
+            (isset($http_headers['CONTENT-TYPE'])) ? $http_headers['CONTENT-TYPE'] : '',
+            '',
+            self::getRequestContentTypeHeaderWhitelist()
+        );
+
+        if ($output_content_type == "text/html" || $output_content_type == 'application/xhtml') {
 
             if ($module == 'wizard') {
 
@@ -92,10 +106,10 @@ final class Core_Launcher
 
             if ($module == 'wizard') {
 
-                // INSTALL WIZARD (script)
+                // INSTALL WIZARD (script mode)
                 $app = new Core_Wizard_Application(
                     $page,
-                    'text/plain'
+                    $request_content_type
                 );
             }
             else {
@@ -107,13 +121,75 @@ final class Core_Launcher
                     $module,
                     $page,
                     $id,
-                    $http_headers['CONTENT-TYPE']
+                    $request_content_type
                 );
             }
         }
 
+        // Initialize
+        $app->init();
+
         // Execute
-        return $app->execute(); // Runtime
+        return $app->execute();
+    }
+
+    /**
+     * Returns allowed content types, expressed as MIME types,
+     * that the application is expected to return
+     *
+     * @return array
+     */
+    public static function getAcceptHeaderWhitelist() {
+        return array(
+            'text/html',
+            'text/plain',
+            'application/json',
+            'application/xml',
+            'application/xhtml'
+        );
+    }
+
+    /**
+     * Returns allowed content types of requests
+     * Required for POST / PUT requests
+     *
+     * @return array
+     */
+    public static function getRequestContentTypeHeaderWhitelist() {
+        return array(
+            'text/plain',
+            'application/json',
+            'application/x-www-form-urlencoded',
+            'application/form-data',
+            'application/octet-stream'
+        );
+    }
+
+    /**
+     * Reads the given http header and returns a valid http header value,
+     * given a default value and a whitelist of possible values
+     *
+     * @param string $header
+     * @param string $default
+     * @param array $whitelist
+     * @return string
+     */
+    private static function filterHTTPHeader($header, $default, $whitelist = array()) {
+
+        if (empty($header)) {
+            return $default;
+        }
+
+        $header_parts = explode(',', $header);
+        foreach ($header_parts as $part) {
+            foreach ($whitelist as $known_type) {
+                if (strstr($part, $known_type)) {
+                    return $known_type;
+                }
+            }
+        }
+
+        return $default;
     }
 
     /**
@@ -124,7 +200,7 @@ final class Core_Launcher
      */
     private static function testDBConfig() {
 
-        $dbh = Core_DBH::getDBH();
+        $dbh = Core_Database_Service::getService();
 
         try {
             $sth = $dbh->prepare("

@@ -30,18 +30,21 @@
 /**
  * Install Wizard
  */
-class Core_Wizard_Application extends Core_Abstract_Application
+final class Core_Wizard_Application extends Core_Abstract_Application
 {
 
     /**
      * BGP_Installer_Application constructor.
      *
      * @param $page
-     * @param $content_type
+     * @param $http_accept
      */
-    public function __construct($page, $content_type = "text/html")
+    public function __construct($page, $http_accept = "text/html")
     {
-        parent::__construct('wizard', $page, 0, $content_type);
+        // Fake Authentication Service
+        $this->authentication_service = new Core_Auth_Service_Anonymous();
+
+        parent::__construct('wizard', $page, 0, $http_accept);
     }
 
     public function init()
@@ -51,18 +54,16 @@ class Core_Wizard_Application extends Core_Abstract_Application
 
     public function execute()
     {
-        $wizard = new Wizard();
-
         if ($this->req_method == 'GET' && $this->req_content_type == 'text/html') {
-            return $wizard->render($this->page, $this->req_params);
+            return $this->module_handle->render($this->page, $this->req_params);
         }
-        if ($this->req_method == 'POST' && $this->req_content_type == 'text/plain') {
-            return $wizard->process($this->page, $this->req_params);
+        if ($this->req_method == 'POST') {
+            return $this->module_handle->process($this->page, $this->req_params);
         }
 
-        $method =  $wizard->getController()->resolve($this->req_method, $this->req_url);
-        echo $wizard->getController()->format(
-            $wizard->getController()->invoke($method, $this->req_params), $this->req_content_type
+        $method =  $this->module_handle->getController()->resolve($this->req_method, $this->req_url);
+        echo $this->module_handle->getController()->format(
+            $this->module_handle->getController()->invoke($method, $this->req_params), $this->req_content_type
         );
         return 0;
     }

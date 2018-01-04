@@ -74,7 +74,7 @@ switch ($task)
 				continue;
 			}
 			unset($_POST[$key]);
-			$key = camelToUnderscore($key);
+			$key = bgp_camel_to_underscore($key);
 
 			$_POST[$key] = $value;
 		}

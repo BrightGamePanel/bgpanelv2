@@ -32,7 +32,7 @@
  *
  * Wrap JWT Token Authentication Service over $_SESSION
  */
-final class Core_AuthService_Session extends Core_AuthService {
+final class Core_Auth_Service_Session extends Core_Abstract_Auth_Service {
 
     private $wrapped_jwt_service = null;
 
@@ -46,18 +46,18 @@ final class Core_AuthService_Session extends Core_AuthService {
         session_start();
 
         // JWT
-        $this->wrapped_jwt_service = Core_AuthService_JWT::getService();
+        $this->wrapped_jwt_service = Core_Auth_Service_JWT::getService();
     }
 
     public static function getService() {
 
-        if (empty(self::$authService) ||
-            !is_object(self::$authService) ||
-            !is_a(self::$authService, 'Core_AuthService')) {
-            self::$authService = new Core_AuthService_Session();
+        if (empty(self::$service_handle) ||
+            !is_object(self::$service_handle) ||
+            !is_a(self::$service_handle, 'Core_Abstract_Auth_Service')) {
+            self::$service_handle = new Core_Auth_Service_Session();
         }
 
-        return self::$authService;
+        return self::$service_handle;
     }
 
     public function logout()
@@ -90,7 +90,7 @@ final class Core_AuthService_Session extends Core_AuthService {
         // Rely on the wrapped service
 
         if ($this->wrapped_jwt_service == null) {
-            $this->wrapped_jwt_service = Core_AuthService_JWT::getService();
+            $this->wrapped_jwt_service = Core_Auth_Service_JWT::getService();
         }
 
         if ($this->wrapped_jwt_service->isLoggedIn()) {
@@ -103,12 +103,12 @@ final class Core_AuthService_Session extends Core_AuthService {
 
         // Try to forge TOKEN
 
-        $_SESSION['AUTHORIZATION'] = Core_AuthService_JWT::forgeToken(
+        $_SESSION['AUTHORIZATION'] = Core_Auth_Service_JWT::forgeToken(
             $logged_user,
             $password
         );
 
-        $this->wrapped_jwt_service = Core_AuthService_JWT::getService();
+        $this->wrapped_jwt_service = Core_Auth_Service_JWT::getService();
 
         $ret = $this->wrapped_jwt_service->login();
         if ($ret === TRUE) {

@@ -61,7 +61,7 @@ Flight::route('GET|POST|PUT|DELETE /api/@api_version(/@module(/@page(/@id)))', f
     ob_start();
 
     try {
-        $return_code = Core_Launcher::start($module, $page, $id, $api_version);
+        $return_code = Launcher::start($module, $page, $id, $api_version);
     }
     catch (Core_Exception $e) {
         ob_end_clean();
@@ -87,7 +87,7 @@ Flight::route('GET|POST|PUT|DELETE (/@module(/@page(/@id)))', function( $module,
     ob_start();
 
     try {
-        $return_code = Core_Launcher::start($module, $page, $id);
+        $return_code = Launcher::start($module, $page, $id);
     }
     catch (Core_Exception $e) {
         ob_end_clean();

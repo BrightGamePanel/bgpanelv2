@@ -44,7 +44,7 @@
  * Note : JSON Web Algorithms (JWA): draft-ietf-jose-json-web-algorithms-40
  * @link https://tools.ietf.org/html/draft-ietf-jose-json-web-algorithms-40
  */
-final class Core_AuthService_JWT extends Core_AuthService
+final class Core_Auth_Service_JWT extends Core_Abstract_Auth_Service
 {
     // JWT Algorithms
     const HMAC_SHA_256 = 'HS256';
@@ -152,13 +152,13 @@ final class Core_AuthService_JWT extends Core_AuthService
 
     public static function getService() {
 
-        if (empty(self::$authService) ||
-            !is_object(self::$authService) ||
-            !is_a(self::$authService, 'Core_AuthService')) {
-            self::$authService = new Core_AuthService_JWT();
+        if (empty(self::$service_handle) ||
+            !is_object(self::$service_handle) ||
+            !is_a(self::$service_handle, 'Core_Abstract_Auth_Service')) {
+            self::$service_handle = new Core_Auth_Service_JWT();
         }
 
-        return self::$authService;
+        return self::$service_handle;
     }
 
     /**
@@ -173,7 +173,7 @@ final class Core_AuthService_JWT extends Core_AuthService
     public static function forgeToken($logged_user = '', $password = '') {
 
         $password = self::getHash($password);
-        $dbh = Core_DBH::getDBH();
+        $dbh = Core_Database_Service::getDBH();
 
         try {
             $sth = $dbh->prepare("
@@ -277,7 +277,7 @@ final class Core_AuthService_JWT extends Core_AuthService
 
         // Verify
 
-        $dbh = Core_DBH::getDBH();
+        $dbh = Core_Database_Service::getDBH();
 
         try {
             // Fetch information from the database
@@ -341,36 +341,6 @@ final class Core_AuthService_JWT extends Core_AuthService
     public function isLoggedIn()
     {
         return ($this->uid === 0) ? FALSE : TRUE;
-    }
-
-    /**
-     * Check Authorization dedicated to Module Methods
-     *
-     * TRUE if the access is granted, FALSE otherwise
-     *
-     * @param string $module
-     * @param string $method
-     *
-     * @return bool
-     */
-    function checkMethodAuthorization($module = '', $method = '')
-    {
-        return parent::_checkMethodAuthorization($module, $method, $this->uid);
-    }
-
-    /**
-     * Check Authorization dedicated to Module Pages
-     *
-     * TRUE if the access is granted, FALSE otherwise
-     *
-     * @param string $module
-     * @param string $page
-     *
-     * @return bool
-     */
-    function checkPageAuthorization($module = '', $page = '')
-    {
-        return parent::_checkPageAuthorization($module, $page, $this->uid);
     }
 
     /**

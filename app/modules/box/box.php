@@ -50,7 +50,7 @@ $gui->getHeader();
 
 
 // DB
-$dbh = Core_DBH::getDBH(); // Get Database Handle
+$dbh = Core_Database_Service::getDBH(); // Get Database Handle
 
 $rows = array();
 

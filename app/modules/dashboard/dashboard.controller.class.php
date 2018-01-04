@@ -25,7 +25,7 @@
  * @link		http://www.bgpanel.net/
  */
 
-if ( !class_exists('Core_Abstract__Controller')) {
+if ( !class_exists('Core_Abstract_Controller')) {
 	trigger_error('Controller_Dashboard -> BGP_Controller is missing !');
 }
 
@@ -33,7 +33,7 @@ if ( !class_exists('Core_Abstract__Controller')) {
  * Dashboard Controller
  */
 
-class Core__Controller_Dashboard extends Core_Abstract__Controller {
+class Core__Controller_Dashboard extends Core_Abstract_Controller {
 
 	function __construct( )	{
 

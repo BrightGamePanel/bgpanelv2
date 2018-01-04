@@ -51,7 +51,7 @@ class Core_SessionHandler implements SessionHandlerInterface
 	 */
 	public function open($save_path = "", $name = "PHPSESSID")
 	{
-		$this->dbh = Core_DBH::getDBH();
+		$this->dbh = Core_Database_Service::getDBH();
 
 		return TRUE;
 	}

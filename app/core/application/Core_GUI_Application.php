@@ -9,7 +9,7 @@
 /**
  * Application Wrapper
  */
-class Core_GUI_Application extends Core_Abstract_Application
+final class Core_GUI_Application extends Core_Abstract_Application
 {
 
     /**
@@ -18,22 +18,14 @@ class Core_GUI_Application extends Core_Abstract_Application
      * @param $module
      * @param $page
      * @param $id
-     * @param $content_type
+     * @param $http_accept
      */
-    public function __construct($module, $page, $id, $content_type = "text/html")
+    public function __construct($module, $page, $id, $http_accept = "text/html")
     {
-        parent::__construct($module, $page, $id, $content_type);
-
         // User Authentication Service
-        $this->authService = Core_AuthService_Session::getService();
-    }
+        $this->authentication_service = Core_Auth_Service_Session::getService();
 
-    /**
-     * @throws Core_Verbose_Exception
-     */
-    public function init()
-    {
-        parent::_init();
+        parent::__construct($module, $page, $id, $http_accept);
     }
 
     /**
@@ -45,22 +37,23 @@ class Core_GUI_Application extends Core_Abstract_Application
     {
         // Verify Execution Context
 
-        return 1;
+        // Update User Activity
+        parent::execute();
 
-        // Resolve Request
+        return 1;
     }
 
     /**
      * Render HTML Pages
      */
     private function gui() {
-        $authService = Core_AuthService::getAuthService();
+        $authService = Core_Abstract_Auth_Service::getAuthService();
 
         if ($authService->isSignedIn() == FALSE) {
 
             // The user is not logged in
 
-            Core_AuthService::logout(); // Force logout
+            Core_Abstract_Auth_Service::logout(); // Force logout
 
             if (!empty($module) && $module != 'login') {
 
@@ -134,14 +127,14 @@ class Core_GUI_Application extends Core_Abstract_Application
                 // MAINTENANCE CHECK
 
                 if (boolval(BGP_MAINTENANCE_MODE) === TRUE && ($rbac->Users->hasRole('root', $authService->getSessionInfo('ID')) === FALSE)) {
-                    Core_AuthService::logout();
+                    Core_Abstract_Auth_Service::logout();
                     Flight::redirect('/503');
                 }
 
                 // DROP API USERS
 
                 if ($rbac->Users->hasRole('api', $authService->getSessionInfo('ID')) && ($rbac->Users->hasRole('root', $authService->getSessionInfo('ID')) === FALSE)) {
-                    Core_AuthService::logout();
+                    Core_Abstract_Auth_Service::logout();
                     Flight::redirect('/403');
                 }
 

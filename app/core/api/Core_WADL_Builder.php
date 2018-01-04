@@ -45,7 +45,7 @@ class Core__WADL_Builder
 
     public static function getWADL()
     {
-        $user = Core_AuthService::getSessionInfo('USERNAME');
+        $user = Core_Abstract_Auth_Service::getSessionInfo('USERNAME');
 
         $applicationDoc = "BrightGamePanel REST API @" . $user . " [build: " . BGP_API_VERSION . "] [date: " . date('r') . "]";
 
@@ -70,7 +70,7 @@ class Core__WADL_Builder
 
         $rbac = new PhpRbac\Rbac();
 
-        $authorizations = Core_AuthService::getSessionInfo('PERMISSIONS');
+        $authorizations = Core_Abstract_Auth_Service::getSessionInfo('PERMISSIONS');
 
         $body = '';
 

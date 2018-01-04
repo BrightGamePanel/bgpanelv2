@@ -31,7 +31,7 @@
  * Base CLASS for each BGP controllers
  */
 
-abstract class Core_Abstract__Controller implements Core_Controller_Interface
+abstract class Core_Abstract_Controller implements Core_Controller_Interface
 {
     /**
      * @var array Reflected public API methods
@@ -169,8 +169,9 @@ abstract class Core_Abstract__Controller implements Core_Controller_Interface
      */
     private function notifyInvocation($method_prototype_name, $return_array = array()) {
 
-        $uid = 0; // TODO : implement UID
-        $info = get_class($this) . '::' . $method_prototype_name . '() "';
+        $uid = Services::getAuthenticationService()->getUid();
+        $info = get_class($this) . '::' . $method_prototype_name . '() ';
+        $info .= '$' . $uid . ' "';
 
         if ($return_array == null) {
             $return_array = array();
@@ -205,12 +206,10 @@ abstract class Core_Abstract__Controller implements Core_Controller_Interface
         header('Content-Type: ' . $content_type . '; charset=utf-8');
 
         switch ($content_type) {
-            case 'application/xml':
-                // TODO : implement XML Encoder
-                return $return_array;
             case 'application/json':
-            default:
                 return json_encode($return_array);
+            default:
+                return serialize($return_array);
         }
     }
 

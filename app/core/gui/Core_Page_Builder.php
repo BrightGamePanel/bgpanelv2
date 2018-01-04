@@ -8,14 +8,14 @@ class Core_Page_Builder {
     private $page = null;
 
     /**
-     * @var Core_Lang Language manager handle
+     * @var Core_Language_Service Language service handle
      */
-    private $lang_manager = null;
+    private $lang_service = null;
 
     /**
-     * @var Core_AuthService_Session manager handle
+     * @var Core_Auth_Service_Session service handle
      */
-    private $auth_manager = null;
+    private $auth_service = null;
 
     /**
      * @var string Bootstrap 3 Template Filename
@@ -30,8 +30,8 @@ class Core_Page_Builder {
     public function __construct($page, $template = CONF_DEFAULT_TEMPLATE)
     {
         $this->page = $page;
-        $this->lang_manager = Core_Lang::getLangManager();
-        $this->auth_manager = Core_AuthService_Session::getService();
+        $this->lang_service = Services::getLanguageService();
+        $this->auth_service = Services::getAuthenticationService();
         $this->template = $template;
     }
 
@@ -42,7 +42,7 @@ class Core_Page_Builder {
 <html ng-app="bgpApp" lang="<?php
 
     // Language
-    echo htmlspecialchars( substr($this->lang_manager->getLanguage(), 0, 2), ENT_QUOTES );
+    echo htmlspecialchars( substr($this->lang_service->getLanguage(), 0, 2), ENT_QUOTES );
 
     ?>">
     <head>
@@ -245,7 +245,7 @@ class Core_Page_Builder {
             <ul class="nav navbar-top-links navbar-right"><?php
 
             if (!array_key_exists('empty_navbar', $this->page->getOptions())) {
-                if ($this->auth_manager->isLoggedIn()) {
+                if ($this->auth_service->isLoggedIn() === TRUE) {
                     ?>
                 <li class="dropdown">
                     <a class="dropdown-toggle" data-toggle="dropdown" href="#">
@@ -255,11 +255,11 @@ class Core_Page_Builder {
                         <li role="presentation" class="dropdown-header"><?php
 
                         echo htmlspecialchars(
-                            $this->auth_manager->getFirstname() .
+                            $this->auth_service->getFirstname() .
                             ' ' .
-                            $this->auth_manager->getLastname() .
+                            $this->auth_service->getLastname() .
                             ' @' .
-                            $this->auth_manager->getLoggedUser()
+                            $this->auth_service->getLoggedUser()
                             , ENT_QUOTES);
 
                         ?></li>

@@ -30,7 +30,7 @@
 /**
  * Application Wrapper
  */
-class Core_API_Application extends Core_Abstract_Application
+final class Core_API_Application extends Core_Abstract_Application
 {
 
     /**
@@ -39,31 +39,23 @@ class Core_API_Application extends Core_Abstract_Application
      * @param $module
      * @param $page
      * @param $id
-     * @param $content_type
+     * @param $http_accept
      */
-    public function __construct($module, $page, $id, $content_type)
+    public function __construct($module, $page, $id, $http_accept)
     {
-        parent::__construct($module, $page, $id, $content_type);
-
         // User Authentication Services
-        $apiAuthService = Core_AuthService_API::getService();
-        $jwtAuthService = Core_AuthService_JWT::getService();
+        $apiAuthService = Core_Auth_Service_API::getService();
+        $jwtAuthService = Core_Auth_Service_JWT::getService();
 
         // JWT connections are relying on another service
         if ($jwtAuthService->isLoggedIn() === TRUE) {
             // JWT Auth
-            $this->authService = $jwtAuthService;
+            $this->authentication_service = $jwtAuthService;
         } else {
-            $this->authService = $apiAuthService;
+            $this->authentication_service = $apiAuthService;
         }
-    }
 
-    /**
-     * @throws Core_Verbose_Exception
-     */
-    public function init()
-    {
-        parent::_init();
+        parent::__construct($module, $page, $id, $http_accept);
     }
 
     /**
@@ -89,7 +81,7 @@ class Core_API_Application extends Core_Abstract_Application
         // Resolve Request
 
         $controller_method_array = Core_API::resolveAPIRequest(
-            $this->module,
+            $this->module_handle,
             $this->req_url,
             $this->req_method
         );
@@ -100,14 +92,14 @@ class Core_API_Application extends Core_Abstract_Application
 
         // Check Authorizations
 
-        if ($this->authService->login() === FALSE) {
+        if ($this->authentication_service->login() === FALSE) {
             throw new Core_Exception(403); // Forbidden
         }
 
         // Update User Activity
-        $this->updateUserActivity();
+        parent::execute();
 
-        if ($this->authService->checkMethodAuthorization($this->module, $controller_method_array['method']) === TRUE) {
+        if ($this->authentication_service->checkMethodAuthorization($this->module_handle, $controller_method_array['method']) === TRUE) {
             return $this->invoke($controller_method_array, $this->req_content_type); // Invoke
         }
 
