@@ -140,7 +140,7 @@ abstract class Core_Abstract_Application implements Core_Application_Interface
             }
         }
 
-        if ($this->request_params == null) {
+        if ($this->request_params === null) {
             throw new Core_Exception(415); // Unsupported Media Type
         }
     }
