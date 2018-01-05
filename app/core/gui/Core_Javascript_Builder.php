@@ -9,11 +9,6 @@
 class Core_Javascript_Builder
 {
     /**
-     * @var Core_Page_Interface Page handle
-     */
-    private $page = null;
-
-    /**
      * @var string
      */
     private $scopeSchema = '{}';
@@ -34,7 +29,9 @@ class Core_Javascript_Builder
      */
     public function __construct($page)
     {
-        $this->page = $page;
+        $this->scopeSchema = $page->schema();
+        $this->scopeForm = $page->form();
+        $this->scopeModel = $page->model();
     }
 
     /**
@@ -83,26 +80,19 @@ class Core_Javascript_Builder
                                 $scope.onSubmit = function(form)
                                 {
                                     // Reset backend validation (if any) because of its async state
-                                    //
-                                    //  * Fake validation
-                                    //  * Refresh model
-                                    //  * Refresh form validation
-
                                     if ($scope.formErrors)
                                     {
                                         angular.forEach($scope.formErrors, function(value, key) {
                                             angular.forEach(value, function(subValue, subKey) {
                                                 if (subKey !== 0) {
-                                                    // Reset the previous error
 
+                                                    // Reset the previous error
                                                     $scope.$broadcast('schemaForm.error.' + key, subValue.toCamel(), true);
 
                                                     // Refresh model
-
                                                     $scope.model[key] = form[key].$$lastCommittedViewValue;
 
                                                     // Validate the new form entry
-
                                                     form[key].$$parseAndValidate();
                                                 }
                                             });
@@ -110,11 +100,9 @@ class Core_Javascript_Builder
                                     }
 
                                     // Client side validation
-
                                     $scope.$broadcast('schemaFormValidate');
 
                                     // Backend side validation
-
                                     if (form.$valid) {
                                         $scope.bgpPromise = $http({
                                             method  : 'POST',
@@ -123,38 +111,36 @@ class Core_Javascript_Builder
                                         })
                                         .success(function(data, status, headers)
                                         {
-                                            // Check media-type
+                                            // If successful, we redirect the user to the resource
+                                            if (data.success && (data.success === true) && data.location) {
+                                                window.location = ( data.location );
+                                            }
 
                                             // Download resource if it is not JSON
-
-                                            if ( headers()['content-type'].indexOf('application/json') === -1 ) {
-
+                                            // Check media-type
+                                            if (headers()['content-type'].indexOf('application/json') === -1) {
                                                 var fileContents = new Blob([ data ], { type : headers()['content-type'] });
-                                                var fileName = headers()['content-disposition'].replace('attachment; filename=\"', '').slice(0, -1);
-
+                                                var fileDisposition = 'text/plain';
+                                                if (headers()['content-disposition']) {
+                                                    fileDisposition = headers()['content-disposition'];
+                                                }
+                                                var fileName = fileDisposition.replace('attachment; filename=\"', '');
                                                 FileSaver.saveAs(fileContents, fileName);
-
                                                 return;
                                             }
 
                                             // JSON Processing
-
                                             if (!data.success || (data.success === false))
                                             {
                                                 // Reset errors repository
-
                                                 $scope.formErrors = {};
 
-                                                // If not successful, bind errors to error variables
-
-                                                angular.forEach(data.errors, function(value, key) {
-
-                                                    // Bind validation messages
-
+                                                // If not successful,
+                                                // inject errors into form
+                                                angular.forEach(data.errors, function(value, key)
+                                                {
                                                     // Multiple errors case
-
                                                     if (angular.isArray(value)) {
-
                                                         var tmp   = value;
                                                         var value = '';
                                                         angular.forEach(tmp, function(subValue, subKey) {
@@ -164,31 +150,14 @@ class Core_Javascript_Builder
 
                                                     $scope.$broadcast('schemaForm.error.' + key, value.toCamel(), value);
 
-                                                    // Copy errors to another repository
-                                                    // Useful for hybrid forms
-
+                                                    // Copy errors
                                                     $scope.formErrors[key] = {};
                                                     $scope.formErrors[key][value.toCamel()] = value;
                                                     $scope.formErrors[key][0] = value;
                                                 });
-
-                                                // Bind notification message to message
-
-                                                $scope.msgType = data.msgType;
-                                                $scope.msg = data.msg;
-                                            }
-
-                                            // TODO : implement redirect by reading http headers
-
-                                            if (data.success && (data.success === true))
-                                            {
-                                                // If successful, we redirect the user to the resource
-
-                                                //window.location = ( "'./'" );
                                             }
 
                                             // Bind notification message to message
-
                                             $scope.msgType = data.msgType;
                                             $scope.msg = data.msg;
                                         })
@@ -197,9 +166,22 @@ class Core_Javascript_Builder
                                             // An error has been triggered while submitting the form
 
                                             // Bind notification message to message
-
                                             $scope.msgType = 'danger';
-                                            $scope.msg = data;
+
+                                            // Extract body (if any)
+                                            var parser = new DOMParser();
+                                            var doc = parser.parseFromString(data, "text/html");
+                                            if (doc.getElementsByTagName('h1')[0]) {
+                                                var title = doc.getElementsByTagName('h1')[0].innerHTML;
+                                                var desc = '';
+                                                if (doc.getElementsByTagName('p')[0]) {
+                                                    desc = doc.getElementsByTagName('p')[0].innerHTML;
+                                                }
+                                                $scope.msg = title + ' : ' + desc;
+                                            }
+                                            else {
+                                                $scope.msg = data;
+                                            }
                                         });
                                     }
                                 }

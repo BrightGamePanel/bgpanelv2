@@ -36,12 +36,13 @@ final class Core_API_Application extends Core_Abstract_Application
     /**
      * Core_API_Application constructor.
      *
-     * @param $module
-     * @param $page
-     * @param $id
-     * @param $http_accept
+     * @param string $module
+     * @param string $page
+     * @param string $id
+     * @param string $http_content_type
+     * @param string $http_accept
      */
-    public function __construct($module, $page, $id, $http_accept)
+    public function __construct($module, $page, $id, $http_content_type, $http_accept)
     {
         // User Authentication Services
         $apiAuthService = Core_Auth_Service_API::getService();
@@ -55,7 +56,7 @@ final class Core_API_Application extends Core_Abstract_Application
             $this->authentication_service = $apiAuthService;
         }
 
-        parent::__construct($module, $page, $id, $http_accept);
+        parent::__construct($module, $page, $id, $http_content_type, $http_accept);
     }
 
     /**
@@ -82,8 +83,8 @@ final class Core_API_Application extends Core_Abstract_Application
 
         $controller_method_array = Core_API::resolveAPIRequest(
             $this->module_handle,
-            $this->req_url,
-            $this->req_method
+            $this->request_url,
+            $this->request_method
         );
 
         if (empty($controller_method_array)) {
@@ -100,7 +101,7 @@ final class Core_API_Application extends Core_Abstract_Application
         parent::execute();
 
         if ($this->authentication_service->checkMethodAuthorization($this->module_handle, $controller_method_array['method']) === TRUE) {
-            return $this->invoke($controller_method_array, $this->req_content_type); // Invoke
+            return $this->invoke($controller_method_array, $this->accept_content_type); // Invoke
         }
 
         // Forbidden as default response

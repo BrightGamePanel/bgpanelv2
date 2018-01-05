@@ -3,6 +3,11 @@
 interface Core_Module_Shared_Interface {
 
     /**
+     * Get module interface name
+     */
+    public function getName();
+
+    /**
      * Get stylesheets dependencies
      */
     public function getStylesheets();

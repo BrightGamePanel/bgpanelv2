@@ -87,7 +87,9 @@ final class Launcher
 
                 // INSTALL WIZARD (HTML)
                 $app = new Core_Wizard_Application(
-                    $page
+                    $page,
+                    $request_content_type,
+                    'text/html'
                 );
             }
             else {
@@ -98,7 +100,9 @@ final class Launcher
                 $app = new Core_GUI_Application(
                     $module,
                     $page,
-                    $id
+                    $id,
+                    $request_content_type,
+                    'text/html'
                 );
             }
         }
@@ -109,7 +113,8 @@ final class Launcher
                 // INSTALL WIZARD (script mode)
                 $app = new Core_Wizard_Application(
                     $page,
-                    $request_content_type
+                    $request_content_type,
+                    $output_content_type
                 );
             }
             else {
@@ -121,7 +126,8 @@ final class Launcher
                     $module,
                     $page,
                     $id,
-                    $request_content_type
+                    $request_content_type,
+                    $output_content_type
                 );
             }
         }

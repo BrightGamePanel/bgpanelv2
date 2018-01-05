@@ -34,6 +34,7 @@
 abstract class Core_Abstract_Module implements Core_Module_Interface
 {
 	// Module Attributes
+    protected $name = '';
     protected $is_enable = TRUE;
 	protected $info = array();
 	protected $settings = array();
@@ -58,14 +59,14 @@ abstract class Core_Abstract_Module implements Core_Module_Interface
      */
     function __construct() {
 
-        $module_name = strtolower(get_class($this));
-        $manifest_file = MODS_DIR . '/' . $module_name . '/manifest.xml';
+        $this->name = strtolower(get_class($this));
+        $manifest_file = MODS_DIR . '/' . $this->getName() . '/manifest.xml';
 
 		// Test Manifest File
 		if ( !file_exists($manifest_file) ) {
 		    throw new Core_Verbose_Exception(
 		        'Missing manifest file !',
-                'Module : ' . $module_name,
+                'Module : ' . $this->getName(),
                 'Unable to load : ' . $manifest_file
             );
 		}
@@ -167,7 +168,7 @@ abstract class Core_Abstract_Module implements Core_Module_Interface
         if (!class_exists($controller_class)) {
             throw new Core_Verbose_Exception(
                 'Missing controller class !',
-                'Module : ' . $module_name,
+                'Module : ' . $this->getName(),
                 'Unable to load controller class: ' . $controller_class
             );
         }
@@ -242,7 +243,11 @@ abstract class Core_Abstract_Module implements Core_Module_Interface
     public function process($page, $query_args = array())
     {
         $page = $this->resolve($page);
-        $page->process($query_args);
+        return $page->process($query_args);
+    }
+
+    public function getName() {
+        return $this->name;
     }
 
     public function getModuleTitle() {

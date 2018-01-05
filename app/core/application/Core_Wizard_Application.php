@@ -36,15 +36,16 @@ final class Core_Wizard_Application extends Core_Abstract_Application
     /**
      * BGP_Installer_Application constructor.
      *
-     * @param $page
-     * @param $http_accept
+     * @param string $page
+     * @param string $http_content_type
+     * @param string $http_accept
      */
-    public function __construct($page, $http_accept = "text/html")
+    public function __construct($page, $http_content_type, $http_accept)
     {
         // Fake Authentication Service
         $this->authentication_service = new Core_Auth_Service_Anonymous();
 
-        parent::__construct('wizard', $page, 0, $http_accept);
+        parent::__construct('wizard', $page, 0, $http_content_type, $http_accept);
     }
 
     public function init()
@@ -54,16 +55,18 @@ final class Core_Wizard_Application extends Core_Abstract_Application
 
     public function execute()
     {
-        if ($this->req_method == 'GET' && $this->req_content_type == 'text/html') {
-            return $this->module_handle->render($this->page, $this->req_params);
+        if ($this->request_method == 'GET') {
+            $this->module_handle->render($this->page, $this->request_params);
+            return 0;
         }
-        if ($this->req_method == 'POST') {
-            return $this->module_handle->process($this->page, $this->req_params);
+        if ($this->request_method == 'POST') {
+            return $this->module_handle->process($this->page, $this->request_params);
         }
 
-        $method =  $this->module_handle->getController()->resolve($this->req_method, $this->req_url);
+        // API
+        $method =  $this->module_handle->getController()->resolve($this->request_method, $this->request_url);
         echo $this->module_handle->getController()->format(
-            $this->module_handle->getController()->invoke($method, $this->req_params), $this->req_content_type
+            $this->module_handle->getController()->invoke($method, $this->request_params), $this->accept_content_type
         );
         return 0;
     }

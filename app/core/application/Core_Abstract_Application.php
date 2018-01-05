@@ -44,10 +44,12 @@ abstract class Core_Abstract_Application implements Core_Application_Interface
     protected $id = 0;
 
     // HTTP Request Attributes
-    protected $req_url = '';
-    protected $req_method = '';
-    protected $req_content_type = '';
-    protected $req_params = array();
+    protected $request_url = '';
+    protected $request_method = '';
+    protected $request_params = array();
+
+    // Expected format of the response
+    protected $accept_content_type = '';
 
     /**
      * Core Authentication Service Handle
@@ -61,12 +63,13 @@ abstract class Core_Abstract_Application implements Core_Application_Interface
      *
      * @param string $module
      * @param string $page
-     * @param integer $id
+     * @param string $id
+     * @param string $http_content_type
      * @param string $http_accept
      * @throws Core_Exception
      * @throws Core_Verbose_Exception
      */
-    public function __construct($module, $page, $id, $http_accept = 'application/json')
+    public function __construct($module, $page, $id, $http_content_type, $http_accept)
     {
         // Create Service
         // for this application
@@ -100,41 +103,45 @@ abstract class Core_Abstract_Application implements Core_Application_Interface
         }
 
         // Sanitized Requested Content Type
-        $this->req_content_type = $http_accept;
+        $this->accept_content_type = $http_accept;
 
         // Request Information
-        $this->req_url = Flight::request()->url;
-        $this->req_method = Flight::request()->method;
+        $this->request_url = Flight::request()->url;
+        $this->request_method = Flight::request()->method;
 
         // Request Parameters
 
-        if ($this->req_method == 'GET') {
+        if ($this->request_method == 'GET') {
 
             // Query parameters
-            $this->req_params = Flight::request()->query->getData();
+            $this->request_params = Flight::request()->query->getData();
         }
-        else if ($this->req_method == 'POST') {
+        else if ($this->request_method == 'POST') {
 
             // Post parameters
-            if ($this->req_content_type == 'application/json') {
+            if ($http_content_type == 'application/json') {
 
                 $plain_body = Flight::request()->getBody();
-                $this->req_params = json_decode($plain_body, TRUE);
+                $this->request_params = json_decode($plain_body, TRUE);
             }
             else {
-                $this->req_params = Flight::request()->data->getData();
+                $this->request_params = Flight::request()->data->getData();
             }
         }
         else {
 
-            if ($this->req_content_type == 'application/json') {
+            if ($http_content_type == 'application/json') {
 
                 $plain_body = Flight::request()->getBody();
-                $this->req_params = json_decode($plain_body, TRUE);
+                $this->request_params = json_decode($plain_body, TRUE);
             }
             else {
                 throw new Core_Exception(415); // Unsupported Media Type
             }
+        }
+
+        if ($this->request_params == null) {
+            throw new Core_Exception(415); // Unsupported Media Type
         }
     }
 

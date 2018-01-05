@@ -32,6 +32,7 @@ interface Core_Module_Interface extends Core_Module_Shared_Interface
      *
      * @param string $page The page to render as a string identifier
      * @param array $query_args Query arguments to render the requested page
+     * @return void
      */
     public function render($page, $query_args = array());
 
@@ -41,7 +42,7 @@ interface Core_Module_Interface extends Core_Module_Shared_Interface
      *
      * @param $page
      * @param array $query_args
-     * @return mixed
+     * @return int
      */
     public function process($page, $query_args = array());
 

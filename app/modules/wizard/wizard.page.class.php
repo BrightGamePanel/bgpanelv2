@@ -18,24 +18,23 @@ class Wizard_Page extends Core_Abstract_Page
 ?>
                     <!-- License -->
                     <pre class="pre-scrollable">
-                        <?php
+<?php
 
-                        $license = fopen(LICENSE_FILE, 'r');
-                        while ($rows = fgets($license)) {
-                            echo $rows;
-                        }
-                        fclose($license);
+$license = fopen(LICENSE_FILE, 'r');
+while ($rows = fgets($license)) {
+    echo $rows;
+}
+fclose($license);
 
-                        ?>
+?>
                     </pre>
                     <form name="thisForm" ng-submit="onSubmit(thisForm)">
-                        <div class="checkbox">
-                            <label>
-                                <input type="checkbox" name="agreement">&nbsp;I Accept the Terms of the License Agreement
-                            </label>
-                        </div>
+
+                        <div sf-schema="schema" sf-form="form" sf-model="model"></div>
+
                         <div class="text-center">
-                            <button type="submit" class="btn btn-default">Submit</button>
+                            <button class="btn btn-primary" type="submit" ng-disabled="thisForm.$invalid && !thisForm.$submitted"><?php echo T_('Submit'); ?></button>
+                            <button class="btn btn-default" type="reset"><?php echo T_('Cancel Changes'); ?></button>
                         </div>
                     </form>
 <?php
@@ -50,9 +49,75 @@ class Wizard_Page extends Core_Abstract_Page
      */
     public function process($query_args = array())
     {
-        echo $this->parent_module->getController()->format(
-            $this->parent_module->getController()->invoke('acceptLicense', $query_args)
-        );
+        $response = $this->parent_module->getController()->invoke('acceptLicense', $query_args);
+        if ($response['success'] === TRUE) {
+            $this->redirectionOnSuccess($response);
+        }
+        echo $this->parent_module->getController()->format($response);
         return 0;
+    }
+
+    /**
+     * Schema of the form as a JSON String
+     *
+     * @return string
+     */
+    public function schema()
+    {
+        return "
+{
+	type: 'object',
+	properties: {
+		agreement: {
+			title: '" . T_('I Accept the Terms of the License Agreement') . "',
+			type: 'boolean'
+		}
+	},
+	'required': [
+		'agreement'
+	]
+}";
+    }
+
+    /**
+     * Form body as a JSON String
+     *
+     * @return string
+     */
+    public function form()
+    {
+        return "
+[
+	{
+		type: 'help',
+		helpvalue: \"<label>License Agreement</label>\"
+	},
+	{
+		key: 'agreement',
+		type: 'checkbox',
+		disableSuccessState: true,
+	}
+]";
+    }
+
+    /**
+     * Model of the forms a JSON String
+     *
+     * @return string
+     */
+    public function model()
+    {
+        return json_encode( array(), JSON_FORCE_OBJECT );
+    }
+
+    /**
+     * Appends to the response the redirection on a successful query
+     *
+     * @param $response
+     * @return void
+     */
+    public function redirectionOnSuccess(&$response)
+    {
+        $response['location'] = './' . $this->parent_module->getName() . '/step1';
     }
 }

@@ -29,4 +29,45 @@ class Wizard_Step3_Page extends Core_Abstract_Page
     {
         // TODO: Implement process() method.
     }
+
+    /**
+     * Schema of the form as a JSON String
+     *
+     * @return string
+     */
+    public function schema()
+    {
+        // TODO: Implement schema() method.
+    }
+
+    /**
+     * Form body as a JSON String
+     *
+     * @return string
+     */
+    public function form()
+    {
+        // TODO: Implement form() method.
+    }
+
+    /**
+     * Model of the forms a JSON String
+     *
+     * @return string
+     */
+    public function model()
+    {
+        // TODO: Implement model() method.
+    }
+
+    /**
+     * Appends to the response the redirection on a successful query
+     *
+     * @param $response
+     * @return void
+     */
+    public function redirectionOnSuccess(&$response)
+    {
+        // Nothing to do
+    }
 }

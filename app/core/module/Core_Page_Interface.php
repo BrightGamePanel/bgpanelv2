@@ -32,9 +32,33 @@ interface Core_Page_Interface extends Core_Module_Shared_Interface
     public function body();
 
     /**
-     * Get page name
+     * Schema of the form as a JSON String
+     *
+     * @return string
      */
-    public function getName();
+    public function schema();
+
+    /**
+     * Form body as a JSON String
+     *
+     * @return string
+     */
+    public function form();
+
+    /**
+     * Model of the forms a JSON String
+     *
+     * @return string
+     */
+    public function model();
+
+    /**
+     * Appends to the response the redirection on a successful query
+     *
+     * @param $response
+     * @return void
+     */
+    public function redirectionOnSuccess(&$response);
 
     /**
      * Get page title

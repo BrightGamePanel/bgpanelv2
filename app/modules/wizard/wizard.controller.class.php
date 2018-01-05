@@ -422,7 +422,7 @@ class Wizard_Controller extends Core_Abstract_Controller {
      */
 	public function acceptLicense($agreement)
     {
-        if (empty($agreement)) {
+        if (empty($agreement) || $agreement !== true) {
             $this->validation_errors['agreement'] = 'You must accept the terms of the license agreement in order to use this software';
         }
 

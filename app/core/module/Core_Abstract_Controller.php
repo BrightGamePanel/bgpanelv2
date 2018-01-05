@@ -122,6 +122,9 @@ abstract class Core_Abstract_Controller implements Core_Controller_Interface
         if (!isset($this->reflected_public_methods[$method_prototype_name])) {
             throw new Core_Exception(501);
         }
+        if (empty($args)) {
+            return array();
+        }
 
         $method_prototype_args = $this->reflected_public_methods[$method_prototype_name]['params'];
         $param_array = array_fill_keys(array_values($method_prototype_args), null); // Set all values to null

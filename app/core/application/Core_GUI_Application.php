@@ -15,17 +15,18 @@ final class Core_GUI_Application extends Core_Abstract_Application
     /**
      * Core_GUI_Application constructor.
      *
-     * @param $module
-     * @param $page
-     * @param $id
-     * @param $http_accept
+     * @param string $module
+     * @param string $page
+     * @param string $id
+     * @param string $http_content_type
+     * @param string $http_accept
      */
-    public function __construct($module, $page, $id, $http_accept = "text/html")
+    public function __construct($module, $page, $id, $http_content_type, $http_accept)
     {
         // User Authentication Service
         $this->authentication_service = Core_Auth_Service_Session::getService();
 
-        parent::__construct($module, $page, $id, $http_accept);
+        parent::__construct($module, $page, $id, $http_content_type, $http_accept);
     }
 
     /**
