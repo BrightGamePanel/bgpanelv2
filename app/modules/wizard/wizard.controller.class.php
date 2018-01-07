@@ -56,30 +56,30 @@ class Wizard_Controller extends Core_Abstract_Controller {
     private $last_bgp_version;
 
     /* CHECK REQUIREMENTS KEYS */
-    const PHP_VERSION = 'php_version';
-    const APACHE2 = 'apache2';
-    const SAFE_MODE = 'safe_mode';
-    const MODE_RW = 'mode_rewrite';
-    const PDO = 'pdo';
-    const DBH = 'database_handle';
-    CONST FUNC_FSOCK = 'fsockopen';
-    const FUNC_MAIL = 'mail';
-    const CURL = 'curl';
-    const MBSTRING = 'mbstring';
-    const BZ2 = 'bz2';
-    const ZLIB = 'zlib';
-    const GD = 'gd';
-    const FREETYPE = 'freetype';
-    const SIMPLEXML = 'simplexml';
-    const XMLREADER = 'xmlreader';
-    const OPENSSL = 'openssl';
-    const MCRYPT = 'mcrypt';
-    const GMP = 'gmp';
-    const HASH = 'hash';
-    const API_KEY = 'w_mode_api_key';
-    const SSH_KEY = 'w_mode_ssh_key';
-    const RSA = 'w_mode_rsa';
-    const PHP_SECLIB = 'w_mode_phpseclib';
+    const PHP_VERSION = 'PHP Version';
+    const APACHE2 = 'Apache/2 Server Software';
+    const SAFE_MODE = 'PHP safe mode';
+    const MODE_RW = '.htaccess override with Apache/2.x.x w/ mod_rewrite';
+    const PDO = 'PDO extension';
+    const DBH = 'SQL server connection';
+    CONST FUNC_FSOCK = 'FSOCKOPEN function';
+    const FUNC_MAIL = 'MAIL function';
+    const CURL = 'Curl extension';
+    const MBSTRING = 'MBSTRING extension'; // LGSL - Used to show UTF-8 server and player names correctly
+    const BZ2 = 'BZIP2 extension'; // LGSL - Used to show Source server settings over a certain size
+    const ZLIB = 'ZLIB extension';
+    const GD = 'GD / GD2 extension';
+    const FREETYPE = 'FreeType extension'; // securimage Requirement
+    const SIMPLEXML = 'SimpleXML extension';
+    const XMLREADER = 'XMLReader extension';
+    const OPENSSL = 'OpenSSL'; // phpseclib
+    const MCRYPT = 'MCRYPT extension'; // phpseclib
+    const GMP = 'GMP extension'; // phpseclib
+    const HASH = 'hash() function';
+    const API_KEY = 'API configuration file write permission';
+    const SSH_KEY = 'Secret keys file write permission';
+    const RSA = 'SSH and RSA keys directory write permission';
+    const PHP_SECLIB = 'PHPSECLIB configuration file write permission';
 
     function __construct( )	{
 
@@ -429,7 +429,18 @@ class Wizard_Controller extends Core_Abstract_Controller {
         return; // void
     }
 
-	function checkRequirements() {
+    /**
+     * @api {get} /wizard/step1 Checks software requirements.
+     * @author Nikita Rousseau
+     * @apiVersion v1
+     * @apiName checkRequirements
+     * @apiGroup Wizard
+     *
+     * @apiDescription Checks software requirements of Bright Game Panel.
+     *
+     * @return array
+     */
+	public function checkRequirements() {
 
 	    $ret = array();
 
@@ -454,12 +465,14 @@ class Wizard_Controller extends Core_Abstract_Controller {
         }
 
         // HTACCESS + MOD_REWRITE
+        $schema = 'http://';
+        if (Flight::request()->secure) {
+            $schema = 'https://';
+        }
+        $pageURL = $schema . gethostname() . Flight::request()->base;
 
-        $pageURL = get_url($_SERVER);
-        $pageURL = str_replace('install/', '', $pageURL) . 'root/';
-
-        $htaccessCheck = get_headers($pageURL);
-        $htaccessCheck = strpos($htaccessCheck[0], '200 OK');
+        $htaccessCheck = get_headers($pageURL . '/' . md5('test'));
+        $htaccessCheck = strpos($htaccessCheck[0], '500 Internal Server Error');
 
         if ($htaccessCheck === FALSE) {
             $ret[self::MODE_RW] = FALSE;
@@ -485,7 +498,8 @@ class Wizard_Controller extends Core_Abstract_Controller {
                 $dbh->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
             }
             catch (PDOException $e) {
-                exit($e->getMessage().' in '.$e->getFile().' on line '.$e->getLine());
+                // exit($e->getMessage().' in '.$e->getFile().' on line '.$e->getLine());
+                $ret[self::DBH] = FALSE;
             }
 
             if (empty($dbh)) {
@@ -501,7 +515,7 @@ class Wizard_Controller extends Core_Abstract_Controller {
         $ret[self::MBSTRING] = extension_loaded('mbstring');
         $ret[self::BZ2] = extension_loaded('bz2');
         $ret[self::ZLIB] = extension_loaded('zlib');
-        $ret[self::GD] = extension_loaded('gd2');
+        $ret[self::GD] = extension_loaded('gd');
         $ret[self::FREETYPE] = function_exists('imagettftext');
         $ret[self::SIMPLEXML] = extension_loaded('simplexml');
         $ret[self::XMLREADER] = class_exists('XMLReader');

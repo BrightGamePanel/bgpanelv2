@@ -29,6 +29,9 @@
 
 final class Core_Database_Service implements Core_Service_Interface {
 
+    /**
+     * @var PDO
+     */
 	private static $service_handle = null;
 
     /**
@@ -46,22 +49,17 @@ final class Core_Database_Service implements Core_Service_Interface {
 	    if (empty(self::$service_handle) ||
             !is_object(self::$service_handle) ||
             (get_class(self::$service_handle) != 'PDO')) {
-			try {
-				// Connect to the SQL server
-				if (DB_DRIVER == 'sqlite') {
-					self::$service_handle = new PDO( DB_DRIVER.':'.DB_FILE );
-				}
-				else {
-					self::$service_handle = new PDO( DB_DRIVER.':host='.DB_HOST.';dbname='.DB_NAME, DB_USER, DB_PASSWORD );
-				}
 
-				// Set ERRORMODE to exceptions
-				self::$service_handle->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-			}
-			catch (PDOException $e) {
-				echo $e->getMessage().' in '.$e->getFile().' on line '.$e->getLine();
-				die();
-			}
+            // Connect to the SQL server
+            if (DB_DRIVER == 'sqlite') {
+                self::$service_handle = new PDO( DB_DRIVER.':'.DB_FILE );
+            }
+            else {
+                self::$service_handle = new PDO( DB_DRIVER.':host='.DB_HOST.';dbname='.DB_NAME, DB_USER, DB_PASSWORD );
+            }
+
+            // Set ERRORMODE to exceptions
+            self::$service_handle->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 		}
 
 		return self::$service_handle;

@@ -29,9 +29,15 @@ class Core_Javascript_Builder
      */
     public function __construct($page)
     {
-        $this->scopeSchema = $page->schema();
-        $this->scopeForm = $page->form();
-        $this->scopeModel = $page->model();
+        if (!empty($page->schema())) {
+            $this->scopeSchema = $page->schema();
+        }
+        if (!empty($page->form())) {
+            $this->scopeForm = $page->form();
+        }
+        if (!empty($page->model())) {
+            $this->scopeModel = $page->model();
+        }
     }
 
     /**

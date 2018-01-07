@@ -77,15 +77,17 @@ abstract class Core_Abstract_Controller implements Core_Controller_Interface
             $doc = new DocBlock($doc);
             $params = $doc->all_params;
 
-            if (empty($params['api']) || empty($params['apiParam'])) {
+            if (empty($params['api'])) {
                 continue;
             }
 
             // Params
             $args = array();
-            foreach ($params['apiParam'] as $key => $param) {
-                list($type_arg, $arg) = explode(' ', $param, 3);
-                $args[] = $arg;
+            if (!empty($params['apiParam'])) {
+                foreach ($params['apiParam'] as $key => $param) {
+                    list($type_arg, $arg) = explode(' ', $param, 3);
+                    $args[] = $arg;
+                }
             }
 
             // Api

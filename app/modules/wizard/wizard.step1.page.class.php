@@ -15,8 +15,72 @@ class Wizard_Step1_Page extends Core_Abstract_Page
      */
     public function body()
     {
+        $results = $this->parent_module->getController()->invoke('checkRequirements', array());
+        $results = $results['data'];
+        $failure = false;
         ?>
-        <a href="http://localhost/bgpanelv2/wizard/step2">go to STEP2</a>
+                    <!-- Check Requirements -->
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Requirement</th>
+                                <th>Status</th>
+                                <th>Help</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        <?php
+
+                        // iterate over each software requirement
+                        foreach ($results as $requirement => $result) {
+                            if ($result === false) {
+                                $failure = true;
+                            }
+?>
+                            <tr class="<?php echo ($result === true) ? 'success' : 'danger'; ?>">
+                                <td><?php echo $requirement; ?></td>
+                                <td><span class="label label-<?php echo ($result === true) ? 'success' : 'danger'; ?>">
+                                        <?php echo ($result === true) ? 'OK' : 'FAILURE'; ?>
+                                    </span>
+                                </td>
+                                <td>
+                                    <?php
+
+                                    if ($result === false) {
+                                    ?>
+                                    <a href="https://wiki.bgpanel.org/install#<?php echo urlencode($requirement); ?>">
+                                        <i class="fa fa-external-link" aria-hidden="true"></i>
+                                        &nbsp;<?php echo $requirement; ?> resolution procedure.
+                                    </a>
+                                    <?php
+                                    }
+
+                                    ?>
+                                </td>
+                            </tr>
+<?php
+                        }
+
+                        ?>
+                        </tbody>
+                    </table>
+                    <div class="text-center">
+                        <nav aria-label="...">
+                            <ul class="pager">
+                                <li><a href="./wizard"><span aria-hidden="true">&larr;</span> Previous</a></li>
+                                <li><button class="btn btn-primary" onclick="window.location.reload();">Check Again</button></li>
+                                <?php
+
+                                if (!$failure) {
+                                ?>
+                                <li><a href="./wizard/step2">Next <span aria-hidden="true">&rarr;</span></a></li>
+                                <?php
+                                }
+
+                                ?>
+                            </ul>
+                        </nav>
+                    </div>
         <?php
     }
 
@@ -29,7 +93,7 @@ class Wizard_Step1_Page extends Core_Abstract_Page
      */
     public function process($query_args = array())
     {
-        // TODO: Implement process() method.
+        return 0;
     }
 
     /**
@@ -39,7 +103,7 @@ class Wizard_Step1_Page extends Core_Abstract_Page
      */
     public function schema()
     {
-        // TODO: Implement schema() method.
+        return "";
     }
 
     /**
@@ -49,7 +113,7 @@ class Wizard_Step1_Page extends Core_Abstract_Page
      */
     public function form()
     {
-        // TODO: Implement form() method.
+        return "";
     }
 
     /**
@@ -59,7 +123,7 @@ class Wizard_Step1_Page extends Core_Abstract_Page
      */
     public function model()
     {
-        // TODO: Implement model() method.
+        return "";
     }
 
     /**
@@ -70,6 +134,6 @@ class Wizard_Step1_Page extends Core_Abstract_Page
      */
     public function redirectionOnSuccess(&$response)
     {
-        // TODO: Implement redirectionOnSuccess() method.
+        return;
     }
 }
